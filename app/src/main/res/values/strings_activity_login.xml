@@ -1,0 +1,15 @@
+<resources>
+        <string name="title_activity_login">Sign in</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">닉네임</string>
+    <string name="prompt_password">패스워드</string>
+    <string name="action_sign_in">로그인</string>
+    <string name="action_sign_up">회원가입</string>
+    <string name="action_sign_in_short">로그인</string>
+
+    <string name="error_invalid_email">닉네임이 이상합니다</string>
+    <string name="error_invalid_password">암호가 너무 짧습니다</string>
+    <string name="error_incorrect_password">암호가 부정확합니다</string>
+    <string name="error_field_required">필수 입력란을 채워주세요</string>
+</resources>
