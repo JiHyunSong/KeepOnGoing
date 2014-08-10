@@ -12,7 +12,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
 
     public DBHelper(Context context) {
-        super(context, "KogDB.db", null, 0);
+        super(context, "KogDB.db", null, 1);
 		/* (context,dbname,null,dbversion) */
 
     }

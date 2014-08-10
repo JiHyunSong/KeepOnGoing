@@ -7,5 +7,9 @@
     <string name="title_activity_mainmenu">MainmenuActivity</string>
     <string name="title_activity_login">Sign in</string>
     <string name="title_activity_alarm">AlarmActivity</string>
-
+    <string name="tab1">스탑와치</string>
+    <string name="tab2">친구목록</string>
+    <string name="tab3">스터디방</string>
+    <string name="tab4">퀴즈모음</string>
+    <string name="tab5">설정</string>
 </resources>

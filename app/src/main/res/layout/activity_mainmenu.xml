@@ -28,21 +28,10 @@
 
                 <Button
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="50dip"
                     android:text="@string/abc_action_bar_home_description"/>
 
             </LinearLayout>
-            <LinearLayout
-                android:id="@+id/tab11"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <include layout="@layout/tap_layout"/>
-            </LinearLayout>
-            <!--<ListView-->
-                <!--android:id="@+id/tab1"-->
-                <!--android:layout_width="fill_parent"-->
-                <!--android:layout_height="fill_parent"/>-->
 
             <ListView
                 android:id="@+id/tab2"
@@ -56,6 +45,11 @@
 
             <ListView
                 android:id="@+id/tab4"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"/>
+
+            <ListView
+                android:id="@+id/tab5"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"/>
         </FrameLayout>

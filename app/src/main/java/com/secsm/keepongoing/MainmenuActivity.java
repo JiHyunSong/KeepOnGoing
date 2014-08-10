@@ -42,6 +42,29 @@ public class MainmenuActivity extends Activity {
 
         Log.i(LOG_TAG, "onCreate");
         mDBHelper = new DBHelper(this);
+        tabHost = (TabHost) findViewById(R.id.tabHost);
+        tabHost.setup();
+
+        // register tab 1, 2, 3, 4, 5
+        TabHost.TabSpec tab_stopwatch = tabHost.newTabSpec("tab1").setContent(R.id.tab1)
+                .setIndicator(getString(R.string.tab1));
+        tabHost.addTab(tab_stopwatch);
+
+        TabHost.TabSpec tab_friends = tabHost.newTabSpec("tab2").setContent(R.id.tab2)
+                .setIndicator(getString(R.string.tab2));
+        tabHost.addTab(tab_friends);
+
+        TabHost.TabSpec tab_rooms = tabHost.newTabSpec("tab3").setContent(R.id.tab3)
+                .setIndicator(getString(R.string.tab3));
+        tabHost.addTab(tab_rooms);
+
+        TabHost.TabSpec tab_quizs = tabHost.newTabSpec("tab4").setContent(R.id.tab4)
+                .setIndicator(getString(R.string.tab4));
+        tabHost.addTab(tab_quizs);
+
+        TabHost.TabSpec tab_settings = tabHost.newTabSpec("tab5").setContent(R.id.tab5)
+                .setIndicator(getString(R.string.tab5));
+        tabHost.addTab(tab_settings);
 
     }
 
