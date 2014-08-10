@@ -34,7 +34,6 @@ public class MainmenuActivity extends Activity {
 
     private TabHost tabHost;
     private DBHelper mDBHelper;
-    private ArrayList<String> roomIDArrayFromServ, roomIDArrayFromSQLite, roomNameArray, friendNameArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +42,6 @@ public class MainmenuActivity extends Activity {
 
         Log.i(LOG_TAG, "onCreate");
         mDBHelper = new DBHelper(this);
-        roomIDArrayFromServ = new ArrayList<String>();
-        roomIDArrayFromSQLite = new ArrayList<String>();
 
     }
 
