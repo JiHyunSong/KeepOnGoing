@@ -10,7 +10,7 @@ import android.content.SharedPreferences;
 
 public final class KogPreference {
     private static String TAG = "KeepGoingOn";
-    private static Boolean DEBUG_MODE = true;
+    public static Boolean DEBUG_MODE = true;
     private static final String PREF_NAME = "KeepOnGoingPreference";
 
     public KogPreference() {

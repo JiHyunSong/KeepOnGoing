@@ -1,6 +1,4 @@
 <resources>
-        <string name="title_activity_login">Sign in</string>
-
     <!-- Strings related to login -->
     <string name="prompt_email">닉네임</string>
     <string name="prompt_password">패스워드</string>

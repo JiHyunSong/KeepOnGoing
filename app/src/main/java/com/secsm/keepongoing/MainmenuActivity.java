@@ -1,17 +1,51 @@
 package com.secsm.keepongoing;
 
-import android.support.v7.app.ActionBarActivity;
+import com.secsm.keepongoing.DB.DBHelper;
+
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentPagerAdapter;
+
+import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.secsm.keepongoing.R;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TabHost;
+import android.widget.TabWidget;
 
-public class MainmenuActivity extends ActionBarActivity {
+import java.util.ArrayList;
+
+public class MainmenuActivity extends Activity {
+
+    public static final int ROOMNAME_REQUEST_CODE = 1;
+    public static final int FRIENDNAME_REQUEST_CODE = 2;
+    public static final int CHATROOM_REQUEST_CODE = 3;
+    public static final int FRIENDS_REQUEST_CODE = 4;
+    private static final String LOG_TAG = "MainmenuActivity";
+    private final int ADDROOM = 100;
+    private final int MANAGEFRIENDS = 200;
+
+
+
+    private TabHost tabHost;
+    private DBHelper mDBHelper;
+    private ArrayList<String> roomIDArrayFromServ, roomIDArrayFromSQLite, roomNameArray, friendNameArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mainmenu);
+
+        Log.i(LOG_TAG, "onCreate");
+        mDBHelper = new DBHelper(this);
+        roomIDArrayFromServ = new ArrayList<String>();
+        roomIDArrayFromSQLite = new ArrayList<String>();
+
     }
 
 
