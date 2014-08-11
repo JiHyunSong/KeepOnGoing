@@ -3,20 +3,15 @@ package com.secsm.keepongoing;
 import com.secsm.keepongoing.DB.DBHelper;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentPagerAdapter;
 
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TabHost;
-import android.widget.TabWidget;
 
 import java.util.ArrayList;
 
@@ -34,6 +29,8 @@ public class MainmenuActivity extends Activity {
 
     private TabHost tabHost;
     private DBHelper mDBHelper;
+    private ListView roomList, friendList, optionList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,25 +43,43 @@ public class MainmenuActivity extends Activity {
         tabHost.setup();
 
         // register tab 1, 2, 3, 4, 5
-        TabHost.TabSpec tab_stopwatch = tabHost.newTabSpec("tab1").setContent(R.id.tab1)
+        TabHost.TabSpec tab_stopwatch = tabHost.newTabSpec("tab1").setContent(R.id.tab_stopwatch)
                 .setIndicator(getString(R.string.tab1));
         tabHost.addTab(tab_stopwatch);
 
-        TabHost.TabSpec tab_friends = tabHost.newTabSpec("tab2").setContent(R.id.tab2)
+        TabHost.TabSpec tab_friends = tabHost.newTabSpec("tab2").setContent(R.id.tab_friends)
                 .setIndicator(getString(R.string.tab2));
         tabHost.addTab(tab_friends);
 
-        TabHost.TabSpec tab_rooms = tabHost.newTabSpec("tab3").setContent(R.id.tab3)
+        TabHost.TabSpec tab_rooms = tabHost.newTabSpec("tab3").setContent(R.id.tab_rooms)
                 .setIndicator(getString(R.string.tab3));
         tabHost.addTab(tab_rooms);
 
-        TabHost.TabSpec tab_quizs = tabHost.newTabSpec("tab4").setContent(R.id.tab4)
-                .setIndicator(getString(R.string.tab4));
-        tabHost.addTab(tab_quizs);
+//        TabHost.TabSpec tab_quizs = tabHost.newTabSpec("tab4").setContent(R.id.tab4)
+//                .setIndicator(getString(R.string.tab4));
+//        tabHost.addTab(tab_quizs);
 
-        TabHost.TabSpec tab_settings = tabHost.newTabSpec("tab5").setContent(R.id.tab5)
+        TabHost.TabSpec tab_settings = tabHost.newTabSpec("tab5").setContent(R.id.tab_settings)
                 .setIndicator(getString(R.string.tab5));
         tabHost.addTab(tab_settings);
+
+
+        // add ListView
+        		/* initial setting */
+        ArrayList<String> arGeneral3 = new ArrayList<String>();
+        arGeneral3.add("로그인");
+        arGeneral3.add("회원가입");
+        arGeneral3.add("알람 설정");
+        arGeneral3.add("목표 시간 설정");
+        arGeneral3.add("퀴즈 모음");
+        ArrayAdapter<String> optionArrayAdapter;
+        optionArrayAdapter = new ArrayAdapter<String>(this,
+                R.layout.tab_list, arGeneral3);
+        optionList = (ListView) findViewById(R.id.tab_settings);
+//        View header_setting = getLayoutInflater().inflate(R.layout.tab_header_setting, null, false);
+//        optionList.addHeaderView(header_setting);
+        optionList.setAdapter(optionArrayAdapter);
+
 
     }
 
@@ -73,6 +88,23 @@ public class MainmenuActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.mainmenu, menu);
+        int tabPosition = tabHost.getCurrentTab();
+        Log.i(LOG_TAG, "onCreate Options Menu");
+        switch (tabPosition)
+        {
+            case 1:
+                Log.i(LOG_TAG, "tab 1");
+                break;
+            case 2:
+                Log.i(LOG_TAG, "tab 2");
+                break;
+            case 3:
+                Log.i(LOG_TAG, "tab 3");
+                break;
+            case 4:
+                Log.i(LOG_TAG, "tab 4");
+                break;
+        }
         return true;
     }
 
