@@ -11,7 +11,7 @@ import android.util.Log;
 
 public final class KogPreference {
     private static String LOG_TAG = "Preference LOG";
-    public static Boolean DEBUG_MODE = false;
+    public static Boolean DEBUG_MODE = true;
     private static final String PREF_NAME = "KeepOnGoingPreference";
     private static String LOGIN_TAG = "LOGIN";
     public KogPreference() {

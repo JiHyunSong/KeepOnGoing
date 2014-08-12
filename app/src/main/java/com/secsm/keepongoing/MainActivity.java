@@ -29,7 +29,7 @@ public class MainActivity extends Activity {
 
     class splashHandler implements Runnable {
         public void run() {
-            if(KogPreference.getBoolean(MainActivity.this, "firstStart") || KogPreference.DEBUG_MODE) {
+            if(KogPreference.getBoolean(MainActivity.this, "firstStart") || !KogPreference.DEBUG_MODE) {
                 Intent intent = new Intent(MainActivity.this, MainmenuActivity.class);
                 startActivity(intent);
             }
