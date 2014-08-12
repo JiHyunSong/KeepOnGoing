@@ -7,12 +7,13 @@ package com.secsm.keepongoing.Shared;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 public final class KogPreference {
-    private static String TAG = "KeepGoingOn";
-    public static Boolean DEBUG_MODE = true;
+    private static String LOG_TAG = "Preference LOG";
+    public static Boolean DEBUG_MODE = false;
     private static final String PREF_NAME = "KeepOnGoingPreference";
-
+    private static String LOGIN_TAG = "LOGIN";
     public KogPreference() {
         // not called
     }
@@ -72,7 +73,7 @@ public final class KogPreference {
                 .getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
 
         try {
-            boolean v = prefs.getBoolean(key, true);
+            boolean v = prefs.getBoolean(key, false);
             return v;
         } catch (ClassCastException e) {
             return false;
@@ -127,5 +128,25 @@ public final class KogPreference {
         }
     }
 
+    public static boolean isLogin(final Context context){
+
+        try {
+            Boolean v = getBoolean(context, LOGIN_TAG);
+            return v;
+        } catch (ClassCastException e) {
+
+            return false;
+        }
+
+    }
+
+    public static void setLogin(final Context context){
+        try {
+            putBoolean(context, LOGIN_TAG, true);
+        } catch (ClassCastException e) {
+            Log.e(LOG_TAG, "set Login ClassCaseException : " + e.getStackTrace());
+        }
+
+    }
 
 }

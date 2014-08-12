@@ -12,4 +12,11 @@
     <string name="tab3">스터디방</string>
     <string name="tab4">퀴즈모음</string>
     <string name="tab5">설정</string>
+    <string name="title_activity_register">RegisterActivity</string>
+    <string name="title_activity_auth">AuthActivity</string>
+    <string name="title_activity_auth_next">AuthNextActivity</string>
+    <string name="confirm">확인</string>
+    <string name="go_back">돌아가기</string>
+    <string name="title_activity_profile">ProfileActivity</string>
+
 </resources>
