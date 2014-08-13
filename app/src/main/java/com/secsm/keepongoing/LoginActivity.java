@@ -54,8 +54,8 @@ public class LoginActivity extends Activity{
     private View mLoginFormView;
     private RequestQueue vQueue;
     private int status_code;
+    private String rMessage;
     private Intent intent;
-
     private String savedNick;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,11 +74,9 @@ public class LoginActivity extends Activity{
         Button mSignInButton = (Button) findViewById(R.id.sign_in_button);
         mSignInButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
-                // TODO : login from server
-                Toast.makeText(getBaseContext(), "로그인이 되었습니다.", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(LoginActivity.this, MainmenuActivity.class);
-                startActivity(intent);
-                LoginActivity.this.finish();
+                // TODO : REST apply
+                //UserLogin(mNicknameView.getText().toString(), mPasswordView.getText().toString());
+                GoNextPage();
             }
         });
 
@@ -103,13 +101,23 @@ public class LoginActivity extends Activity{
 
     }
 
+    private void GoNextPage() {
+        Toast.makeText(getBaseContext(), "로그인이 되었습니다.", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, MainmenuActivity.class);
+        startActivity(intent);
+        this.finish();
+    }
 
-    private void post() {
-        String get_url = "http://210.118.74.195:8080/KOG_Server_Rest/rest/";
+
+    private void UserLogin(String nickName, String password) {
+        String get_url = KogPreference.REST_URL +
+                "User" +
+                "?nickname=" + nickName +
+                "&password=" + password;
 
         Log.i(LOG_TAG, "post btn event trigger");
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, get_url, null,
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, get_url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -119,6 +127,10 @@ public class LoginActivity extends Activity{
                         try{
                             status_code = response.getInt("status");
                             if(status_code == 200){
+                                // TODO : message is now OK  -> change
+                                rMessage = response.getString("message");
+                                // real action
+                                GoNextPage();
 
                             }else {
                                 if(KogPreference.DEBUG_MODE) {
@@ -146,12 +158,12 @@ public class LoginActivity extends Activity{
 
     private boolean isNicknameValid(String nickName) {
         //TODO: Replace this with your own logic
-        return (nickName.length() > 4) && (nickName.length() < 10);
+        return (nickName.length() >= 4) && (nickName.length() <= 10);
     }
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return (password.length() > 4) && (password.length() < 12);
+        return (password.length() >= 4) && (password.length() <= 12);
     }
 
 

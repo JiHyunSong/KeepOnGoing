@@ -75,7 +75,7 @@ public class RegisterActivity extends Activity {
 
                     RegisterActivity.this.finish();
 
-
+                    // TODO : REST apply
 //                    register(nickName.getText().toString(), password1.getText().toString(), "defualt.png", phoneNum.getText().toString());
                 }else
                 {
@@ -93,16 +93,6 @@ public class RegisterActivity extends Activity {
         rPassWord1 = password1.getText().toString();
         rPassWord2 = password2.getText().toString();
 
-        Log.i(LOG_TAG, "rPassWord1 : " + rPassWord1);
-        Log.i(LOG_TAG, "rPassWord2 : " + rPassWord2);
-        Log.i(LOG_TAG, "rNickname : " + rNickName);
-        Log.i(LOG_TAG, "");
-        Log.i(LOG_TAG, "!TextUtils.isEmpty(rPassWord1) " + !TextUtils.isEmpty(rPassWord1));
-        Log.i(LOG_TAG, "!TextUtils.isEmpty(rPassWord2) " + !TextUtils.isEmpty(rPassWord2));
-        Log.i(LOG_TAG, "(rPassWord1.equals(rPassWord2)) " + (rPassWord1.equals(rPassWord2)));
-        Log.i(LOG_TAG, "isPasswordValid(rPassWord1) "+ isPasswordValid(rPassWord1));
-        Log.i(LOG_TAG, "!TextUtils.isEmpty(rNickName) " + !TextUtils.isEmpty(rNickName));
-        Log.i(LOG_TAG, "isNicknameValid(rNickName) " + isNicknameValid(rNickName));
         return !TextUtils.isEmpty(rPassWord1) && !TextUtils.isEmpty(rPassWord2) && (rPassWord1.equals(rPassWord2)) && isPasswordValid(rPassWord1) && !TextUtils.isEmpty(rNickName) && isNicknameValid(rNickName) ;
     }
 
@@ -119,7 +109,7 @@ public class RegisterActivity extends Activity {
 
     private void register(String nickName, String password, String image, String phone) {
         String get_url = KogPreference.REST_URL +
-                "register" +
+                "Register" +
                 "?nickname=" + nickName +
                 "&password=" + password +
                 "&image=" + image +
