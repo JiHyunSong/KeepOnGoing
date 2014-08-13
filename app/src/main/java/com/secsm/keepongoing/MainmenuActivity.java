@@ -1,8 +1,11 @@
 package com.secsm.keepongoing;
 
 import com.secsm.keepongoing.DB.DBHelper;
+import com.secsm.keepongoing.Shared.KogPreference;
 
 import android.app.Activity;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import android.util.Log;
@@ -24,8 +27,6 @@ public class MainmenuActivity extends Activity {
     private static final String LOG_TAG = "MainmenuActivity";
     private final int ADDROOM = 100;
     private final int MANAGEFRIENDS = 200;
-
-
 
     private TabHost tabHost;
     private DBHelper mDBHelper;
@@ -65,7 +66,38 @@ public class MainmenuActivity extends Activity {
 
 
         // add ListView
-        		/* initial setting */
+
+        // setup rooms
+        if (KogPreference.DEBUG_MODE)
+        {
+            // mock room
+            ArrayList<String> mockRooms = new ArrayList<String>();
+            mockRooms.add("tempRoom1");
+            mockRooms.add("tempRoom2");
+            mockRooms.add("tempRoom3");
+
+            ArrayAdapter<String> mockRoomArrayAdapter;
+            mockRoomArrayAdapter = new ArrayAdapter<String>(this,
+                    R.layout.tab_list, mockRooms);
+            roomList = (ListView) findViewById(R.id.tab_rooms);
+            roomList.setAdapter(mockRoomArrayAdapter);
+
+            // mock quiz
+            ArrayList<String> mockFriends = new ArrayList<String>();
+            mockFriends.add("tempFriend1");
+            mockFriends.add("tempFriend2");
+            mockFriends.add("tempFriend3");
+            mockFriends.add("tempFriend4");
+
+            ArrayAdapter<String> mockFriendArrayAdapter;
+            mockFriendArrayAdapter = new ArrayAdapter<String>(this,
+                    R.layout.tab_list, mockFriends);
+            friendList = (ListView) findViewById(R.id.tab_friends);
+            friendList.setAdapter(mockFriendArrayAdapter);
+
+        }
+
+        // setup tab_settings
         ArrayList<String> arGeneral3 = new ArrayList<String>();
         arGeneral3.add("로그인");
         arGeneral3.add("회원가입");
@@ -119,4 +151,27 @@ public class MainmenuActivity extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
+    // sql lite
+    public void setFriendInfoFromDB() {
+
+        SQLiteDatabase db;
+        Cursor cursor;
+
+        db = mDBHelper.getReadableDatabase();
+
+        cursor = db.rawQuery("SELECT nickname_fl, profile FROM Friend_l", null);
+
+        while (cursor.moveToNext()) {
+            String[] friendInfo = new String[2];
+            friendInfo[0] = cursor.getString(cursor.getColumnIndex("nickname_fl")); // id
+            friendInfo[1] = cursor.getString(cursor.getColumnIndex("profile")); // name
+
+        }
+        cursor.close();
+        db.close();
+        mDBHelper.close();
+    }
+
 }

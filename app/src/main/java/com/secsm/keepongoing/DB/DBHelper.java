@@ -26,38 +26,30 @@ public class DBHelper extends SQLiteOpenHelper {
                 "profile VARCHAR(50)" +
                 ");";
         db.execSQL(qCreate_Friend_l);
-        String qCreate_Room_l = "CREATE TABLE Room_l (" +
-                "rid_l INTEGER PRIMARY KEY, " +
-                "rule_l VARCHAR(1024)" +
-                ");";
-        db.execSQL(qCreate_Room_l );
 
-        String qCreate_Liferoom_l = "CREATE TABLE Liferoom_l (" +
+        String qCreate_LifeRoom_l = "CREATE TABLE LifeRoom_l (" +
                 "rid INTEGER, " +
                 "name VARCHAR(100), " +
-                "max_holiday_count_l INTEGER, " +
-                "FOREIGN KEY(rid) REFERENCES Room_l(rid_l)" +
+                "max_holiday_count_l INTEGER" +
                 ");";
-        db.execSQL(qCreate_Liferoom_l);
+        db.execSQL(qCreate_LifeRoom_l);
 
-        String qCreate_Subjectroom_l = "CREATE TABLE Subjectroom_l (" +
+        String qCreate_SubjectRoom_l = "CREATE TABLE SubjectRoom_l (" +
                 "rid INTEGER, " +
                 "name VARCHAR(100), " +
                 "rule_l VARCHAR(1024), " +
                 "start_time_I DATETIME, " +
                 "duration_time_I DATETIME, " +
                 "show_up_time DATETIME, " +
-                "meet_days VARCHAR(45), " +
-                "FOREIGN KEY(rid) REFERENCES Room_l(rid_l)" +
+                "meet_days VARCHAR(45) " +
                 ");";
-        db.execSQL(qCreate_Subjectroom_l);
+        db.execSQL(qCreate_SubjectRoom_l);
 
         String qCreate_Chat_l ="CREATE TABLE Chat (" +
                 "rid INTEGER, " +
                 "senderID varchar(20), " +
                 "senderText varchar(1024), " +
-                "time DATETIME DEFAULT CURRENT_TIMESTAMP, " +
-                "FOREIGN KEY(rid) REFERENCES Room_l(rid_l)" +
+                "time DATETIME DEFAULT CURRENT_TIMESTAMP" +
                 ");";
         db.execSQL(qCreate_Chat_l);
         db.execSQL("CREATE TABLE image_profile (id INTEGER PRIMARY KEY AUTOINCREMENT, path VARCHAR(500));");
@@ -69,8 +61,8 @@ public class DBHelper extends SQLiteOpenHelper {
 		/* when update the SQLite */
         db.execSQL("DROP TABLE IF EXISTS Friend_l;");
         db.execSQL("DROP TABLE IF EXISTS Room_l;");
-        db.execSQL("DROP TABLE IF EXISTS Liferoom_l;");
-        db.execSQL("DROP TABLE IF EXISTS Subjectroom_l;");
+        db.execSQL("DROP TABLE IF EXISTS LifeRoom_l;");
+        db.execSQL("DROP TABLE IF EXISTS SubjectRoom_l;");
         db.execSQL("DROP TABLE IF EXISTS Chat;");
         db.execSQL("DROP TABLE IF EXISTS image_profile;");
         onCreate(db);
