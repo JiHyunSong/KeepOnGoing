@@ -22,6 +22,7 @@ public class AuthActivity extends Activity {
     EditText txtPhoneNo;
     String countryNo = "82";
     String phoneNo;
+    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +65,7 @@ public class AuthActivity extends Activity {
 
         // initial phone number setting
         txtPhoneNo.setText(getPhoneNumber());
+        intent = getIntent();
 
         //add Button Click Event
         btnSendSMS.setOnClickListener(new View.OnClickListener() {

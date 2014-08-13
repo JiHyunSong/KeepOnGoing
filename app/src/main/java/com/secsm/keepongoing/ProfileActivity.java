@@ -17,48 +17,10 @@ import com.secsm.keepongoing.R;
 
 public class ProfileActivity extends Activity {
 
-    private static String LOG_TAG = "Profile";
-    private EditText nickName, password1, password2, phoneNum;
-    private Button btnRegister;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-
-        btnRegister = (Button) findViewById(R.id.btnRegister);
-        nickName = (EditText) findViewById(R.id.txtNickName);
-        password1 = (EditText) findViewById(R.id.txtPassword1);
-        password2 = (EditText) findViewById(R.id.txtPassword2);
-        phoneNum = (EditText) findViewById(R.id.txtPhoneNum);
-
-        // TODO : registere GCM
-
-        password2.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.d(LOG_TAG, "Count = " + count);
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-
-
-        btnRegister.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v) {
-                Toast.makeText(getBaseContext(), "회원가입이 되었습니다.", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(ProfileActivity.this, MainmenuActivity.class);
-                startActivity(intent);
-                ProfileActivity.this.finish();
-            }
-        });
     }
 
 

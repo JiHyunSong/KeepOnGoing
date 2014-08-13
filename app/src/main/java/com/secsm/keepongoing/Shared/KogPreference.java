@@ -14,6 +14,7 @@ public final class KogPreference {
     public static Boolean DEBUG_MODE = true;
     private static final String PREF_NAME = "KeepOnGoingPreference";
     private static String LOGIN_TAG = "LOGIN";
+    public static String REST_URL="http://210.118.74.195:8080/KOG_Server_Rest/rest/";
     public KogPreference() {
         // not called
     }

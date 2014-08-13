@@ -16,7 +16,7 @@ import android.widget.Toast;
 public class AuthNextActivity extends Activity {
     Intent intent;
     Button btnOk;
-    Button btnReSendSMS;
+    Button btnGoBack;
     EditText txtInputNo;
     int certiNo;
     String phoneNo;
@@ -33,7 +33,7 @@ public class AuthNextActivity extends Activity {
         sendSMS(phoneNo);
 
         btnOk = (Button)findViewById(R.id.btnOk);
-        btnReSendSMS = (Button)findViewById(R.id.btnGoBackToAuth);
+        btnGoBack = (Button)findViewById(R.id.btnGoBackToAuth);
         txtInputNo = (EditText)findViewById(R.id.txtInputNo);
 
         btnOk.setOnClickListener(new View.OnClickListener(){
@@ -42,7 +42,7 @@ public class AuthNextActivity extends Activity {
                 if(Integer.toString(certiNo).equals(txtInputNo.getText().toString())) {
 
                     Toast.makeText(getBaseContext(), "인증이 완료됐습니다.", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(AuthNextActivity.this, ProfileActivity.class);
+                    Intent intent = new Intent(AuthNextActivity.this, RegisterActivity.class);
                     intent.putExtra("phoneNo", phoneNo);
                     startActivity(intent);
                     AuthNextActivity.this.finish();
@@ -55,10 +55,15 @@ public class AuthNextActivity extends Activity {
             }
         });
 
-        btnReSendSMS.setOnClickListener(new View.OnClickListener() {
+        btnGoBack.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                sendSMS(phoneNo);
-                Toast.makeText(getBaseContext(), "재전송 했습니다.", Toast.LENGTH_SHORT).show();
+//                sendSMS(phoneNo);
+//                Toast.makeText(getBaseContext(), "재전송 했습니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), "인증이 완료됐습니다.", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(AuthNextActivity.this, AuthActivity.class);
+                intent.putExtra("phoneNo", phoneNo);
+                startActivity(intent);
+                AuthNextActivity.this.finish();
             }
         });
     }
