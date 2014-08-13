@@ -176,7 +176,7 @@ public class AuthNextActivity extends Activity {
 
                                 GoNextPage();
                             }else {
-                                
+
                                 Toast.makeText(getBaseContext(), "인증에 실패했습니다.\n다시 요청해 주세요.", Toast.LENGTH_SHORT).show();
                                 if(KogPreference.DEBUG_MODE) {
                                     Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
