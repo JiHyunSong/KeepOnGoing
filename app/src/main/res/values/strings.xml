@@ -21,5 +21,10 @@
     <string name="title_activity_study_room">StudyRoomActivity</string>
     <string name="title_activity_notice">NoticeActivity</string>
     <string name="title_activity_tab">TabActivity</string>
-
+    <string name="title_activity_my_activity2">MyActivity2</string>
+    <string name="title_activity_alarm_main">Alarm_main</string>
+    <string name="title_activity_alert">alert</string>
+    <string name="title_activity_alram_list">alram_list</string>
+    <string name="title_activity_db">DB</string>
+    <string name="title_activity_klaxon">Klaxon</string>
 </resources>

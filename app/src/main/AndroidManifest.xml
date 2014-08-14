@@ -64,6 +64,20 @@
             android:name=".TabActivity"
             android:label="@string/title_activity_tab" >
         </activity>
+
+        <activity
+            android:name=".Alarm.Alarm_main"
+            android:label="@string/title_activity_alarm_main" >
+        </activity>
+        <activity
+            android:name=".Alarm.alert"
+            android:label="@string/title_activity_alert" >
+        </activity>
+        <activity
+            android:name=".Alarm.alram_list"
+            android:label="@string/title_activity_alram_list" >
+        </activity>
+
     </application>
 
 </manifest>
