@@ -3,6 +3,7 @@ package com.secsm.keepongoing;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentResolver;
@@ -103,7 +104,8 @@ public class LoginActivity extends Activity{
 
     private void GoNextPage() {
         Toast.makeText(getBaseContext(), "로그인이 되었습니다.", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, MainmenuActivity.class);
+//        Intent intent = new Intent(this, MainmenuActivity.class);
+        Intent intent = new Intent(this, TabActivity.class);
         startActivity(intent);
         this.finish();
     }

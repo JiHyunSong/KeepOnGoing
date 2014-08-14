@@ -18,5 +18,8 @@
     <string name="confirm">확인</string>
     <string name="go_back">돌아가기</string>
     <string name="title_activity_profile">ProfileActivity</string>
+    <string name="title_activity_study_room">StudyRoomActivity</string>
+    <string name="title_activity_notice">NoticeActivity</string>
+    <string name="title_activity_tab">TabActivity</string>
 
 </resources>

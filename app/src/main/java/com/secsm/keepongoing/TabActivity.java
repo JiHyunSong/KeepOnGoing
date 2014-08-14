@@ -4,6 +4,7 @@ import com.secsm.keepongoing.DB.DBHelper;
 import com.secsm.keepongoing.Shared.KogPreference;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -15,12 +16,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TabHost;
 
 import java.util.ArrayList;
 
-public class MainmenuActivity extends Activity {
+public class TabActivity extends Activity {
 
     public static final int ROOMNAME_REQUEST_CODE = 1;
     public static final int FRIENDNAME_REQUEST_CODE = 2;
@@ -34,37 +38,29 @@ public class MainmenuActivity extends Activity {
     private DBHelper mDBHelper;
     private ListView roomList, friendList, settingList;
 
-
+    private ImageButton tabStopwatch, tabFriends, tabRooms, tabSettings;
+    private RelativeLayout layoutStopwatch, layoutFriends,layoutRooms,layoutSettings;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mainmenu);
+        setContentView(R.layout.activity_tab);
+
+        // layout (when the tab image button clicked, visibility change
+        layoutStopwatch = (RelativeLayout) findViewById(R.id.tab_stopwatch_layout);
+        layoutFriends = (RelativeLayout) findViewById(R.id.tab_friends_layout);
+        layoutRooms = (RelativeLayout) findViewById(R.id.tab_rooms_layout);
+        layoutSettings = (RelativeLayout) findViewById(R.id.tab_settings_layout);
+
+        // tab image button
+        tabStopwatch = (ImageButton) findViewById(R.id.imgBtn_tab_stopwatch);
+        tabFriends = (ImageButton) findViewById(R.id.imgBtn_tab_friends);
+        tabRooms = (ImageButton) findViewById(R.id.imgBtn_tab_rooms);
+        tabSettings= (ImageButton) findViewById(R.id.imgBtn_tab_settings);
+
+
 
         Log.i(LOG_TAG, "onCreate");
         mDBHelper = new DBHelper(this);
-        tabHost = (TabHost) findViewById(R.id.tabHost);
-        tabHost.setup();
-
-        // register tab 1, 2, 3, 4, 5
-        TabHost.TabSpec tab_stopwatch = tabHost.newTabSpec("tab1").setContent(R.id.tab_stopwatch)
-                .setIndicator(getString(R.string.tab1));
-        tabHost.addTab(tab_stopwatch);
-
-        TabHost.TabSpec tab_friends = tabHost.newTabSpec("tab2").setContent(R.id.tab_friends)
-                .setIndicator(getString(R.string.tab2));
-        tabHost.addTab(tab_friends);
-
-        TabHost.TabSpec tab_rooms = tabHost.newTabSpec("tab3").setContent(R.id.tab_rooms)
-                .setIndicator(getString(R.string.tab3));
-        tabHost.addTab(tab_rooms);
-
-//        TabHost.TabSpec tab_quizs = tabHost.newTabSpec("tab4").setContent(R.id.tab4)
-//                .setIndicator(getString(R.string.tab4));
-//        tabHost.addTab(tab_quizs);
-
-        TabHost.TabSpec tab_settings = tabHost.newTabSpec("tab5").setContent(R.id.tab_settings)
-                .setIndicator(getString(R.string.tab5));
-        tabHost.addTab(tab_settings);
 
 
         // add ListView
@@ -81,7 +77,7 @@ public class MainmenuActivity extends Activity {
             ArrayAdapter<String> mockRoomArrayAdapter;
             mockRoomArrayAdapter = new ArrayAdapter<String>(this,
                     R.layout.tab_list, mockRooms);
-            roomList = (ListView) findViewById(R.id.tab_rooms);
+            roomList = (ListView) findViewById(R.id.room_list);
             roomList.setAdapter(mockRoomArrayAdapter);
 
             // mock quiz
@@ -94,7 +90,7 @@ public class MainmenuActivity extends Activity {
             ArrayAdapter<String> mockFriendArrayAdapter;
             mockFriendArrayAdapter = new ArrayAdapter<String>(this,
                     R.layout.tab_list, mockFriends);
-            friendList = (ListView) findViewById(R.id.tab_friends);
+            friendList = (ListView) findViewById(R.id.friend_list);
             friendList.setAdapter(mockFriendArrayAdapter);
 
             // add list item onClickListener
@@ -109,11 +105,11 @@ public class MainmenuActivity extends Activity {
         arGeneral3.add("목표 시간 설정");
         arGeneral3.add("퀴즈 모음");
         arGeneral3.add("로그인");
-//        arGeneral3.add("회원가입");
+
         ArrayAdapter<String> optionArrayAdapter;
         optionArrayAdapter = new ArrayAdapter<String>(this,
                 R.layout.tab_list, arGeneral3);
-        settingList = (ListView) findViewById(R.id.tab_settings);
+        settingList = (ListView) findViewById(R.id.setting_list);
 //        View header_setting = getLayoutInflater().inflate(R.layout.tab_header_setting, null, false);
 //        settingList.addHeaderView(header_setting);
         settingList.setAdapter(optionArrayAdapter);
@@ -121,24 +117,75 @@ public class MainmenuActivity extends Activity {
         // add list item onClickListener
         settingList.setOnItemClickListener(itemClickListener);
 
+        // add listener
+        tabStopwatch.setOnClickListener(tabListener);
+        tabFriends.setOnClickListener(tabListener);
+        tabRooms.setOnClickListener(tabListener);
+        tabSettings.setOnClickListener(tabListener);
+
     }
+    // tab setOnClickListener
+
+    View.OnClickListener tabListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            switch(v.getId()) {
+                case R.id.imgBtn_tab_stopwatch:
+                    Log.i(LOG_TAG, "stopwatch tab");
+                    layoutStopwatch.setVisibility(View.VISIBLE);
+                    layoutFriends.setVisibility(View.INVISIBLE);
+                    layoutRooms.setVisibility(View.INVISIBLE);
+                    layoutSettings.setVisibility(View.INVISIBLE);
+                    break;
+
+                case R.id.imgBtn_tab_friends:
+                    Log.i(LOG_TAG, "friends tab");
+                    layoutStopwatch.setVisibility(View.INVISIBLE);
+                    layoutFriends.setVisibility(View.VISIBLE);
+                    layoutRooms.setVisibility(View.INVISIBLE);
+                    layoutSettings.setVisibility(View.INVISIBLE);
+                    break;
+
+                case R.id.imgBtn_tab_rooms:
+                    Log.i(LOG_TAG, "rooms tab");
+                    layoutStopwatch.setVisibility(View.INVISIBLE);
+                    layoutFriends.setVisibility(View.INVISIBLE);
+                    layoutRooms.setVisibility(View.VISIBLE);
+                    layoutSettings.setVisibility(View.INVISIBLE);
+                    break;
+
+                case R.id.imgBtn_tab_settings:
+                    Log.i(LOG_TAG, "settings tab");
+                    layoutStopwatch.setVisibility(View.INVISIBLE);
+                    layoutFriends.setVisibility(View.INVISIBLE);
+                    layoutRooms.setVisibility(View.INVISIBLE);
+                    layoutSettings.setVisibility(View.VISIBLE);
+                    break;
+            }
+        }
+    };
+
+
+
 
     /* click listener for setting tab */
     ListView.OnItemClickListener itemClickListener = new ListView.OnItemClickListener() {
 
         public void onItemClick(AdapterView<?> adapterView, View arg1, int position, long arg3) {
             // TODO Auto-generated method stub
-            if (adapterView.getId() == R.id.tab_friends) {
+            if (adapterView.getId() == R.id.friend_list) {
                 Log.i(LOG_TAG,"tab2, friends Clicked");
-            } else if (adapterView.getId() == R.id.tab_rooms) {
+                Log.i(LOG_TAG,"position : " + position);
+            } else if (adapterView.getId() == R.id.room_list) {
                 Log.i(LOG_TAG,"tab3, rooms Clicked");
+                Log.i(LOG_TAG,"position : " + position);
 
-            } else if (adapterView.getId() == R.id.tab_settings) {
+            } else if (adapterView.getId() == R.id.setting_list) {
                 Log.i(LOG_TAG,"tab4, settings Clicked");
+                Log.i(LOG_TAG,"position : " + position);
                 switch (position) {
                     case 1: // 알람 설정
                         Log.i(LOG_TAG,"tab4, settings Clicked");
-                        Intent intent_notice = new Intent(MainmenuActivity.this, NoticeActivity.class);
+                        Intent intent_notice = new Intent(TabActivity.this, NoticeActivity.class);
                         startActivity(intent_notice);
                         break;
                     case 2: // 목표 시간 설정
@@ -157,24 +204,7 @@ public class MainmenuActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.mainmenu, menu);
-        int tabPosition = tabHost.getCurrentTab();
-        Log.i(LOG_TAG, "onCreate Options Menu");
-        switch (tabPosition)
-        {
-            case 1:
-                Log.i(LOG_TAG, "tab 1");
-                break;
-            case 2:
-                Log.i(LOG_TAG, "tab 2");
-                break;
-            case 3:
-                Log.i(LOG_TAG, "tab 3");
-                break;
-            case 4:
-                Log.i(LOG_TAG, "tab 4");
-                break;
-        }
+        getMenuInflater().inflate(R.menu.tab, menu);
         return true;
     }
 
@@ -189,27 +219,4 @@ public class MainmenuActivity extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-
-    // sql lite
-    public void setFriendInfoFromDB() {
-
-        SQLiteDatabase db;
-        Cursor cursor;
-
-        db = mDBHelper.getReadableDatabase();
-
-        cursor = db.rawQuery("SELECT nickname_fl, profile FROM Friend_l", null);
-
-        while (cursor.moveToNext()) {
-            String[] friendInfo = new String[2];
-            friendInfo[0] = cursor.getString(cursor.getColumnIndex("nickname_fl")); // id
-            friendInfo[1] = cursor.getString(cursor.getColumnIndex("profile")); // name
-
-        }
-        cursor.close();
-        db.close();
-        mDBHelper.close();
-    }
-
 }
