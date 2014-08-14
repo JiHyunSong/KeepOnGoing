@@ -4,27 +4,27 @@ import com.secsm.keepongoing.DB.DBHelper;
 import com.secsm.keepongoing.Shared.KogPreference;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TabHost;
 
 import java.util.ArrayList;
 
 public class TabActivity extends Activity {
+    final static int TAB_DELAY = 10;
 
     public static final int ROOMNAME_REQUEST_CODE = 1;
     public static final int FRIENDNAME_REQUEST_CODE = 2;
@@ -34,12 +34,41 @@ public class TabActivity extends Activity {
     private final int ADDROOM = 100;
     private final int MANAGEFRIENDS = 200;
 
-    private TabHost tabHost;
+
     private DBHelper mDBHelper;
     private ListView roomList, friendList, settingList;
 
     private ImageButton tabStopwatch, tabFriends, tabRooms, tabSettings;
     private RelativeLayout layoutStopwatch, layoutFriends,layoutRooms,layoutSettings;
+    private LinearLayout linearTab = null;
+    private ImageButton actionBarRoomTabNotifyBtn = null;
+    private ImageButton actionBarRoomTabAddBtn = null;
+
+//    Handler initHandler = new Handler()		// 기본 Tab 선택용 함들러 - UI 생성 후 0.01초후 실행
+//    {
+//        @Override
+//        public void handleMessage(Message msg)
+//        {
+//            if(linearTab == null)			// 레이아웃 가져오기
+//                linearTab = (LinearLayout)findViewById(R.id.linearTab);
+//
+//            if(linearTab != null)			// null이 아닐경우 초기화
+//            {
+//                View child = null;
+//                linearTab.removeAllViews();
+//                child = getLayoutInflater().inflate(R.layout.actionbar_room_tab, null);
+//                actionBarRoomTabNotifyBtn = (ImageButton) findViewById(R.id.action_bar_room_notify_btn);
+//                actionBarRoomTabAddBtn = (ImageButton) findViewById(R.id.action_bar_room_add_btn);
+//                linearTab.addView(child);
+//                linearTab.invalidate();
+//            }
+//            else								// null일경우 다시 0.01초후를 기약
+//                new InitThread().start();	// 0.01초후 InitHandler로 메시지 전송
+//
+//
+//            super.handleMessage(msg);
+//        }
+//    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,13 +86,19 @@ public class TabActivity extends Activity {
         tabRooms = (ImageButton) findViewById(R.id.imgBtn_tab_rooms);
         tabSettings= (ImageButton) findViewById(R.id.imgBtn_tab_settings);
 
-
-
+        // action bar
+//        new InitThread().start();
+//        if(linearTab == null)
+//            linearTab = (LinearLayout)findViewById(R.id.linearTab);
+//
+//        if(linearTab != null) {
+//            View child = null;
+//
+//            linearTab.addView(child);
+//            linearTab.addView(actionBarRoomTabAddBtn);
+//        }
         Log.i(LOG_TAG, "onCreate");
         mDBHelper = new DBHelper(this);
-
-
-        // add ListView
 
         // setup rooms
         if (KogPreference.DEBUG_MODE)
@@ -124,6 +159,15 @@ public class TabActivity extends Activity {
         tabSettings.setOnClickListener(tabListener);
 
     }
+    private void setInvisibleBody(){
+        layoutStopwatch.setVisibility(View.INVISIBLE);
+        layoutFriends.setVisibility(View.INVISIBLE);
+        layoutRooms.setVisibility(View.INVISIBLE);
+        layoutSettings.setVisibility(View.INVISIBLE);
+//        actionBarRoomTabNotifyBtn.setVisibility(View.INVISIBLE);
+//        actionBarRoomTabAddBtn.setVisibility(View.INVISIBLE);
+    }
+
     // tab setOnClickListener
 
     View.OnClickListener tabListener = new View.OnClickListener() {
@@ -131,33 +175,27 @@ public class TabActivity extends Activity {
             switch(v.getId()) {
                 case R.id.imgBtn_tab_stopwatch:
                     Log.i(LOG_TAG, "stopwatch tab");
+                    setInvisibleBody();
                     layoutStopwatch.setVisibility(View.VISIBLE);
-                    layoutFriends.setVisibility(View.INVISIBLE);
-                    layoutRooms.setVisibility(View.INVISIBLE);
-                    layoutSettings.setVisibility(View.INVISIBLE);
                     break;
 
                 case R.id.imgBtn_tab_friends:
                     Log.i(LOG_TAG, "friends tab");
-                    layoutStopwatch.setVisibility(View.INVISIBLE);
+                    setInvisibleBody();
                     layoutFriends.setVisibility(View.VISIBLE);
-                    layoutRooms.setVisibility(View.INVISIBLE);
-                    layoutSettings.setVisibility(View.INVISIBLE);
                     break;
 
                 case R.id.imgBtn_tab_rooms:
                     Log.i(LOG_TAG, "rooms tab");
-                    layoutStopwatch.setVisibility(View.INVISIBLE);
-                    layoutFriends.setVisibility(View.INVISIBLE);
+                    setInvisibleBody();
+//                    actionBarRoomTabNotifyBtn.setVisibility(View.VISIBLE);
+//                    actionBarRoomTabAddBtn.setVisibility(View.VISIBLE);
                     layoutRooms.setVisibility(View.VISIBLE);
-                    layoutSettings.setVisibility(View.INVISIBLE);
                     break;
 
                 case R.id.imgBtn_tab_settings:
                     Log.i(LOG_TAG, "settings tab");
-                    layoutStopwatch.setVisibility(View.INVISIBLE);
-                    layoutFriends.setVisibility(View.INVISIBLE);
-                    layoutRooms.setVisibility(View.INVISIBLE);
+                    setInvisibleBody();
                     layoutSettings.setVisibility(View.VISIBLE);
                     break;
             }
@@ -204,8 +242,11 @@ public class TabActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.tab, menu);
-        return true;
+//        getMenuInflater().inflate(R.menu.tab, menu);
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.tab, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -219,4 +260,20 @@ public class TabActivity extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+//    public class InitThread extends Thread
+//    {
+//        @Override
+//        public void run()
+//        {
+//            try {
+//                sleep(TabActivity.TAB_DELAY);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//
+//            initHandler.sendEmptyMessage(0);
+//        }
+//    };
+
 }
