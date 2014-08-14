@@ -5,6 +5,8 @@ import com.secsm.keepongoing.Shared.KogPreference;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import android.os.Handler;
@@ -16,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -43,7 +46,7 @@ public class TabActivity extends Activity {
     private LinearLayout linearTab = null;
     private ImageButton actionBarRoomTabNotifyBtn = null;
     private ImageButton actionBarRoomTabAddBtn = null;
-
+    private Button tabRoomCreateBtn = null;
 //    Handler initHandler = new Handler()		// 기본 Tab 선택용 함들러 - UI 생성 후 0.01초후 실행
 //    {
 //        @Override
@@ -87,6 +90,7 @@ public class TabActivity extends Activity {
         tabSettings= (ImageButton) findViewById(R.id.imgBtn_tab_settings);
 
         // action bar
+//        tabRoomCreateBtn = (Button) findViewById(R.id.tab_room_create_btn);
 //        new InitThread().start();
 //        if(linearTab == null)
 //            linearTab = (LinearLayout)findViewById(R.id.linearTab);
@@ -158,6 +162,10 @@ public class TabActivity extends Activity {
         tabRooms.setOnClickListener(tabListener);
         tabSettings.setOnClickListener(tabListener);
 
+        // add create room listener
+//        tabRoomCreateBtn.setOnClickListener(roomCreateListener);
+
+
     }
     private void setInvisibleBody(){
         layoutStopwatch.setVisibility(View.INVISIBLE);
@@ -168,8 +176,14 @@ public class TabActivity extends Activity {
 //        actionBarRoomTabAddBtn.setVisibility(View.INVISIBLE);
     }
 
-    // tab setOnClickListener
+    View.OnClickListener roomCreateListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            Intent intent = new Intent(TabActivity.this, CreateRoomActivity.class);
+            startActivity(intent);
+        }
+    };
 
+    // tab setOnClickListener
     View.OnClickListener tabListener = new View.OnClickListener() {
         public void onClick(View v) {
             switch(v.getId()) {
@@ -213,9 +227,18 @@ public class TabActivity extends Activity {
             if (adapterView.getId() == R.id.friend_list) {
                 Log.i(LOG_TAG,"tab2, friends Clicked");
                 Log.i(LOG_TAG,"position : " + position);
+                Intent intent = new Intent(TabActivity.this, StudyRoomActivity.class);
+                if(KogPreference.DEBUG_MODE) {
+                    intent.putExtra("roomID", position);
+                }else{
+
+                }
+
             } else if (adapterView.getId() == R.id.room_list) {
                 Log.i(LOG_TAG,"tab3, rooms Clicked");
                 Log.i(LOG_TAG,"position : " + position);
+
+
 
             } else if (adapterView.getId() == R.id.setting_list) {
                 Log.i(LOG_TAG,"tab4, settings Clicked");
@@ -260,6 +283,49 @@ public class TabActivity extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    ////////////////////
+    // DB             //
+//    ////////////////////
+//    public void getFriendInfoFromSQLite() {
+//
+//        SQLiteDatabase db;
+//        Cursor cursor;
+//
+//        db = mDBHelper.getReadableDatabase();
+//
+//        cursor = db.rawQuery("SELECT * FROM friendList_ph", null);
+//
+//        while (cursor.moveToNext()) {
+//            String[] friendInfo = new String[3];
+//            friendInfo[0] = cursor.getString(0); // id
+//            friendInfo[1] = cursor.getString(1); // name
+//            friendInfo[2] = cursor.getString(2); // phone number
+//            friendNameArray.add(cursor.getString(1));
+//            friendInfoArray.add(friendInfo);
+//        }
+//        cursor.close();
+//        db.close();
+//        mDBHelper.close();
+//    }
+//    public void setRoomIDAndNameArrayFromSQLite() {
+//
+//        SQLiteDatabase db;
+//        Cursor cursor;
+//
+//        db = mDBHelper.getReadableDatabase();
+//        cursor = db.rawQuery("SELECT * FROM roomlist_tbl", null);
+//        while (cursor.moveToNext()) {
+//            roomIDArrayFromSQLite.add(cursor.getString(0));
+//            roomNameArray.add(cursor.getString(1));
+//            //Log.i("RoomInfo MainMenu", cursor.getString(0) + "+" + cursor.getString(1) );
+//        }
+//        cursor.close();
+//        db.close();
+//        mDBHelper.close();
+//    }
+
+
 
 //    public class InitThread extends Thread
 //    {

@@ -21,5 +21,6 @@
     <string name="title_activity_study_room">StudyRoomActivity</string>
     <string name="title_activity_notice">NoticeActivity</string>
     <string name="title_activity_tab">TabActivity</string>
+    <string name="title_activity_create_room">CreateRoomActivity</string>
 
 </resources>
