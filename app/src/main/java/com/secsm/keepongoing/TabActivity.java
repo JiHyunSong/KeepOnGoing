@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -36,6 +37,7 @@ import java.util.TimerTask;
 public class TabActivity extends Activity {
     final static int TAB_DELAY = 10;
 
+
     public static final int ROOMNAME_REQUEST_CODE = 1;
     public static final int FRIENDNAME_REQUEST_CODE = 2;
     public static final int CHATROOM_REQUEST_CODE = 3;
@@ -55,35 +57,48 @@ public class TabActivity extends Activity {
 
     private ImageButton tabStopwatch, tabFriends, tabRooms, tabSettings;
     private RelativeLayout layoutStopwatch, layoutFriends,layoutRooms,layoutSettings;
+    private LayoutInflater tabInflater;
+    private LayoutInflater actionbarInflater;
     private LinearLayout linearTab = null;
-    private ImageButton actionBarRoomTabNotifyBtn = null;
-    private ImageButton actionBarRoomTabAddBtn = null;
+    private ImageButton actionBarFirstBtn = null;
+    private ImageButton actionBarSecondBtn = null;
     private Button tabRoomCreateBtn = null;
-//    Handler initHandler = new Handler()		// 기본 Tab 선택용 함들러 - UI 생성 후 0.01초후 실행
-//    {
-//        @Override
-//        public void handleMessage(Message msg)
-//        {
-//            if(linearTab == null)			// 레이아웃 가져오기
-//                linearTab = (LinearLayout)findViewById(R.id.linearTab);
-//
-//            if(linearTab != null)			// null이 아닐경우 초기화
-//            {
-//                View child = null;
-//                linearTab.removeAllViews();
-//                child = getLayoutInflater().inflate(R.layout.actionbar_room_tab, null);
-//                actionBarRoomTabNotifyBtn = (ImageButton) findViewById(R.id.action_bar_room_notify_btn);
-//                actionBarRoomTabAddBtn = (ImageButton) findViewById(R.id.action_bar_room_add_btn);
-//                linearTab.addView(child);
-//                linearTab.invalidate();
-//            }
-//            else								// null일경우 다시 0.01초후를 기약
-//                new InitThread().start();	// 0.01초후 InitHandler로 메시지 전송
-//
-//
-//            super.handleMessage(msg);
-//        }
-//    };
+    Handler initHandler = new Handler()		// �⺻ Tab ���ÿ� �Ե鷯 - UI �� �� 0.01���� ����
+    {
+        @Override
+        public void handleMessage(Message msg)
+        {
+            if(linearTab == null)			// ���̾ƿ� ��������
+                linearTab = (LinearLayout)findViewById(R.id.linearTab);
+
+            if(linearTab != null)			// null�� �ƴҰ�� �ʱ�ȭ
+            {
+                actionBarFirstBtn = (ImageButton)linearTab.findViewById(R.id.actionBarFirstBtn);
+                actionBarSecondBtn = (ImageButton)linearTab.findViewById(R.id.actionBarSecondBtn);
+            }
+            else								// null�ϰ�� �ٽ� 0.01���ĸ� ���
+                new InitThread().start();	// 0.01���� InitHandler�� �޽��� ���
+
+
+            super.handleMessage(msg);
+        }
+    };
+
+    public class InitThread extends Thread
+    {
+        @Override
+        public void run()
+        {
+            try {
+                sleep(TabActivity.TAB_DELAY);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            initHandler.sendEmptyMessage(0);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +115,19 @@ public class TabActivity extends Activity {
         tabFriends = (ImageButton) findViewById(R.id.imgBtn_tab_friends);
         tabRooms = (ImageButton) findViewById(R.id.imgBtn_tab_rooms);
         tabSettings= (ImageButton) findViewById(R.id.imgBtn_tab_settings);
+
+//        tabInflater = (LayoutInflater) getSystemService(TabActivity.this.LAYOUT_INFLATER_SERVICE);
+//        if(linearTab == null){
+//
+//            linearTab = (LinearLayout) tabInflater.inflate(R.layout.actionbar_tab, null);
+//            setContentView(linearTab);
+//        }
+//
+//        // action bar list load
+//        if(linearTab != null){
+//
+//
+//        }
 
         // action bar
 //        tabRoomCreateBtn = (Button) findViewById(R.id.tab_room_create_btn);
