@@ -2,6 +2,8 @@ package com.secsm.keepongoing;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -25,6 +27,8 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.sql.SQLClientInfoException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -68,6 +72,8 @@ public class StudyRoomActivity extends Activity {
 //        roomList = (ListView) findViewById(R.id.room_list);
 //        roomList.setAdapter(mockRoomArrayAdapter);
 
+		/* IF there is and exists room, load the stored message */
+        loadText();
 
         /* at First, holding the focus */
         messageTxt.requestFocus();
@@ -109,11 +115,15 @@ public class StudyRoomActivity extends Activity {
     /* this is update the message from someone(include me) */
     public void sendText(String _senderID, String _text)
     {
+        String time;
         Msg m;
+        time = getRealTime();
         if(KogPreference.DEBUG_MODE)
         {
-            m = new Msg(StudyRoomActivity.this, "나", _text, getRealTime(), "true");
+            m = new Msg(StudyRoomActivity.this, "나", _text, time, "true");
+            insertIntoMsgInSQLite("나", _text, time, "true");
             messageHistoryMAdaptor.add(m);
+
         }
 //        String Name, time;
 //        time = getRealTime();
@@ -260,6 +270,70 @@ public class StudyRoomActivity extends Activity {
             startActivity(intent);
         }
         return false;
+    }
+    //////////////////////////////////////////////////
+    // DB                                           //
+    //////////////////////////////////////////////////
+
+
+    private void insertIntoMsgInSQLite(String _senderID, String _senderText, String _time, String _me){
+        SQLiteDatabase db;
+        db = mDBHelper.getWritableDatabase();
+        //		Log.i(LOG_TAG, "insert msg");
+        Calendar c = Calendar.getInstance();
+        String year = Integer.toString(c.get(Calendar.YEAR));
+        String month = Integer.toString(c.get(Calendar.MONTH) +1);
+        String day = Integer.toString(c.get(Calendar.DATE));
+        //		Log.i("day", "me : " + me);
+
+        // TODO : check _time
+        db.execSQL("INSERT INTO Chat " +
+                //"(room_id, senderID, senderText, year, month, day, time, me) " +
+                "(rid, senderID, senderText, year, month, day, me) " +
+                "VALUES (" +
+                "'"+ rID + "','"
+                +_senderID + "','"
+                + _senderText + "','"
+                + year + "','"
+                + month + "','"
+                + day + "','"
+                //+ _time + "','"
+                + _me + " ');");
+        db.close();
+        mDBHelper.close();
+    }
+
+    /* load the message from the SQLite */
+    public void loadText()
+    {
+        try {
+            SQLiteDatabase db;
+            Cursor cursor = null;
+            db = mDBHelper.getReadableDatabase();
+            cursor = db.rawQuery("SELECT " +
+                    "senderID, senderText, time, me " +
+                    "FROM Chat WHERE rid = '" + rID + "'", null);
+            cursor.moveToFirst();
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    Log.i("loadText", cursor.getString(cursor.getColumnIndex("senderID")) + " :"
+                            + cursor.getString(cursor.getColumnIndex("senderText")));
+                    Msg m = new Msg(StudyRoomActivity.this,
+                            cursor.getString(cursor.getColumnIndex("senderID")),
+                            cursor.getString(cursor.getColumnIndex("senderText")),
+                            cursor.getString(cursor.getColumnIndex("time")),
+                            cursor.getString(cursor.getColumnIndex("me")));
+                    messageHistoryMAdaptor.add(m);
+                }
+            }
+            cursor.close();
+            db.close();
+            mDBHelper.close();
+        }catch (Exception e)
+        {
+            Log.e(LOG_TAG, "" + e.toString());
+            e.printStackTrace();
+        }
     }
 
 

@@ -49,7 +49,11 @@ public class DBHelper extends SQLiteOpenHelper {
                 "rid INTEGER, " +
                 "senderID varchar(20), " +
                 "senderText varchar(1024), " +
-                "time DATETIME DEFAULT CURRENT_TIMESTAMP" +
+                "year varchar(20), "+
+                "month varchar(10), "+
+                "day varchar(10), "+
+                "time DATETIME DEFAULT CURRENT_TIMESTAMP," +
+                "me varchar(20) "+
                 ");";
         db.execSQL(qCreate_Chat_l);
         db.execSQL("CREATE TABLE image_profile (id INTEGER PRIMARY KEY AUTOINCREMENT, path VARCHAR(500));");
