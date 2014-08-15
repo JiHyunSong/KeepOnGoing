@@ -328,7 +328,13 @@ public class TabActivity extends Activity {
             if (adapterView.getId() == R.id.friend_list) {
                 Log.i(LOG_TAG,"tab2, friends Clicked");
                 Log.i(LOG_TAG,"position : " + position);
-
+                // TODO : DEBUG
+                if(position == 3)
+                {
+                    Intent intent = new Intent(TabActivity.this, AddStudyRoomActivity.class);
+                    startActivity(intent);
+                    TabActivity.this.finish();
+                }
 
             } else if (adapterView.getId() == R.id.room_list) {
                 Log.i(LOG_TAG,"tab3, rooms Clicked");

@@ -68,7 +68,6 @@
             android:name=".CreateRoomActivity"
             android:label="@string/title_activity_create_room" >
         </activity>
-
         <activity
             android:name=".Alarm.Alarm_main"
             android:label="@string/title_activity_alarm_main" >
@@ -83,6 +82,11 @@
         </activity>
 
         <uses-permission android:name="android.permission.VIBRATE" />
+
+        <activity
+            android:name=".AddStudyRoomActivity"
+            android:label="@string/title_activity_add_study_room" >
+        </activity>
     </application>
 
 </manifest>
