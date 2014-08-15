@@ -6,20 +6,27 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.secsm.keepongoing.Shared.KogPreference;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONObject;
+
+import java.io.IOException;
 
 public class MainActivity extends Activity {
 
@@ -27,7 +34,11 @@ public class MainActivity extends Activity {
     private RequestQueue vQueue;
     private int status_code;
     private String rMessage;
+    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private static final String SENDER_ID = "291082441007";
 
+    private GoogleCloudMessaging _gcm;
+    private String _regId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +48,12 @@ public class MainActivity extends Activity {
 //        KogPreference.setString(MainActivity.this, "phoneNo", getPhoneNumber());
 
         vQueue = Volley.newRequestQueue(this);
+
+        _gcm = GoogleCloudMessaging.getInstance(this);
+        _regId = getRegistrationId();
+
+        if (TextUtils.isEmpty(_regId))
+            registerInBackground();
 
         Handler handle = new Handler();
         handle.postDelayed(new splashHandler(), 2000);
@@ -53,9 +70,7 @@ public class MainActivity extends Activity {
             if (mobile.isConnected() || wifi.isConnected()){
 
                 if(KogPreference.getBoolean(MainActivity.this, "firstStart") || !KogPreference.DEBUG_MODE) {
-                    Intent intent = new Intent(MainActivity.this, MainmenuActivity.class);
-                    startActivity(intent);
-                    MainActivity.this.finish();
+                    GoTabPage();
                 }
                 else {
 				/* if the first running */
@@ -73,13 +88,9 @@ public class MainActivity extends Activity {
         }
     }
 
-
-    private void GoNextPage(String nickname) {
-        Toast.makeText(getBaseContext(), "로그인이 되었습니다.", Toast.LENGTH_SHORT).show();
-
-        KogPreference.setLogin(MainActivity.this);
-        KogPreference.setString(MainActivity.this, "nickName", nickname);
-//        Intent intent = new Intent(this, MainmenuActivity.class);
+    private void GoTabPage() {
+//        Toast.makeText(getBaseContext(), "로그인이 되었습니다.", Toast.LENGTH_SHORT).show();
+//        KogPreference.setLogin(MainActivity.this);
         Intent intent = new Intent(MainActivity.this, TabActivity.class);
         startActivity(intent);
         MainActivity.this.finish();
@@ -107,7 +118,7 @@ public class MainActivity extends Activity {
                             if(status_code == 200){
                                 rMessage = response.getString("message");
                                 // real action
-                                GoNextPage(nickName);
+                                GoTabPage();
 
                             }else {
                                 if(KogPreference.DEBUG_MODE) {
@@ -130,6 +141,78 @@ public class MainActivity extends Activity {
             }
         });
         vQueue.add(jsObjRequest);
+    }
+
+
+    ///////////////////////////////////
+    // GCM                           //
+    ///////////////////////////////////
+    // registration  id를 가져온다.
+    private String getRegistrationId()
+    {
+//        String registrationId = PreferenceUtil.instance(getApplicationContext()).regId();
+        String registrationId = KogPreference.getString(MainActivity.this, "GCMID");
+        if (TextUtils.isEmpty(registrationId))
+        {
+            Log.i("MainActivity.java | getRegistrationId", "|Registration not found.|");
+            return "";
+        }
+
+        return registrationId;
+    }
+
+    // gcm 서버에 접속해서 registration id를 발급받는다.
+    private void registerInBackground()
+    {
+        new AsyncTask<Void, Void, String>()
+        {
+            @Override
+            protected String doInBackground(Void... params)
+            {
+                String msg = "";
+                try
+                {
+                    if (_gcm == null)
+                    {
+                        _gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
+                    }
+                    _regId = _gcm.register(SENDER_ID);
+                    msg = "Device registered, registration ID=" + _regId;
+
+                    // For this demo: we don't need to send it because the device
+                    // will send upstream messages to a server that echo back the
+                    // message using the 'from' address in the message.
+
+                    // Persist the regID - no need to register again.
+                    storeRegistrationId(_regId);
+                }
+                catch (IOException ex)
+                {
+                    msg = "Error :" + ex.getMessage();
+                    // If there is an error, don't just keep trying to register.
+                    // Require the user to click a button again, or perform
+                    // exponential back-off.
+                }
+
+                return msg;
+            }
+            @Override
+            protected void onPostExecute(String msg)
+            {
+                Log.i("MainActivity.java | onPostExecute", "|" + msg + "|");
+            }
+        }.execute(null, null, null);
+    }
+
+
+    // registraion id를 preference에 저장한다.
+    private void storeRegistrationId(String regId)
+    {
+//                Log.i("MainActivity.java | storeRegistrationId", "|" + "Saving regId on app version " + appVersion + "|");
+        KogPreference.setString(MainActivity.this, regId, "");
+        Log.i(LOG_TAG, "reg: " + regId);
+//                PreferenceUtil.instance(getApplicationContext()).putRedId(regId);
+//                PreferenceUtil.instance(getApplicationContext()).putAppVersion(appVersion);
     }
 
 }

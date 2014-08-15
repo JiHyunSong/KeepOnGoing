@@ -130,15 +130,12 @@ public final class KogPreference {
     }
 
     public static boolean isLogin(final Context context){
-
         try {
             Boolean v = getBoolean(context, LOGIN_TAG);
             return v;
         } catch (ClassCastException e) {
-
             return false;
         }
-
     }
 
     public static void setLogin(final Context context){
@@ -147,7 +144,6 @@ public final class KogPreference {
         } catch (ClassCastException e) {
             Log.e(LOG_TAG, "set Login ClassCaseException : " + e.getStackTrace());
         }
-
     }
 
 }
