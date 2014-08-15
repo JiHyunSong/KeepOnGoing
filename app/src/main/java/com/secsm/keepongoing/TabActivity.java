@@ -227,16 +227,18 @@ public class TabActivity extends Activity {
             if (adapterView.getId() == R.id.friend_list) {
                 Log.i(LOG_TAG,"tab2, friends Clicked");
                 Log.i(LOG_TAG,"position : " + position);
-                Intent intent = new Intent(TabActivity.this, StudyRoomActivity.class);
-                if(KogPreference.DEBUG_MODE) {
-                    intent.putExtra("roomID", position);
-                }else{
 
-                }
 
             } else if (adapterView.getId() == R.id.room_list) {
                 Log.i(LOG_TAG,"tab3, rooms Clicked");
                 Log.i(LOG_TAG,"position : " + position);
+                Intent intent = new Intent(TabActivity.this, StudyRoomActivity.class);
+                if(KogPreference.DEBUG_MODE) {
+                    intent.putExtra("roomID", position);
+                }else{
+git                     intent.putExtra("roomID", "-1");
+                }
+                startActivity(intent);
 
 
 
