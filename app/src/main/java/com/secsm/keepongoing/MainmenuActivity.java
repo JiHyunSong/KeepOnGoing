@@ -127,7 +127,6 @@ public class MainmenuActivity extends Activity {
     ListView.OnItemClickListener itemClickListener = new ListView.OnItemClickListener() {
 
         public void onItemClick(AdapterView<?> adapterView, View arg1, int position, long arg3) {
-            // TODO Auto-generated method stub
             if (adapterView.getId() == R.id.tab_friends) {
                 Log.i(LOG_TAG,"tab2, friends Clicked");
             } else if (adapterView.getId() == R.id.tab_rooms) {

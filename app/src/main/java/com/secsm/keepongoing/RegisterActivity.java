@@ -61,22 +61,11 @@ public class RegisterActivity extends Activity {
         // TODO : register GCM
 
 
-        // TODO : check valid nickname
         btnRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-                // check for valid nickname
                 if(isValidProfile())
                 {
-                    Toast.makeText(getBaseContext(), "회원가입이 되었습니다.", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                    intent.putExtra("nickname", rNickName);
-                    startActivity(intent);
-
-                    RegisterActivity.this.finish();
-
-                    // TODO : REST apply
-//                    register(nickName.getText().toString(), password1.getText().toString(), "defualt.png", phoneNum.getText().toString());
+                    register(nickName.getText().toString(), password1.getText().toString(), "profile_default.png", phoneNum.getText().toString());
                 }else
                 {
                     alertNick.setVisibility(View.VISIBLE);
@@ -88,6 +77,14 @@ public class RegisterActivity extends Activity {
 
         });
     }
+
+    private void GoNextPage() {
+        Toast.makeText(getBaseContext(), "회원가입이 되었습니다.", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.putExtra("nickname", rNickName);
+        startActivity(intent);
+    }
+
     private boolean isValidProfile() {
         rNickName = nickName.getText().toString();
         rPassWord1 = password1.getText().toString();
@@ -97,12 +94,10 @@ public class RegisterActivity extends Activity {
     }
 
     private boolean isNicknameValid(String nickName) {
-        //TODO: Replace this with your own logic
         return (nickName.length() >= 4) && (nickName.length() <= 10);
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
         return (password.length() >= 4) && (password.length() <= 12);
     }
 
@@ -114,6 +109,8 @@ public class RegisterActivity extends Activity {
                 "&password=" + password +
                 "&image=" + image +
                 "&phone=" + phone;
+        // "&gcmid=" + gcmid;
+        // TODO : GCM ID
 
         Log.i(LOG_TAG, "post btn event trigger");
 
@@ -127,14 +124,9 @@ public class RegisterActivity extends Activity {
                         try{
                             status_code = response.getInt("status");
                             if(status_code == 200){
-                                // TODO : message is now OK  -> change
                                 rMessage = response.getString("message");
                                 // real action
-                                Toast.makeText(getBaseContext(), "회원가입이 되었습니다.", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(RegisterActivity.this, MainmenuActivity.class);
-                                startActivity(intent);
-                                RegisterActivity.this.finish();
-
+                                GoNextPage();
                             }else {
                                 if(KogPreference.DEBUG_MODE) {
                                     Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
@@ -147,7 +139,6 @@ public class RegisterActivity extends Activity {
                 }, new Response.ErrorListener(){
             @Override
             public void onErrorResponse(VolleyError error){
-                // TODO
                 Log.i(LOG_TAG, "Response Error");
                 if(KogPreference.DEBUG_MODE)
                 {

@@ -50,13 +50,13 @@ public class AuthNextActivity extends Activity {
         btnGoBack = (Button)findViewById(R.id.btnGoBackToAuth);
         txtInputNo = (EditText)findViewById(R.id.txtInputNo);
 
+        AuthNumRegister(phoneNo, certiNo);
+
         btnOk.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
 
                 if(Integer.toString(certiNo).equals(txtInputNo.getText().toString())) {
-                    // TODO : REST apply, and delete if&else
-                    // AuthConfirm(phoneNo, certiNo);
-                    GoNextPage();
+                    AuthConfirm(phoneNo, certiNo);
                 }
                 else {
                     Toast.makeText(getBaseContext(), "인증에 실패했습니다.\n다시 요청해 주세요.", Toast.LENGTH_SHORT).show();
@@ -81,7 +81,7 @@ public class AuthNextActivity extends Activity {
 
     private void GoNextPage() {
         Toast.makeText(getBaseContext(), "인증이 완료됐습니다.", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, RegisterActivity.class);
+        Intent intent = new Intent(AuthNextActivity.this, RegisterActivity.class);
         intent.putExtra("phoneNo", phoneNo);
         startActivity(intent);
         this.finish();
@@ -93,7 +93,7 @@ public class AuthNextActivity extends Activity {
         // TODO : REST apply
         // AuthRegister(phoneNo, certiNo);
         Log.i(LOG_TAG, Integer.toString(certiNo));
-        String message = "[KicTalk]인증번호는 " + certiNo +"입니다.";
+        String message = "[KeepOnGoing]인증번호는 " + certiNo +"입니다.";
         PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(), 0);
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phoneNumber, null, message, pi, null);
@@ -101,7 +101,7 @@ public class AuthNextActivity extends Activity {
 
 
     // register my phone number and random_generated_number
-    private void AuthRegister(String phone, String random_num) {
+    private void AuthNumRegister(String phone, int random_num) {
         String get_url = KogPreference.REST_URL +
                 "Auth" +
                 "?phone=" + phone +
@@ -119,7 +119,6 @@ public class AuthNextActivity extends Activity {
                         try{
                             status_code = response.getInt("status");
                             if(status_code == 200){
-                                // TODO : message is now OK  -> change
                                 rMessage = response.getString("message");
                                 // real action
                                 Log.i(LOG_TAG, "receive 200 OK");
@@ -137,8 +136,8 @@ public class AuthNextActivity extends Activity {
                 }, new Response.ErrorListener(){
             @Override
             public void onErrorResponse(VolleyError error){
-                // TODO
-                Log.i(LOG_TAG, "Response Error");
+                Log.i(LOG_TAG, "Response Error : " + error.toString());
+
                 if(KogPreference.DEBUG_MODE)
                 {
                     Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
@@ -151,7 +150,7 @@ public class AuthNextActivity extends Activity {
 
 
     // check my phone number and random_num from input by person
-    private void AuthConfirm(String phone, String random_num) {
+    private void AuthConfirm(String phone, int random_num) {
         String get_url = KogPreference.REST_URL +
                 "Auth" +
                 "?phone=" + phone +
@@ -169,7 +168,6 @@ public class AuthNextActivity extends Activity {
                         try{
                             status_code = response.getInt("status");
                             if(status_code == 200){
-                                // TODO : message is now OK  -> change
                                 rMessage = response.getString("message");
                                 // real action
                                 Log.i(LOG_TAG, "receive 200 OK");
@@ -189,7 +187,6 @@ public class AuthNextActivity extends Activity {
                 }, new Response.ErrorListener(){
             @Override
             public void onErrorResponse(VolleyError error){
-                // TODO
                 Log.i(LOG_TAG, "Response Error");
                 if(KogPreference.DEBUG_MODE)
                 {

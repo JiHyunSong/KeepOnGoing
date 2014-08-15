@@ -59,7 +59,7 @@ public final class KogPreference {
         editor.apply();
     }
 
-    public static void putString(final Context context, final String key, final String value) {
+    public static void setString(final Context context, final String key, final String value) {
         SharedPreferences prefs = context
                 .getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();

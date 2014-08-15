@@ -63,6 +63,7 @@ public class LoginActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+
         intent = getIntent();
         savedNick = intent.getStringExtra("nickname");
 
@@ -75,9 +76,12 @@ public class LoginActivity extends Activity{
         Button mSignInButton = (Button) findViewById(R.id.sign_in_button);
         mSignInButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
-                // TODO : REST apply
-                //UserLogin(mNicknameView.getText().toString(), mPasswordView.getText().toString());
-                GoNextPage(-1);
+                if(isValidProfile()) {
+                    UserLogin(mNicknameView.getText().toString(), mPasswordView.getText().toString());
+                }else
+                {
+                    Toast.makeText(getBaseContext(), "아이디와 비밀번호를 확인해주세요", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -98,31 +102,35 @@ public class LoginActivity extends Activity{
         if(!TextUtils.isEmpty(savedNick))
         {
             mNicknameView.setText(savedNick);
+        }else {
+            savedNick = KogPreference.getString(LoginActivity.this, "nickName");
+            mNicknameView.setText(savedNick);
         }
 
     }
 
-    private void GoNextPage(int uid) {
+    private void GoNextPage(String nickname) {
         Toast.makeText(getBaseContext(), "로그인이 되었습니다.", Toast.LENGTH_SHORT).show();
 
         KogPreference.setLogin(LoginActivity.this);
-        KogPreference.setInt(LoginActivity.this, "uid", uid);
+        KogPreference.setString(LoginActivity.this, "nickName", nickname);
 //        Intent intent = new Intent(this, MainmenuActivity.class);
-        Intent intent = new Intent(this, TabActivity.class);
+        Intent intent = new Intent(LoginActivity.this, TabActivity.class);
         startActivity(intent);
-        this.finish();
+        LoginActivity.this.finish();
     }
 
 
-    private void UserLogin(String nickName, String password) {
+    private void UserLogin(final String nickName, String password) {
         String get_url = KogPreference.REST_URL +
                 "User" +
                 "?nickname=" + nickName +
                 "&password=" + password;
+        Log.i(LOG_TAG, "URL : " + get_url);
 
         Log.i(LOG_TAG, "post btn event trigger");
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, get_url, null,
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, get_url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -132,10 +140,9 @@ public class LoginActivity extends Activity{
                         try{
                             status_code = response.getInt("status");
                             if(status_code == 200){
-                                // TODO : message is now OK  -> change to uid
                                 rMessage = response.getString("message");
                                 // real action
-                                GoNextPage(-1);
+                                GoNextPage(nickName);
 
                             }else {
                                 if(KogPreference.DEBUG_MODE) {
@@ -149,7 +156,6 @@ public class LoginActivity extends Activity{
                 }, new Response.ErrorListener(){
             @Override
             public void onErrorResponse(VolleyError error){
-                // TODO
                 Log.i(LOG_TAG, "Response Error");
                 if(KogPreference.DEBUG_MODE)
                 {
@@ -161,13 +167,18 @@ public class LoginActivity extends Activity{
         vQueue.add(jsObjRequest);
     }
 
+    private boolean isValidProfile() {
+        String rNickName = mNicknameView.getText().toString();
+        String rPassWord = mPasswordView.getText().toString();
+
+        return !TextUtils.isEmpty(rPassWord) && isPasswordValid(rPassWord) && !TextUtils.isEmpty(rNickName) && isNicknameValid(rNickName) ;
+    }
+
     private boolean isNicknameValid(String nickName) {
-        //TODO: Replace this with your own logic
         return (nickName.length() >= 4) && (nickName.length() <= 10);
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
         return (password.length() >= 4) && (password.length() <= 12);
     }
 
