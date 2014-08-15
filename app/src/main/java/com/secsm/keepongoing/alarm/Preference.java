@@ -33,7 +33,7 @@ public final class Preference {
         for (int i=0; i<_keyword.size(); i++) {
             str = str + _keyword.get(i) + "/";
         }
-        putString(context, KEY_SMS_KEYWORD, str);
+        setString(context, KEY_SMS_KEYWORD, str);
     }
 
     public static void putBoolean(final Context context,
@@ -46,7 +46,7 @@ public final class Preference {
         editor.apply();
     }
 
-    public static void putFloat(final Context context,
+    public static void setFloat(final Context context,
                                 final String key, final float value) {
         SharedPreferences prefs = context
                 .getSharedPreferences(mPrefName, Context.MODE_PRIVATE);
@@ -56,7 +56,7 @@ public final class Preference {
         editor.apply();
     }
 
-    public static void putInt(final Context context, final String key, final int value) {
+    public static void setInt(final Context context, final String key, final int value) {
         SharedPreferences prefs = context
                 .getSharedPreferences(mPrefName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
@@ -65,7 +65,7 @@ public final class Preference {
         editor.apply();
     }
 
-    public static void putLong(final Context context, final String key, final long value) {
+    public static void setLong(final Context context, final String key, final long value) {
         SharedPreferences prefs = context
                 .getSharedPreferences(mPrefName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
@@ -74,14 +74,14 @@ public final class Preference {
         editor.apply();
     }
 
-    public static void putString(final Context context, final String key, final String value) {
+    public static void setString(final Context context, final String key, final String value) {
         SharedPreferences prefs = context
                 .getSharedPreferences(mPrefName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(key, value);
 
         editor.apply();
-        //ObiLog.i(TAG, "putString() success - k:" + key + ", v:" + value);
+        //ObiLog.i(TAG, "setString() success - k:" + key + ", v:" + value);
     }
 
     public static boolean getBoolean(final Context context, final String key) {

@@ -56,7 +56,7 @@ if(Preference.getString(AlarmMainActivity.this,"Resumetimer")=="")
 
             if (timer == null) {
                 Date start = new Date();
-                Preference.putLong(AlarmMainActivity.this, "start", start.getTime() - Preference.getLong(AlarmMainActivity.this, "diff"));
+                Preference.setLong(AlarmMainActivity.this, "start", start.getTime() - Preference.getLong(AlarmMainActivity.this, "diff"));
                 TimerTask adTast = new TimerTask() {
                     public void run() {
                         mHandler.sendEmptyMessage(0);
@@ -101,7 +101,7 @@ if(Preference.getString(AlarmMainActivity.this,"Resumetimer")=="")
                     if(timer == null) {
 
                         Date start = new Date();
-                        Preference.putLong(AlarmMainActivity.this, "start", start.getTime()-Preference.getLong(AlarmMainActivity.this,"diff"));
+                        Preference.setLong(AlarmMainActivity.this, "start", start.getTime() - Preference.getLong(AlarmMainActivity.this, "diff"));
                            TimerTask adTast = new TimerTask() {
                       public void run() {
                         mHandler.sendEmptyMessage(0);
@@ -143,7 +143,7 @@ if(Preference.getString(AlarmMainActivity.this,"Resumetimer")=="")
         Button ring = (Button) findViewById(R.id.ringring);
         ring.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                Preference.putLong(AlarmMainActivity.this, "diff",0);
+                Preference.setLong(AlarmMainActivity.this, "diff", 0);
                 _text.setText("00:00:00");
 
                     if(timer != null) {
@@ -188,7 +188,7 @@ if(Preference.getString(AlarmMainActivity.this,"Resumetimer")=="")
             Date today = new Date();
             Log.i(LOG_TAG, "today : "+ today.toString());
              mills = today.getTime()-Date1.getTime();
-            Preference.putLong(AlarmMainActivity.this, "diff",mills);
+            Preference.setLong(AlarmMainActivity.this, "diff", mills);
             int Hours = (int) (mills/(1000 * 60 * 60));
             int Mins = (int) (mills/(1000*60)) % 60;
             int Seconds = (int) (mills/1000)%60;
@@ -199,7 +199,7 @@ if(Preference.getString(AlarmMainActivity.this,"Resumetimer")=="")
                     (Hours/10==0 ? "0"+Hours:Hours)
                     + ":" + (Mins/10==0 ? "0"+Mins:Mins)+":"+(Seconds/10==0 ? "0"+Seconds:Seconds); // updated value every1 second
 
-            Preference.putString(AlarmMainActivity.this,"Resumetimer",diff);
+            Preference.setString(AlarmMainActivity.this, "Resumetimer", diff);
 
             return diff;
          }

@@ -1,10 +1,7 @@
 package com.secsm.keepongoing;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -215,7 +212,7 @@ public class TabActivity extends Activity {
                     if(timer == null) {
 
                         Date start = new Date();
-                        Preference.putLong(TabActivity.this, "start", start.getTime()-Preference.getLong(TabActivity.this,"diff"));
+                        Preference.setLong(TabActivity.this, "start", start.getTime() - Preference.getLong(TabActivity.this, "diff"));
                         TimerTask adTast = new TimerTask() {
                             public void run() {
                                 mHandler.sendEmptyMessage(0);
@@ -257,7 +254,7 @@ public class TabActivity extends Activity {
         Button ring = (Button) findViewById(R.id.ringring);
         ring.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                Preference.putLong(TabActivity.this, "diff",0);
+                Preference.setLong(TabActivity.this, "diff", 0);
                 _text.setText("00:00:00");
 
                 if(timer != null) {
@@ -340,7 +337,7 @@ public class TabActivity extends Activity {
                 if(KogPreference.DEBUG_MODE) {
                     intent.putExtra("roomID", position);
                 }else{
-                     intent.putExtra("roomID", "-1");
+                     intent.putExtra("roomID", -1);
                 }
                 startActivity(intent);
 
@@ -393,7 +390,7 @@ public class TabActivity extends Activity {
 
             if (timer == null) {
                 Date start = new Date();
-                Preference.putLong(TabActivity.this, "start", start.getTime() - Preference.getLong(TabActivity.this, "diff"));
+                Preference.setLong(TabActivity.this, "start", start.getTime() - Preference.getLong(TabActivity.this, "diff"));
                 TimerTask adTast = new TimerTask() {
                     public void run() {
                         mHandler.sendEmptyMessage(0);
@@ -516,7 +513,7 @@ public class TabActivity extends Activity {
             Date today = new Date();
             Log.i(LOG_TAG, "today : "+ today.toString());
             mills = today.getTime()-Date1.getTime();
-            Preference.putLong(TabActivity.this, "diff",mills);
+            Preference.setLong(TabActivity.this, "diff", mills);
             int Hours = (int) (mills/(1000 * 60 * 60));
             int Mins = (int) (mills/(1000*60)) % 60;
             int Seconds = (int) (mills/1000)%60;
@@ -527,7 +524,7 @@ public class TabActivity extends Activity {
                     (Hours/10==0 ? "0"+Hours:Hours)
                             + ":" + (Mins/10==0 ? "0"+Mins:Mins)+":"+(Seconds/10==0 ? "0"+Seconds:Seconds); // updated value every1 second
 
-            Preference.putString(TabActivity.this,"Resumetimer",diff);
+            Preference.setString(TabActivity.this, "Resumetimer", diff);
 
             return diff;
         }

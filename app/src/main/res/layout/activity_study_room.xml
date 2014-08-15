@@ -10,7 +10,7 @@
         android:layout_marginBottom="50sp">
 
         <ListView
-            android:id="@+id/chat_list"
+            android:id="@+id/study_room_message_list"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_margin="5dp"
@@ -20,26 +20,29 @@
     </FrameLayout>
 
     <LinearLayout
+        android:id="@+id/study_room_black_line"
         android:layout_width="fill_parent"
         android:layout_height="1px"
-        android:layout_above="@id/study_room_below_layout"
+        android:orientation="vertical"
         android:background="@color/black"/>
+
     <LinearLayout
         android:id="@+id/study_room_below_layout"
         android:layout_width="fill_parent"
         android:layout_alignParentBottom="true"
         android:layout_height="50sp"
+        android:layout_alignBottom="@id/study_room_black_line"
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/emoticon"
+            android:id="@+id/study_room_emoticon"
             android:layout_width="45dp"
             android:visibility="gone"
             android:layout_weight="0.0"
             android:layout_height="fill_parent"/>
 
         <EditText
-            android:id="@+id/message"
+            android:id="@+id/study_room_messageTxtView"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:bufferType="spannable"
@@ -47,7 +50,7 @@
             android:gravity="top" />
 
         <Button
-            android:id="@+id/sendMsgBtn"
+            android:id="@+id/study_room_sendMsgBtn"
             android:text="전송"
             android:layout_weight="0.0"
             android:layout_width="100sp"

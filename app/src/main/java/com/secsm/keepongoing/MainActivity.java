@@ -19,7 +19,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
 
-//        KogPreference.putString(MainActivity.this, "phoneNo", getPhoneNumber());
+//        KogPreference.setString(MainActivity.this, "phoneNo", getPhoneNumber());
 
         Handler handle = new Handler();
         handle.postDelayed(new splashHandler(), 2000);

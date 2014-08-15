@@ -77,7 +77,7 @@ public class LoginActivity extends Activity{
             public void onClick(View v) {
                 // TODO : REST apply
                 //UserLogin(mNicknameView.getText().toString(), mPasswordView.getText().toString());
-                GoNextPage();
+                GoNextPage(-1);
             }
         });
 
@@ -102,8 +102,11 @@ public class LoginActivity extends Activity{
 
     }
 
-    private void GoNextPage() {
+    private void GoNextPage(int uid) {
         Toast.makeText(getBaseContext(), "로그인이 되었습니다.", Toast.LENGTH_SHORT).show();
+
+        KogPreference.setLogin(LoginActivity.this);
+        KogPreference.setInt(LoginActivity.this, "uid", uid);
 //        Intent intent = new Intent(this, MainmenuActivity.class);
         Intent intent = new Intent(this, TabActivity.class);
         startActivity(intent);
@@ -129,10 +132,10 @@ public class LoginActivity extends Activity{
                         try{
                             status_code = response.getInt("status");
                             if(status_code == 200){
-                                // TODO : message is now OK  -> change
+                                // TODO : message is now OK  -> change to uid
                                 rMessage = response.getString("message");
                                 // real action
-                                GoNextPage();
+                                GoNextPage(-1);
 
                             }else {
                                 if(KogPreference.DEBUG_MODE) {

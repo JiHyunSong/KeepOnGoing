@@ -20,7 +20,7 @@ public final class KogPreference {
     }
 
 
-    public static void putBoolean(final Context context,
+    public static void setBoolean(final Context context,
                                   final String key, final boolean value) {
         SharedPreferences prefs = context
                 .getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
@@ -30,7 +30,7 @@ public final class KogPreference {
         editor.apply();
     }
 
-    public static void putFloat(final Context context,
+    public static void setFloat(final Context context,
                                 final String key, final float value) {
         SharedPreferences prefs = context
                 .getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
@@ -41,7 +41,7 @@ public final class KogPreference {
 
     }
 
-    public static void putInt(final Context context, final String key, final int value) {
+    public static void setInt(final Context context, final String key, final int value) {
         SharedPreferences prefs = context
                 .getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
@@ -50,7 +50,7 @@ public final class KogPreference {
         editor.apply();
     }
 
-    public static void putLong(final Context context, final String key, final long value) {
+    public static void setLong(final Context context, final String key, final long value) {
         SharedPreferences prefs = context
                 .getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
@@ -66,7 +66,7 @@ public final class KogPreference {
         editor.putString(key, value);
 
         editor.apply();
-        //ObiLog.i(TAG, "putString() success - k:" + key + ", v:" + value);
+        //ObiLog.i(TAG, "setString() success - k:" + key + ", v:" + value);
     }
 
     public static boolean getBoolean(final Context context, final String key) {
@@ -143,7 +143,7 @@ public final class KogPreference {
 
     public static void setLogin(final Context context){
         try {
-            putBoolean(context, LOGIN_TAG, true);
+            setBoolean(context, LOGIN_TAG, true);
         } catch (ClassCastException e) {
             Log.e(LOG_TAG, "set Login ClassCaseException : " + e.getStackTrace());
         }
