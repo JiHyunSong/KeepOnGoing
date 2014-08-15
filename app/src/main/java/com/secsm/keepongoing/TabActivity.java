@@ -340,6 +340,7 @@ public class TabActivity extends Activity {
                      intent.putExtra("roomID", -1);
                 }
                 startActivity(intent);
+                TabActivity.this.finish();
 
 
 
