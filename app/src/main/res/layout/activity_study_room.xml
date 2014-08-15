@@ -21,6 +21,12 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:layout_above="@id/study_room_below_layout"
+        android:background="@color/black"/>
+    <LinearLayout
+        android:id="@+id/study_room_below_layout"
+        android:layout_width="fill_parent"
         android:layout_alignParentBottom="true"
         android:layout_height="50sp"
         android:orientation="horizontal" >
@@ -28,12 +34,13 @@
         <Button
             android:id="@+id/emoticon"
             android:layout_width="45dp"
+            android:visibility="gone"
             android:layout_weight="0.0"
             android:layout_height="fill_parent"/>
 
         <EditText
             android:id="@+id/message"
-            android:layout_width="196dp"
+            android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:bufferType="spannable"
             android:layout_weight="100"

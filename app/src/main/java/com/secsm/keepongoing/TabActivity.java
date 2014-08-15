@@ -1,4 +1,5 @@
 package com.secsm.keepongoing;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -106,9 +107,13 @@ public class TabActivity extends Activity {
         // action bar
 //        tabRoomCreateBtn = (Button) findViewById(R.id.tab_room_create_btn);
 //        new InitThread().start();
-//        if(linearTab == null)
-//            linearTab = (LinearLayout)findViewById(R.id.linearTab);
+//        if(linearTab == null) {
+//            getActionBar().setCustomView(R.layout.actionbar_tab);
+//            getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 //
+//            View actionView = getActionBar().getCustomView();
+//            linearTab = (LinearLayout) actionView.findViewById(R.id.linearTab);
+//        }
 //        if(linearTab != null) {
 //            View child = null;
 //
@@ -335,7 +340,7 @@ public class TabActivity extends Activity {
                 if(KogPreference.DEBUG_MODE) {
                     intent.putExtra("roomID", position);
                 }else{
-git                     intent.putExtra("roomID", "-1");
+                     intent.putExtra("roomID", "-1");
                 }
                 startActivity(intent);
 
