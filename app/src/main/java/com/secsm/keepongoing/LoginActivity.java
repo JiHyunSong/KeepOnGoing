@@ -1,33 +1,14 @@
 package com.secsm.keepongoing;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.app.ActionBar;
 import android.app.Activity;
-import android.app.LoaderManager.LoaderCallbacks;
-import android.content.ContentResolver;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Build.VERSION;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -39,9 +20,6 @@ import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * A login screen that offers login via email/password.
 
@@ -50,6 +28,7 @@ public class LoginActivity extends Activity{
 
     private static String LOG_TAG="Login Activity";
     // UI references.
+    private CheckBox login_auto_login_cb;
     private EditText mNicknameView;
     private EditText mPasswordView;
     private View mProgressView;
@@ -73,6 +52,8 @@ public class LoginActivity extends Activity{
         mNicknameView = (EditText) findViewById(R.id.nickname);
         mPasswordView = (EditText) findViewById(R.id.password);
 
+        login_auto_login_cb = (CheckBox) findViewById(R.id.login_auto_login_cb);
+        
         // Sign In button
         Button mSignInButton = (Button) findViewById(R.id.sign_in_button);
         mSignInButton.setOnClickListener(new View.OnClickListener(){
@@ -100,21 +81,32 @@ public class LoginActivity extends Activity{
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
-        if(!TextUtils.isEmpty(savedNick))
+        if(KogPreference.isAutoLogin(LoginActivity.this))
         {
+            UserLogin(KogPreference.getNickName(LoginActivity.this), KogPreference.getPassword(LoginActivity.this));
+        }else if(!TextUtils.isEmpty(savedNick)) {
             mNicknameView.setText(savedNick);
-        }else {
-            savedNick = KogPreference.getString(LoginActivity.this, "nickName");
+        }else{
+            savedNick = KogPreference.getNickName(LoginActivity.this);
             mNicknameView.setText(savedNick);
         }
 
     }
 
-    private void GoNextPage(String nickname) {
+    private void GoNextPage(String nickname, String password) {
+        if(login_auto_login_cb.isChecked()){
+            KogPreference.setAutoLogin(LoginActivity.this, true);
+            KogPreference.setPassword(LoginActivity.this, password);
+        }else{
+            KogPreference.setAutoLogin(LoginActivity.this, false);
+            KogPreference.setPassword(LoginActivity.this, "");
+        }
+
         Toast.makeText(getBaseContext(), "로그인이 되었습니다.", Toast.LENGTH_SHORT).show();
 
         KogPreference.setLogin(LoginActivity.this);
-        KogPreference.setString(LoginActivity.this, "nickName", nickname);
+        //KogPreference.setString(LoginActivity.this, "nickName", nickname);
+        KogPreference.setNickName(LoginActivity.this, nickname);
 //        Intent intent = new Intent(this, MainmenuActivity.class);
         Intent intent = new Intent(LoginActivity.this, TabActivity.class);
         startActivity(intent);
@@ -122,7 +114,7 @@ public class LoginActivity extends Activity{
     }
 
 
-    private void UserLogin(final String nickName, String password) {
+    private void UserLogin(final String nickName, final String password) {
         String get_url = KogPreference.REST_URL +
                 "User" +
                 "?nickname=" + nickName +
@@ -144,7 +136,8 @@ public class LoginActivity extends Activity{
                             if(status_code == 200) {
                                 rMessage = response.getString("message");
                                 // real action
-                                GoNextPage(nickName);
+
+                                GoNextPage(nickName, password);
                             } else if(status_code == 9){
                                 Toast.makeText(getBaseContext(), "아이디와 패스워드를 확인해주세요", Toast.LENGTH_SHORT).show();
                             }else {

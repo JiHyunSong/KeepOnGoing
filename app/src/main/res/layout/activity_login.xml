@@ -32,6 +32,13 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+                <CheckBox
+                    android:id="@+id/login_auto_login_cb"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="자동로그인"
+                    />
+
                 <EditText
                     android:id="@+id/nickname"
                     android:layout_width="match_parent"
