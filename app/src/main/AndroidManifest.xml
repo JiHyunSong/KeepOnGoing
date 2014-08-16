@@ -122,6 +122,10 @@
             android:name=".AddFriendActivity"
             android:label="@string/title_activity_add_friend" >
         </activity>
+        <activity
+            android:name=".InviteFriendsActivity"
+            android:label="@string/title_activity_invite_friends" >
+        </activity>
     </application>
 
 </manifest>

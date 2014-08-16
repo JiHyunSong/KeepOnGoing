@@ -30,5 +30,6 @@
     <string name="title_activity_klaxon">Klaxon</string>
     <string name="title_activity_add_study_room">AddStudyRoomActivity</string>
     <string name="title_activity_add_friend">AddFriendActivity</string>
+    <string name="title_activity_invite_friends">InviteFriendsActivity</string>
 
 </resources>
