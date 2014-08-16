@@ -46,7 +46,7 @@ public class TabActivity extends Activity {
     private final int MANAGEFRIENDS = 200;
     private TextView _text;
     private TextView _text2;
-
+    MenuInflater inflater;
     protected int i=0,minute=0,diff_hour,diff_min;
     boolean a=false;
     long mills=0;
@@ -257,6 +257,7 @@ public class TabActivity extends Activity {
                     layoutStopwatch.setVisibility(View.VISIBLE);
                     actionBarSecondBtn.setIcon(R.drawable.ic_action_settings);
                     actionBarSecondBtn.setVisible(true);
+                    actionBarSecondBtn.setOnMenuItemClickListener(ab_stopwatchTab_settings_listener);
                     break;
 
                 case R.id.imgBtn_tab_friends:
@@ -265,6 +266,7 @@ public class TabActivity extends Activity {
                     layoutFriends.setVisibility(View.VISIBLE);
                     actionBarSecondBtn.setIcon(R.drawable.ic_action_add_person);
                     actionBarSecondBtn.setVisible(true);
+                    actionBarSecondBtn.setOnMenuItemClickListener(ab_friends_add_listener);
                     break;
 
                 case R.id.imgBtn_tab_rooms:
@@ -277,6 +279,8 @@ public class TabActivity extends Activity {
                     actionBarFirstBtn.setVisible(true);
                     actionBarSecondBtn.setIcon(R.drawable.ic_action_new);
                     actionBarSecondBtn.setVisible(true);
+                    actionBarFirstBtn.setOnMenuItemClickListener(ab_rooms_notify_listener);
+                    actionBarSecondBtn.setOnMenuItemClickListener(ab_rooms_add_listener);
                     break;
 
                 case R.id.imgBtn_tab_settings:
@@ -384,7 +388,7 @@ public class TabActivity extends Activity {
         // Inflate the menu; this adds items to the action bar if it is present.
 //        getMenuInflater().inflate(R.menu.tab, menu);
 
-        MenuInflater inflater = getMenuInflater();
+        inflater = getMenuInflater();
         inflater.inflate(R.menu.tab, menu);
         actionBarFirstBtn = menu.findItem(R.id.actionBarFirstBtn);
         actionBarSecondBtn = menu.findItem(R.id.actionBarSecondBtn);
@@ -406,6 +410,40 @@ public class TabActivity extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
+    ////////////////////
+    // Action bar     //
+    ////////////////////
+
+    MenuItem.OnMenuItemClickListener ab_stopwatchTab_settings_listener = new MenuItem.OnMenuItemClickListener(){
+        @Override
+        public boolean onMenuItemClick(MenuItem mi){
+            Log.i(LOG_TAG, "onMenuItemClicked ab_stopwatchTab_settings_listener");
+            return true;
+        }
+    };
+
+    MenuItem.OnMenuItemClickListener ab_friends_add_listener = new MenuItem.OnMenuItemClickListener(){
+        @Override
+        public boolean onMenuItemClick(MenuItem mi){
+            Log.i(LOG_TAG, "onMenuItemClicked ab_friends_add_listener");
+            return true;
+        }
+    };
+    MenuItem.OnMenuItemClickListener ab_rooms_notify_listener = new MenuItem.OnMenuItemClickListener(){
+        @Override
+        public boolean onMenuItemClick(MenuItem mi){
+            Log.i(LOG_TAG, "onMenuItemClicked ab_rooms_notify_listener");
+            return true;
+        }
+    };
+
+    MenuItem.OnMenuItemClickListener ab_rooms_add_listener = new MenuItem.OnMenuItemClickListener(){
+        @Override
+        public boolean onMenuItemClick(MenuItem mi){
+            Log.i(LOG_TAG, "onMenuItemClicked ab_rooms_add_listener");
+            return true;
+        }
+    };
 
     ////////////////////
     // DB             //
