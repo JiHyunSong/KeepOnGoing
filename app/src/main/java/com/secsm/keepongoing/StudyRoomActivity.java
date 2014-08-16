@@ -27,8 +27,10 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.sql.Date;
 import java.sql.SQLClientInfoException;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -104,12 +106,27 @@ public class StudyRoomActivity extends Activity {
     /* message info must need the time */
     public String getRealTime()
     {
-        Calendar c = Calendar.getInstance();
-        String hour = Integer.toString(c.get(Calendar.HOUR_OF_DAY));
-        String min = Integer.toString(c.get(Calendar.MINUTE));
-        String sec = Integer.toString(c.get(Calendar.SECOND));
+        long time = System.currentTimeMillis();
+        Timestamp currentTimestamp = new Timestamp(time);
 
-        return hour + ":" + min + ":" + sec;
+        // I/StudyRoom Activity﹕ long : 1408229086924
+        Log.i(LOG_TAG, "long : " + time );
+        // I/StudyRoom Activity﹕ Timestamp : 2014-08-17 07:44:46.924
+        Log.i(LOG_TAG, "Timestamp : " + currentTimestamp );
+        // I/StudyRoom Activity﹕ Timestamp.toString().substring(0, 10) : 2014-08-17
+        Log.i(LOG_TAG, "Timestamp.toString().substring(0, 19) : " + currentTimestamp.toString().substring(0, 19) );
+        // I/StudyRoom Activity﹕ Timestamp.getTime() : 1408229086924
+        Log.i(LOG_TAG, "Timestamp.getTime() : " + currentTimestamp.getTime() );
+        Log.i(LOG_TAG, "");
+
+//
+//
+//        Calendar c = Calendar.getInstance();
+//        String hour = Integer.toString(c.get(Calendar.HOUR_OF_DAY));
+//        String min = Integer.toString(c.get(Calendar.MINUTE));
+//        String sec = Integer.toString(c.get(Calendar.SECOND));
+//
+        return currentTimestamp.toString().substring(0, 19);
     }
 
     /* this is update the message from someone(include me) */
@@ -356,47 +373,47 @@ public class StudyRoomActivity extends Activity {
 
     private Thread updateThread = new Thread() {
         public void run() {
-//            try {
-//                while (true) {
-//                    String read = reader_.readLine();
-//                    Log.i("R: Received:", "R: Received before decrypt: " + read);
-//
-//                    cipher.init(Cipher.DECRYPT_MODE, key);
-//                    byte[] decrypt = cipher.doFinal(ByteUtils.toBytes(read, 16));
-//                    Log.i("복호", "복호 : " + ByteUtils.toHexString(decrypt));
-//                    read = new String(decrypt, 0, decrypt.length, "EUC-KR");
-//
-//                    if (read != null) {
-//                        Log.i("R: Received:", "R: Received:" + read);
-//                    }
-//                    StringTokenizer info = new StringTokenizer(read, "/");
-//                    String roomInfo = info.nextToken();
-//                    String [] roomData = roomInfo.split(":");
-//
-//                    if(roomData[0].equals(roomID)) {
-//                        if(!roomData[2].equals("LOGOUT") && !roomData[2].equals("LOGIN")){
-//                            Log.i(LOG_TAG, "senderID : " + roomData[2]);
-//                            Message msg = handler.obtainMessage();
-//                            Bundle b = new Bundle();
-//                            b.putString("friend_id", roomData[2]);
-//
-//                            b.putString("text", roomData[3]);
-//                            msg.setData(b);
-//                            handler.sendMessage(msg);
-//                        }
-//                        if(roomData[2].equals("EXIT")){
-//                            Message msg = handler.obtainMessage();
-//                            Bundle b = new Bundle();
-//                            b.putString("friend_id", roomData[2]);
-//                            b.putString("text", "EXIT");
-//                            msg.setData(b);
-//                            handler.sendMessage(msg);
-//                        }
-//                    }
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
+            try {
+                while (true) {
+                    String read = reader_.readLine();
+                    Log.i("R: Received:", "R: Received before decrypt: " + read);
+
+                    cipher.init(Cipher.DECRYPT_MODE, key);
+                    byte[] decrypt = cipher.doFinal(ByteUtils.toBytes(read, 16));
+                    Log.i("복호", "복호 : " + ByteUtils.toHexString(decrypt));
+                    read = new String(decrypt, 0, decrypt.length, "EUC-KR");
+
+                    if (read != null) {
+                        Log.i("R: Received:", "R: Received:" + read);
+                    }
+                    StringTokenizer info = new StringTokenizer(read, "/");
+                    String roomInfo = info.nextToken();
+                    String [] roomData = roomInfo.split(":");
+
+                    if(roomData[0].equals(roomID)) {
+                        if(!roomData[2].equals("LOGOUT") && !roomData[2].equals("LOGIN")){
+                            Log.i(LOG_TAG, "senderID : " + roomData[2]);
+                            Message msg = handler.obtainMessage();
+                            Bundle b = new Bundle();
+                            b.putString("friend_id", roomData[2]);
+
+                            b.putString("text", roomData[3]);
+                            msg.setData(b);
+                            handler.sendMessage(msg);
+                        }
+                        if(roomData[2].equals("EXIT")){
+                            Message msg = handler.obtainMessage();
+                            Bundle b = new Bundle();
+                            b.putString("friend_id", roomData[2]);
+                            b.putString("text", "EXIT");
+                            msg.setData(b);
+                            handler.sendMessage(msg);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     };
 }

@@ -3,6 +3,7 @@ package com.secsm.keepongoing.Adapters;
 
 import com.secsm.keepongoing.R;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
  */
 public class FriendsArrayAdapters extends BaseAdapter {
 
+    private ViewHolder viewHolder = null;
     Context context;
     ArrayList<FriendNameAndIcon> friendArrayList;
     LayoutInflater inflater;
@@ -44,8 +46,9 @@ public class FriendsArrayAdapters extends BaseAdapter {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        if(convertView == null)
+        if(convertView == null){
             convertView = inflater.inflate(layout, parent, false);
+        }
 
         ImageView icon = (ImageView)convertView.findViewById(R.id.iconFriend);
         icon.setImageResource(friendArrayList.get(position).icon);
@@ -55,5 +58,23 @@ public class FriendsArrayAdapters extends BaseAdapter {
 
         return convertView;
 
+    }
+
+    class ViewHolder{
+        public Bitmap friend_profile = null;
+        public String friend_nickname = null;
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        free();
+        super.finalize();
+    }
+
+    private void free(){
+        inflater = null;
+//        infoList = null;
+//        viewHolder = null;
+//        mContext = null;
     }
 }
