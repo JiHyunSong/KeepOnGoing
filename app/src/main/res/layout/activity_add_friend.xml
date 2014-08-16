@@ -1,0 +1,45 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bootstrapbutton="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.secsm.keepongoing.AddFriendActivity">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+
+        <com.beardedhen.androidbootstrap.BootstrapEditText
+            android:id="@+id/add_friend_name_et"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:gravity="top|left"
+            android:hint="초대할 친구 이름"
+            android:lines="1"
+            android:maxLines="1"
+            bootstrapbutton:be_roundedCorners="true"
+            bootstrapbutton:be_state="info" />
+
+        <Button
+            android:id="@+id/add_friend_add_btn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/add_friend_name_et"
+            android:text="친구 추가"
+            />
+
+        <Button
+            android:id="@+id/add_friend_go_back_btn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/add_friend_add_btn"
+            android:text="돌아가기"
+            />
+    </RelativeLayout>
+</RelativeLayout>

@@ -29,5 +29,6 @@
     <string name="title_activity_db">DB</string>
     <string name="title_activity_klaxon">Klaxon</string>
     <string name="title_activity_add_study_room">AddStudyRoomActivity</string>
+    <string name="title_activity_add_friend">AddFriendActivity</string>
 
 </resources>

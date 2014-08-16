@@ -426,6 +426,12 @@ public class TabActivity extends Activity {
         @Override
         public boolean onMenuItemClick(MenuItem mi){
             Log.i(LOG_TAG, "onMenuItemClicked ab_friends_add_listener");
+
+            Intent intent = new Intent(TabActivity.this, AddFriendActivity.class);
+            startActivity(intent);
+            TabActivity.this.finish();
+
+
             return true;
         }
     };
