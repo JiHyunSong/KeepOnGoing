@@ -17,6 +17,7 @@ public final class KogPreference {
     private static String AUTOLOGIN_TAG = "AUTO_LOGIN";
     private static String NICKNAME_TAG = "NICK_NAME";
     private static String PASSWORD_TAG = "PASSWORD";
+    private static String GCM_TAG = "GCMID";
     public static String REST_URL="http://210.118.74.195:8080/KOG_Server_Rest/rest/";
     public KogPreference() {
         // not called
@@ -204,9 +205,18 @@ public final class KogPreference {
             Log.e(LOG_TAG, "setPassword ClassCaseException : " + e.getStackTrace());
         }
     }
+
+    public static void setRegId(final Context context, final String value) {
+        try {
+            setString(context, GCM_TAG, value);
+        } catch (ClassCastException e) {
+            Log.e(LOG_TAG, "setPassword ClassCaseException : " + e.getStackTrace());
+        }
+    }
+
     public static String getRegId(final Context context){
         try{
-            return getString(context, "GCMID");
+            return getString(context, GCM_TAG);
         }catch (ClassCastException e){
             Log.e(LOG_TAG, "get Registration ID fail, ClassCaseException : " + e.getStackTrace());
             return "";

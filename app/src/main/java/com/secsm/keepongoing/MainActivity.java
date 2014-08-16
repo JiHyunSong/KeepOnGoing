@@ -218,7 +218,8 @@ public class MainActivity extends Activity {
     private void storeRegistrationId(String regId)
     {
 //                Log.i("MainActivity.java | storeRegistrationId", "|" + "Saving regId on app version " + appVersion + "|");
-        KogPreference.setString(MainActivity.this, regId, "");
+//        KogPreference.setString(MainActivity.this, regId, "");
+        KogPreference.setRegId(MainActivity.this, regId);
         Log.i(LOG_TAG, "reg: " + regId);
 //                PreferenceUtil.instance(getApplicationContext()).putRedId(regId);
 //                PreferenceUtil.instance(getApplicationContext()).putAppVersion(appVersion);

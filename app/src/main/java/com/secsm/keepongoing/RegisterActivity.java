@@ -148,6 +148,8 @@ public class RegisterActivity extends Activity {
                                 rMessage = response.getString("message");
                                 // real action
                                 GoNextPage();
+                            } else if(status_code == 9001){
+                                Toast.makeText(getBaseContext(), "회원가입이 불가능합니다.", Toast.LENGTH_SHORT).show();
                             }else {
                                 if(KogPreference.DEBUG_MODE) {
                                     Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();

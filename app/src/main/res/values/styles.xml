@@ -7,6 +7,7 @@
 
     <style name="ActionBarStyle" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
+        <item name="sdlDialogStyle">@style/DialogStyleLight.Custom</item>
     </style>
 
 </resources>

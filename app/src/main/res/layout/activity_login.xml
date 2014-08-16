@@ -77,6 +77,16 @@
                     android:layout_marginTop="16dp"
                     android:text="@string/action_sign_up"
                     android:textStyle="bold"/>
+
+                <Button
+                    android:id="@+id/easter_egg_button"
+                    style="?android:textAppearanceSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:visibility="gone"
+                    android:text="이스터애그"
+                    android:textStyle="bold"/>
             </LinearLayout>
     </ScrollView>
 

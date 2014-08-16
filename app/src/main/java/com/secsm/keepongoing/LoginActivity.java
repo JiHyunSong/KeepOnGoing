@@ -1,6 +1,7 @@
 package com.secsm.keepongoing;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -19,6 +20,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 import org.json.JSONObject;
+import eu.inmite.android.lib.dialogs.SimpleDialogFragment;
 
 /**
  * A login screen that offers login via email/password.
@@ -38,6 +40,9 @@ public class LoginActivity extends Activity{
     private String rMessage;
     private Intent intent;
     private String savedNick;
+    private Button mSignUpButton;
+    private Button mSignInButton;
+    private Button easterEggButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +60,7 @@ public class LoginActivity extends Activity{
         login_auto_login_cb = (CheckBox) findViewById(R.id.login_auto_login_cb);
         
         // Sign In button
-        Button mSignInButton = (Button) findViewById(R.id.sign_in_button);
+        mSignInButton = (Button) findViewById(R.id.sign_in_button);
         mSignInButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
                 if(isValidProfile()) {
@@ -68,7 +73,7 @@ public class LoginActivity extends Activity{
         });
 
         // Sign up (Register) button
-        Button mSignUpButton = (Button) findViewById(R.id.sign_up_button);
+        mSignUpButton = (Button) findViewById(R.id.sign_up_button);
         // go to Register page
         mSignUpButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
@@ -77,6 +82,23 @@ public class LoginActivity extends Activity{
                 LoginActivity.this.finish();
             }
         });
+
+        if(KogPreference.DEBUG_MODE)
+        {
+            easterEggButton = (Button) findViewById(R.id.easter_egg_button);
+            // go to Register page
+            easterEggButton.setOnClickListener(new View.OnClickListener(){
+                public void onClick(View v) {
+
+                    String easter_msg = "안녕";
+//                    SimpleDialogFragment.createBuilder(LoginActivity.this, android.support.v4.app.FragmentManager())
+//                            .setMessage(easter_msg).show();
+
+
+                }
+            });
+
+        }
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
@@ -138,7 +160,7 @@ public class LoginActivity extends Activity{
                                 // real action
 
                                 GoNextPage(nickName, password);
-                            } else if(status_code == 9){
+                            } else if(status_code == 9001){
                                 Toast.makeText(getBaseContext(), "아이디와 패스워드를 확인해주세요", Toast.LENGTH_SHORT).show();
                             }else {
                                 if(KogPreference.DEBUG_MODE) {
