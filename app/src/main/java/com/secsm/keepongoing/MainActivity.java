@@ -7,6 +7,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.secsm.keepongoing.Shared.ByteUtils;
+import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 
 import android.app.Activity;
@@ -27,6 +29,13 @@ import android.widget.Toast;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 
 public class MainActivity extends Activity {
 
@@ -46,7 +55,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 //        KogPreference.setString(MainActivity.this, "phoneNo", getPhoneNumber());
-
+        Encrypt.initKey();
         vQueue = Volley.newRequestQueue(this);
 
         _gcm = GoogleCloudMessaging.getInstance(this);
@@ -101,7 +110,7 @@ public class MainActivity extends Activity {
         String get_url = KogPreference.REST_URL +
                 "User" +
                 "?nickname=" + nickName +
-                "&password=" + password;
+                "&password=" + Encrypt.encodingMsg(password);
         Log.i(LOG_TAG, "URL : " + get_url);
 
         Log.i(LOG_TAG, "post btn event trigger");
@@ -214,5 +223,6 @@ public class MainActivity extends Activity {
 //                PreferenceUtil.instance(getApplicationContext()).putRedId(regId);
 //                PreferenceUtil.instance(getApplicationContext()).putAppVersion(appVersion);
     }
+
 
 }

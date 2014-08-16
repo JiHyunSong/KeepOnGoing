@@ -22,6 +22,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.secsm.keepongoing.R;
+import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 
 import org.json.JSONObject;
@@ -68,9 +69,6 @@ public class RegisterActivity extends Activity {
                     register(nickName.getText().toString(), password1.getText().toString(), "profile_default.png", phoneNum.getText().toString());
                 }else
                 {
-                    alertNick.setVisibility(View.VISIBLE);
-                    alertPwd.setVisibility(View.VISIBLE);
-                    Toast.makeText(getBaseContext(), "입력란을 제대로 확인해주세요!", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -85,10 +83,33 @@ public class RegisterActivity extends Activity {
         startActivity(intent);
     }
 
+    private void invisibleAlert()
+    {
+        alertNick.setVisibility(View.INVISIBLE);
+        alertPwd.setVisibility(View.INVISIBLE);
+    }
+
     private boolean isValidProfile() {
         rNickName = nickName.getText().toString();
         rPassWord1 = password1.getText().toString();
         rPassWord2 = password2.getText().toString();
+
+        if(!rPassWord1.equals(rPassWord2))
+        {
+            invisibleAlert();
+            Toast.makeText(getBaseContext(), "패스워드 불일치", Toast.LENGTH_SHORT).show();
+            alertPwd.setVisibility(View.VISIBLE);
+        }else if(!isPasswordValid(rPassWord1))
+        {
+            invisibleAlert();
+            Toast.makeText(getBaseContext(), "패스워드 길이를 확인해주세요", Toast.LENGTH_SHORT).show();
+            alertPwd.setVisibility(View.VISIBLE);
+        }else if(!isNicknameValid(rNickName))
+        {
+            invisibleAlert();
+            Toast.makeText(getBaseContext(), "아이디 길이를 확인해주세요", Toast.LENGTH_SHORT).show();
+            alertNick.setVisibility(View.VISIBLE);
+        }
 
         return !TextUtils.isEmpty(rPassWord1) && !TextUtils.isEmpty(rPassWord2) && (rPassWord1.equals(rPassWord2)) && isPasswordValid(rPassWord1) && !TextUtils.isEmpty(rNickName) && isNicknameValid(rNickName) ;
     }
@@ -106,10 +127,10 @@ public class RegisterActivity extends Activity {
         String get_url = KogPreference.REST_URL +
                 "Register" +
                 "?nickname=" + nickName +
-                "&password=" + password +
+                "&password=" + Encrypt.encodingMsg(password) +
                 "&image=" + image +
-                "&phone=" + phone;
-        // "&gcmid=" + gcmid;
+                "&phone=" + phone +
+                "&gcmid=" + KogPreference.getRegId(RegisterActivity.this);
         // TODO : GCM ID
 
         Log.i(LOG_TAG, "post btn event trigger");

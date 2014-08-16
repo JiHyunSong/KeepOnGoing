@@ -35,6 +35,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 import org.json.JSONObject;
 
@@ -125,7 +126,8 @@ public class LoginActivity extends Activity{
         String get_url = KogPreference.REST_URL +
                 "User" +
                 "?nickname=" + nickName +
-                "&password=" + password;
+                "&password=" + Encrypt.encodingMsg(password) +
+                "&gcmid=" + KogPreference.getRegId(LoginActivity.this);
         Log.i(LOG_TAG, "URL : " + get_url);
 
         Log.i(LOG_TAG, "post btn event trigger");
@@ -139,11 +141,12 @@ public class LoginActivity extends Activity{
 
                         try{
                             status_code = response.getInt("status");
-                            if(status_code == 200){
+                            if(status_code == 200) {
                                 rMessage = response.getString("message");
                                 // real action
                                 GoNextPage(nickName);
-
+                            } else if(status_code == 9001){
+                                Toast.makeText(getBaseContext(), "아이디와 패스워드를 확인해주세요", Toast.LENGTH_SHORT).show();
                             }else {
                                 if(KogPreference.DEBUG_MODE) {
                                     Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();

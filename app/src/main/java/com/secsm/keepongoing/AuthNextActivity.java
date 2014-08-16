@@ -84,7 +84,7 @@ public class AuthNextActivity extends Activity {
         Intent intent = new Intent(AuthNextActivity.this, RegisterActivity.class);
         intent.putExtra("phoneNo", phoneNo);
         startActivity(intent);
-        this.finish();
+        AuthNextActivity.this.finish();
     }
 
     /* sending SMS by self phone number */
@@ -118,11 +118,16 @@ public class AuthNextActivity extends Activity {
 
                         try{
                             status_code = response.getInt("status");
-                            if(status_code == 200){
+                            if(status_code == 200) {
                                 rMessage = response.getString("message");
                                 // real action
                                 Log.i(LOG_TAG, "receive 200 OK");
                                 // nothing to do
+                            }else if (status_code == 1001){
+                                Toast.makeText(getBaseContext(), "이미 가입된 번호입니다.\n중복가입 하실 수 없습니다.", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(AuthNextActivity.this, LoginActivity.class);
+                                startActivity(intent);
+                                AuthNextActivity.this.finish();
                             }else {
 
                                 if(KogPreference.DEBUG_MODE) {
