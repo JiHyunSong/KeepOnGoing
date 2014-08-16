@@ -145,7 +145,7 @@ public class LoginActivity extends Activity{
                                 rMessage = response.getString("message");
                                 // real action
                                 GoNextPage(nickName);
-                            } else if(status_code == 9001){
+                            } else if(status_code == 9){
                                 Toast.makeText(getBaseContext(), "아이디와 패스워드를 확인해주세요", Toast.LENGTH_SHORT).show();
                             }else {
                                 if(KogPreference.DEBUG_MODE) {

@@ -1,26 +1,29 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:bootstrapbutton="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.secsm.keepongoing.AddStudyRoomActivity">
+
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        >
+        android:paddingBottom="@dimen/activity_vertical_margin">
+
         <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:paddingBottom="@dimen/activity_vertical_margin"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:paddingBottom="@dimen/add_room_bottom_margin">
+
             <RelativeLayout
                 android:id="@+id/add_study_room_upper_rl"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
+
                 <RadioGroup
                     android:id="@+id/add_study_room_rg"
                     android:layout_width="fill_parent"
@@ -30,258 +33,305 @@
                     <RadioButton
                         android:id="@+id/add_study_room_life_rb"
                         android:layout_width="wrap_content"
+                        android:layout_height="50sp"
                         android:layout_weight="1"
-                        android:text="생활스터디 방"
                         android:checked="true"
-                        android:layout_height="50sp" />
+                        android:text="생활스터디 방" />
 
                     <RadioButton
                         android:id="@+id/add_study_room_subject_rb"
-                        android:layout_weight="1"
-                        android:text="과목스터디 방"
                         android:layout_width="wrap_content"
-                        android:layout_height="50sp" />
+                        android:layout_height="50sp"
+                        android:layout_weight="1"
+                        android:text="과목스터디 방" />
 
                 </RadioGroup>
 
                 <com.beardedhen.androidbootstrap.BootstrapEditText
                     android:id="@+id/add_study_room_name_et"
-                    android:layout_below="@id/add_study_room_rg"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:layout_below="@id/add_study_room_rg"
                     android:layout_margin="10dp"
+                    android:gravity="top|left"
+                    android:hint="스터디 방 이름"
                     android:lines="1"
                     android:maxLines="1"
-                    android:hint="스터디 방 이름"
                     bootstrapbutton:be_roundedCorners="true"
-                    android:gravity="top|left"
-                    bootstrapbutton:be_state="info"
-                    />
+                    bootstrapbutton:be_state="info" />
 
                 <com.beardedhen.androidbootstrap.BootstrapEditText
                     android:id="@+id/add_study_room_rules_et"
-                    android:layout_below="@id/add_study_room_name_et"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:layout_below="@id/add_study_room_name_et"
                     android:layout_margin="10dp"
+                    android:gravity="top|left"
+                    android:hint="스터디 방 규칙"
                     android:lines="7"
                     android:maxLines="7"
-                    android:hint="스터디 방 규칙"
                     bootstrapbutton:be_roundedCorners="true"
-                    android:gravity="top|left"
-                    bootstrapbutton:be_state="info"
-                    />
+                    bootstrapbutton:be_state="info" />
 
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/add_study_room_life_rl"
-                android:layout_below="@id/add_study_room_upper_rl"
                 android:layout_width="fill_parent"
-                android:visibility="visible"
-                android:layout_height="fill_parent">
+                android:layout_height="wrap_content"
+                android:layout_below="@id/add_study_room_upper_rl"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:visibility="visible">
 
                 <TextView
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginBottom="5dp"
                     android:id="@+id/add_study_room_life_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="10dp"
                     android:gravity="center"
-                    android:text="한달 최대 휴일"
-                    />
+                    android:text="한달 최대 휴일 " />
+
                 <com.beardedhen.androidbootstrap.BootstrapEditText
+                    android:id="@+id/add_study_room_life_holiday_et"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_alignBaseline="@id/add_study_room_life_tv"
+                    android:layout_toRightOf="@id/add_study_room_life_tv"
+                    android:ems="3"
+                    android:gravity="top|right"
+                    android:inputType="numberSigned"
                     android:maxEms="2"
                     android:maxLines="1"
+                    android:minEms="2"
                     android:text="1"
-                    android:layout_toRightOf="@id/add_study_room_life_tv"
                     bootstrapbutton:be_roundedCorners="true"
-                    android:gravity="top|left"
-                    bootstrapbutton:be_state="info"
-                    android:id="@+id/add_study_room_life_holiday_et"
-                    android:layout_alignBaseline="@id/add_study_room_life_tv"
-                    />
+                    bootstrapbutton:be_state="info" />
+
                 <TextView
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginBottom="5dp"
                     android:id="@+id/add_study_room_life_tv2"
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
-                    android:gravity="center"
-                    android:text="일"
-                    android:layout_toRightOf="@id/add_study_room_life_holiday_et"
                     android:layout_alignBaseline="@id/add_study_room_life_tv"
-                    />
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toRightOf="@id/add_study_room_life_holiday_et"
+                    android:gravity="center"
+                    android:text="일 (10일 이내)" />
+
+                <Button
+                    android:id="@+id/add_study_room_invite_friend_btn_with_life_info"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/add_study_room_life_holiday_et"
+                    android:layout_margin="5dp"
+                    android:text="다음" />
 
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/add_study_room_subject_rl"
-                android:layout_below="@id/add_study_room_upper_rl"
-                android:visibility="gone"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_below="@id/add_study_room_upper_rl"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:visibility="gone">
+
                 <TextView
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginBottom="5dp"
                     android:id="@+id/add_study_room_subject_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
-                    android:gravity="center"
-                    android:text="스터디 요일 : "
                     android:layout_alignParentLeft="true"
-                    />
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:text="스터디 요일 : " />
+
                 <LinearLayout
                     android:id="@+id/add_study_room_subject_days"
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
                     android:layout_below="@id/add_study_room_subject_tv"
                     android:orientation="horizontal">
+
                     <ToggleButton
                         android:id="@+id/add_study_room_subject_mon_tg"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textOn="월"
                         android:layout_weight="1"
-                        android:textOff="월"/>
+                        android:checked="true"
+                        android:textOff="월"
+                        android:textOn="월" />
+
                     <ToggleButton
                         android:id="@+id/add_study_room_subject_tue_tg"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:textOn="화"
-                        android:textOff="화"/>
+                        android:checked="true"
+                        android:textOff="화"
+                        android:textOn="화" />
+
                     <ToggleButton
                         android:id="@+id/add_study_room_subject_wed_tg"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:textOn="수"
-                        android:textOff="수"/>
+                        android:checked="true"
+                        android:textOff="수"
+                        android:textOn="수" />
+
                     <ToggleButton
                         android:id="@+id/add_study_room_subject_thu_tg"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:textOn="목"
-                        android:textOff="목"/>
+                        android:checked="true"
+                        android:textOff="목"
+                        android:textOn="목" />
+
                     <ToggleButton
                         android:id="@+id/add_study_room_subject_fri_tg"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:textOn="금"
-                        android:textOff="금"/>
+                        android:checked="true"
+                        android:textOff="금"
+                        android:textOn="금" />
+
                     <ToggleButton
                         android:id="@+id/add_study_room_subject_sat_tg"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:textOn="토"
-                        android:textOff="토"/>
+                        android:checked="true"
+                        android:textOff="토"
+                        android:textOn="토" />
+
                     <ToggleButton
                         android:id="@+id/add_study_room_subject_sun_tg"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:textOn="일"
-                        android:textOff="일"/>
+                        android:checked="true"
+                        android:textOff="일"
+                        android:textOn="일" />
                 </LinearLayout>
 
                 <TextView
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginBottom="5dp"
                     android:id="@+id/add_study_room_subject_tv2"
-                    android:text="스터디 시간 : "
                     android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
                     android:layout_below="@id/add_study_room_subject_days"
-                    android:layout_height="fill_parent" />
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="10dp"
+                    android:text="스터디 시간 : " />
+
+                <DatePicker
+                    android:id="@+id/add_study_room_subject_dp"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/add_study_room_subject_days"
+                    android:visibility="gone" />
+
                 <TimePicker
-                    android:layout_below="@id/add_study_room_subject_tv2"
                     android:id="@+id/add_study_room_subject_tp"
-                    android:layout_centerInParent="true"
-                    android:layout_marginTop="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"/>
+                    android:layout_below="@id/add_study_room_subject_tv2"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="5dp" />
 
                 <TextView
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginBottom="5dp"
                     android:id="@+id/add_study_room_subject_tv3"
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
-                    android:gravity="center"
-                    android:text="문제 푸는 시간"
                     android:layout_below="@id/add_study_room_subject_tp"
-                    />
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:text="문제 푸는 시간 " />
+
                 <com.beardedhen.androidbootstrap.BootstrapEditText
+                    android:id="@+id/add_study_room_subject_duration_time_et"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@id/add_study_room_subject_tv3"
+                    android:layout_toRightOf="@id/add_study_room_subject_tv3"
+                    android:ems="3"
+                    android:gravity="top|right"
+                    android:inputType="numberSigned"
                     android:maxEms="2"
                     android:maxLines="1"
-                    android:text="1"
-                    android:layout_toRightOf="@id/add_study_room_subject_tv3"
+                    android:minEms="2"
+                    android:text="10"
                     bootstrapbutton:be_roundedCorners="true"
-                    android:gravity="top|left"
-                    bootstrapbutton:be_state="info"
-                    android:id="@+id/add_study_room_subject_duration_time_et"
-                    android:layout_alignBaseline="@id/add_study_room_subject_tv3"
-                    />
+                    bootstrapbutton:be_state="info" />
+
                 <TextView
-                    android:layout_margin="5dp"
                     android:id="@+id/add_study_room_subject_tv4"
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
-                    android:gravity="center"
-                    android:text="분 동안"
-                    android:layout_toRightOf="@id/add_study_room_subject_duration_time_et"
-                    android:layout_below="@id/add_study_room_subject_tp"
                     android:layout_alignBaseline="@id/add_study_room_subject_tv3"
-                    />
+                    android:layout_below="@id/add_study_room_subject_tp"
+                    android:layout_margin="5dp"
+                    android:layout_toRightOf="@id/add_study_room_subject_duration_time_et"
+                    android:gravity="center"
+                    android:text="분 동안" />
 
                 <TextView
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginBottom="5dp"
                     android:id="@+id/add_study_room_subject_tv5"
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
-                    android:gravity="center"
-                    android:text="정답 공개 스터디 시작"
                     android:layout_below="@id/add_study_room_subject_tv3"
-                    />
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:text="정답 공개는 스터디 시작 " />
+
                 <com.beardedhen.androidbootstrap.BootstrapEditText
+                    android:id="@+id/add_study_room_subject_show_up_time_et"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@id/add_study_room_subject_tv5"
+                    android:layout_toRightOf="@id/add_study_room_subject_tv5"
+                    android:ems="3"
+                    android:gravity="top|right"
+                    android:inputType="numberSigned"
                     android:maxEms="2"
                     android:maxLines="1"
-                    android:text="1"
-                    android:layout_toRightOf="@id/add_study_room_subject_tv5"
+                    android:minEms="2"
+                    android:text="12"
                     bootstrapbutton:be_roundedCorners="true"
-                    android:gravity="top|left"
-                    bootstrapbutton:be_state="info"
-                    android:id="@+id/add_study_room_subject_show_up_time_et"
-                    android:layout_alignBaseline="@id/add_study_room_subject_tv5"
-                    />
+                    bootstrapbutton:be_state="info" />
+
                 <TextView
-                    android:layout_margin="5dp"
                     android:id="@+id/add_study_room_subject_tv6"
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
-                    android:gravity="center"
-                    android:text="분 후"
-                    android:layout_toRightOf="@id/add_study_room_subject_show_up_time_et"
-                    android:layout_below="@id/add_study_room_subject_tv3"
                     android:layout_alignBaseline="@id/add_study_room_subject_tv5"
-                    />
+                    android:layout_below="@id/add_study_room_subject_tv3"
+                    android:layout_margin="5dp"
+                    android:layout_toRightOf="@id/add_study_room_subject_show_up_time_et"
+                    android:gravity="center"
+                    android:text="분 후" />
+
+                <Button
+                    android:id="@+id/add_study_room_invite_friend_btn_with_study_info"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/add_study_room_subject_tv5"
+                    android:layout_margin="5dp"
+                    android:text="다음" />
 
             </RelativeLayout>
 
