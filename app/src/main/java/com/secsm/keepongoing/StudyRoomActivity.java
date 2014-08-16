@@ -373,47 +373,47 @@ public class StudyRoomActivity extends Activity {
 
     private Thread updateThread = new Thread() {
         public void run() {
-            try {
-                while (true) {
-                    String read = reader_.readLine();
-                    Log.i("R: Received:", "R: Received before decrypt: " + read);
-
-                    cipher.init(Cipher.DECRYPT_MODE, key);
-                    byte[] decrypt = cipher.doFinal(ByteUtils.toBytes(read, 16));
-                    Log.i("복호", "복호 : " + ByteUtils.toHexString(decrypt));
-                    read = new String(decrypt, 0, decrypt.length, "EUC-KR");
-
-                    if (read != null) {
-                        Log.i("R: Received:", "R: Received:" + read);
-                    }
-                    StringTokenizer info = new StringTokenizer(read, "/");
-                    String roomInfo = info.nextToken();
-                    String [] roomData = roomInfo.split(":");
-
-                    if(roomData[0].equals(roomID)) {
-                        if(!roomData[2].equals("LOGOUT") && !roomData[2].equals("LOGIN")){
-                            Log.i(LOG_TAG, "senderID : " + roomData[2]);
-                            Message msg = handler.obtainMessage();
-                            Bundle b = new Bundle();
-                            b.putString("friend_id", roomData[2]);
-
-                            b.putString("text", roomData[3]);
-                            msg.setData(b);
-                            handler.sendMessage(msg);
-                        }
-                        if(roomData[2].equals("EXIT")){
-                            Message msg = handler.obtainMessage();
-                            Bundle b = new Bundle();
-                            b.putString("friend_id", roomData[2]);
-                            b.putString("text", "EXIT");
-                            msg.setData(b);
-                            handler.sendMessage(msg);
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//            try {
+//                while (true) {
+//                    String read = reader_.readLine();
+//                    Log.i("R: Received:", "R: Received before decrypt: " + read);
+//
+//                    cipher.init(Cipher.DECRYPT_MODE, key);
+//                    byte[] decrypt = cipher.doFinal(ByteUtils.toBytes(read, 16));
+//                    Log.i("복호", "복호 : " + ByteUtils.toHexString(decrypt));
+//                    read = new String(decrypt, 0, decrypt.length, "EUC-KR");
+//
+//                    if (read != null) {
+//                        Log.i("R: Received:", "R: Received:" + read);
+//                    }
+//                    StringTokenizer info = new StringTokenizer(read, "/");
+//                    String roomInfo = info.nextToken();
+//                    String [] roomData = roomInfo.split(":");
+//
+//                    if(roomData[0].equals(roomID)) {
+//                        if(!roomData[2].equals("LOGOUT") && !roomData[2].equals("LOGIN")){
+//                            Log.i(LOG_TAG, "senderID : " + roomData[2]);
+//                            Message msg = handler.obtainMessage();
+//                            Bundle b = new Bundle();
+//                            b.putString("friend_id", roomData[2]);
+//
+//                            b.putString("text", roomData[3]);
+//                            msg.setData(b);
+//                            handler.sendMessage(msg);
+//                        }
+//                        if(roomData[2].equals("EXIT")){
+//                            Message msg = handler.obtainMessage();
+//                            Bundle b = new Bundle();
+//                            b.putString("friend_id", roomData[2]);
+//                            b.putString("text", "EXIT");
+//                            msg.setData(b);
+//                            handler.sendMessage(msg);
+//                        }
+//                    }
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
         }
     };
 }
