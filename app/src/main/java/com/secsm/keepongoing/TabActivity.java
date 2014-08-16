@@ -1,4 +1,5 @@
 package com.secsm.keepongoing;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -59,35 +60,15 @@ public class TabActivity extends Activity {
     private ImageButton actionBarRoomTabNotifyBtn = null;
     private ImageButton actionBarRoomTabAddBtn = null;
     private Button tabRoomCreateBtn = null;
-//    Handler initHandler = new Handler()		// 기본 Tab 선택용 함들러 - UI 생성 후 0.01초후 실행
-//    {
-//        @Override
-//        public void handleMessage(Message msg)
-//        {
-//            if(linearTab == null)			// 레이아웃 가져오기
-//                linearTab = (LinearLayout)findViewById(R.id.linearTab);
-//
-//            if(linearTab != null)			// null이 아닐경우 초기화
-//            {
-//                View child = null;
-//                linearTab.removeAllViews();
-//                child = getLayoutInflater().inflate(R.layout.actionbar_room_tab, null);
-//                actionBarRoomTabNotifyBtn = (ImageButton) findViewById(R.id.action_bar_room_notify_btn);
-//                actionBarRoomTabAddBtn = (ImageButton) findViewById(R.id.action_bar_room_add_btn);
-//                linearTab.addView(child);
-//                linearTab.invalidate();
-//            }
-//            else								// null일경우 다시 0.01초후를 기약
-//                new InitThread().start();	// 0.01초후 InitHandler로 메시지 전송
-//
-//
-//            super.handleMessage(msg);
-//        }
-//    };
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab);
+
+        ActionBar bar = getActionBar();
+        bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.NAVIGATION_MODE_STANDARD);
 
         // layout (when the tab image button clicked, visibility change
         layoutStopwatch = (RelativeLayout) findViewById(R.id.tab_stopwatch_layout);
@@ -101,22 +82,6 @@ public class TabActivity extends Activity {
         tabRooms = (ImageButton) findViewById(R.id.imgBtn_tab_rooms);
         tabSettings= (ImageButton) findViewById(R.id.imgBtn_tab_settings);
 
-        // action bar
-//        tabRoomCreateBtn = (Button) findViewById(R.id.tab_room_create_btn);
-//        new InitThread().start();
-//        if(linearTab == null) {
-//            getActionBar().setCustomView(R.layout.actionbar_tab);
-//            getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-//
-//            View actionView = getActionBar().getCustomView();
-//            linearTab = (LinearLayout) actionView.findViewById(R.id.linearTab);
-//        }
-//        if(linearTab != null) {
-//            View child = null;
-//
-//            linearTab.addView(child);
-//            linearTab.addView(actionBarRoomTabAddBtn);
-//        }
         Log.i(LOG_TAG, "onCreate");
         mDBHelper = new DBHelper(this);
 

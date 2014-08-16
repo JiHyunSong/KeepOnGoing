@@ -20,7 +20,7 @@
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="title_activity_study_room">StudyRoomActivity</string>
     <string name="title_activity_notice">NoticeActivity</string>
-    <string name="title_activity_tab">TabActivity</string>
+    <string name="title_activity_tab">Keep On Going</string>
     <string name="title_activity_create_room">CreateRoomActivity</string>
     <string name="title_activity_my_activity2">MyActivity2</string>
     <string name="title_activity_alarm_main">Alarm_main</string>
