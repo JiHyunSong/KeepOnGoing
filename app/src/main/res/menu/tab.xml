@@ -6,11 +6,13 @@
         android:id="@+id/actionBarFirstBtn"
         android:icon="@drawable/ic_action_search"
         android:title="첫째"
+        android:visible="false"
         android:showAsAction="always"/>
 
     <item
         android:id="@+id/actionBarSecondBtn"
         android:icon="@drawable/ic_action_settings"
         android:title="둘째"
+        android:visible="false"
         android:showAsAction="always"/>
 </menu>

@@ -56,11 +56,7 @@ public class TabActivity extends Activity {
 
     private ImageButton tabStopwatch, tabFriends, tabRooms, tabSettings;
     private RelativeLayout layoutStopwatch, layoutFriends,layoutRooms,layoutSettings;
-    private LinearLayout linearTab = null;
-    private ImageButton actionBarRoomTabNotifyBtn = null;
-    private ImageButton actionBarRoomTabAddBtn = null;
-    private Button tabRoomCreateBtn = null;
-
+    private MenuItem actionBarFirstBtn, actionBarSecondBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -238,6 +234,8 @@ public class TabActivity extends Activity {
         layoutFriends.setVisibility(View.INVISIBLE);
         layoutRooms.setVisibility(View.INVISIBLE);
         layoutSettings.setVisibility(View.INVISIBLE);
+        actionBarFirstBtn.setVisible(false);
+        actionBarSecondBtn.setVisible(false);
 //        actionBarRoomTabNotifyBtn.setVisibility(View.INVISIBLE);
 //        actionBarRoomTabAddBtn.setVisibility(View.INVISIBLE);
     }
@@ -257,12 +255,16 @@ public class TabActivity extends Activity {
                     Log.i(LOG_TAG, "stopwatch tab");
                     setInvisibleBody();
                     layoutStopwatch.setVisibility(View.VISIBLE);
+                    actionBarSecondBtn.setIcon(R.drawable.ic_action_settings);
+                    actionBarSecondBtn.setVisible(true);
                     break;
 
                 case R.id.imgBtn_tab_friends:
                     Log.i(LOG_TAG, "friends tab");
                     setInvisibleBody();
                     layoutFriends.setVisibility(View.VISIBLE);
+                    actionBarSecondBtn.setIcon(R.drawable.ic_action_add_person);
+                    actionBarSecondBtn.setVisible(true);
                     break;
 
                 case R.id.imgBtn_tab_rooms:
@@ -271,6 +273,10 @@ public class TabActivity extends Activity {
 //                    actionBarRoomTabNotifyBtn.setVisibility(View.VISIBLE);
 //                    actionBarRoomTabAddBtn.setVisibility(View.VISIBLE);
                     layoutRooms.setVisibility(View.VISIBLE);
+                    actionBarFirstBtn.setIcon(R.drawable.ic_action_web_site);
+                    actionBarFirstBtn.setVisible(true);
+                    actionBarSecondBtn.setIcon(R.drawable.ic_action_new);
+                    actionBarSecondBtn.setVisible(true);
                     break;
 
                 case R.id.imgBtn_tab_settings:
@@ -380,6 +386,8 @@ public class TabActivity extends Activity {
 
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.tab, menu);
+        actionBarFirstBtn = menu.findItem(R.id.actionBarFirstBtn);
+        actionBarSecondBtn = menu.findItem(R.id.actionBarSecondBtn);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -389,7 +397,11 @@ public class TabActivity extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        if (id == R.id.actionBarFirstBtn) {
+
+            return true;
+        }
+        if (id == R.id.actionBarSecondBtn) {
             return true;
         }
         return super.onOptionsItemSelected(item);
