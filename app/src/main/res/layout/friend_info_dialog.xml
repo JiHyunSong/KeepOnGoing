@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/friend_info_dialog_rl1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp">
+
+        <ImageView
+            android:id="@+id/info_iconFriend"
+            android:layout_centerHorizontal="true"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_margin="5dp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/friend_info_dialog_rl2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/friend_info_dialog_rl1"
+        android:layout_toRightOf="@id/friend_info_dialog_rl1">
+
+        <TextView
+            android:id="@+id/info_txtFriendNickname_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="닉네임 : " />
+
+        <TextView
+            android:id="@+id/info_txtFriendNickname"
+            style="?android:textAppearanceLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/info_txtFriendNickname_tv"
+            android:gravity="left"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/info_txtTargetTime_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/info_txtFriendNickname"
+            android:gravity="right"
+            android:text="오늘의 목표시간 : " />
+
+        <TextView
+            android:id="@+id/info_txtTargetTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/info_txtTargetTime_tv"
+            android:gravity="left"
+            android:text="" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

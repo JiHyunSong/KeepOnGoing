@@ -76,14 +76,15 @@
                 android:text="@string/action_sign_up"
                 android:textStyle="bold" />
 
-            <Button
+            <com.beardedhen.androidbootstrap.BootstrapButton
                 android:id="@+id/easter_egg_button"
-                style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:layout_gravity="center"
                 android:text="이스터애그"
-                android:textStyle="bold"
+                bootstrapbutton:bb_icon_right="fa-android"
+                bootstrapbutton:bb_type="success"
                 android:visibility="gone" />
         </LinearLayout>
     </ScrollView>

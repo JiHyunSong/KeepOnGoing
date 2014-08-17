@@ -2,7 +2,10 @@ package com.secsm.keepongoing;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,7 +18,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -62,6 +67,8 @@ public class TabActivity extends Activity {
     private RelativeLayout layoutStopwatch, layoutFriends, layoutRooms, layoutSettings;
     private MenuItem actionBarFirstBtn, actionBarSecondBtn;
 
+    ArrayList<FriendNameAndIcon> mockFriends;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +107,7 @@ public class TabActivity extends Activity {
             roomList.setAdapter(mockRoomArrayAdapter);
 
             // mock quiz
-            ArrayList<FriendNameAndIcon> mockFriends = new ArrayList<FriendNameAndIcon>();
+            mockFriends = new ArrayList<FriendNameAndIcon>();
 //            ArrayList<String> mockFriends = new ArrayList<String>();
 //            mockFriends.add(String profile_path, String name, String targetTime);
             mockFriends.add(new FriendNameAndIcon("", "temp1", "2011-08-22 12:09:36"));
@@ -344,6 +351,16 @@ public class TabActivity extends Activity {
     };
 
 
+    ListView.OnItemLongClickListener itemLongClickListener = new ListView.OnItemLongClickListener() {
+        int selectedPosition = 0;
+
+        public boolean onItemLongClick(AdapterView<?> adapterView, View v,
+                                       int pos, long arg3) {
+
+            return false;
+        }
+    };
+
     /* click listener for setting tab */
     ListView.OnItemClickListener itemClickListener = new ListView.OnItemClickListener() {
 
@@ -352,12 +369,10 @@ public class TabActivity extends Activity {
             if (adapterView.getId() == R.id.friend_list) {
                 Log.i(LOG_TAG, "tab2, friends Clicked");
                 Log.i(LOG_TAG, "position : " + position);
-                // TODO : DEBUG
-                if (position == 3) {
-                    Intent intent = new Intent(TabActivity.this, AddStudyRoomActivity.class);
-                    startActivity(intent);
-//                    TabActivity.this.finish();
-                }
+
+                mDialog = createInflaterDialog("", mockFriends.get(position - 1).getName(), mockFriends.get(position - 1).getTargetTime());
+                mDialog.show();
+
 
             } else if (adapterView.getId() == R.id.room_list) {
                 Log.i(LOG_TAG, "tab3, rooms Clicked");
@@ -396,6 +411,57 @@ public class TabActivity extends Activity {
             }
         }
     };
+
+    /**
+     * Infalter 다이얼로그
+     *
+     * @return ab
+     */
+    private AlertDialog mDialog = null;
+    private ImageView info_iconFriend = null;
+    private TextView info_txtFriendNickname = null;
+    private TextView info_txtTargetTime = null;
+
+    private AlertDialog createInflaterDialog(String profileUrl, String name, String targetTime) {
+        final View innerView = getLayoutInflater().inflate(R.layout.friend_info_dialog, null);
+        AlertDialog.Builder ab = new AlertDialog.Builder(this);
+        info_iconFriend = (ImageView) innerView.findViewById(R.id.info_iconFriend);
+        info_txtFriendNickname = (TextView) innerView.findViewById(R.id.info_txtFriendNickname);
+        info_txtTargetTime = (TextView) innerView.findViewById(R.id.info_txtTargetTime);
+
+        info_iconFriend.setBackgroundResource(R.drawable.ic_action_add_group);
+        info_txtFriendNickname.setText(name);
+        info_txtTargetTime.setText(targetTime);
+        ab.setTitle("친구정보");
+        ab.setView(innerView);
+
+        ab.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface arg0, int arg1) {
+                setDismiss(mDialog);
+            }
+        });
+
+        ab.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface arg0, int arg1) {
+                setDismiss(mDialog);
+            }
+        });
+
+        return ab.create();
+    }
+
+
+    /**
+     * 다이얼로그 종료
+     *
+     * @param dialog
+     */
+    private void setDismiss(Dialog dialog) {
+        if (dialog != null && dialog.isShowing())
+            dialog.dismiss();
+    }
 
     @Override
     protected void onResume() {

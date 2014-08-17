@@ -15,4 +15,36 @@ public class FriendNameAndIcon {
         this.name = name;
         this.targetTime = targetTime;
     }
+
+    public int getIcon() {
+        return icon;
+    }
+
+    public void setIcon(int icon) {
+        this.icon = icon;
+    }
+
+    public String getProfile_path() {
+        return profile_path;
+    }
+
+    public void setProfile_path(String profile_path) {
+        this.profile_path = profile_path;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getTargetTime() {
+        return targetTime;
+    }
+
+    public void setTargetTime(String targetTime) {
+        this.targetTime = targetTime;
+    }
 }

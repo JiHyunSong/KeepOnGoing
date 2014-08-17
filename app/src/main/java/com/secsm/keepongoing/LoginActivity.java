@@ -18,6 +18,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 
@@ -44,7 +45,7 @@ public class LoginActivity extends Activity {
     private String savedNick;
     private Button mSignUpButton;
     private Button mSignInButton;
-    private Button easterEggButton;
+    private BootstrapButton easterEggButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,22 +86,6 @@ public class LoginActivity extends Activity {
             }
         });
 
-        if (KogPreference.DEBUG_MODE) {
-            easterEggButton = (Button) findViewById(R.id.easter_egg_button);
-            // go to Register page
-            easterEggButton.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-
-                    String easter_msg = "안녕";
-//                    SimpleDialogFragment.createBuilder(LoginActivity.this, android.support.v4.app.FragmentManager())
-//                            .setMessage(easter_msg).show();
-
-
-                }
-            });
-
-        }
-
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
@@ -111,6 +96,24 @@ public class LoginActivity extends Activity {
         } else {
             savedNick = KogPreference.getNickName(LoginActivity.this);
             mNicknameView.setText(savedNick);
+        }
+
+        if (KogPreference.DEBUG_MODE) {
+            easterEggButton = (BootstrapButton) findViewById(R.id.easter_egg_button);
+            easterEggButton.setVisibility(View.VISIBLE);
+            // go to Register page
+            easterEggButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+
+                    String easter_msg = "안녕";
+//                    SimpleDialogFragment.createBuilder(LoginActivity.this, android.support.v4.app.FragmentManager())
+//                            .setMessage(easter_msg).show();
+                    GoNextPage(mNicknameView.getText().toString(), mPasswordView.getText().toString());
+
+
+                }
+            });
+
         }
 
     }

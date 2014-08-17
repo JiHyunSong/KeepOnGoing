@@ -127,8 +127,8 @@ public class AddFriendActivity extends Activity {
     }
 
     private void GoBackPage() {
-        Intent intent = new Intent(AddFriendActivity.this, TabActivity.class);
-        startActivity(intent);
+//        Intent intent = new Intent(AddFriendActivity.this, TabActivity.class);
+//        startActivity(intent);
         AddFriendActivity.this.finish();
     }
 
