@@ -1,4 +1,5 @@
 package com.secsm.keepongoing;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +27,7 @@ import com.secsm.keepongoing.Alarm.Preference;
 import com.secsm.keepongoing.Alarm.alram_list;
 import com.secsm.keepongoing.DB.DBHelper;
 import com.secsm.keepongoing.Quiz.Quiz_Main;
+import com.secsm.keepongoing.Quiz.Solve_Main;
 import com.secsm.keepongoing.Shared.KogPreference;
 
 import java.text.SimpleDateFormat;
@@ -216,6 +218,15 @@ public class TabActivity extends Activity {
                 startActivity(intent);
             }
         });
+        Button btnbye = (Button) findViewById(R.id.button3);
+        btnbye.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                //@preference로 flag 설정
+                Intent intent = new Intent(TabActivity.this, Solve_Main.class);
+                startActivity(intent);
+            }
+        });
+
 
 
 
@@ -299,15 +310,19 @@ public class TabActivity extends Activity {
 
             }
         });
+        //@민수 타이머 완료
         Button ring = (Button) findViewById(R.id.ringring);
         ring.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 Preference.putLong(TabActivity.this, "diff",0);
                 _text.setText("00:00:00");
+                mtoggle.setChecked(false);
+                mtoggle.setBackgroundResource(R.drawable.selector_tab_play_button);
+                Preference.putBoolean(TabActivity.this, "toggle", false);
 
                 if(timer != null) {
                     timer.cancel();
-                    Log.i(LOG_TAG, "타이머 스탑");
+                    Log.i(LOG_TAG, "타이머 완료");
                     timer = null;
                 }
                 //Intent intent = new Intent(MainActivity.this, Klaxon.class);

@@ -2,7 +2,9 @@ package com.secsm.keepongoing.Alarm;
 
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -27,7 +29,6 @@ public class alert extends Activity{
     private static final long[] sVibratePattern = new long[] { 500, 500 };   // 진동 패턴 정의(0.5초 진동, 0.5초 쉼)
 
     private Ringtone r;
-
     private AlarmManager mManager;
     @Override
     
@@ -39,15 +40,18 @@ super.onCreate(savedInstanceState);
         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         r = RingtoneManager.getRingtone(getApplicationContext(), notification);
         r.play();
-        Date mCalendar=new Date();
 
-        Log.e("minsu) : AlertActivity : ", ""+mCalendar.toString());
-        Toast.makeText(this, "set" + mCalendar.toString(), 2).show();
+        mManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
 
         //ringtone();
         Button btnsnooze = (Button)findViewById(R.id.snooze);
         btnsnooze.setOnClickListener(new Button.OnClickListener() {
                 public void onClick(View v) {
+                    Date mCalendar=new Date();
+                    mManager.set(AlarmManager.RTC_WAKEUP, mCalendar.getTime()+10*60*1000, pendingIntent());
+                    Log.e("minsu) : AlertActivity : ", "" + mCalendar.toString());
+                    Toast.makeText(alert.this, "10분뒤에 울립니다.", 2).show();
                     r.stop();
                     mVibrator.cancel();   // 진동 중지
                     finish();
@@ -57,13 +61,21 @@ super.onCreate(savedInstanceState);
         Button btndismiss = (Button)findViewById(R.id.dismiss);
         btndismiss.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                mVibrator.cancel();   // 진동 중지finish();
+                Date mCalendar=new Date();
+                mManager.set(AlarmManager.RTC_WAKEUP, mCalendar.getTime()+24*60*60*1000, pendingIntent());
+                Log.e("minsu) : AlertActivity : ", "" + mCalendar.toString());
+                Toast.makeText(alert.this, "기상 완료", 2).show();
                 r.stop();
+                mVibrator.cancel();   // 진동 중지
                 finish();
             }
         });
     }
-
+    private PendingIntent pendingIntent() {
+        Intent i = new Intent(alert.this, alert.class);
+        PendingIntent pi = PendingIntent.getActivity(alert.this, 0, i, 0);
+        return pi;
+    }
     @Override
     protected void onPause() {
         super.onPause();
@@ -80,20 +92,6 @@ super.onCreate(savedInstanceState);
         }
         return super.onKeyDown(keyCode, event);
     }//다른 입력 무시
-//
-//private void  ringtone() {
-//    Uri alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-//    mMediaPlayer = new MediaPlayer();
-//    mMediaPlayer.setDataSource(this, alert);
-//    final AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-//
-//    if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
-//        player.setAudioStreamType(AudioManager.STREAM_ALARM);
-//        player.setLooping(true);
-//        player.prepare();
-//        player.start();
-//    }
-//}
 
 
    private void vibrate_function(){

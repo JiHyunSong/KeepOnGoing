@@ -29,5 +29,17 @@
     <string name="title_activity_db">DB</string>
     <string name="title_activity_klaxon">Klaxon</string>
     <string name="title_activity_quiz__main">Quiz_Main</string>
+    <string name="subject_prompt">Choose a subject</string>
+
+    <string-array name="subject">
+        <item>a</item>
+        <item>b States</item>
+        <item>c</item>
+        <item>d</item>
+        <item>e</item>
+        <item>f</item>
+    </string-array>
+
+    <string name="title_activity_solve__main">Solve_Main</string>
 
 </resources>

@@ -21,6 +21,8 @@
             android:id="@+id/buttongroup"
             android:gravity="center_horizontal">
 
+
+
             <com.beardedhen.androidbootstrap.BootstrapButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -56,24 +58,53 @@
                 android:id="@+id/quiz_rl"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
-
-                <TextView
+                <RelativeLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="문제"
-                    android:textSize="20dp"
-                    android:id="@+id/문제"
-                    />
+                    android:id="@+id/problemandsubject"
+                    android:gravity="bottom"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:text="문제"
+                        android:textSize="20dp"
+                        android:id="@+id/문제"
+                        />
+
+                    <Spinner
+                        android:layout_alignParentRight="true"
+                        android:id="@+id/spinner1"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginRight="20dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:entries="@array/subject"
+                        android:prompt="@string/subject_prompt" />
+
+                    <TextView
+                        android:layout_toLeftOf="@id/spinner1"
+                        android:layout_width="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginRight="20dp"
+                        android:layout_height="wrap_content"
+                        android:text="과목"
+                        android:textSize="20dp"
+                        android:id="@+id/subject"
+                        />
+
+                </RelativeLayout>
 
                 <com.beardedhen.androidbootstrap.BootstrapEditText
-                    android:layout_below="@id/문제"
+                    android:layout_below="@id/problemandsubject"
                     android:id="@+id/txtOne"
 
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:lines="10"
-                    android:maxLines="10"
+                    android:lines="9"
+                    android:maxLines="9"
                     android:hint="rounded"
                     bootstrapbutton:be_roundedCorners="true"
                     android:gravity="top|left"
@@ -99,7 +130,8 @@
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="제출"/>
+                    android:text="제출"
+                    android:id="@+id/btnSubmit"/>
                 </RelativeLayout>
             </RelativeLayout>
 

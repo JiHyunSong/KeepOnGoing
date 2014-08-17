@@ -38,6 +38,15 @@ public class listAdapter extends BaseAdapter {
         this.infoList = arrays;
     }
 
+    public void addQuizData(Quiz_data data){
+        infoList.add(data);
+        refresh();
+    }
+
+    public void refresh(){
+        this.notifyDataSetChanged();
+    }
+
     // Adapter가 관리할 Data의 개수를 설정 합니다.
     @Override
     public int getCount() {
@@ -60,14 +69,8 @@ public class listAdapter extends BaseAdapter {
 
     // ListView의 뿌려질 한줄의 Row를 설정 합니다.
     @Override
-
-
-
-
-
     public View getView(final int position, View convertview, ViewGroup parent) {
         View v = convertview;
-
 
         Log.i("minsu)", "minsu) check position : " + position);
 
@@ -154,14 +157,17 @@ public class listAdapter extends BaseAdapter {
      //     viewHolder.TFGroup=(RadioGroup)v.findViewById(R.id.tfgroup);
           viewHolder.Truebtn=(RadioButton)v.findViewById(R.id.True);
           viewHolder.Falsebtn=(RadioButton)v.findViewById(R.id.False);
+          viewHolder.TFGroup = (RadioGroup)v.findViewById(R.id.tfgroup);
 
-
-
+//
+//
+//
           viewHolder.Truebtn.setOnClickListener(new View.OnClickListener() {
               public void onClick(View v) {
                   int position=(Integer)v.getTag();
                   infoList.get(position).truebtn=true;
                   infoList.get(position).falsebtn=false;
+                  infoList.get(position).isChecked = true;
                   Log.e("minsu)", "minsu) check conditon : " + "rbtn  with postion"+position+" true condition: "+infoList.get(position).truebtn+" false condition: "+infoList.get(position).falsebtn);
               }
           });
@@ -172,58 +178,10 @@ public class listAdapter extends BaseAdapter {
                   int position=(Integer)v.getTag();
                   infoList.get(position).truebtn=false;
                   infoList.get(position).falsebtn=true;
+                  infoList.get(position).isChecked = true;
                   Log.e("minsu)", "minsu) check conditon : " + "rbtn  with postion"+position+" true condition: "+infoList.get(position).truebtn+" false condition: "+infoList.get(position).falsebtn);
               }
           });
-
-
-
-        /*  viewHolder.Truebtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-              @Override
-              public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                  int position=(Integer)buttonView.getTag();
-                  infoList.get(position).truebtn=isChecked;
-                  infoList.get(position).falsebtn=!isChecked;
-                     Log.e("minsu)", "minsu) check conditon : " + "rbtn  with postion"+position+" true condition: "+infoList.get(position).truebtn+" false condition: "+infoList.get(position).falsebtn);
-
-              }
-
-          });*/
-       /*   viewHolder.Falsebtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-              @Override
-              public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                  int position=(Integer)buttonView.getTag();
-                  infoList.get(position).truebtn=!isChecked;
-                  infoList.get(position).falsebtn=isChecked;
-                        Log.e("minsu)", "minsu) check conditon : " + "rbtn  with postion"+position+" true condition: "+infoList.get(position).truebtn+" false condition: "+infoList.get(position).falsebtn);
-
-              }
-
-          });*/
-
-/*
-
-          viewHolder.TFGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-              public void onCheckedChanged(RadioGroup group, int checkedId) {
-                  int position = (Integer) group.getTag();
-                  if (checkedId == R.id.True) {
-                      infoList.get(position).truebtn = true;
-                      infoList.get(position).falsebtn = false;
-                  } else {
-                      infoList.get(position).truebtn = false;
-                      infoList.get(position).falsebtn = true;
-                  }
-
-
-              }
-          });
-*/
-
-
-
-
            v.setTag(viewHolder);
      }
       else {
@@ -248,8 +206,12 @@ public class listAdapter extends BaseAdapter {
         viewHolder.check4.setChecked(infoList.get(position).chk4);
         viewHolder.check5.setChecked(infoList.get(position).chk5);
         viewHolder.essay.setText(infoList.get(position).essay);
-        viewHolder.Truebtn.setChecked(infoList.get(position).truebtn);
-        viewHolder.Falsebtn.setChecked(infoList.get(position).falsebtn);
+        viewHolder.TFGroup.clearCheck();
+            viewHolder.Truebtn.setChecked(infoList.get(position).truebtn);
+            viewHolder.Falsebtn.setChecked(infoList.get(position).falsebtn);
+
+
+        Log.e("minsu) : ","minsu) tf init : position" +position + " t/f : "+infoList.get(position).truebtn + " / "+infoList.get(position).falsebtn);
 
 
 if(infoList.get(position).name=="essay") {
@@ -299,13 +261,13 @@ else if(infoList.get(position).name=="tf"){
     // Adapter가 관리하는 Data List를 교체 한다.
     // 교체 후 Adapter.notifyDataSetChanged() 메서드로 변경 사실을
     // Adapter에 알려 주어 ListView에 적용 되도록 한다.
-    public void setArrayList(ArrayList<Quiz_data> arrays){
-        this.infoList = arrays;
-    }
+//    public void setArrayList(ArrayList<Quiz_data> arrays){
+//        this.infoList = arrays;
+//    }
 
-    public ArrayList<Quiz_data> getArrayList(){
-        return infoList;
-    }
+//    public ArrayList<Quiz_data> getArrayList(){
+//        return infoList;
+//    }
 
     private View.OnClickListener buttonClickListener = new View.OnClickListener() {
         @Override

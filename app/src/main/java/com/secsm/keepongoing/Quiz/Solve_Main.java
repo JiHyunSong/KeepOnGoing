@@ -2,7 +2,6 @@ package com.secsm.keepongoing.Quiz;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -10,37 +9,37 @@ import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Spinner;
-import android.widget.Toast;
+import android.widget.TextView;
 
-import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.secsm.keepongoing.R;
 
 import java.util.ArrayList;
 
-public class Quiz_Main extends Activity {
-    private ArrayAdapter<String> _arrAdapter ;
+public class Solve_Main extends Activity {
+    private ArrayAdapter<String> _arrAdapter;
     private ListView listView;
-    public String LOG_TAG = "QUIZ MAIN";
+    public String LOG_TAG = "Solve MAIN";
     listAdapter mAdapter = null;
-    private Spinner spinner1, spinner2;
     private Button btnSubmit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_quiz__main);
-        list  = new ArrayList<Quiz_data>();
-        //settingListView();
+        setContentView(R.layout.activity_solve__main);
+        list = new ArrayList<Quiz_data>();
+        settingTextView();
+        list.add(new Quiz_data("a"));
+        list.add(new Quiz_data("b"));
+        list.add(new Quiz_data("c"));
+
+
         addListenerOnButton();
-        addListenerOnSpinnerItemSelection();
-
-
         mAdapter = new listAdapter(this, list);
-        listView = (ListView) findViewById(R.id.listView_Quiz) ;
+        listView = (ListView) findViewById(R.id.listView_Quiz_solve);
         //listView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-        listView.setAdapter(mAdapter ) ;
+        listView.setAdapter(mAdapter);
 
+/*
 
         BootstrapButton multiplechoice = (BootstrapButton) findViewById(R.id.multiplechoice);
         multiplechoice.setOnClickListener(new BootstrapButton.OnClickListener() {
@@ -64,12 +63,17 @@ public class Quiz_Main extends Activity {
                 mAdapter.addQuizData(new Quiz_data("tf"));
             }
         });
-
+*/
 
 
     }
 
+public void settingTextView(){
+    TextView textview=(TextView) findViewById(R.id.textview_solve);
+    textview.setText("aaa\naaa\naaaa\naaaaaaaaaaa\naaaaaaaaaaaaaa\naaaaaaaaaaa\naaaaaaa\naaaa\naaaaaaa\naaaaa\naaaaaa\naa\naaaaaaaaaaaa\naaaaaaa\\nnaaaaaa\naa\naaa");
 
+
+}
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -88,51 +92,36 @@ public class Quiz_Main extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
+
     protected void onResume() {
         super.onResume();
         settingListView();
     }
+
     String[] arr = null;
     ArrayList<Quiz_data> list;
 
     private void settingListView() {
 
-      //  list  = new ArrayList<Quiz_data>();
-       // list.add(new Quiz_data(""+list.size()));
-//        listView = (ListView) findViewById(R.id.listView_Quiz) ;
-//        listView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-//        listView.setAdapter(new listAdapter(this, list) ) ;
         mAdapter.refresh();
     }
 
-    private void refresh( String $inputValue ) {
-        _arrAdapter.add( $inputValue ) ;
-        _arrAdapter.notifyDataSetChanged() ;
+    private void refresh(String $inputValue) {
+        _arrAdapter.add($inputValue);
+        _arrAdapter.notifyDataSetChanged();
     }
 
 
 
-
-    // add items into spinner dynamically
-    public void addListenerOnSpinnerItemSelection() {
-        spinner1 = (Spinner) findViewById(R.id.spinner1);
-        spinner1.setOnItemSelectedListener(new CustomOnItemSelectedListener());
-        // get the selected dropdown list value
-    }
     public void addListenerOnButton() {
 
-        spinner1 = (Spinner) findViewById(R.id.spinner1);
-        btnSubmit = (Button) findViewById(R.id.btnSubmit);
+        btnSubmit = (Button) findViewById(R.id.btnSubmit_solve);
         btnSubmit.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(Quiz_Main.this,
-                        "OnClickListener : " +"\nSpinner 1 : " + String.valueOf(spinner1.getSelectedItem()),Toast.LENGTH_SHORT).show();
             }
 
         });
     }
-
-
-
 }
+

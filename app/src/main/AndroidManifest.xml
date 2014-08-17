@@ -83,9 +83,14 @@
         <activity
             android:name=".Quiz.Quiz_Main"
             android:label="@string/title_activity_quiz__main"
-            android:windowSoftInputMode="adjustResize"></activity>
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".Quiz.Solve_Main"
+            android:label="@string/title_activity_solve__main" >
+        </activity>
     </application>
-    <uses-permission android:name="android.permission.SET_TIME_ZONE"/>
+
+    <uses-permission android:name="android.permission.SET_TIME_ZONE" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
 </manifest>
