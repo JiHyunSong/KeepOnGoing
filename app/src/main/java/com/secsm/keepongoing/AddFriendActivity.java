@@ -76,7 +76,10 @@ public class AddFriendActivity extends Activity {
 
         //TODO : check POST/GET METHOD and get_URL
         String get_url = KogPreference.REST_URL +
-                "User";
+                "Friend" +
+                "?nickname=" + KogPreference.getNickName(AddFriendActivity.this) +
+                "&nickname_f=" + mf_nickName;
+
         Log.i(LOG_TAG, "URL : " + get_url);
 
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, get_url, null,

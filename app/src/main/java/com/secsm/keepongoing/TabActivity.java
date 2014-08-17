@@ -77,8 +77,11 @@ public class TabActivity extends Activity {
         setContentView(R.layout.activity_tab);
 
         MyVolley.init(TabActivity.this);
+
         ActionBar bar = getActionBar();
         bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.NAVIGATION_MODE_STANDARD);
+
+
 
         // layout (when the tab image button clicked, visibility change
         layoutStopwatch = (RelativeLayout) findViewById(R.id.tab_stopwatch_layout);
