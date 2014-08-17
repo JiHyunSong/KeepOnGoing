@@ -211,7 +211,7 @@ public final class KogPreference {
 
     public static String getRid(final Context context) {
         try {
-            return getString(context, PASSWORD_TAG);
+            return getString(context, RID_TAG);
         } catch (ClassCastException e) {
             Log.e(LOG_TAG, "getPassword fail, ClassCaseException : " + e.getStackTrace());
             return "";
@@ -228,7 +228,7 @@ public final class KogPreference {
 
     public static void setRegId(final Context context, final String value) {
         try {
-            setString(context, RID_TAG, value);
+            setString(context, GCM_TAG, value);
         } catch (ClassCastException e) {
             Log.e(LOG_TAG, "setPassword ClassCaseException : " + e.getStackTrace());
         }

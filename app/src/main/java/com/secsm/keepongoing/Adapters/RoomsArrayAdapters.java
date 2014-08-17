@@ -58,13 +58,14 @@ public class RoomsArrayAdapters extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.type.setText(roomArrayList.get(position).type);
 
         viewHolder.roomname.setText(roomArrayList.get(position).roomname);
         if("liferoom".equals(roomArrayList.get(position).type))
         {
+            viewHolder.type.setText("생활 스터디방");
             viewHolder.start_time.setText("");
         }else{
+            viewHolder.type.setText("과목 스터디방");
             viewHolder.start_time.setText(roomArrayList.get(position).start_time);
         }
         return convertView;
