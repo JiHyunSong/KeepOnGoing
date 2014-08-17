@@ -123,8 +123,8 @@ public class Alarm_main extends Activity implements DatePicker.OnDateChangedList
     private void setAlarm() {
         DBContactHelper helper = new DBContactHelper(Alarm_main.this);
         helper.updateContact(new Contact(1, mCalendar.getTime().getHours(), mCalendar.getTime().getMinutes()));
-
            mManager.set(AlarmManager.RTC_WAKEUP, mCalendar.getTimeInMillis(), pendingIntent());
+           Log.e("minsu)","minsu ) setalarm event: "+mCalendar.getTime().toString());
              Toast.makeText(this, "set"+mCalendar.getTime().toString() , 2).show();
         finish();
 

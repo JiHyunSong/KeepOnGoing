@@ -37,6 +37,7 @@ public class alert extends Activity{
 super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alert);
         vibrate_function();
+
         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         r = RingtoneManager.getRingtone(getApplicationContext(), notification);
         r.play();

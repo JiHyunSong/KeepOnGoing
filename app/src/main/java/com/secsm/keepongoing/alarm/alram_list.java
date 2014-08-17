@@ -23,6 +23,7 @@ public class alram_list extends Activity implements View.OnClickListener {
     }
     @Override
     protected void onResume() {
+
         super.onResume();
         settingListView();
     }
