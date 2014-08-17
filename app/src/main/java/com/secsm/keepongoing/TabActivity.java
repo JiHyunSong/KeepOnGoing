@@ -257,22 +257,22 @@ public class TabActivity extends Activity {
             }
         });
 
-        Button go_to_alram = (Button) findViewById(R.id.button1);
-        go_to_alram.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-                //@preference로 flag 설정
-                Preference.putBoolean(TabActivity.this,"Mflag", true);
-
-
-                //@preference를 불러와서 flag 확인후 set이 안되있으면 set으로 함
-
-                Intent intent = new Intent(TabActivity.this, alram_list.class);
-                //Intent intent = new Intent(MainActivity.this, Alarm_main.class);
-                startActivity(intent);
-
-
-            }
-        });
+//        Button go_to_alram = (Button) findViewById(R.id.button1);
+//        go_to_alram.setOnClickListener(new Button.OnClickListener() {
+//            public void onClick(View v) {
+//                //@preference로 flag 설정
+//                Preference.putBoolean(TabActivity.this,"Mflag", true);
+//
+//
+//                //@preference를 불러와서 flag 확인후 set이 안되있으면 set으로 함
+//
+//                Intent intent = new Intent(TabActivity.this, alram_list.class);
+//                //Intent intent = new Intent(MainActivity.this, Alarm_main.class);
+//                startActivity(intent);
+//
+//
+//            }
+//        });
         //@민수 타이머 완료
         Button ring = (Button) findViewById(R.id.ringring);
         ring.setOnClickListener(new Button.OnClickListener() {
@@ -485,6 +485,17 @@ public class TabActivity extends Activity {
         @Override
         public boolean onMenuItemClick(MenuItem mi){
             Log.i(LOG_TAG, "onMenuItemClicked ab_stopwatchTab_settings_listener");
+            //@preference로 flag 설정
+            Preference.putBoolean(TabActivity.this,"Mflag", true);
+
+
+            //@preference를 불러와서 flag 확인후 set이 안되있으면 set으로 함
+
+            Intent intent = new Intent(TabActivity.this, alram_list.class);
+            //Intent intent = new Intent(MainActivity.this, Alarm_main.class);
+            startActivity(intent);
+
+
             return true;
         }
     };
