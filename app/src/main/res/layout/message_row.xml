@@ -42,6 +42,7 @@
             android:layout_toRightOf="@id/msg_person_photo"
             android:background="@drawable/round_corner2"
             android:clickable="false"
+            android:minHeight="10dp"
             android:focusable="false"
             android:padding="5dp"
             android:layout_margin="5dp"

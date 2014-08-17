@@ -6,9 +6,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.secsm.keepongoing.R;
@@ -19,6 +22,7 @@ import java.util.ArrayList;
 /* my customized adapter for listview */
 public class MessageAdapter extends ArrayAdapter<Msg> {
     private static String serverFilePath = "http://203.252.195.122/files/";
+    private ViewHolder viewHolder = null;
     private ArrayList<Msg> items;
     Context mContext;
     public MessageAdapter(Context context, int textViewResourceId, ArrayList<Msg> items){
@@ -33,18 +37,37 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
         {
             LayoutInflater vi = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = vi.inflate(R.layout.message_row, null);
+
+            viewHolder = new ViewHolder();
+
+
+            viewHolder.tt = (TextView) v.findViewById(R.id.msg_topText);
+            viewHolder.wv = (WebView) v.findViewById(R.id.msg_bottomTextWebView);
+//            android:layout_width="match_parent"
+//            android:layout_height="wrap_content"
+//            viewHolder.wv.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
+            viewHolder.time  = (TextView) v.findViewById(R.id.msg_time);
+            viewHolder.iv = (ImageView) v.findViewById(R.id.msg_person_photo);
+            viewHolder.wv_rl = (RelativeLayout.LayoutParams)viewHolder.wv.getLayoutParams();
+            viewHolder.wv_rl.addRule(RelativeLayout.RIGHT_OF, R.id.msg_person_photo);
+            viewHolder.wv_rl.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+            viewHolder.wv_rl.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+
+            v.setTag(viewHolder);
+        }else
+        {
+            // reuse
+            viewHolder = (ViewHolder) v.getTag();
+
         }
+
         Msg m = items.get(position);
         if( m != null ){
-            TextView tt = (TextView) v.findViewById(R.id.msg_topText);
-            WebView wv = (WebView) v.findViewById(R.id.msg_bottomTextWebView);
-            TextView time  = (TextView) v.findViewById(R.id.msg_time);
-            ImageView iv = (ImageView) v.findViewById(R.id.msg_person_photo);
 
-            if(tt != null && wv != null && time != null && iv != null){
+            if(viewHolder.tt != null && viewHolder.wv != null && viewHolder.time != null && viewHolder.iv != null){
                 if("나 : ".equals(m.getName())){
-                    tt.setText(m.getTime());
-                    wv.setBackgroundColor(0); // 투명처리
+                    viewHolder.tt.setText(m.getTime());
+                    viewHolder.wv.setBackgroundColor(0); // 투명처리
                     String htmlForm1 = "<metahttp-equiv='Content-Type' content='text'/html; charset = utf-8 /> " +
                             "<html>" +	"<body bgcolor='#ffc0cb'> ";
                     String htmlFormText = m.getText();
@@ -53,9 +76,13 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
 //                    for(int i = 0 ; i < emoArr.length; i++){
 //                        htmlFormText = htmlFormText.replaceAll(repEmoArr[i], htmlEmoArr[i]);
 //                    }
-                    wv.loadDataWithBaseURL("file:///android_asset/", htmlForm1 + htmlFormText + htmlForm2 , "text/html", "utf-8", "file:///android_assest/");
+                    viewHolder.wv.loadUrl("about:blank");
+                    viewHolder.wv.invalidate();
+                    // TODO : check scrolling
 
-                    time.setText(m.getName());
+                    viewHolder.wv.loadDataWithBaseURL("file:///android_asset/", htmlForm1 + htmlFormText + htmlForm2 , "text/html", "utf-8", "file:///android_assest/");
+
+                    viewHolder.time.setText(m.getName());
 
                     // TODO : profile image path download from server
 //                    String fileName = imgFromServ(myID);
@@ -76,16 +103,16 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
                             }
                         }else
                         {
-                            iv.setBackgroundResource(R.drawable.profile_default);
+                            viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
                         }
                     }else
                     {
-                        iv.setBackgroundResource(R.drawable.profile_default);
+                        viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
                     }
 
                 }else{
-                    tt.setText(m.getName());
-                    wv.setBackgroundColor(0); // 투명처리
+                    viewHolder.tt.setText(m.getName());
+                    viewHolder.wv.setBackgroundColor(0); // 투명처리
                     String htmlForm1 = "<metahttp-equiv='Content-Type' content='text'/html; charset = utf-8 /> " +
                             "<html>" +	"<body> ";
                     String htmlFormText = m.getText();
@@ -96,7 +123,7 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
 //                    }
 //                    wv.loadDataWithBaseURL("file:///android_asset/", htmlForm1 + htmlFormText + htmlForm2 , "text/html", "utf-8", "file:///android_assest/");
 
-                    time.setText(m.getTime());
+                    viewHolder.time.setText(m.getTime());
 
                     //        				String fileName = m.getFileName();
                     // TODO : profile image path download from server
@@ -117,18 +144,39 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
                             }
                         }else
                         {
-                            iv.setBackgroundResource(R.drawable.profile_default);
+                            viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
                         }
                     }else
                     {
-                        iv.setBackgroundResource(R.drawable.profile_default);
+                        viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
                     }
 
                 }
             }
+            viewHolder.wv_rl.addRule(RelativeLayout.RIGHT_OF, R.id.msg_person_photo);
+            viewHolder.wv_rl.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+            viewHolder.wv_rl.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
 
+
+//            viewHolder.wv.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+
+//            ViewGroup.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+//            viewHolder.wv.setLayoutParams(lp);
+//            viewHolder.wv.postInvalidate();
+//            v.postInvalidate();
         }
         return v;
     }
+
+    class ViewHolder{
+        public Bitmap friend_profile = null;
+        public String friend_nickname = null;
+        public TextView tt = null;
+        public WebView wv = null;
+        public RelativeLayout.LayoutParams wv_rl = null;
+        public TextView time = null;
+        public ImageView iv = null;
+    }
+
 
 }
