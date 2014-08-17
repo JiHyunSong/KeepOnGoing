@@ -7,10 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.secsm.keepongoing.R;
 
 import java.util.ArrayList;
-import com.secsm.keepongoing.R;
 
 /**
  * Created by KMINSU-PC-W1 on 2014-08-11.
@@ -70,13 +70,13 @@ public class AlramAdapter extends BaseAdapter{
                         Intent intent = new Intent(v.getContext(), Alarm_main.class);
                         intent.putExtra("position", position);
                         v.getContext().startActivity(intent);
-                        Toast.makeText(v.getContext(), "선택된자의 이름은 기상시간", 2).show();
+                     //   Toast.makeText(v.getContext(), "선택된자의 이름은 기상시간", 2).show();
                     }
                         if(position==1) {
                             Intent intent = new Intent(v.getContext(), Alarm_main.class);
                             intent.putExtra("position", position);
                             v.getContext().startActivity(intent);
-                            Toast.makeText(v.getContext(), "선택된자의 이름은 목표시간", 2).show();
+                       //     Toast.makeText(v.getContext(), "선택된자의 이름은 목표시간", 2).show();
                         }
          /*           LayoutInflater mLayout = LayoutInflater.from(v.getContext());
                     mLayout.inflate(R.layout.lert_dialog_text_entry, null);

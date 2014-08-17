@@ -1,5 +1,6 @@
 package com.secsm.keepongoing;
 import android.app.ActionBar;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +27,8 @@ import com.secsm.keepongoing.Alarm.DBContactHelper;
 import com.secsm.keepongoing.Alarm.Preference;
 import com.secsm.keepongoing.Alarm.alram_list;
 import com.secsm.keepongoing.DB.DBHelper;
+import com.secsm.keepongoing.Quiz.Quiz_Main;
+import com.secsm.keepongoing.Quiz.Solve_Main;
 import com.secsm.keepongoing.Shared.KogPreference;
 
 import java.text.SimpleDateFormat;
@@ -44,7 +47,7 @@ public class TabActivity extends Activity {
     private static final String LOG_TAG = "MainmenuActivity";
     private final int ADDROOM = 100;
     private final int MANAGEFRIENDS = 200;
-    private TextView _text;
+    private TextView _text,_current_time_text,_current_time_text2;
     private TextView _text2;
     MenuInflater inflater;
     protected int i=0,minute=0,diff_hour,diff_min;
@@ -143,6 +146,7 @@ public class TabActivity extends Activity {
 //        tabRoomCreateBtn.setOnClickListener(roomCreateListener);
 
 
+//@민수 시작
 
         // Alarm OnCreate
         a = Preference.getBoolean(TabActivity.this, "testValue");
@@ -155,13 +159,70 @@ public class TabActivity extends Activity {
             helper.addContact(contact);
             Contact contact2 = new Contact(1,10,00);
             helper.addContact(contact2);
+
+
+
+
+
+
+
+
         }
         _text = (TextView) findViewById(R.id.tvMsg);
         _text2 = (TextView) findViewById(R.id.goal);
+
+
+
+
+        //@민수 삽입
+        Button btnhi = (Button) findViewById(R.id.button2);
+        btnhi.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                //@preference로 flag 설정
+                Intent intent = new Intent(TabActivity.this, Quiz_Main.class);
+                startActivity(intent);
+            }
+        });
+        Button btnbye = (Button) findViewById(R.id.button3);
+        btnbye.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                //@preference로 flag 설정
+                Intent intent = new Intent(TabActivity.this, Solve_Main.class);
+                startActivity(intent);
+            }
+        });
+
+
+
+
+
+
+
+
+
+        _current_time_text = (TextView) findViewById(R.id.currenttime);
+        _current_time_text2= (TextView) findViewById(R.id.currenttime2);
+        TimerTask adTast2 = new TimerTask() {
+            public void run() {
+                replace_current_time_Handler.sendEmptyMessage(0);
+            }
+        };
+
+        Timer timer2 = new Timer();
+        timer2.schedule(adTast2, 0, 1000); // 0초후 첫실행, 20초마다 계속실행
+
+
+
+
+
+
+
+
+
         Contact contact3=helper.getContact(2);
-//        _text2.setText(
-//                (contact3.gethour()/10==0 ? "0"+contact3.gethour() : contact3.gethour())
-//                        +" : "+ (contact3.getminute()/10 == 0 ? "0" + contact3.getminute() : contact3.getminute() )+" : "+"00");
+        _text2.setText(
+                (contact3.gethour()/10==0 ? "0"+contact3.gethour() : contact3.gethour())
+                        +":"+ (contact3.getminute()/10 == 0 ? "0" + contact3.getminute() : contact3.getminute() )+":"+"00");
 
 
         final ToggleButton mtoggle = (ToggleButton) findViewById(R.id.toggleButton2);
@@ -170,6 +231,7 @@ public class TabActivity extends Activity {
 
                 if (mtoggle.isChecked()) {
                     Preference.putBoolean(TabActivity.this, "toggle",true);
+                    mtoggle.setBackgroundResource(R.drawable.selector_tab_pause_button);
                     if(timer == null) {
 
                         Date start = new Date();
@@ -179,12 +241,13 @@ public class TabActivity extends Activity {
                                 mHandler.sendEmptyMessage(0);
                             }
                         };
-
                         timer = new Timer();
                         timer.schedule(adTast, 0, 1000); // 0초후 첫실행, 20초마다 계속실행
                         Log.i(LOG_TAG, "타이머 시작");
                     }
                 } else {
+
+                    mtoggle.setBackgroundResource(R.drawable.selector_tab_play_button);
                     Preference.putBoolean(TabActivity.this, "toggle",false);
                     if(timer != null) {
                         timer.cancel();
@@ -212,15 +275,19 @@ public class TabActivity extends Activity {
 
             }
         });
+        //@민수 타이머 완료
         Button ring = (Button) findViewById(R.id.ringring);
         ring.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 Preference.setLong(TabActivity.this, "diff", 0);
                 _text.setText("00:00:00");
+                mtoggle.setChecked(false);
+                mtoggle.setBackgroundResource(R.drawable.selector_tab_play_button);
+                Preference.putBoolean(TabActivity.this, "toggle", false);
 
                 if(timer != null) {
                     timer.cancel();
-                    Log.i(LOG_TAG, "타이머 스탑");
+                    Log.i(LOG_TAG, "타이머 완료");
                     timer = null;
                 }
                 //Intent intent = new Intent(MainActivity.this, Klaxon.class);
@@ -362,13 +429,15 @@ public class TabActivity extends Activity {
         Contact contact3=helper.getContact(2);
         _text2.setText(
                 (contact3.gethour()/10==0 ? "0"+contact3.gethour() : contact3.gethour())
-                        +" : "+ (contact3.getminute()/10 == 0 ? "0" + contact3.getminute() : contact3.getminute() )+" : "+"00");
+                        +":"+ (contact3.getminute()/10 == 0 ? "0" + contact3.getminute() : contact3.getminute() )+":"+"00");
 
 
 
         final ToggleButton mtoggle = (ToggleButton) findViewById(R.id.toggleButton2);
+        mtoggle.setBackgroundResource(R.drawable.selector_tab_play_button);
         if ( Preference.getBoolean(TabActivity.this, "toggle")) {
             mtoggle.setChecked(true);
+            mtoggle.setBackgroundResource(R.drawable.selector_tab_pause_button);
 
             if (timer == null) {
                 Date start = new Date();
@@ -451,76 +520,21 @@ public class TabActivity extends Activity {
         }
     };
 
-    ////////////////////
-    // DB             //
-//    ////////////////////
-//    public void getFriendInfoFromSQLite() {
-//
-//        SQLiteDatabase db;
-//        Cursor cursor;
-//
-//        db = mDBHelper.getReadableDatabase();
-//
-//        cursor = db.rawQuery("SELECT * FROM friendList_ph", null);
-//
-//        while (cursor.moveToNext()) {
-//            String[] friendInfo = new String[3];
-//            friendInfo[0] = cursor.getString(0); // id
-//            friendInfo[1] = cursor.getString(1); // name
-//            friendInfo[2] = cursor.getString(2); // phone number
-//            friendNameArray.add(cursor.getString(1));
-//            friendInfoArray.add(friendInfo);
-//        }
-//        cursor.close();
-//        db.close();
-//        mDBHelper.close();
-//    }
-//    public void setRoomIDAndNameArrayFromSQLite() {
-//
-//        SQLiteDatabase db;
-//        Cursor cursor;
-//
-//        db = mDBHelper.getReadableDatabase();
-//        cursor = db.rawQuery("SELECT * FROM roomlist_tbl", null);
-//        while (cursor.moveToNext()) {
-//            roomIDArrayFromSQLite.add(cursor.getString(0));
-//            roomNameArray.add(cursor.getString(1));
-//            //Log.i("RoomInfo MainMenu", cursor.getString(0) + "+" + cursor.getString(1) );
-//        }
-//        cursor.close();
-//        db.close();
-//        mDBHelper.close();
-//    }
-
-
-
-//    public class InitThread extends Thread
-//    {
-//        @Override
-//        public void run()
-//        {
-//            try {
-//                sleep(TabActivity.TAB_DELAY);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//
-//            initHandler.sendEmptyMessage(0);
-//        }
-//    };
-
-    // alarm
-
-
     Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
-
-            //@preference flag가 set되어 있으면
-            //@현재 시간-preference호출
-            //@preference flag가 set되어 있지 않으면
-            //@현재 시간을 preference로 저장
             _text.setText(timediff(TabActivity.this));
+        }
+    };
+    Handler replace_current_time_Handler = new Handler(){
+
+        public void handleMessage(Message msg) {
+            Date today = new Date();
+            _current_time_text.setText((today.getYear()+1900)+"/"+(today.getMonth()+1)+"/"+today.getDate());
+            _current_time_text2.setText(
+                    (today.getHours()/10==0 ? "0"+today.getHours() : today.getHours())
+                    +":"+ (today.getMinutes()/10 == 0 ? "0" + today.getMinutes() : today.getMinutes() )
+                            +":"+(today.getSeconds()/10 == 0 ? "0" + today.getSeconds() : today.getSeconds()));
         }
     };
 
@@ -537,9 +551,9 @@ public class TabActivity extends Activity {
 
 
             Date Date1=new Date(Preference.getLong(TabActivity.this, "start"));
-            Log.i(LOG_TAG, "DAte1 : "+ Date1.toString());
+        ///    Log.i(LOG_TAG, "DAte1 : "+ Date1.toString());
             Date today = new Date();
-            Log.i(LOG_TAG, "today : "+ today.toString());
+        //    Log.i(LOG_TAG, "today : "+ today.toString());
             mills = today.getTime()-Date1.getTime();
             Preference.setLong(TabActivity.this, "diff", mills);
             int Hours = (int) (mills/(1000 * 60 * 60));

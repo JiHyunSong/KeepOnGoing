@@ -28,14 +28,6 @@
         android:layout_alignParentEnd="true"
         android:layout_alignBottom="@+id/addAlram"></LinearLayout>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/addAlram"
-        android:text="addAlram"
-        android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
 
 
 </RelativeLayout>

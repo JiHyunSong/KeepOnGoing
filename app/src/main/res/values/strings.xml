@@ -31,5 +31,16 @@
     <string name="title_activity_add_study_room">AddStudyRoomActivity</string>
     <string name="title_activity_add_friend">AddFriendActivity</string>
     <string name="title_activity_invite_friends">InviteFriendsActivity</string>
+    <string name="title_activity_quiz__main">Quiz_Main</string>
+    <string name="subject_prompt">Choose a subject</string>
+
+    <string-array name="subject">
+        <item>국어</item>
+        <item>영어</item>
+        <item>한국사</item>
+        <item>전공</item>
+    </string-array>
+
+    <string name="title_activity_solve__main">Solve_Main</string>
 
 </resources>

@@ -21,6 +21,9 @@
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
+    <!-- 알람 관련 -->
+    <uses-permission android:name="android.permission.SET_TIME_ZONE" />
+
     <permission
         android:name="com.secsm.keepongoing.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
@@ -126,6 +129,15 @@
             android:name=".InviteFriendsActivity"
             android:label="@string/title_activity_invite_friends" >
         </activity>
+        <activity
+            android:name=".Quiz.Quiz_Main"
+            android:label="@string/title_activity_quiz__main"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".Quiz.Solve_Main"
+            android:label="@string/title_activity_solve__main" >
+        </activity>
     </application>
+
 
 </manifest>

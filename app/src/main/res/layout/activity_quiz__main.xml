@@ -1,0 +1,141 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:bootstrapbutton="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.secsm.keepongoing.AddStudyRoomActivity">
+
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttongroup"
+            android:gravity="center_horizontal">
+
+
+
+            <com.beardedhen.androidbootstrap.BootstrapButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                bootstrapbutton:bb_roundedCorners="true"
+                android:text="객관식"
+                android:id="@+id/multiplechoice"/>
+
+
+            <com.beardedhen.androidbootstrap.BootstrapButton
+                android:layout_width="wrap_content"
+                android:layout_toRightOf="@+id/multiplechoice"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                bootstrapbutton:bb_roundedCorners="true"
+                android:id="@+id/essay"
+                android:text="주관식"/>
+            <com.beardedhen.androidbootstrap.BootstrapButton
+                android:layout_width="wrap_content"
+                android:layout_toRightOf="@+id/essay"
+                android:layout_marginLeft="40dp"
+                android:id="@+id/tf"
+                android:layout_height="wrap_content"
+                bootstrapbutton:bb_roundedCorners="true"
+                android:text="T/F"/>
+
+
+        </RelativeLayout>
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/buttongroup">
+            <RelativeLayout
+                android:id="@+id/quiz_rl"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/problemandsubject"
+                    android:gravity="bottom"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:text="문제"
+                        android:textSize="20dp"
+                        android:id="@+id/문제"
+                        />
+
+                    <Spinner
+                        android:layout_alignParentRight="true"
+                        android:id="@+id/spinner1"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginRight="20dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:entries="@array/subject"
+                        android:prompt="@string/subject_prompt" />
+
+                    <TextView
+                        android:layout_toLeftOf="@id/spinner1"
+                        android:layout_width="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginRight="20dp"
+                        android:layout_height="wrap_content"
+                        android:text="과목"
+                        android:textSize="20dp"
+                        android:id="@+id/subject"
+                        />
+
+                </RelativeLayout>
+
+                <com.beardedhen.androidbootstrap.BootstrapEditText
+                    android:layout_below="@id/problemandsubject"
+                    android:id="@+id/txtOne"
+
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:lines="9"
+                    android:maxLines="9"
+                    android:hint="rounded"
+                    bootstrapbutton:be_roundedCorners="true"
+                    android:gravity="top|left"
+                    bootstrapbutton:be_state="info"
+                    android:scrollbars="vertical"
+                    />
+
+                <ListView
+                    android:layout_below="@id/txtOne"
+                    android:layout_width="fill_parent"
+                    android:layout_height="120dp"
+                    android:id="@+id/listView_Quiz"
+                    android:scrollbars="vertical"
+                    android:transcriptMode="normal"
+                    android:descendantFocusability="afterDescendants"
+                    ></ListView>
+
+                <RelativeLayout
+                    android:layout_below="@id/listView_Quiz"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right">
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="제출"
+                    android:id="@+id/btnSubmit"/>
+                </RelativeLayout>
+            </RelativeLayout>
+
+        </ScrollView>
+    </RelativeLayout>
+
+</RelativeLayout>

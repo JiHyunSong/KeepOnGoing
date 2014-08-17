@@ -117,7 +117,7 @@ public final class Preference {
             int v = prefs.getInt(key, 0);
             return v;
         } catch (ClassCastException e) {
-            return Integer.MIN_VALUE;
+            return 0;
         }
     }
 
