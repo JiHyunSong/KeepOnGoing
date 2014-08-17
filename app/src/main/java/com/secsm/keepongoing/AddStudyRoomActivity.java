@@ -122,7 +122,7 @@ public class AddStudyRoomActivity extends Activity {
             }
             // life room checked
             Intent intent = new Intent(this, InviteFriendsActivity.class);
-            intent.putExtra("type", "life_room");
+            intent.putExtra("type", "liferoom");
             intent.putExtra("rule", add_study_room_rules_et.getText().toString());
             intent.putExtra("roomname", add_study_room_name_et.getText().toString());
             intent.putExtra("max_holiday_count", add_study_room_life_holiday_et.getText().toString());
@@ -141,18 +141,19 @@ public class AddStudyRoomActivity extends Activity {
                 Log.i(LOG_TAG, "add_study_room_subject_tp.toString() : " + dateTime.toString());
                 Log.i(LOG_TAG, "getMeetDays : " + getMeetDays());
             }
+            Date dateTime = new Date();
+            dateTime.setTime(mCalendar.getTimeInMillis());
             // subject room checked
-            // TODO : create InviteFriendsActivity
-//            Intent intent = new Intent(this, InviteFriendsActivity.class);
-//            intent.putExtra("type", "life_room");
-//            intent.putExtra("rule", add_study_room_rules_et.getText().toString());
-//            intent.putExtra("roomname", add_study_room_name_et.getText().toString());
-//            intent.putExtra("start_time", add_study_room_subject_tp.toString());
-//            intent.putExtra("duration_time", add_study_room_subject_duration_time_et.getText().toString());
-//            intent.putExtra("showup_time", add_study_room_subject_show_up_time_et.getText().toString());
-//            intent.putExtra("meet_days", getMeetDays());
-//            startActivity(intent);
-//            this.finish();
+            Intent intent = new Intent(this, InviteFriendsActivity.class);
+            intent.putExtra("type", "subjectroom");
+            intent.putExtra("rule", add_study_room_rules_et.getText().toString());
+            intent.putExtra("roomname", add_study_room_name_et.getText().toString());
+            intent.putExtra("start_time", dateTime.toString().substring(11,19));
+            intent.putExtra("duration_time", add_study_room_subject_duration_time_et.getText().toString());
+            intent.putExtra("showup_time", add_study_room_subject_show_up_time_et.getText().toString());
+            intent.putExtra("meet_days", getMeetDays());
+            startActivity(intent);
+            this.finish();
         } else {
             Toast.makeText(getBaseContext(), "입력란을 알맞게 채워주세요!", Toast.LENGTH_SHORT).show();
             // error
