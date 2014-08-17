@@ -121,14 +121,13 @@ public class AddStudyRoomActivity extends Activity {
                 Log.i(LOG_TAG, "add_study_room_life_holiday_et.getText().toString() : " + add_study_room_life_holiday_et.getText().toString());
             }
             // life room checked
-            // TODO : create InviteFriendsActivity
-//            Intent intent = new Intent(this, InviteFriendsActivity.class);
-//            intent.putExtra("type", "life_room");
-//            intent.putExtra("rule", add_study_room_rules_et.getText().toString());
-//            intent.putExtra("roomname", add_study_room_name_et.getText().toString());
-//            intent.putExtra("max_holiday_count", add_study_room_life_holiday_et.getText().toString());
-//            startActivity(intent);
-//            this.finish();
+            Intent intent = new Intent(this, InviteFriendsActivity.class);
+            intent.putExtra("type", "life_room");
+            intent.putExtra("rule", add_study_room_rules_et.getText().toString());
+            intent.putExtra("roomname", add_study_room_name_et.getText().toString());
+            intent.putExtra("max_holiday_count", add_study_room_life_holiday_et.getText().toString());
+            startActivity(intent);
+            this.finish();
 
         } else if (add_study_room_subject_rb.isChecked() && isSubjectRoomValid()) {
             if (KogPreference.DEBUG_MODE) {

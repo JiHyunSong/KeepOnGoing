@@ -124,14 +124,13 @@ public class TabActivity extends Activity {
                     R.layout.tab_list, mockRooms);
             roomList = (ListView) findViewById(R.id.room_list);
             roomList.setAdapter(mockRoomArrayAdapter);
-
-            friendList = (ListView) findViewById(R.id.friend_list);
-
-            // add list item onClickListener
-            roomList.setOnItemClickListener(itemClickListener);
-            friendList.setOnItemClickListener(itemClickListener);
-
         }
+
+        friendList = (ListView) findViewById(R.id.friend_list);
+
+        // add list item onClickListener
+        roomList.setOnItemClickListener(itemClickListener);
+        friendList.setOnItemClickListener(itemClickListener);
 
         // setup tab_settings
         ArrayList<String> arGeneral3 = new ArrayList<String>();
@@ -338,11 +337,11 @@ public class TabActivity extends Activity {
 //                    actionBarRoomTabNotifyBtn.setVisibility(View.VISIBLE);
 //                    actionBarRoomTabAddBtn.setVisibility(View.VISIBLE);
                     layoutRooms.setVisibility(View.VISIBLE);
-                    actionBarFirstBtn.setIcon(R.drawable.ic_action_web_site);
-                    actionBarFirstBtn.setVisible(true);
+//                    actionBarFirstBtn.setIcon(R.drawable.ic_action_web_site);
+//                    actionBarFirstBtn.setVisible(true);
                     actionBarSecondBtn.setIcon(R.drawable.ic_action_new);
                     actionBarSecondBtn.setVisible(true);
-                    actionBarFirstBtn.setOnMenuItemClickListener(ab_rooms_notify_listener);
+//                    actionBarFirstBtn.setOnMenuItemClickListener(ab_rooms_notify_listener);
                     actionBarSecondBtn.setOnMenuItemClickListener(ab_rooms_add_listener);
                     break;
 
@@ -657,7 +656,7 @@ public class TabActivity extends Activity {
 
     Timer timer;
 
-    public String getRealTime() {
+    public String getRealDate() {
         long time = System.currentTimeMillis();
         Timestamp currentTimestamp = new Timestamp(time);
         return currentTimestamp.toString().substring(0, 10);
@@ -672,7 +671,7 @@ public class TabActivity extends Activity {
         String get_url = KogPreference.REST_URL +
                 "Friend" +
                 "?nickname=" + KogPreference.getNickName(TabActivity.this) +
-                "&date=" + getRealTime();
+                "&date=" + getRealDate();
 
         Log.i(LOG_TAG, "URL : " + get_url);
 

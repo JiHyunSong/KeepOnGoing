@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:text="인증번호  전송할 핸드폰 번호 ▼"
             android:textColor="#0000cd"
-            android:textSize="20dp" />
+            android:textSize="15dp" />
     </LinearLayout>
 
     <Spinner

@@ -90,6 +90,8 @@ public class LoginActivity extends Activity {
         mProgressView = findViewById(R.id.login_progress);
 
         if (KogPreference.isAutoLogin(LoginActivity.this)) {
+            mNicknameView.setText(KogPreference.getNickName(LoginActivity.this));
+            mPasswordView.setText(KogPreference.getPassword(LoginActivity.this));
             UserLogin(KogPreference.getNickName(LoginActivity.this), KogPreference.getPassword(LoginActivity.this));
         } else if (!TextUtils.isEmpty(savedNick)) {
             mNicknameView.setText(savedNick);

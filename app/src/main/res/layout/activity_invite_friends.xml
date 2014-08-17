@@ -10,29 +10,75 @@
     tools:context="com.secsm.keepongoing.InviteFriendsActivity">
 
 
-    <com.beardedhen.androidbootstrap.BootstrapEditText
-        android:id="@+id/invite_friend_name_et"
+    <RelativeLayout
+        android:id="@+id/invite_friend_rl1"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:gravity="top|left"
-        android:hint="초대할 친구 이름"
-        android:lines="1"
-        android:maxLines="1"
-        bootstrapbutton:be_roundedCorners="true"
-        bootstrapbutton:be_state="info" />
+        android:layout_height="wrap_content">
 
-    <Button
-        android:id="@+id/invite_friend_add_btn"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/add_friend_name_et"
-        android:text="친구 추가" />
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/invite_friend_go_back_btn"
+            <com.beardedhen.androidbootstrap.BootstrapEditText
+                android:id="@+id/invite_friend_search_et"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_margin="10dp"
+                android:layout_weight="100"
+                android:gravity="top|left"
+                android:hint="초대할 친구 이름"
+                android:lines="1"
+                bootstrapbutton:be_roundedCorners="true"
+                bootstrapbutton:be_state="info"
+                android:maxLines="1" />
+
+            <Button
+                android:id="@+id/invite_friend_create_room_btn"
+                android:layout_width="80sp"
+                android:layout_height="50dp"
+                android:layout_weight="0"
+                android:text="방 생성" />
+        </LinearLayout>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/invite_friend_rl2"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/add_friend_add_btn"
-        android:text="돌아가기" />
+        android:layout_height="fill_parent"
+        android:layout_below="@id/invite_friend_rl1">
+
+        <TextView
+            android:id="@+id/invite_friend_top"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="선택된 친구들 목록 ▼" />
+        ▼
+        <ListView
+            android:id="@+id/to_invite_friend_list"
+            android:layout_width="fill_parent"
+            android:layout_below="@id/invite_friend_top"
+            android:layout_height="wrap_content"
+            android:minHeight="100dp" />
+
+        <TextView
+            android:id="@+id/invite_friend_middle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/to_invite_friend_list"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="초대할 친구 선택" />
+
+        <ListView
+            android:id="@+id/invite_friend_list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/invite_friend_middle"
+            android:minHeight="300dp" />
+
+    </RelativeLayout>
 </RelativeLayout>

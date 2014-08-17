@@ -52,7 +52,7 @@
 
         <Button
             android:id="@+id/study_room_sendMsgBtn"
-            android:layout_width="100sp"
+            android:layout_width="70sp"
             android:layout_height="fill_parent"
             android:layout_weight="0.0"
             android:text="전송" />

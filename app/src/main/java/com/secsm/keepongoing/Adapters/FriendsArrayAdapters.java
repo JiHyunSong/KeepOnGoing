@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by JinS on 2014. 8. 13..
@@ -22,6 +23,7 @@ public class FriendsArrayAdapters extends BaseAdapter {
     private ViewHolder viewHolder = null;
     Context context;
     ArrayList<FriendNameAndIcon> friendArrayList;
+    private ArrayList<FriendNameAndIcon> arraylist;
     LayoutInflater inflater;
     int layout;
 
@@ -30,6 +32,8 @@ public class FriendsArrayAdapters extends BaseAdapter {
         friendArrayList = friendList;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.layout = layout;
+        arraylist = new ArrayList<FriendNameAndIcon>();
+        arraylist.addAll(friendArrayList);
     }
 
     public int getCount() {
@@ -69,6 +73,22 @@ public class FriendsArrayAdapters extends BaseAdapter {
 
         return convertView;
 
+    }
+
+    public void filter(String charText){
+        charText = charText.toLowerCase(Locale.getDefault());
+        friendArrayList.clear();
+        if (charText.length() == 0) {
+            friendArrayList.addAll(arraylist);
+        } else {
+            for (FriendNameAndIcon fni : arraylist) {
+                if (fni.getName().toLowerCase(Locale.getDefault())
+                        .contains(charText)) {
+                    friendArrayList.add(fni);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 
     class ViewHolder {
