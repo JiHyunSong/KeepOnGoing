@@ -45,6 +45,7 @@ public class Alarm_main extends Activity implements DatePicker.OnDateChangedList
 
         //알람 매니저를 취득
         mManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        mManager.setTimeZone("GMT+9:00");
         //현재 시각을 취득
         if(getIntent().getExtras().getInt("position")==1) {
             mCalendar = new GregorianCalendar();
@@ -122,19 +123,13 @@ public class Alarm_main extends Activity implements DatePicker.OnDateChangedList
     private void setAlarm() {
         DBContactHelper helper = new DBContactHelper(Alarm_main.this);
         helper.updateContact(new Contact(1, mCalendar.getTime().getHours(), mCalendar.getTime().getMinutes()));
- /*       Intent intent = getIntent();
+        /*Intent intent = getIntent();
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         finish();
-        startActivity(intent);
- }*/
-
-
-     //     mManager.set(AlarmManager.RTC_WAKEUP, mCalendar.getTimeInMillis(), pendingIntent());
-
-
-
-     //   Intent intent = new Intent(getApplicationContext(), alert.class);
-    //   PendingIntent sender = PendingIntent.getBroadcast(Alarm_main.this, 0, intent, 0);
+        startActivity(intent);*/
+        //   mManager.set(AlarmManager.RTC_WAKEUP, mCalendar.getTimeInMillis(), pendingIntent());
+         //   Intent intent = new Intent(getApplicationContext(), alert.class);
+        //   PendingIntent sender = PendingIntent.getBroadcast(Alarm_main.this, 0, intent, 0);
 //@ 이 아래 부터는 반복을 위한 코드
 //알람을 시작시킬 시간, 밀리세켠드 단위로 5000 이면 5초입니다.
 //즉 5초후에 알람이 최초 발생이 시작됩니다.
@@ -142,16 +137,19 @@ public class Alarm_main extends Activity implements DatePicker.OnDateChangedList
 
 //알람이 주기적으로 발생할 때, 주기시간입니다. 여기서는 5초단위로 계속해서
 //알람이 발생됩니다.
-        //long cycleTime = 1000;
         long cycleTime = 24*60*60*1000;
 
 
 //알람객체의 setRepeating 메소드가 알람을 주기적으로 반복해서 발생시키게 됩니다.
 //여기서는 5초후에 알람이 최초 발생을 하고, 5초단위로 계속해서 알람이 발생하게 됩니다.
-        mManager.setRepeating(AlarmManager.RTC_WAKEUP, startTime, cycleTime, pendingIntent());
+     //  long alarm=((int) (mCalendar.getTimeInMillis()/60000))*60000;
+      //  Date alramset=new Date(alarm);
+        mManager.setRepeating(AlarmManager.RTC_WAKEUP, mCalendar.getTimeInMillis(),24*60*60*1000, pendingIntent());
 //@시간 구해서 set하기
-        Log.i("HelloAlarmActivity", mCalendar.getTime().toString());
-        Toast.makeText(this, "set" , 2).show();
+        Log.e( "minsu) : SEtActivity  : " ,""+  mCalendar.toString());
+     //   Toast.makeText(this, "set"+mCalendar.getTime().toString() , 2).show();
+        finish();
+
     }
 
     //알람의 해제
@@ -159,12 +157,15 @@ public class Alarm_main extends Activity implements DatePicker.OnDateChangedList
 
         mManager.cancel(pendingIntent());
         Toast.makeText(this, "reset", 2).show();
+        finish();
 
     }
     //알람의 설정 시각에 발생하는 인텐트 작성
     private PendingIntent pendingIntent() {
         Intent i = new Intent(getApplicationContext(), alert.class);
         PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
+
+
         return pi;
     }
     //일자 설정 클래스의 상태변화 리스너

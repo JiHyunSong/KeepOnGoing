@@ -67,55 +67,103 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:visibility="visible">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearLayout2">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="현재 시간"
+                android:id="@+id/currenttime"
+                />
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="현재 시간"
+                android:textSize="40dp"
+                android:id="@+id/currenttime2"
+                android:gravity="center"
+                />
+
+
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="150dp"
+            android:id="@+id/kkk"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/linearLayout2"
+            android:layout_marginTop="100dp"
+            >
+
         <TextView
             android:id="@+id/goal_time"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="목표 시간"
-            android:textSize="35dp"
+            android:textSize="30dp"
+            android:layout_marginLeft="50dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/linearLayout2" />
+            android:layout_alignParentTop="true"
+            />
         <TextView
             android:id="@+id/goal"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="00:00:00"
-            android:textSize="20dp"
+            android:textSize="30dp"
+            android:layout_marginLeft="50dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/goal_time" />
+            android:layout_below="@+id/goal_time"/>
         <TextView
             android:id="@+id/achive_time"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="달성 시간"
             android:gravity="center"
-            android:textSize="35dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/goal" />
+            android:textSize="30dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="50dp"
+            />
         <TextView
             android:id="@+id/tvMsg"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="00:00:00"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/achive_time" />
-
+            android:layout_marginRight="50dp"
+            android:textSize="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/achive_time"/>
+        </RelativeLayout>
         <Button
             android:id="@+id/button1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Alram"
             android:layout_marginBottom="55dp"
-
             android:textSize="35dp"
             android:layout_alignParentBottom="true"
             android:layout_alignRight="@+id/linearLayout"
             android:layout_alignEnd="@+id/linearLayout" />
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hi"
+            android:textSize="35dp"
+            android:layout_alignBottom="@+id/button1"
+            />
+
 
 
         <LinearLayout
@@ -132,41 +180,28 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="New ToggleButton"
-                android:textOff="start"
-                android:textOn="stop"
+                android:textOff=""
+                android:textOn=""
                 android:textSize="30dp"
-                android:id="@+id/toggleButton2" />
+                android:id="@+id/toggleButton2"
+                android:background="@drawable/selector_tab_play_button"
+                />
+
 
             <Button
                 android:id="@+id/ringring"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="finish"
                 android:textSize="30dp"
-                android:layout_alignTop="@+id/btnStart"
-                android:layout_alignRight="@+id/button1"
-                android:layout_alignEnd="@+id/button1"
-                android:layout_gravity="center_horizontal" />
-        </LinearLayout>
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/selector_tab_stop_button"/>
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="58dp"
-            android:id="@+id/linearLayout2">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="현재 시간"
-                android:id="@+id/textView" />
 
 
         </LinearLayout>
+
+
 
 
     </RelativeLayout>
@@ -201,6 +236,7 @@
 
 
     </RelativeLayout>
+
     <RelativeLayout
         android:layout_below="@id/tab_name"
         android:id="@+id/tab_settings_layout"
@@ -214,6 +250,6 @@
             android:layout_height="fill_parent"
             />
 
-
     </RelativeLayout>
+
 </RelativeLayout>

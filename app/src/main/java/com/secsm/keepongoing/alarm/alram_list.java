@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.secsm.keepongoing.R;
 
@@ -39,7 +38,6 @@ public class alram_list extends Activity implements View.OnClickListener {
     protected void onResume() {
         super.onResume();
         settingListView();
-        Toast.makeText(alram_list.this, "Resume", Toast.LENGTH_SHORT).show();
     }
     String[] arr = null;
     ArrayList<AlramData> list;

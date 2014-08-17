@@ -1,6 +1,7 @@
 package com.secsm.keepongoing.Alarm;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.media.Ringtone;
@@ -8,13 +9,17 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
 import com.secsm.keepongoing.R;
-import com.secsm.keepongoing.R;
+
+import java.util.Date;
 
 public class alert extends Activity{
     private MediaPlayer mMediaPlayer;   // MediaPlayer 변수 선언
@@ -23,25 +28,29 @@ public class alert extends Activity{
 
     private Ringtone r;
 
+    private AlarmManager mManager;
     @Override
     
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
 
-
-
-        super.onCreate(savedInstanceState);
+super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alert);
         vibrate_function();
         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         r = RingtoneManager.getRingtone(getApplicationContext(), notification);
         r.play();
+        Date mCalendar=new Date();
+
+        Log.e("minsu) : AlertActivity : ", ""+mCalendar.toString());
+        Toast.makeText(this, "set" + mCalendar.toString(), 2).show();
+
         //ringtone();
         Button btnsnooze = (Button)findViewById(R.id.snooze);
         btnsnooze.setOnClickListener(new Button.OnClickListener() {
                 public void onClick(View v) {
                     r.stop();
                     mVibrator.cancel();   // 진동 중지
-                finish();
+                    finish();
                 }
         });
 
@@ -49,6 +58,8 @@ public class alert extends Activity{
         btndismiss.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 mVibrator.cancel();   // 진동 중지finish();
+                r.stop();
+                finish();
             }
         });
     }

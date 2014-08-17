@@ -68,7 +68,6 @@
             android:name=".CreateRoomActivity"
             android:label="@string/title_activity_create_room" >
         </activity>
-
         <activity
             android:name=".Alarm.Alarm_main"
             android:label="@string/title_activity_alarm_main" >
@@ -81,8 +80,12 @@
             android:name=".Alarm.alram_list"
             android:label="@string/title_activity_alram_list" >
         </activity>
-
-        <uses-permission android:name="android.permission.VIBRATE" />
+        <activity
+            android:name=".Quiz.Quiz_Main"
+            android:label="@string/title_activity_quiz__main"
+            android:windowSoftInputMode="adjustResize"></activity>
     </application>
+    <uses-permission android:name="android.permission.SET_TIME_ZONE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
 </manifest>
