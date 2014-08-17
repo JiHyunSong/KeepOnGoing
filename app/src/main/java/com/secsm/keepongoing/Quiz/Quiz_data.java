@@ -6,7 +6,7 @@ package com.secsm.keepongoing.Quiz;
 public class Quiz_data {
 
     public String name;
-    public String essay;
+    public String essay="";
     public boolean chk1 = false;
     public boolean chk2 = false;
     public boolean chk3 = false;

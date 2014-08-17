@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -33,11 +34,11 @@ public class Quiz_Main extends Activity {
     listAdapter mAdapter = null;
     private Spinner spinner1, spinner2;
     private Button btnSubmit;
-    private static String LOG_TAG = "Profile";
+    private static String LOG_TAG = "Quiz_submit";
     private String rMessage;
     private RequestQueue vQueue;
     private int status_code;
-
+    private EditText input_problem;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,12 +55,26 @@ public class Quiz_Main extends Activity {
         listView.setAdapter(mAdapter);
 
 
+
+
+
+       input_problem = (EditText) findViewById(R.id.txtOne);
+
+
+
+
+
+
+
+
+
+
         BootstrapButton multiplechoice = (BootstrapButton) findViewById(R.id.multiplechoice);
         multiplechoice.setOnClickListener(new BootstrapButton.OnClickListener() {
 
             public void onClick(View v) {
                 Log.i(LOG_TAG, "list.size : " + list.size());
-                list.add(new Quiz_data(""));
+                list.add(new Quiz_data("multi"));
                 settingListView();
             }
         });
@@ -135,11 +150,21 @@ public class Quiz_Main extends Activity {
 
         spinner1 = (Spinner) findViewById(R.id.spinner1);
         btnSubmit = (Button) findViewById(R.id.btnSubmit);
+
         btnSubmit.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                listView.clearFocus();
+
                 Toast.makeText(Quiz_Main.this,
-                        "OnClickListener : " + "\nSpinner 1 : " + String.valueOf(spinner1.getSelectedItem()), Toast.LENGTH_SHORT).show();
+                        "@SERVER : \n"
+                        + "Subject : "  + String.valueOf(spinner1.getSelectedItem())+"\n"
+                        + "Question : " + input_problem.getText()+"\n"
+                        + "Answer : "+ request_check(list)
+                        , Toast.LENGTH_SHORT
+                ).show();
+                //@통신
+               quizRegisterRequest(input_problem.getText().toString(),String.valueOf(spinner1.getSelectedItem()),request_check(list));
             }
 
         });
@@ -150,13 +175,14 @@ public class Quiz_Main extends Activity {
     }
 
     //@통신
-    private void quizRegisterRequest(String nickName, String password, String image, String phone) {
+    private void quizRegisterRequest(String question,String type, String solution) {
         String get_url = KogPreference.REST_URL +
                 "Register" +
-                "?nickname=" + nickName +
+                "?nickname=" + KogPreference.getNickName(Quiz_Main.this) +
                 "&rid=" + KogPreference.getRid(Quiz_Main.this) +
-                "&question=" + image +
-                "&solution=" + phone;
+                "&type=" + type +
+                "&question=" + question +
+                "&solution=" + solution;
 
         Log.i(LOG_TAG, "get_url : " + get_url);
 
@@ -192,7 +218,6 @@ public class Quiz_Main extends Activity {
                 if (KogPreference.DEBUG_MODE) {
                     Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
                 }
-
             }
         }
         );
@@ -200,4 +225,56 @@ public class Quiz_Main extends Activity {
     }
 
 
+
+
+    public String mulitiplecheck(ArrayList<Quiz_data> arrays,int position){
+        String temp="";
+        if(arrays.get(position).chk1)
+            temp+= "1 ";
+        if(arrays.get(position).chk2)
+            temp+= "2 ";
+        if(arrays.get(position).chk3)
+            temp+= "3 ";
+        if(arrays.get(position).chk4)
+            temp+= "4 ";
+        if(arrays.get(position).chk5)
+            temp+= "5 ";
+        if(temp=="")
+            return "error";
+        return temp;
+    }
+
+    public String request_check(ArrayList<Quiz_data> arrays){
+        int position;
+        String result="";
+        for(position=0;position<arrays.size();position++) {
+            Log.e("minsu) : ", "list content name: " + arrays.get(position).name);
+            if(arrays.get(position).name.equals("multi")){
+                if(mulitiplecheck(arrays,position).equals("error")) {
+                    return "error";
+                }else {
+                    result += position+arrays.get(position).name+mulitiplecheck(arrays, position)+"|";
+                }
+            }
+            else if(arrays.get(position).name.equals("essay")){
+                if(arrays.get(position).essay.equals("")) {
+                    return "error";
+                }
+                else {
+                    result+=position+arrays.get(position).name+arrays.get(position).essay+"|";
+                }}
+            else if(arrays.get(position).name.equals("tf")){
+                if(arrays.get(position).truebtn==true) {
+                    result+=position+arrays.get(position).name+ true+"|";
+                }
+                else if(arrays.get(position).falsebtn==true) {
+                    result+=position+arrays.get(position).name+false+"|";
+                }
+                else
+                    return "error";
+            }
+        }
+        Toast.makeText(Quiz_Main.this,result,2);
+        return result;
+    }
 }
