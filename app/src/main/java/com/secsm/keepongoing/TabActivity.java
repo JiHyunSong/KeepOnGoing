@@ -20,6 +20,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.secsm.keepongoing.Adapters.FriendNameAndIcon;
+import com.secsm.keepongoing.Adapters.FriendsArrayAdapters;
 import com.secsm.keepongoing.Alarm.Contact;
 import com.secsm.keepongoing.Alarm.DBContactHelper;
 import com.secsm.keepongoing.Alarm.Preference;
@@ -98,15 +100,18 @@ public class TabActivity extends Activity {
             roomList.setAdapter(mockRoomArrayAdapter);
 
             // mock quiz
-            ArrayList<String> mockFriends = new ArrayList<String>();
-            mockFriends.add("tempFriend1");
-            mockFriends.add("tempFriend2");
-            mockFriends.add("tempFriend3");
-            mockFriends.add("tempFriend4");
+            ArrayList<FriendNameAndIcon> mockFriends = new ArrayList<FriendNameAndIcon>();
+//            ArrayList<String> mockFriends = new ArrayList<String>();
+//            mockFriends.add(String profile_path, String name, String targetTime);
+            mockFriends.add(new FriendNameAndIcon("", "temp1", "2011-08-22 12:09:36"));
+            mockFriends.add(new FriendNameAndIcon("", "temp1", "2011-08-22 12:09:36"));
+            mockFriends.add(new FriendNameAndIcon("", "temp1", "2011-08-22 12:09:36"));
+            mockFriends.add(new FriendNameAndIcon("", "temp1", "2011-08-22 12:09:36"));
 
-            ArrayAdapter<String> mockFriendArrayAdapter;
-            mockFriendArrayAdapter = new ArrayAdapter<String>(this,
-                    R.layout.tab_list, mockFriends);
+            FriendsArrayAdapters mockFriendArrayAdapter;
+//            mockFriendArrayAdapter = new ArrayAdapter<String>(this,
+//                    R.layout.tab_list, mockFriends);
+            mockFriendArrayAdapter = new FriendsArrayAdapters(TabActivity.this, R.layout.friend_list_item, mockFriends);
             friendList = (ListView) findViewById(R.id.friend_list);
             friendList.setAdapter(mockFriendArrayAdapter);
 
@@ -121,7 +126,8 @@ public class TabActivity extends Activity {
         arGeneral3.add("알람 설정");
         arGeneral3.add("목표 시간 설정");
         arGeneral3.add("퀴즈 모음");
-        arGeneral3.add("로그인");
+        if(KogPreference.isLogin(TabActivity.this))
+            arGeneral3.add("로그인");
 
         ArrayAdapter<String> optionArrayAdapter;
         optionArrayAdapter = new ArrayAdapter<String>(this,

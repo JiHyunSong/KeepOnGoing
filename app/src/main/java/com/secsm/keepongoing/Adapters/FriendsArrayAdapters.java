@@ -2,6 +2,7 @@ package com.secsm.keepongoing.Adapters;
 
 
 import com.secsm.keepongoing.R;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
@@ -27,13 +28,12 @@ public class FriendsArrayAdapters extends BaseAdapter {
     public FriendsArrayAdapters(Context context, int layout, ArrayList<FriendNameAndIcon> friendList) {
         this.context = context;
         friendArrayList = friendList;
-        inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.layout = layout;
     }
 
     public int getCount() {
         return friendArrayList.size();
-
     }
 
     public Object getItem(int position) {
@@ -46,23 +46,35 @@ public class FriendsArrayAdapters extends BaseAdapter {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        if(convertView == null){
+        if (convertView == null) {
             convertView = inflater.inflate(layout, parent, false);
+            viewHolder = new ViewHolder();
+            viewHolder.icon = (ImageView) convertView.findViewById(R.id.iconFriend);
+            viewHolder.name = (TextView) convertView.findViewById(R.id.txtFriendNickname);
+            convertView.setTag(viewHolder);
+
+        }else{
+            // reuse
+            viewHolder = (ViewHolder) convertView.getTag();
+
         }
 
-        ImageView icon = (ImageView)convertView.findViewById(R.id.iconFriend);
-        icon.setImageResource(friendArrayList.get(position).icon);
 
-        TextView name = (TextView)convertView.findViewById(R.id.txtFriendNickname);
-        name.setText(friendArrayList.get(position).name);
+//        viewHolder.icon.setImageBitmap();
+
+
+        viewHolder.icon.setImageResource(friendArrayList.get(position).icon);
+
+        viewHolder.name.setText(friendArrayList.get(position).name);
 
         return convertView;
 
     }
 
-    class ViewHolder{
-        public Bitmap friend_profile = null;
-        public String friend_nickname = null;
+    class ViewHolder {
+        public ImageView icon = null;
+        public TextView name = null;
+//        public String name = null;
     }
 
     @Override
@@ -71,7 +83,7 @@ public class FriendsArrayAdapters extends BaseAdapter {
         super.finalize();
     }
 
-    private void free(){
+    private void free() {
         inflater = null;
 //        infoList = null;
 //        viewHolder = null;
