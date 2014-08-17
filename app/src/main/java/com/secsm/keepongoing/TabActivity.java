@@ -19,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.secsm.keepongoing.Adapters.FriendNameAndIcon;
@@ -28,8 +29,6 @@ import com.secsm.keepongoing.Alarm.DBContactHelper;
 import com.secsm.keepongoing.Alarm.Preference;
 import com.secsm.keepongoing.Alarm.alram_list;
 import com.secsm.keepongoing.DB.DBHelper;
-import com.secsm.keepongoing.Quiz.Quiz_Main;
-import com.secsm.keepongoing.Quiz.Solve_Main;
 import com.secsm.keepongoing.Shared.KogPreference;
 
 import java.text.SimpleDateFormat;
@@ -48,7 +47,7 @@ public class TabActivity extends Activity {
     private static final String LOG_TAG = "MainmenuActivity";
     private final int ADDROOM = 100;
     private final int MANAGEFRIENDS = 200;
-    private TextView _text, _current_time_text, _current_time_text2;
+    private TextView _text, _current_time_text, _current_time_text2,_goal_time;
     private TextView _text2;
     MenuInflater inflater;
     protected int i = 0, minute = 0, diff_hour, diff_min;
@@ -170,7 +169,7 @@ public class TabActivity extends Activity {
         _text2 = (TextView) findViewById(R.id.goal);
 
 
-        //@민수 삽입
+/*        //@민수 삽입
         Button btnhi = (Button) findViewById(R.id.button2);
         btnhi.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
@@ -186,11 +185,12 @@ public class TabActivity extends Activity {
                 Intent intent = new Intent(TabActivity.this, Solve_Main.class);
                 startActivity(intent);
             }
-        });
+        });*/
 
 
         _current_time_text = (TextView) findViewById(R.id.currenttime);
         _current_time_text2 = (TextView) findViewById(R.id.currenttime2);
+        _goal_time = (TextView) findViewById(R.id.goal_time);
         TimerTask adTast2 = new TimerTask() {
             public void run() {
                 replace_current_time_Handler.sendEmptyMessage(0);
@@ -260,10 +260,11 @@ public class TabActivity extends Activity {
 //        });
         //@민수 타이머 완료
         Button ring = (Button) findViewById(R.id.ringring);
+
         ring.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                Preference.setLong(TabActivity.this, "diff", 0);
-                _text.setText("00:00:00");
+
+
                 mtoggle.setChecked(false);
                 mtoggle.setBackgroundResource(R.drawable.selector_tab_play_button);
                 Preference.putBoolean(TabActivity.this, "toggle", false);
@@ -276,9 +277,95 @@ public class TabActivity extends Activity {
                 //Intent intent = new Intent(MainActivity.this, Klaxon.class);
                 //Intent intent = new Intent(MainActivity.this, Alarm_main.class);
                 //startActivity(intent);
+                Date start = new Date();
+
+                Toast.makeText(TabActivity.this,
+                        "@SERVER : \n"+start.toString()+"|달성시간"+_text.getText(),2).show();
+//                acheivetimeRegisterRequest(_goal_time.getText().toString(),_text.getText().toString(),start.toString().substring(11,19));
+
+
+                _text.setText("00:00:00");
+                Preference.setLong(TabActivity.this, "diff", 0);
+
             }
         });
     }
+
+//
+//    //@통신
+//    private void acheivetimeRegisterRequest(String target_time,String accomplished_time,String date) {
+//        String get_url = KogPreference.REST_URL +
+//                "Register" +
+//                "?nickname=" + KogPreference.getNickName(TabActivity.this) +
+//                "&rid=" + KogPreference.getRid(TabActivity.this) +
+//                "&target_time=" + target_time +
+//                "&accomplished_time=" + accomplished_time+
+//                "&date=" + date;
+//
+//
+//
+//        Log.i(LOG_TAG, "get_url : " + get_url);
+//
+//        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, get_url, null,
+//                new Response.Listener<JSONObject>() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//                        Log.i(LOG_TAG, "get JSONObject");
+//                        Log.i(LOG_TAG, response.toString());
+//
+//                        try {
+//                            status_code = response.getInt("status");
+//                            if (status_code == 200) {
+//                                rMessage = response.getString("message");
+//                                // real action
+//                                GoNextPage();
+//                            } else if (status_code == 9001) {
+//                                Toast.makeText(getBaseContext(), "회원가입이 불가능합니다.", Toast.LENGTH_SHORT).show();
+//                            } else {
+//                                Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
+//                                if (KogPreference.DEBUG_MODE) {
+//                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
+//                                }
+//                            }
+//                        } catch (Exception e) {
+//                        }
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Log.i(LOG_TAG, "Response Error");
+//                Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
+//                if (KogPreference.DEBUG_MODE) {
+//                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        }
+//        );
+//        vQueue.add(jsObjRequest);
+//    }
+//
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private void setInvisibleBody() {
         layoutStopwatch.setVisibility(View.INVISIBLE);
@@ -493,7 +580,7 @@ public class TabActivity extends Activity {
 
             Intent intent = new Intent(TabActivity.this, AddFriendActivity.class);
             startActivity(intent);
-//            TabActivity.this.finish();
+//            TabActivity.this.();
 
 
             return true;

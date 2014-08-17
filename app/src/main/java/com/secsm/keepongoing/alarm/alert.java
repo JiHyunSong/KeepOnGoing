@@ -27,7 +27,7 @@ public class alert extends Activity {
     private MediaPlayer mMediaPlayer;   // MediaPlayer 변수 선언
     private Vibrator mVibrator;
     private static final long[] sVibratePattern = new long[]{500, 500};   // 진동 패턴 정의(0.5초 진동, 0.5초 쉼)
-
+    private static String LOG_TAG = "Alarm";
     private Ringtone r;
     private AlarmManager mManager;
 
@@ -64,6 +64,13 @@ public class alert extends Activity {
         btndismiss.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 Date mCalendar = new Date();
+
+                //@통신
+     /*           Toast.makeText(alert.this,
+                        "@SERVER : \n"+ mCalendar.getTime(),2);*/
+
+
+
                 mManager.set(AlarmManager.RTC_WAKEUP, mCalendar.getTime() + 24 * 60 * 60 * 1000, pendingIntent());
                 Log.e("minsu) : AlertActivity : ", "" + mCalendar.toString());
                 Toast.makeText(alert.this, "기상 완료", 2).show();
@@ -73,6 +80,10 @@ public class alert extends Activity {
             }
         });
     }
+
+
+
+
 
     private PendingIntent pendingIntent() {
         Intent i = new Intent(alert.this, alert.class);

@@ -68,7 +68,7 @@
         android:layout_below="@id/tab_name"
         android:visibility="visible">
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/linearLayout2"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -91,12 +91,12 @@
                 android:textSize="40dp" />
 
 
-        </LinearLayout>
+        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/kkk"
             android:layout_width="fill_parent"
-            android:layout_height="150dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/linearLayout2"
@@ -156,57 +156,40 @@
             android:layout_alignRight="@+id/linearLayout"
             android:layout_marginBottom="55dp"
             android:text="Alram"
-            android:textSize="35dp" />
-
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/button1"
-            android:text="Hi"
-            android:textSize="35dp" />
-
-        <Button
-            android:id="@+id/button3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/button1"
-            android:layout_toRightOf="@+id/button2"
-            android:text="BYE"
-            android:textSize="35dp" />
+            android:textSize="35dp"
+            android:visibility="gone"/>
 
 
-        <LinearLayout
-            android:id="@+id/linearLayout"
+        <RelativeLayout
+            android:id="@+id/RelativeLayout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/button1"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
             android:gravity="right"
+            android:layout_marginRight="30dp"
+            android:layout_marginBottom="30dp"
             android:orientation="horizontal">
 
             <ToggleButton
+
                 android:id="@+id/toggleButton2"
+android:layout_toRightOf="@+id/ringring"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/selector_tab_play_button"
-                android:text="New ToggleButton"
+                android:textSize="30dp"
                 android:textOff=""
                 android:textOn=""
-                android:textSize="30dp" />
-
-
+                />
             <Button
                 android:id="@+id/ringring"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:background="@drawable/selector_tab_stop_button"
                 android:textSize="30dp" />
 
-
-        </LinearLayout>
+        </RelativeLayout>
 
 
     </RelativeLayout>
