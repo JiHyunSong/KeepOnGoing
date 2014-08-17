@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -19,16 +20,17 @@ import com.android.volley.toolbox.Volley;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
+
 import org.json.JSONObject;
+
 import eu.inmite.android.lib.dialogs.SimpleDialogFragment;
 
 /**
  * A login screen that offers login via email/password.
-
  */
-public class LoginActivity extends Activity{
+public class LoginActivity extends Activity {
 
-    private static String LOG_TAG="Login Activity";
+    private static String LOG_TAG = "Login Activity";
     // UI references.
     private CheckBox login_auto_login_cb;
     private EditText mNicknameView;
@@ -43,6 +45,7 @@ public class LoginActivity extends Activity{
     private Button mSignUpButton;
     private Button mSignInButton;
     private Button easterEggButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,15 +61,14 @@ public class LoginActivity extends Activity{
         mPasswordView = (EditText) findViewById(R.id.password);
 
         login_auto_login_cb = (CheckBox) findViewById(R.id.login_auto_login_cb);
-        
+
         // Sign In button
         mSignInButton = (Button) findViewById(R.id.sign_in_button);
-        mSignInButton.setOnClickListener(new View.OnClickListener(){
+        mSignInButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(isValidProfile()) {
+                if (isValidProfile()) {
                     UserLogin(mNicknameView.getText().toString(), mPasswordView.getText().toString());
-                }else
-                {
+                } else {
                     Toast.makeText(getBaseContext(), "아이디와 비밀번호를 확인해주세요", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -75,7 +77,7 @@ public class LoginActivity extends Activity{
         // Sign up (Register) button
         mSignUpButton = (Button) findViewById(R.id.sign_up_button);
         // go to Register page
-        mSignUpButton.setOnClickListener(new View.OnClickListener(){
+        mSignUpButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(LoginActivity.this, AuthActivity.class);
                 startActivity(intent);
@@ -83,11 +85,10 @@ public class LoginActivity extends Activity{
             }
         });
 
-        if(KogPreference.DEBUG_MODE)
-        {
+        if (KogPreference.DEBUG_MODE) {
             easterEggButton = (Button) findViewById(R.id.easter_egg_button);
             // go to Register page
-            easterEggButton.setOnClickListener(new View.OnClickListener(){
+            easterEggButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
 
                     String easter_msg = "안녕";
@@ -103,12 +104,11 @@ public class LoginActivity extends Activity{
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
-        if(KogPreference.isAutoLogin(LoginActivity.this))
-        {
+        if (KogPreference.isAutoLogin(LoginActivity.this)) {
             UserLogin(KogPreference.getNickName(LoginActivity.this), KogPreference.getPassword(LoginActivity.this));
-        }else if(!TextUtils.isEmpty(savedNick)) {
+        } else if (!TextUtils.isEmpty(savedNick)) {
             mNicknameView.setText(savedNick);
-        }else{
+        } else {
             savedNick = KogPreference.getNickName(LoginActivity.this);
             mNicknameView.setText(savedNick);
         }
@@ -116,10 +116,10 @@ public class LoginActivity extends Activity{
     }
 
     private void GoNextPage(String nickname, String password) {
-        if(login_auto_login_cb.isChecked()){
+        if (login_auto_login_cb.isChecked()) {
             KogPreference.setAutoLogin(LoginActivity.this, true);
             KogPreference.setPassword(LoginActivity.this, password);
-        }else{
+        } else {
             KogPreference.setAutoLogin(LoginActivity.this, false);
             KogPreference.setPassword(LoginActivity.this, "");
         }
@@ -153,35 +153,34 @@ public class LoginActivity extends Activity{
                         Log.i(LOG_TAG, "get JSONObject");
                         Log.i(LOG_TAG, response.toString());
 
-                        try{
+                        try {
                             status_code = response.getInt("status");
-                            if(status_code == 200) {
+                            if (status_code == 200) {
                                 rMessage = response.getString("message");
                                 // real action
 
                                 GoNextPage(nickName, password);
-                            } else if(status_code == 9001){
+                            } else if (status_code == 9001) {
                                 Toast.makeText(getBaseContext(), "아이디와 패스워드를 확인해주세요", Toast.LENGTH_SHORT).show();
-                            }else {
-                                if(KogPreference.DEBUG_MODE) {
+                            } else {
+                                if (KogPreference.DEBUG_MODE) {
                                     Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
                                 }
                             }
-                        }catch (Exception e)
-                        {
+                        } catch (Exception e) {
                         }
                     }
-                }, new Response.ErrorListener(){
+                }, new Response.ErrorListener() {
             @Override
-            public void onErrorResponse(VolleyError error){
+            public void onErrorResponse(VolleyError error) {
                 Log.i(LOG_TAG, "Response Error");
-                if(KogPreference.DEBUG_MODE)
-                {
+                if (KogPreference.DEBUG_MODE) {
                     Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
                 }
 
             }
-        });
+        }
+        );
         vQueue.add(jsObjRequest);
     }
 
@@ -189,7 +188,7 @@ public class LoginActivity extends Activity{
         String rNickName = mNicknameView.getText().toString();
         String rPassWord = mPasswordView.getText().toString();
 
-        return !TextUtils.isEmpty(rPassWord) && isPasswordValid(rPassWord) && !TextUtils.isEmpty(rNickName) && isNicknameValid(rNickName) ;
+        return !TextUtils.isEmpty(rPassWord) && isPasswordValid(rPassWord) && !TextUtils.isEmpty(rNickName) && isNicknameValid(rNickName);
     }
 
     private boolean isNicknameValid(String nickName) {

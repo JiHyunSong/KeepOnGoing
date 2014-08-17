@@ -1,117 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bootstrapbutton="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:bootstrapbutton="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
+
     <RelativeLayout
+        android:id="@+id/quiz_child_textview"
         android:layout_width="fill_parent"
         android:layout_height="60dp"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/quiz_child_textview">
+        android:layout_centerHorizontal="true">
+
         <EditText
             android:id="@+id/essay"
             android:layout_width="fill_parent"
             android:layout_height="60dp"
             android:layout_margin="10dp"
+            android:gravity="top|left"
+            android:hint="rounded"
             android:lines="1"
             android:maxLines="1"
-            android:hint="rounded"
-            android:gravity="top|left"
             android:scrollbars="vertical"
-           android:visibility="invisible"
-            />
-
+            android:visibility="invisible" />
 
 
         <RelativeLayout
+            android:id="@+id/tflayout"
             android:layout_width="wrap_content"
             android:layout_height="60dp"
             android:layout_centerHorizontal="true"
             android:gravity="center_vertical"
-            android:visibility="invisible"
-            android:id="@+id/tflayout">
-
+            android:visibility="invisible">
 
 
             <RadioGroup
+                android:id="@+id/tfgroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:id="@+id/tfgroup">
+                android:orientation="horizontal">
 
 
                 <RadioButton
+                    android:id="@+id/True"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="True"
-                    android:id="@+id/True"
-                    android:textSize="30dp"/>
+                    android:textSize="30dp" />
 
                 <RadioButton
-                            android:layout_marginLeft="80dp"
+                    android:id="@+id/False"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="80dp"
                     android:text="False"
-                    android:id="@+id/False"
-                    android:textSize="30dp"/>
+                    android:textSize="30dp" />
 
 
-
-                </RadioGroup>
+            </RadioGroup>
         </RelativeLayout>
 
 
-
-
-
-
         <RelativeLayout
-    android:layout_width="wrap_content"
-    android:layout_height="60dp"
-    android:layout_centerHorizontal="true"
-    android:gravity="center_vertical"
-    android:visibility="invisible"
-            android:id="@+id/multiple">
-    <CheckBox
-        android:text="1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/check1"/>
-    <CheckBox
-        android:text="2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/check1"
+            android:id="@+id/multiple"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_vertical"
+            android:visibility="invisible">
 
-        android:layout_marginLeft="30dp"
+            <CheckBox
+                android:id="@+id/check1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1" />
 
-        android:id="@+id/check2"
-        />
-    <CheckBox
-        android:text="3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/check2"
-        android:layout_marginLeft="30dp"
-        android:id="@+id/check3"
-        />
-    <CheckBox
-        android:text="4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/check3"
-        android:layout_marginLeft="30dp"
-        android:id="@+id/check4"
-        />
-    <CheckBox
-        android:text="5"
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/check4"
-        android:layout_marginLeft="30dp"
-        android:id="@+id/check5"
-        />
+            <CheckBox
+                android:id="@+id/check2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+
+                android:layout_toRightOf="@+id/check1"
+
+                android:text="2" />
+
+            <CheckBox
+                android:id="@+id/check3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_toRightOf="@+id/check2"
+                android:text="3" />
+
+            <CheckBox
+                android:id="@+id/check4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_toRightOf="@+id/check3"
+                android:text="4" />
+
+            <CheckBox
+                android:id="@+id/check5"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_toRightOf="@+id/check4"
+                android:text="5" />
+        </RelativeLayout>
     </RelativeLayout>
- </RelativeLayout>
 
 </RelativeLayout>

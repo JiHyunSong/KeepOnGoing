@@ -25,7 +25,7 @@ public class RoomsArrayAdapters extends BaseAdapter {
     public RoomsArrayAdapters(Context context, int layout, ArrayList<RoomNaming> roomList) {
         this.context = context;
         roomArrayList = roomList;
-        inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.layout = layout;
     }
 
@@ -44,16 +44,16 @@ public class RoomsArrayAdapters extends BaseAdapter {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        if(convertView == null)
+        if (convertView == null)
             convertView = inflater.inflate(layout, parent, false);
 
-        TextView type= (TextView)convertView.findViewById(R.id.txtRoomType);
+        TextView type = (TextView) convertView.findViewById(R.id.txtRoomType);
         type.setText(roomArrayList.get(position).type);
 
-        TextView name = (TextView)convertView.findViewById(R.id.txtRoomName);
+        TextView name = (TextView) convertView.findViewById(R.id.txtRoomName);
         name.setText(roomArrayList.get(position).name);
 
-        TextView time= (TextView)convertView.findViewById(R.id.txtRoomTime);
+        TextView time = (TextView) convertView.findViewById(R.id.txtRoomTime);
         time.setText(roomArrayList.get(position).time);
         return convertView;
 

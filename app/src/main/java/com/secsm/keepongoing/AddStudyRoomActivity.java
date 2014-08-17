@@ -113,14 +113,10 @@ public class AddStudyRoomActivity extends Activity {
     }
 
 
-
-
     private void goNextFriendPage() {
 
-        if(add_study_room_life_rb.isChecked() && isLifeRoomValid())
-        {
-            if(KogPreference.DEBUG_MODE)
-            {
+        if (add_study_room_life_rb.isChecked() && isLifeRoomValid()) {
+            if (KogPreference.DEBUG_MODE) {
                 Log.i(LOG_TAG, "Go Next Page with liferoom info");
                 Log.i(LOG_TAG, "add_study_room_life_holiday_et.getText().toString() : " + add_study_room_life_holiday_et.getText().toString());
             }
@@ -134,10 +130,8 @@ public class AddStudyRoomActivity extends Activity {
 //            startActivity(intent);
 //            this.finish();
 
-        }else if(add_study_room_subject_rb.isChecked() && isSubjectRoomValid())
-        {
-            if(KogPreference.DEBUG_MODE)
-            {
+        } else if (add_study_room_subject_rb.isChecked() && isSubjectRoomValid()) {
+            if (KogPreference.DEBUG_MODE) {
                 //+ add_study_room_subject_tp.
                 Date dateTime = new Date();
                 dateTime.setTime(mCalendar.getTimeInMillis());
@@ -160,8 +154,7 @@ public class AddStudyRoomActivity extends Activity {
 //            intent.putExtra("meet_days", getMeetDays());
 //            startActivity(intent);
 //            this.finish();
-        }else
-        {
+        } else {
             Toast.makeText(getBaseContext(), "입력란을 알맞게 채워주세요!", Toast.LENGTH_SHORT).show();
             // error
         }
@@ -170,65 +163,54 @@ public class AddStudyRoomActivity extends Activity {
 //        this.finish();
     }
 
-    private String getMeetDays()
-    {
+    private String getMeetDays() {
         String meetDays = "";
-        if(add_study_room_subject_mon_tg.isChecked())
-        {
-            meetDays+="mon|";
+        if (add_study_room_subject_mon_tg.isChecked()) {
+            meetDays += "mon|";
         }
-        if(add_study_room_subject_tue_tg.isChecked())
-        {
-            meetDays+="tue|";
+        if (add_study_room_subject_tue_tg.isChecked()) {
+            meetDays += "tue|";
         }
-        if(add_study_room_subject_wed_tg.isChecked())
-        {
-            meetDays+="wed|";
+        if (add_study_room_subject_wed_tg.isChecked()) {
+            meetDays += "wed|";
         }
-        if(add_study_room_subject_thu_tg.isChecked())
-        {
-            meetDays+="thu|";
+        if (add_study_room_subject_thu_tg.isChecked()) {
+            meetDays += "thu|";
         }
-        if(add_study_room_subject_fri_tg.isChecked())
-        {
-            meetDays+="fri|";
+        if (add_study_room_subject_fri_tg.isChecked()) {
+            meetDays += "fri|";
         }
-        if(add_study_room_subject_sat_tg.isChecked())
-        {
-            meetDays+="sat|";
+        if (add_study_room_subject_sat_tg.isChecked()) {
+            meetDays += "sat|";
         }
-        if(add_study_room_subject_sun_tg.isChecked())
-        {
-            meetDays+="sun|";
+        if (add_study_room_subject_sun_tg.isChecked()) {
+            meetDays += "sun|";
         }
 
-        if(meetDays.length() > 0){
-            meetDays = meetDays.substring(0, meetDays.length()-1);
+        if (meetDays.length() > 0) {
+            meetDays = meetDays.substring(0, meetDays.length() - 1);
         }
 
         return meetDays;
     }
-    private boolean isLifeRoomValid()
-    {
+
+    private boolean isLifeRoomValid() {
         String roomNames = add_study_room_name_et.getText().toString();
         String roomRules = add_study_room_rules_et.getText().toString();
         String holidays = add_study_room_life_holiday_et.getText().toString();
 
-        if(!TextUtils.isEmpty(roomNames) && !TextUtils.isEmpty(roomRules) && !TextUtils.isEmpty(holidays))
-        {
+        if (!TextUtils.isEmpty(roomNames) && !TextUtils.isEmpty(roomRules) && !TextUtils.isEmpty(holidays)) {
             return isStringInNumRange(holidays, 1, 9);
         }
         return false;
     }
 
-    private boolean isSubjectRoomValid()
-    {
+    private boolean isSubjectRoomValid() {
         String roomNames = add_study_room_name_et.getText().toString();
         String roomRules = add_study_room_rules_et.getText().toString();
         String durationTimes = add_study_room_subject_duration_time_et.getText().toString();
         String showUpTimes = add_study_room_subject_show_up_time_et.getText().toString();
-        if(!TextUtils.isEmpty(roomNames) && !TextUtils.isEmpty(roomRules) && !TextUtils.isEmpty(durationTimes) && !TextUtils.isEmpty(showUpTimes))
-        {
+        if (!TextUtils.isEmpty(roomNames) && !TextUtils.isEmpty(roomRules) && !TextUtils.isEmpty(durationTimes) && !TextUtils.isEmpty(showUpTimes)) {
             return isStringInNumRange(durationTimes, 0, 60) && isStringInNumRange(showUpTimes, 0, 60);
         }
 //            intent.putExtra("duration_time", add_study_room_subject_duration_time_et.getText().toString());
@@ -239,21 +221,20 @@ public class AddStudyRoomActivity extends Activity {
     }
 
     private boolean isStringInNumRange(String inputText, int min, int max) {
-        try{
+        try {
             int inputInt = Integer.parseInt(inputText);
-            if(inputInt >= min && inputInt <= max) {
+            if (inputInt >= min && inputInt <= max) {
                 Log.i(LOG_TAG, "isStringInNumRange True");
                 return true;
-            }
-            else{
+            } else {
                 return false;
             }
-        }catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             Log.e(LOG_TAG, "NumberFormat Exception!! from " + inputText + " to Int");
             return false;
         }
     }
+
     private void setInvisibleLayout() {
         add_study_room_life_rl.setVisibility(View.INVISIBLE);
         add_study_room_subject_rl.setVisibility(View.GONE);
@@ -302,15 +283,13 @@ public class AddStudyRoomActivity extends Activity {
         }
     };
 
-    DatePicker.OnDateChangedListener dp_onDateChangedListener = new DatePicker.OnDateChangedListener()
-    {
+    DatePicker.OnDateChangedListener dp_onDateChangedListener = new DatePicker.OnDateChangedListener() {
         @Override
-        public void onDateChanged (DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            mCalendar.set (year, monthOfYear, dayOfMonth, add_study_room_subject_tp.getCurrentHour(), add_study_room_subject_tp.getCurrentMinute());
+        public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+            mCalendar.set(year, monthOfYear, dayOfMonth, add_study_room_subject_tp.getCurrentHour(), add_study_room_subject_tp.getCurrentMinute());
             Log.i("HelloAlarmActivity", "onDateChanged : " + mCalendar.getTime().toString());
         }
     };
-
 
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {

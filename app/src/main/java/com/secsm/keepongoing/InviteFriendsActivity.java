@@ -30,7 +30,7 @@ public class InviteFriendsActivity extends Activity {
     private EditText invite_friend_name_et;
     String f_nickName;
 
-    private static String LOG_TAG="InviteFriendActivity";
+    private static String LOG_TAG = "InviteFriendActivity";
     private RequestQueue vQueue;
     private int status_code;
     private String rMessage;
@@ -42,25 +42,24 @@ public class InviteFriendsActivity extends Activity {
 
         vQueue = Volley.newRequestQueue(this);
 
-        invite_friend_add_btn = (Button)findViewById(R.id.invite_friend_add_btn);
-        invite_friend_go_back_btn = (Button)findViewById(R.id.invite_friend_go_back_btn);
+        invite_friend_add_btn = (Button) findViewById(R.id.invite_friend_add_btn);
+        invite_friend_go_back_btn = (Button) findViewById(R.id.invite_friend_go_back_btn);
         invite_friend_name_et = (EditText) findViewById(R.id.invite_friend_name_et);
 
-        invite_friend_add_btn.setOnClickListener(new View.OnClickListener(){
+        invite_friend_add_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 f_nickName = invite_friend_name_et.getText().toString();
-                if(isNicknameValid(f_nickName)) {
+                if (isNicknameValid(f_nickName)) {
 
                     inviteFriendRequest(f_nickName);
 
-                }else
-                {
+                } else {
                     Toast.makeText(getBaseContext(), "친구 추가할 아이디를 확인해주세요.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-        invite_friend_go_back_btn.setOnClickListener(new View.OnClickListener(){
+        invite_friend_go_back_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 GoBackPage();
             }
@@ -86,36 +85,35 @@ public class InviteFriendsActivity extends Activity {
                         Log.i(LOG_TAG, "get JSONObject");
                         Log.i(LOG_TAG, response.toString());
 
-                        try{
+                        try {
                             status_code = response.getInt("status");
-                            if(status_code == 200) {
+                            if (status_code == 200) {
                                 rMessage = response.getString("message");
                                 // real action
 
                                 Toast.makeText(getBaseContext(), "방으로 초대되었습니다.", Toast.LENGTH_SHORT).show();
-                            } else if(status_code == 9001){
+                            } else if (status_code == 9001) {
                                 Toast.makeText(getBaseContext(), "친구 추가할 아이디를 확인해주세요.", Toast.LENGTH_SHORT).show();
-                            }else {
+                            } else {
                                 Toast.makeText(getBaseContext(), "통신 에러", Toast.LENGTH_SHORT).show();
-                                if(KogPreference.DEBUG_MODE) {
+                                if (KogPreference.DEBUG_MODE) {
                                     Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
                                 }
                             }
-                        }catch (Exception e)
-                        {
+                        } catch (Exception e) {
                         }
                     }
-                }, new Response.ErrorListener(){
+                }, new Response.ErrorListener() {
             @Override
-            public void onErrorResponse(VolleyError error){
+            public void onErrorResponse(VolleyError error) {
                 Log.i(LOG_TAG, "Response Error");
-                if(KogPreference.DEBUG_MODE)
-                {
+                if (KogPreference.DEBUG_MODE) {
                     Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
                 }
 
             }
-        });
+        }
+        );
         vQueue.add(jsObjRequest);
     }
 

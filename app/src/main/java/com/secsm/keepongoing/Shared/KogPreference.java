@@ -19,7 +19,8 @@ public final class KogPreference {
     private static String PASSWORD_TAG = "PASSWORD";
     private static String RID_TAG = "RID";
     private static String GCM_TAG = "GCMID";
-    public static String REST_URL="http://210.118.74.195:8080/KOG_Server_Rest/rest/";
+    public static String REST_URL = "http://210.118.74.195:8080/KOG_Server_Rest/rest/";
+
     public KogPreference() {
         // not called
     }
@@ -138,7 +139,7 @@ public final class KogPreference {
     // external method         //
     /////////////////////////////
 
-    public static boolean isLogin(final Context context){
+    public static boolean isLogin(final Context context) {
         try {
             Boolean v = getBoolean(context, LOGIN_TAG);
             return v;
@@ -147,7 +148,7 @@ public final class KogPreference {
         }
     }
 
-    public static void setLogin(final Context context){
+    public static void setLogin(final Context context) {
         try {
             setBoolean(context, LOGIN_TAG, true);
         } catch (ClassCastException e) {
@@ -155,7 +156,7 @@ public final class KogPreference {
         }
     }
 
-    public static boolean isAutoLogin(final Context context){
+    public static boolean isAutoLogin(final Context context) {
         try {
             Boolean v = getBoolean(context, AUTOLOGIN_TAG);
             return v;
@@ -172,10 +173,10 @@ public final class KogPreference {
         editor.apply();
     }
 
-    public static String getNickName(final Context context){
-        try{
+    public static String getNickName(final Context context) {
+        try {
             return getString(context, NICKNAME_TAG);
-        }catch (ClassCastException e){
+        } catch (ClassCastException e) {
             Log.e(LOG_TAG, "getNickName fail, ClassCaseException : " + e.getStackTrace());
             return "";
         }
@@ -190,10 +191,10 @@ public final class KogPreference {
     }
 
 
-    public static String getPassword(final Context context){
-        try{
+    public static String getPassword(final Context context) {
+        try {
             return getString(context, PASSWORD_TAG);
-        }catch (ClassCastException e){
+        } catch (ClassCastException e) {
             Log.e(LOG_TAG, "getPassword fail, ClassCaseException : " + e.getStackTrace());
             return "";
         }
@@ -207,10 +208,10 @@ public final class KogPreference {
         }
     }
 
-    public static String getRid(final Context context){
-        try{
+    public static String getRid(final Context context) {
+        try {
             return getString(context, PASSWORD_TAG);
-        }catch (ClassCastException e){
+        } catch (ClassCastException e) {
             Log.e(LOG_TAG, "getPassword fail, ClassCaseException : " + e.getStackTrace());
             return "";
         }
@@ -232,10 +233,10 @@ public final class KogPreference {
         }
     }
 
-    public static String getRegId(final Context context){
-        try{
+    public static String getRegId(final Context context) {
+        try {
             return getString(context, GCM_TAG);
-        }catch (ClassCastException e){
+        } catch (ClassCastException e) {
             Log.e(LOG_TAG, "get Registration ID fail, ClassCaseException : " + e.getStackTrace());
             return "";
         }

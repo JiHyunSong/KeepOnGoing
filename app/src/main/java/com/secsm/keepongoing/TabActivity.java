@@ -1,4 +1,5 @@
 package com.secsm.keepongoing;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
@@ -47,18 +48,18 @@ public class TabActivity extends Activity {
     private static final String LOG_TAG = "MainmenuActivity";
     private final int ADDROOM = 100;
     private final int MANAGEFRIENDS = 200;
-    private TextView _text,_current_time_text,_current_time_text2;
+    private TextView _text, _current_time_text, _current_time_text2;
     private TextView _text2;
     MenuInflater inflater;
-    protected int i=0,minute=0,diff_hour,diff_min;
-    boolean a=false;
-    long mills=0;
+    protected int i = 0, minute = 0, diff_hour, diff_min;
+    boolean a = false;
+    long mills = 0;
 
     private DBHelper mDBHelper;
     private ListView roomList, friendList, settingList;
 
     private ImageButton tabStopwatch, tabFriends, tabRooms, tabSettings;
-    private RelativeLayout layoutStopwatch, layoutFriends,layoutRooms,layoutSettings;
+    private RelativeLayout layoutStopwatch, layoutFriends, layoutRooms, layoutSettings;
     private MenuItem actionBarFirstBtn, actionBarSecondBtn;
 
     @Override
@@ -79,14 +80,13 @@ public class TabActivity extends Activity {
         tabStopwatch = (ImageButton) findViewById(R.id.imgBtn_tab_stopwatch);
         tabFriends = (ImageButton) findViewById(R.id.imgBtn_tab_friends);
         tabRooms = (ImageButton) findViewById(R.id.imgBtn_tab_rooms);
-        tabSettings= (ImageButton) findViewById(R.id.imgBtn_tab_settings);
+        tabSettings = (ImageButton) findViewById(R.id.imgBtn_tab_settings);
 
         Log.i(LOG_TAG, "onCreate");
         mDBHelper = new DBHelper(this);
 
         // setup rooms
-        if (KogPreference.DEBUG_MODE)
-        {
+        if (KogPreference.DEBUG_MODE) {
             // mock room
             ArrayList<String> mockRooms = new ArrayList<String>();
             mockRooms.add("tempRoom1");
@@ -126,7 +126,7 @@ public class TabActivity extends Activity {
         arGeneral3.add("알람 설정");
         arGeneral3.add("목표 시간 설정");
         arGeneral3.add("퀴즈 모음");
-        if(KogPreference.isLogin(TabActivity.this))
+        if (KogPreference.isLogin(TabActivity.this))
             arGeneral3.add("로그인");
 
         ArrayAdapter<String> optionArrayAdapter;
@@ -154,28 +154,20 @@ public class TabActivity extends Activity {
 
         // Alarm OnCreate
         a = Preference.getBoolean(TabActivity.this, "testValue");
-        Log.i(LOG_TAG, "a : "+ a);
+        Log.i(LOG_TAG, "a : " + a);
         DBContactHelper helper = new DBContactHelper(this);
 
-        if(!a) {
+        if (!a) {
             Preference.putBoolean(TabActivity.this, "testValue", true);
-            Contact contact = new Contact(0,00,00);
+            Contact contact = new Contact(0, 00, 00);
             helper.addContact(contact);
-            Contact contact2 = new Contact(1,10,00);
+            Contact contact2 = new Contact(1, 10, 00);
             helper.addContact(contact2);
-
-
-
-
-
-
 
 
         }
         _text = (TextView) findViewById(R.id.tvMsg);
         _text2 = (TextView) findViewById(R.id.goal);
-
-
 
 
         //@민수 삽입
@@ -197,15 +189,8 @@ public class TabActivity extends Activity {
         });
 
 
-
-
-
-
-
-
-
         _current_time_text = (TextView) findViewById(R.id.currenttime);
-        _current_time_text2= (TextView) findViewById(R.id.currenttime2);
+        _current_time_text2 = (TextView) findViewById(R.id.currenttime2);
         TimerTask adTast2 = new TimerTask() {
             public void run() {
                 replace_current_time_Handler.sendEmptyMessage(0);
@@ -216,17 +201,11 @@ public class TabActivity extends Activity {
         timer2.schedule(adTast2, 0, 1000); // 0초후 첫실행, 20초마다 계속실행
 
 
-
-
-
-
-
-
-
-        Contact contact3=helper.getContact(2);
+        Contact contact3 = helper.getContact(2);
         _text2.setText(
-                (contact3.gethour()/10==0 ? "0"+contact3.gethour() : contact3.gethour())
-                        +":"+ (contact3.getminute()/10 == 0 ? "0" + contact3.getminute() : contact3.getminute() )+":"+"00");
+                (contact3.gethour() / 10 == 0 ? "0" + contact3.gethour() : contact3.gethour())
+                        + ":" + (contact3.getminute() / 10 == 0 ? "0" + contact3.getminute() : contact3.getminute()) + ":" + "00"
+        );
 
 
         final ToggleButton mtoggle = (ToggleButton) findViewById(R.id.toggleButton2);
@@ -234,9 +213,9 @@ public class TabActivity extends Activity {
             public void onClick(View arg0) {
 
                 if (mtoggle.isChecked()) {
-                    Preference.putBoolean(TabActivity.this, "toggle",true);
+                    Preference.putBoolean(TabActivity.this, "toggle", true);
                     mtoggle.setBackgroundResource(R.drawable.selector_tab_pause_button);
-                    if(timer == null) {
+                    if (timer == null) {
 
                         Date start = new Date();
                         Preference.setLong(TabActivity.this, "start", start.getTime() - Preference.getLong(TabActivity.this, "diff"));
@@ -252,8 +231,8 @@ public class TabActivity extends Activity {
                 } else {
 
                     mtoggle.setBackgroundResource(R.drawable.selector_tab_play_button);
-                    Preference.putBoolean(TabActivity.this, "toggle",false);
-                    if(timer != null) {
+                    Preference.putBoolean(TabActivity.this, "toggle", false);
+                    if (timer != null) {
                         timer.cancel();
                         Log.i(LOG_TAG, "타이머 스탑");
                         timer = null;
@@ -289,7 +268,7 @@ public class TabActivity extends Activity {
                 mtoggle.setBackgroundResource(R.drawable.selector_tab_play_button);
                 Preference.putBoolean(TabActivity.this, "toggle", false);
 
-                if(timer != null) {
+                if (timer != null) {
                     timer.cancel();
                     Log.i(LOG_TAG, "타이머 완료");
                     timer = null;
@@ -300,7 +279,8 @@ public class TabActivity extends Activity {
             }
         });
     }
-    private void setInvisibleBody(){
+
+    private void setInvisibleBody() {
         layoutStopwatch.setVisibility(View.INVISIBLE);
         layoutFriends.setVisibility(View.INVISIBLE);
         layoutRooms.setVisibility(View.INVISIBLE);
@@ -321,7 +301,7 @@ public class TabActivity extends Activity {
     // tab setOnClickListener
     View.OnClickListener tabListener = new View.OnClickListener() {
         public void onClick(View v) {
-            switch(v.getId()) {
+            switch (v.getId()) {
                 case R.id.imgBtn_tab_stopwatch:
                     Log.i(LOG_TAG, "stopwatch tab");
                     setInvisibleBody();
@@ -364,33 +344,30 @@ public class TabActivity extends Activity {
     };
 
 
-
-
     /* click listener for setting tab */
     ListView.OnItemClickListener itemClickListener = new ListView.OnItemClickListener() {
 
         public void onItemClick(AdapterView<?> adapterView, View arg1, int position, long arg3) {
             // TODO Auto-generated method stub
             if (adapterView.getId() == R.id.friend_list) {
-                Log.i(LOG_TAG,"tab2, friends Clicked");
-                Log.i(LOG_TAG,"position : " + position);
+                Log.i(LOG_TAG, "tab2, friends Clicked");
+                Log.i(LOG_TAG, "position : " + position);
                 // TODO : DEBUG
-                if(position == 3)
-                {
+                if (position == 3) {
                     Intent intent = new Intent(TabActivity.this, AddStudyRoomActivity.class);
                     startActivity(intent);
 //                    TabActivity.this.finish();
                 }
 
             } else if (adapterView.getId() == R.id.room_list) {
-                Log.i(LOG_TAG,"tab3, rooms Clicked");
-                Log.i(LOG_TAG,"position : " + position);
+                Log.i(LOG_TAG, "tab3, rooms Clicked");
+                Log.i(LOG_TAG, "position : " + position);
                 Intent intent = new Intent(TabActivity.this, StudyRoomActivity.class);
-                if(KogPreference.DEBUG_MODE) {
+                if (KogPreference.DEBUG_MODE) {
                     //TODO : change rid, not position value
                     KogPreference.setRid(TabActivity.this, "" + position);
                     intent.putExtra("roomID", position);
-                }else{
+                } else {
                     KogPreference.setRid(TabActivity.this, "" + (-1));
                     intent.putExtra("roomID", -1);
                 }
@@ -398,18 +375,17 @@ public class TabActivity extends Activity {
 //                TabActivity.this.finish();
 
 
-
             } else if (adapterView.getId() == R.id.setting_list) {
-                Log.i(LOG_TAG,"tab4, settings Clicked");
-                Log.i(LOG_TAG,"position : " + position);
+                Log.i(LOG_TAG, "tab4, settings Clicked");
+                Log.i(LOG_TAG, "position : " + position);
                 switch (position) {
                     case 1: // 알람 설정
-                        Log.i(LOG_TAG,"tab4, settings Clicked");
+                        Log.i(LOG_TAG, "tab4, settings Clicked");
                         Intent intent_notice = new Intent(TabActivity.this, NoticeActivity.class);
                         startActivity(intent_notice);
                         break;
                     case 2: // 목표 시간 설정
-                        Log.i(LOG_TAG,"tab4, settings Clicked");
+                        Log.i(LOG_TAG, "tab4, settings Clicked");
 
                         break;
                     case 3: // 퀴즈 모음
@@ -426,23 +402,23 @@ public class TabActivity extends Activity {
 
 
         super.onResume();
-        if(Preference.getString(TabActivity.this, "Resumetimer")=="")
+        if (Preference.getString(TabActivity.this, "Resumetimer") == "")
             _text.setText("00:00:00");
         else
-            _text.setText(Preference.getString(TabActivity.this,"Resumetimer"));
+            _text.setText(Preference.getString(TabActivity.this, "Resumetimer"));
 
 
         DBContactHelper helper = new DBContactHelper(this);
-        Contact contact3=helper.getContact(2);
+        Contact contact3 = helper.getContact(2);
         _text2.setText(
-                (contact3.gethour()/10==0 ? "0"+contact3.gethour() : contact3.gethour())
-                        +":"+ (contact3.getminute()/10 == 0 ? "0" + contact3.getminute() : contact3.getminute() )+":"+"00");
-
+                (contact3.gethour() / 10 == 0 ? "0" + contact3.gethour() : contact3.gethour())
+                        + ":" + (contact3.getminute() / 10 == 0 ? "0" + contact3.getminute() : contact3.getminute()) + ":" + "00"
+        );
 
 
         final ToggleButton mtoggle = (ToggleButton) findViewById(R.id.toggleButton2);
         mtoggle.setBackgroundResource(R.drawable.selector_tab_play_button);
-        if ( Preference.getBoolean(TabActivity.this, "toggle")) {
+        if (Preference.getBoolean(TabActivity.this, "toggle")) {
             mtoggle.setChecked(true);
             mtoggle.setBackgroundResource(R.drawable.selector_tab_pause_button);
 
@@ -459,6 +435,7 @@ public class TabActivity extends Activity {
             }
         }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -490,12 +467,12 @@ public class TabActivity extends Activity {
     // Action bar     //
     ////////////////////
 
-    MenuItem.OnMenuItemClickListener ab_stopwatchTab_settings_listener = new MenuItem.OnMenuItemClickListener(){
+    MenuItem.OnMenuItemClickListener ab_stopwatchTab_settings_listener = new MenuItem.OnMenuItemClickListener() {
         @Override
-        public boolean onMenuItemClick(MenuItem mi){
+        public boolean onMenuItemClick(MenuItem mi) {
             Log.i(LOG_TAG, "onMenuItemClicked ab_stopwatchTab_settings_listener");
             //@preference로 flag 설정
-            Preference.putBoolean(TabActivity.this,"Mflag", true);
+            Preference.putBoolean(TabActivity.this, "Mflag", true);
 
 
             //@preference를 불러와서 flag 확인후 set이 안되있으면 set으로 함
@@ -509,9 +486,9 @@ public class TabActivity extends Activity {
         }
     };
 
-    MenuItem.OnMenuItemClickListener ab_friends_add_listener = new MenuItem.OnMenuItemClickListener(){
+    MenuItem.OnMenuItemClickListener ab_friends_add_listener = new MenuItem.OnMenuItemClickListener() {
         @Override
-        public boolean onMenuItemClick(MenuItem mi){
+        public boolean onMenuItemClick(MenuItem mi) {
             Log.i(LOG_TAG, "onMenuItemClicked ab_friends_add_listener");
 
             Intent intent = new Intent(TabActivity.this, AddFriendActivity.class);
@@ -522,17 +499,17 @@ public class TabActivity extends Activity {
             return true;
         }
     };
-    MenuItem.OnMenuItemClickListener ab_rooms_notify_listener = new MenuItem.OnMenuItemClickListener(){
+    MenuItem.OnMenuItemClickListener ab_rooms_notify_listener = new MenuItem.OnMenuItemClickListener() {
         @Override
-        public boolean onMenuItemClick(MenuItem mi){
+        public boolean onMenuItemClick(MenuItem mi) {
             Log.i(LOG_TAG, "onMenuItemClicked ab_rooms_notify_listener");
             return true;
         }
     };
 
-    MenuItem.OnMenuItemClickListener ab_rooms_add_listener = new MenuItem.OnMenuItemClickListener(){
+    MenuItem.OnMenuItemClickListener ab_rooms_add_listener = new MenuItem.OnMenuItemClickListener() {
         @Override
-        public boolean onMenuItemClick(MenuItem mi){
+        public boolean onMenuItemClick(MenuItem mi) {
             Log.i(LOG_TAG, "onMenuItemClicked ab_rooms_add_listener");
 
             Intent intent = new Intent(TabActivity.this, AddStudyRoomActivity.class);
@@ -542,63 +519,59 @@ public class TabActivity extends Activity {
         }
     };
 
-    Handler mHandler = new Handler(){
+    Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             _text.setText(timediff(TabActivity.this));
         }
     };
-    Handler replace_current_time_Handler = new Handler(){
+    Handler replace_current_time_Handler = new Handler() {
 
         public void handleMessage(Message msg) {
             Date today = new Date();
-            _current_time_text.setText((today.getYear()+1900)+"/"+(today.getMonth()+1)+"/"+today.getDate());
+            _current_time_text.setText((today.getYear() + 1900) + "/" + (today.getMonth() + 1) + "/" + today.getDate());
             _current_time_text2.setText(
-                    (today.getHours()/10==0 ? "0"+today.getHours() : today.getHours())
-                    +":"+ (today.getMinutes()/10 == 0 ? "0" + today.getMinutes() : today.getMinutes() )
-                            +":"+(today.getSeconds()/10 == 0 ? "0" + today.getSeconds() : today.getSeconds()));
+                    (today.getHours() / 10 == 0 ? "0" + today.getHours() : today.getHours())
+                            + ":" + (today.getMinutes() / 10 == 0 ? "0" + today.getMinutes() : today.getMinutes())
+                            + ":" + (today.getSeconds() / 10 == 0 ? "0" + today.getSeconds() : today.getSeconds())
+            );
         }
     };
 
     private String timediff(Context context) {
 
         DBContactHelper helper = new DBContactHelper(context);
-        Contact contact=helper.getContact(2);
-        int id=contact.getID();
-        int hour=contact.gethour();
-        int min=contact.getminute();
-        try
-        {
+        Contact contact = helper.getContact(2);
+        int id = contact.getID();
+        int hour = contact.gethour();
+        int min = contact.getminute();
+        try {
             SimpleDateFormat format = new SimpleDateFormat("hh:mm:ss aa");
 
 
-            Date Date1=new Date(Preference.getLong(TabActivity.this, "start"));
-        ///    Log.i(LOG_TAG, "DAte1 : "+ Date1.toString());
+            Date Date1 = new Date(Preference.getLong(TabActivity.this, "start"));
+            ///    Log.i(LOG_TAG, "DAte1 : "+ Date1.toString());
             Date today = new Date();
-        //    Log.i(LOG_TAG, "today : "+ today.toString());
-            mills = today.getTime()-Date1.getTime();
+            //    Log.i(LOG_TAG, "today : "+ today.toString());
+            mills = today.getTime() - Date1.getTime();
             Preference.setLong(TabActivity.this, "diff", mills);
-            int Hours = (int) (mills/(1000 * 60 * 60));
-            int Mins = (int) (mills/(1000*60)) % 60;
-            int Seconds = (int) (mills/1000)%60;
-
+            int Hours = (int) (mills / (1000 * 60 * 60));
+            int Mins = (int) (mills / (1000 * 60)) % 60;
+            int Seconds = (int) (mills / 1000) % 60;
 
 
             String diff =
-                    (Hours/10==0 ? "0"+Hours:Hours)
-                            + ":" + (Mins/10==0 ? "0"+Mins:Mins)+":"+(Seconds/10==0 ? "0"+Seconds:Seconds); // updated value every1 second
+                    (Hours / 10 == 0 ? "0" + Hours : Hours)
+                            + ":" + (Mins / 10 == 0 ? "0" + Mins : Mins) + ":" + (Seconds / 10 == 0 ? "0" + Seconds : Seconds); // updated value every1 second
 
             Preference.setString(TabActivity.this, "Resumetimer", diff);
 
             return diff;
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return "error";
     }
-
 
 
     Timer timer;

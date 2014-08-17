@@ -39,7 +39,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class MainActivity extends Activity {
 
-    private static String LOG_TAG="MainActivity";
+    private static String LOG_TAG = "MainActivity";
     private RequestQueue vQueue;
     private int status_code;
     private String rMessage;
@@ -69,26 +69,24 @@ public class MainActivity extends Activity {
     }
 
 
-
     class splashHandler implements Runnable {
         public void run() {
-            ConnectivityManager manager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+            ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo mobile = manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
             NetworkInfo wifi = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-            if (mobile.isConnected() || wifi.isConnected()){
+            if (mobile.isConnected() || wifi.isConnected()) {
 
-                if(KogPreference.getBoolean(MainActivity.this, "firstStart") || !KogPreference.DEBUG_MODE) {
+                if (KogPreference.getBoolean(MainActivity.this, "firstStart") || !KogPreference.DEBUG_MODE) {
                     GoTabPage();
-                }
-                else {
-				/* if the first running */
+                } else {
+                /* if the first running */
                     Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                     startActivity(intent);
                     MainActivity.this.finish();
                 }
                 Log.d(LOG_TAG, "Network connect success");
-            }else{
+            } else {
                 Toast.makeText(getBaseContext(), "네트워크 연결이 불안정합니다.\n애플리케이션을 종료합니다.", Toast.LENGTH_SHORT).show();
                 MainActivity.this.finish();
 
@@ -122,33 +120,32 @@ public class MainActivity extends Activity {
                         Log.i(LOG_TAG, "get JSONObject");
                         Log.i(LOG_TAG, response.toString());
 
-                        try{
+                        try {
                             status_code = response.getInt("status");
-                            if(status_code == 200){
+                            if (status_code == 200) {
                                 rMessage = response.getString("message");
                                 // real action
                                 GoTabPage();
 
-                            }else {
-                                if(KogPreference.DEBUG_MODE) {
+                            } else {
+                                if (KogPreference.DEBUG_MODE) {
                                     Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
                                 }
                             }
-                        }catch (Exception e)
-                        {
+                        } catch (Exception e) {
                         }
                     }
-                }, new Response.ErrorListener(){
+                }, new Response.ErrorListener() {
             @Override
-            public void onErrorResponse(VolleyError error){
+            public void onErrorResponse(VolleyError error) {
                 Log.i(LOG_TAG, "Response Error");
-                if(KogPreference.DEBUG_MODE)
-                {
+                if (KogPreference.DEBUG_MODE) {
                     Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
                 }
 
             }
-        });
+        }
+        );
         vQueue.add(jsObjRequest);
     }
 
@@ -157,12 +154,10 @@ public class MainActivity extends Activity {
     // GCM                           //
     ///////////////////////////////////
     // registration  id를 가져온다.
-    private String getRegistrationId()
-    {
+    private String getRegistrationId() {
 //        String registrationId = PreferenceUtil.instance(getApplicationContext()).regId();
         String registrationId = KogPreference.getString(MainActivity.this, "GCMID");
-        if (TextUtils.isEmpty(registrationId))
-        {
+        if (TextUtils.isEmpty(registrationId)) {
             Log.i("MainActivity.java | getRegistrationId", "|Registration not found.|");
             return "";
         }
@@ -171,18 +166,13 @@ public class MainActivity extends Activity {
     }
 
     // gcm 서버에 접속해서 registration id를 발급받는다.
-    private void registerInBackground()
-    {
-        new AsyncTask<Void, Void, String>()
-        {
+    private void registerInBackground() {
+        new AsyncTask<Void, Void, String>() {
             @Override
-            protected String doInBackground(Void... params)
-            {
+            protected String doInBackground(Void... params) {
                 String msg = "";
-                try
-                {
-                    if (_gcm == null)
-                    {
+                try {
+                    if (_gcm == null) {
                         _gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
                     }
                     _regId = _gcm.register(SENDER_ID);
@@ -194,9 +184,7 @@ public class MainActivity extends Activity {
 
                     // Persist the regID - no need to register again.
                     storeRegistrationId(_regId);
-                }
-                catch (IOException ex)
-                {
+                } catch (IOException ex) {
                     msg = "Error :" + ex.getMessage();
                     // If there is an error, don't just keep trying to register.
                     // Require the user to click a button again, or perform
@@ -205,9 +193,9 @@ public class MainActivity extends Activity {
 
                 return msg;
             }
+
             @Override
-            protected void onPostExecute(String msg)
-            {
+            protected void onPostExecute(String msg) {
                 Log.i("MainActivity.java | onPostExecute", "|" + msg + "|");
             }
         }.execute(null, null, null);
@@ -215,8 +203,7 @@ public class MainActivity extends Activity {
 
 
     // registraion id를 preference에 저장한다.
-    private void storeRegistrationId(String regId)
-    {
+    private void storeRegistrationId(String regId) {
 //                Log.i("MainActivity.java | storeRegistrationId", "|" + "Saving regId on app version " + appVersion + "|");
 //        KogPreference.setString(MainActivity.this, regId, "");
         KogPreference.setRegId(MainActivity.this, regId);

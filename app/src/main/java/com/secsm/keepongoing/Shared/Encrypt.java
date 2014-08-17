@@ -25,30 +25,27 @@ public final class Encrypt {
         return keySpec;
     }
 
-    public static void initKey()
-    {
+    public static void initKey() {
         /* encoding the message */
-        try{
+        try {
             key = generateKey("AES", ByteUtils.toBytes("696d697373796f7568616e6765656e61", 16));
 
             String transformation = "AES/ECB/PKCS5Padding";
             cipher = Cipher.getInstance(transformation);
-        }catch(Exception e){
+        } catch (Exception e) {
             Log.e("KEY", e.toString());
         }
     }
-    public static String encodingMsg(String msg)
-    {
+
+    public static String encodingMsg(String msg) {
         /* encoding the message before send */
-        try
-        {
+        try {
             cipher.init(Cipher.ENCRYPT_MODE, key);
             byte[] encrypt = cipher.doFinal(msg.getBytes());
             String encryptStr = ByteUtils.toHexString(encrypt);
             Log.i(LOG_TAG, "encrypted message : " + encryptStr);
             return encryptStr;
-        }catch(Exception ex)
-        {
+        } catch (Exception ex) {
             return msg;
         }
     }

@@ -2,24 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <TabHost
         android:id="@+id/tabHost"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="fill_parent">
 
         <TabWidget
             android:id="@android:id/tabs"
             android:layout_width="fill_parent"
-            android:layout_height="55dip" >
-        </TabWidget>
+            android:layout_height="55dip"></TabWidget>
 
         <FrameLayout
             android:id="@android:id/tabcontent"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:paddingTop="55dip" >
+            android:paddingTop="55dip">
 
             <LinearLayout
                 android:id="@+id/tab_stopwatch"
@@ -29,7 +28,7 @@
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="50dip"
-                    android:text="@string/abc_action_bar_home_description"/>
+                    android:text="@string/abc_action_bar_home_description" />
 
             </LinearLayout>
 
@@ -41,17 +40,17 @@
             <ListView
                 android:id="@+id/tab_rooms"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"/>
+                android:layout_height="fill_parent" />
 
             <ListView
                 android:id="@+id/tab4"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"/>
+                android:layout_height="fill_parent" />
 
             <ListView
                 android:id="@+id/tab_settings"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"/>
+                android:layout_height="fill_parent" />
         </FrameLayout>
     </TabHost>
 

@@ -23,18 +23,19 @@ import com.secsm.keepongoing.R;
 
 import java.util.Date;
 
-public class alert extends Activity{
+public class alert extends Activity {
     private MediaPlayer mMediaPlayer;   // MediaPlayer 변수 선언
     private Vibrator mVibrator;
-    private static final long[] sVibratePattern = new long[] { 500, 500 };   // 진동 패턴 정의(0.5초 진동, 0.5초 쉼)
+    private static final long[] sVibratePattern = new long[]{500, 500};   // 진동 패턴 정의(0.5초 진동, 0.5초 쉼)
 
     private Ringtone r;
     private AlarmManager mManager;
+
     @Override
-    
+
     protected void onCreate(final Bundle savedInstanceState) {
 
-super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alert);
         vibrate_function();
 
@@ -46,24 +47,24 @@ super.onCreate(savedInstanceState);
 
 
         //ringtone();
-        Button btnsnooze = (Button)findViewById(R.id.snooze);
+        Button btnsnooze = (Button) findViewById(R.id.snooze);
         btnsnooze.setOnClickListener(new Button.OnClickListener() {
-                public void onClick(View v) {
-                    Date mCalendar=new Date();
-                    mManager.set(AlarmManager.RTC_WAKEUP, mCalendar.getTime()+10*60*1000, pendingIntent());
-                    Log.e("minsu) : AlertActivity : ", "" + mCalendar.toString());
-                    Toast.makeText(alert.this, "10분뒤에 울립니다.", 2).show();
-                    r.stop();
-                    mVibrator.cancel();   // 진동 중지
-                    finish();
-                }
+            public void onClick(View v) {
+                Date mCalendar = new Date();
+                mManager.set(AlarmManager.RTC_WAKEUP, mCalendar.getTime() + 10 * 60 * 1000, pendingIntent());
+                Log.e("minsu) : AlertActivity : ", "" + mCalendar.toString());
+                Toast.makeText(alert.this, "10분뒤에 울립니다.", 2).show();
+                r.stop();
+                mVibrator.cancel();   // 진동 중지
+                finish();
+            }
         });
 
-        Button btndismiss = (Button)findViewById(R.id.dismiss);
+        Button btndismiss = (Button) findViewById(R.id.dismiss);
         btndismiss.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                Date mCalendar=new Date();
-                mManager.set(AlarmManager.RTC_WAKEUP, mCalendar.getTime()+24*60*60*1000, pendingIntent());
+                Date mCalendar = new Date();
+                mManager.set(AlarmManager.RTC_WAKEUP, mCalendar.getTime() + 24 * 60 * 60 * 1000, pendingIntent());
                 Log.e("minsu) : AlertActivity : ", "" + mCalendar.toString());
                 Toast.makeText(alert.this, "기상 완료", 2).show();
                 r.stop();
@@ -72,11 +73,13 @@ super.onCreate(savedInstanceState);
             }
         });
     }
+
     private PendingIntent pendingIntent() {
         Intent i = new Intent(alert.this, alert.class);
         PendingIntent pi = PendingIntent.getActivity(alert.this, 0, i, 0);
         return pi;
     }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -95,11 +98,11 @@ super.onCreate(savedInstanceState);
     }//다른 입력 무시
 
 
-   private void vibrate_function(){
-       mVibrator =  (Vibrator)getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-       mVibrator.vibrate(sVibratePattern, 0);   // 진동 시작 (패턴으로 진동, '0':무한 반복, -1:반복 없음)
+    private void vibrate_function() {
+        mVibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+        mVibrator.vibrate(sVibratePattern, 0);   // 진동 시작 (패턴으로 진동, '0':무한 반복, -1:반복 없음)
 
-   }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

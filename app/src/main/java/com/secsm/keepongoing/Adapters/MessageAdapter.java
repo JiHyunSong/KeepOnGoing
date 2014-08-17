@@ -25,16 +25,17 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
     private ViewHolder viewHolder = null;
     private ArrayList<Msg> items;
     Context mContext;
-    public MessageAdapter(Context context, int textViewResourceId, ArrayList<Msg> items){
+
+    public MessageAdapter(Context context, int textViewResourceId, ArrayList<Msg> items) {
         super(context, textViewResourceId, items);
         this.mContext = context;
         this.items = items;
     }
+
     @Override
-    public View getView(int position, View convertView, ViewGroup parent){
+    public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;
-        if( v == null )
-        {
+        if (v == null) {
             LayoutInflater vi = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = vi.inflate(R.layout.message_row, null);
 
@@ -46,30 +47,29 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
 //            android:layout_width="match_parent"
 //            android:layout_height="wrap_content"
 //            viewHolder.wv.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
-            viewHolder.time  = (TextView) v.findViewById(R.id.msg_time);
+            viewHolder.time = (TextView) v.findViewById(R.id.msg_time);
             viewHolder.iv = (ImageView) v.findViewById(R.id.msg_person_photo);
-            viewHolder.wv_rl = (RelativeLayout.LayoutParams)viewHolder.wv.getLayoutParams();
+            viewHolder.wv_rl = (RelativeLayout.LayoutParams) viewHolder.wv.getLayoutParams();
             viewHolder.wv_rl.addRule(RelativeLayout.RIGHT_OF, R.id.msg_person_photo);
             viewHolder.wv_rl.width = RelativeLayout.LayoutParams.MATCH_PARENT;
             viewHolder.wv_rl.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
 
             v.setTag(viewHolder);
-        }else
-        {
+        } else {
             // reuse
             viewHolder = (ViewHolder) v.getTag();
 
         }
 
         Msg m = items.get(position);
-        if( m != null ){
+        if (m != null) {
 
-            if(viewHolder.tt != null && viewHolder.wv != null && viewHolder.time != null && viewHolder.iv != null){
-                if("나 : ".equals(m.getName())){
+            if (viewHolder.tt != null && viewHolder.wv != null && viewHolder.time != null && viewHolder.iv != null) {
+                if ("나 : ".equals(m.getName())) {
                     viewHolder.tt.setText(m.getTime());
                     viewHolder.wv.setBackgroundColor(0); // 투명처리
                     String htmlForm1 = "<metahttp-equiv='Content-Type' content='text'/html; charset = utf-8 /> " +
-                            "<html>" +	"<body bgcolor='#ffc0cb'> ";
+                            "<html>" + "<body bgcolor='#ffc0cb'> ";
                     String htmlFormText = m.getText();
                     String htmlForm2 = "</body></html>";
 
@@ -80,7 +80,7 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
                     viewHolder.wv.invalidate();
                     // TODO : check scrolling
 
-                    viewHolder.wv.loadDataWithBaseURL("file:///android_asset/", htmlForm1 + htmlFormText + htmlForm2 , "text/html", "utf-8", "file:///android_assest/");
+                    viewHolder.wv.loadDataWithBaseURL("file:///android_asset/", htmlForm1 + htmlFormText + htmlForm2, "text/html", "utf-8", "file:///android_assest/");
 
                     viewHolder.time.setText(m.getName());
 
@@ -89,32 +89,30 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
                     String fileName = null;
 
                     Log.i("filename", "id : " + m.getId() + " | me : " + fileName);
-                    if(fileName != null){
-                        if(fileName.matches(".*jpg.*")){
+                    if (fileName != null) {
+                        if (fileName.matches(".*jpg.*")) {
                             String mecodedURL = serverFilePath + fileName;
                             Log.d("imageView", "file Name : " + fileName);
-                            try{
+                            try {
                                 URL mURL = new URL(mecodedURL);
                                 // TODO : profile image path download from server
 //                                Bitmap bm = getRemoteImage(mURL);
 //                                iv.setImageBitmap(bm);
-                            }catch(Exception e){
+                            } catch (Exception e) {
                                 Log.e("photo", e.toString());
                             }
-                        }else
-                        {
+                        } else {
                             viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
                         }
-                    }else
-                    {
+                    } else {
                         viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
                     }
 
-                }else{
+                } else {
                     viewHolder.tt.setText(m.getName());
                     viewHolder.wv.setBackgroundColor(0); // 투명처리
                     String htmlForm1 = "<metahttp-equiv='Content-Type' content='text'/html; charset = utf-8 /> " +
-                            "<html>" +	"<body> ";
+                            "<html>" + "<body> ";
                     String htmlFormText = m.getText();
                     String htmlForm2 = "</body></html>";
 
@@ -129,25 +127,23 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
                     // TODO : profile image path download from server
 //                    String fileName = imgFromServ(myID);
                     String fileName = null;
-                    Log.i("filename", "id : " + m.getId() + " | friend : " +fileName );
-                    if(fileName != null){
-                        if(fileName.matches(".*jpg.*")){
+                    Log.i("filename", "id : " + m.getId() + " | friend : " + fileName);
+                    if (fileName != null) {
+                        if (fileName.matches(".*jpg.*")) {
                             String mecodedURL = serverFilePath + fileName;
                             Log.d("imageView", "file Name : " + fileName);
-                            try{
+                            try {
                                 URL mURL = new URL(mecodedURL);
                                 // TODO : profile image path download from server
 //                                Bitmap bm = getRemoteImage(mURL);
 //                                iv.setImageBitmap(bm);
-                            }catch(Exception e){
+                            } catch (Exception e) {
                                 Log.e("photo", e.toString());
                             }
-                        }else
-                        {
+                        } else {
                             viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
                         }
-                    }else
-                    {
+                    } else {
                         viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
                     }
 
@@ -168,7 +164,7 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
         return v;
     }
 
-    class ViewHolder{
+    class ViewHolder {
         public Bitmap friend_profile = null;
         public String friend_nickname = null;
         public TextView tt = null;

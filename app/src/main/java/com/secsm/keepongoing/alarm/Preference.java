@@ -30,7 +30,7 @@ public final class Preference {
             return;
 
         String str = "";
-        for (int i=0; i<_keyword.size(); i++) {
+        for (int i = 0; i < _keyword.size(); i++) {
             str = str + _keyword.get(i) + "/";
         }
         setString(context, KEY_SMS_KEYWORD, str);
@@ -129,8 +129,8 @@ public final class Preference {
             long v = prefs.getLong(key, 0);
             return v;
         } catch (ClassCastException e) {
-           return Long.MIN_VALUE;
-           // return Long.MIN_VALUE;
+            return Long.MIN_VALUE;
+            // return Long.MIN_VALUE;
         }
     }
 
@@ -151,6 +151,7 @@ public final class Preference {
     public static String getPreferenceString(Context context, String key, String defValue) {
         return getPreferenceString(context, mPrefName, key, defValue);
     }
+
     public static String getPreferenceString(Context context, String name, String key, String defValue) {
         if (context == null) {
             return "";
@@ -175,6 +176,7 @@ public final class Preference {
     public static boolean setPreferenceString(Context context, String key, String value) {
         return setPreferenceString(context, mPrefName, key, value);
     }
+
     public static boolean setPreferenceString(Context context, String name, String key, String value) {
         if (context == null) {
             return false;

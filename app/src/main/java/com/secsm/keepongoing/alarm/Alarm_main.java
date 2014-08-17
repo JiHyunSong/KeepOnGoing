@@ -47,16 +47,15 @@ public class Alarm_main extends Activity implements DatePicker.OnDateChangedList
         mManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         mManager.setTimeZone("GMT+9:00");
         //현재 시각을 취득
-        if(getIntent().getExtras().getInt("position")==1) {
+        if (getIntent().getExtras().getInt("position") == 1) {
             mCalendar = new GregorianCalendar();
             mCalendar.set(mCalendar.get(Calendar.YEAR), mCalendar.get(Calendar.MONTH), mCalendar.get(Calendar.DAY_OF_MONTH),
-               helper.getContact(2).gethour(),helper.getContact(2).getminute());
-        }
-        else mCalendar = new GregorianCalendar();
+                    helper.getContact(2).gethour(), helper.getContact(2).getminute());
+        } else mCalendar = new GregorianCalendar();
         Log.i("HelloAlarmActivity", mCalendar.getTime().toString());
         //셋 버튼, 리셋버튼의 리스너를 등록
         setContentView(R.layout.alram);
-        if(getIntent().getExtras().getInt("position")==0) {
+        if (getIntent().getExtras().getInt("position") == 0) {
             Button b = (Button) findViewById(R.id.set);
             b.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
@@ -70,8 +69,7 @@ public class Alarm_main extends Activity implements DatePicker.OnDateChangedList
                     resetAlarm();
                 }
             });
-        }
-        else {
+        } else {
             Button b = (Button) findViewById(R.id.set);
             b.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
@@ -87,20 +85,17 @@ public class Alarm_main extends Activity implements DatePicker.OnDateChangedList
         }
 
 
-
-
         //일시 설정 클래스로 현재 시각을 설정
         mDate = (DatePicker) findViewById(R.id.date_picker);
         mDate.init(mCalendar.get(Calendar.YEAR), mCalendar.get(Calendar.MONTH), mCalendar.get(Calendar.DAY_OF_MONTH), this);
         mTime = (TimePicker) findViewById(R.id.time_picker);
-        if(getIntent().getExtras().getInt("position")==1) {
+        if (getIntent().getExtras().getInt("position") == 1) {
             mTime.setIs24HourView(true);
             //Toast.makeText(this, "기상시간이다", Toast.LENGTH_SHORT).show();
             mTime.setCurrentHour(helper.getContact(2).gethour());
             mTime.setCurrentMinute(helper.getContact(2).getminute());
             mTime.setOnTimeChangedListener(this);
-        }
-        else {
+        } else {
             mTime.setCurrentHour(mCalendar.get(Calendar.HOUR_OF_DAY));
             mTime.setCurrentMinute(mCalendar.get(Calendar.MINUTE));
             mTime.setOnTimeChangedListener(this);
@@ -113,6 +108,7 @@ public class Alarm_main extends Activity implements DatePicker.OnDateChangedList
         helper.updateContact(new Contact(2, mCalendar.getTime().getHours(), mCalendar.getTime().getMinutes()));
         finish();
     }
+
     private void resetTimer() {
         DBContactHelper helper = new DBContactHelper(Alarm_main.this);
         helper.updateContact(new Contact(2, 10, 0));
@@ -123,9 +119,9 @@ public class Alarm_main extends Activity implements DatePicker.OnDateChangedList
     private void setAlarm() {
         DBContactHelper helper = new DBContactHelper(Alarm_main.this);
         helper.updateContact(new Contact(1, mCalendar.getTime().getHours(), mCalendar.getTime().getMinutes()));
-           mManager.set(AlarmManager.RTC_WAKEUP, mCalendar.getTimeInMillis(), pendingIntent());
-           Log.e("minsu)","minsu ) setalarm event: "+mCalendar.getTime().toString());
-             Toast.makeText(this, "set"+mCalendar.getTime().toString() , 2).show();
+        mManager.set(AlarmManager.RTC_WAKEUP, mCalendar.getTimeInMillis(), pendingIntent());
+        Log.e("minsu)", "minsu ) setalarm event: " + mCalendar.getTime().toString());
+        Toast.makeText(this, "set" + mCalendar.getTime().toString(), 2).show();
         finish();
 
     }
@@ -138,21 +134,24 @@ public class Alarm_main extends Activity implements DatePicker.OnDateChangedList
         finish();
 
     }
+
     //알람의 설정 시각에 발생하는 인텐트 작성
     private PendingIntent pendingIntent() {
         Intent i = new Intent(getApplicationContext(), alert.class);
         PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
         return pi;
     }
+
     //일자 설정 클래스의 상태변화 리스너
-    public void onDateChanged (DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-        mCalendar.set (year, monthOfYear, dayOfMonth, mTime.getCurrentHour(), mTime.getCurrentMinute());
+    public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+        mCalendar.set(year, monthOfYear, dayOfMonth, mTime.getCurrentHour(), mTime.getCurrentMinute());
         Log.i("HelloAlarmActivity", "onDateChanged : " + mCalendar.getTime().toString());
     }
+
     //시각 설정 클래스의 상태변화 리스너
-    public void onTimeChanged (TimePicker view, int hourOfDay, int minute) {
-        Log.i("hh", ""+ mDate.getMonth());
+    public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+        Log.i("hh", "" + mDate.getMonth());
         mCalendar.set(mDate.getYear(), mDate.getMonth(), mDate.getDayOfMonth(), hourOfDay, minute);
-        Log.i("HelloAlarmActivity" , "onTimeChanged : " + mCalendar.getTime().toString());
+        Log.i("HelloAlarmActivity", "onTimeChanged : " + mCalendar.getTime().toString());
     }
 }

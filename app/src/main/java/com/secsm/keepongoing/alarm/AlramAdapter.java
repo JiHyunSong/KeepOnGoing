@@ -15,13 +15,13 @@ import java.util.ArrayList;
 /**
  * Created by KMINSU-PC-W1 on 2014-08-11.
  */
-public class AlramAdapter extends BaseAdapter{
+public class AlramAdapter extends BaseAdapter {
     private LayoutInflater inflater = null;
     private ArrayList<AlramData> infoList = null;
     private ViewHolder viewHolder = null;
     public Context mContext = null;
 
-    public AlramAdapter(Context c, ArrayList<AlramData> arrays){
+    public AlramAdapter(Context c, ArrayList<AlramData> arrays) {
         this.mContext = c;
         this.inflater = LayoutInflater.from(c);
         this.infoList = arrays;
@@ -60,24 +60,24 @@ public class AlramAdapter extends BaseAdapter{
         View v = convertview;
 
 
-        if(v == null){
+        if (v == null) {
             viewHolder = new ViewHolder();
             v = inflater.inflate(R.layout.list_row, null);
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(position==0) {
+                    if (position == 0) {
                         Intent intent = new Intent(v.getContext(), Alarm_main.class);
                         intent.putExtra("position", position);
                         v.getContext().startActivity(intent);
-                     //   Toast.makeText(v.getContext(), "선택된자의 이름은 기상시간", 2).show();
+                        //   Toast.makeText(v.getContext(), "선택된자의 이름은 기상시간", 2).show();
                     }
-                        if(position==1) {
-                            Intent intent = new Intent(v.getContext(), Alarm_main.class);
-                            intent.putExtra("position", position);
-                            v.getContext().startActivity(intent);
-                       //     Toast.makeText(v.getContext(), "선택된자의 이름은 목표시간", 2).show();
-                        }
+                    if (position == 1) {
+                        Intent intent = new Intent(v.getContext(), Alarm_main.class);
+                        intent.putExtra("position", position);
+                        v.getContext().startActivity(intent);
+                        //     Toast.makeText(v.getContext(), "선택된자의 이름은 목표시간", 2).show();
+                    }
          /*           LayoutInflater mLayout = LayoutInflater.from(v.getContext());
                     mLayout.inflate(R.layout.lert_dialog_text_entry, null);
 
@@ -89,30 +89,28 @@ public class AlramAdapter extends BaseAdapter{
 */
 
 
-
                 }
             });
 
-            viewHolder.tv_title = (TextView)v.findViewById(R.id.child_textview);
+            viewHolder.tv_title = (TextView) v.findViewById(R.id.child_textview);
             viewHolder.tv_title.setText(infoList.get(position).name);
             v.setTag(viewHolder);
 
-        }else {
-            viewHolder = (ViewHolder)v.getTag();
+        } else {
+            viewHolder = (ViewHolder) v.getTag();
         }
         return v;
     }
 
 
-
     // Adapter가 관리하는 Data List를 교체 한다.
     // 교체 후 Adapter.notifyDataSetChanged() 메서드로 변경 사실을
     // Adapter에 알려 주어 ListView에 적용 되도록 한다.
-    public void setArrayList(ArrayList<AlramData> arrays){
+    public void setArrayList(ArrayList<AlramData> arrays) {
         this.infoList = arrays;
     }
 
-    public ArrayList<AlramData> getArrayList(){
+    public ArrayList<AlramData> getArrayList() {
         return infoList;
     }
 
@@ -128,7 +126,7 @@ public class AlramAdapter extends BaseAdapter{
      * getView의 속도 향상을 위해 쓴다.
      * 한번의 findViewByID 로 재사용 하기 위해 viewHolder를 사용 한다.
      */
-    class ViewHolder{
+    class ViewHolder {
         public TextView tv_title = null;
     }
 
@@ -138,7 +136,7 @@ public class AlramAdapter extends BaseAdapter{
         super.finalize();
     }
 
-    private void free(){
+    private void free() {
         inflater = null;
         infoList = null;
         viewHolder = null;

@@ -39,6 +39,7 @@ public class RegisterActivity extends Activity {
     String rPassWord2;
     TextView alertPwd;
     TextView alertNick;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,11 +62,9 @@ public class RegisterActivity extends Activity {
 
         btnRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(isValidProfile())
-                {
+                if (isValidProfile()) {
                     register(nickName.getText().toString(), password1.getText().toString(), "profile_default.png", phoneNum.getText().toString());
-                }else
-                {
+                } else {
                 }
 
             }
@@ -80,8 +79,7 @@ public class RegisterActivity extends Activity {
         startActivity(intent);
     }
 
-    private void invisibleAlert()
-    {
+    private void invisibleAlert() {
         alertNick.setVisibility(View.INVISIBLE);
         alertPwd.setVisibility(View.INVISIBLE);
     }
@@ -91,24 +89,21 @@ public class RegisterActivity extends Activity {
         rPassWord1 = password1.getText().toString();
         rPassWord2 = password2.getText().toString();
 
-        if(!rPassWord1.equals(rPassWord2))
-        {
+        if (!rPassWord1.equals(rPassWord2)) {
             invisibleAlert();
             Toast.makeText(getBaseContext(), "패스워드 불일치", Toast.LENGTH_SHORT).show();
             alertPwd.setVisibility(View.VISIBLE);
-        }else if(!isPasswordValid(rPassWord1))
-        {
+        } else if (!isPasswordValid(rPassWord1)) {
             invisibleAlert();
             Toast.makeText(getBaseContext(), "패스워드 길이를 확인해주세요", Toast.LENGTH_SHORT).show();
             alertPwd.setVisibility(View.VISIBLE);
-        }else if(!isNicknameValid(rNickName))
-        {
+        } else if (!isNicknameValid(rNickName)) {
             invisibleAlert();
             Toast.makeText(getBaseContext(), "아이디 길이를 확인해주세요", Toast.LENGTH_SHORT).show();
             alertNick.setVisibility(View.VISIBLE);
         }
 
-        return !TextUtils.isEmpty(rPassWord1) && !TextUtils.isEmpty(rPassWord2) && (rPassWord1.equals(rPassWord2)) && isPasswordValid(rPassWord1) && !TextUtils.isEmpty(rNickName) && isNicknameValid(rNickName) ;
+        return !TextUtils.isEmpty(rPassWord1) && !TextUtils.isEmpty(rPassWord2) && (rPassWord1.equals(rPassWord2)) && isPasswordValid(rPassWord1) && !TextUtils.isEmpty(rNickName) && isNicknameValid(rNickName);
     }
 
     private boolean isNicknameValid(String nickName) {
@@ -138,38 +133,38 @@ public class RegisterActivity extends Activity {
                         Log.i(LOG_TAG, "get JSONObject");
                         Log.i(LOG_TAG, response.toString());
 
-                        try{
+                        try {
                             status_code = response.getInt("status");
-                            if(status_code == 200){
+                            if (status_code == 200) {
                                 rMessage = response.getString("message");
                                 // real action
                                 GoNextPage();
-                            } else if(status_code == 9001){
+                            } else if (status_code == 9001) {
                                 Toast.makeText(getBaseContext(), "회원가입이 불가능합니다.", Toast.LENGTH_SHORT).show();
-                            }else {
+                            } else {
                                 Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
-                                if(KogPreference.DEBUG_MODE) {
+                                if (KogPreference.DEBUG_MODE) {
                                     Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
                                 }
                             }
-                        }catch (Exception e)
-                        {
+                        } catch (Exception e) {
                         }
                     }
-                }, new Response.ErrorListener(){
+                }, new Response.ErrorListener() {
             @Override
-            public void onErrorResponse(VolleyError error){
+            public void onErrorResponse(VolleyError error) {
                 Log.i(LOG_TAG, "Response Error");
                 Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
-                if(KogPreference.DEBUG_MODE)
-                {
+                if (KogPreference.DEBUG_MODE) {
                     Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
                 }
 
             }
-        });
+        }
+        );
         vQueue.add(jsObjRequest);
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

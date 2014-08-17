@@ -13,7 +13,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public DBHelper(Context context) {
         super(context, "KogDB.db", null, 1);
-		/* (context,dbname,null,dbversion) */
+        /* (context,dbname,null,dbversion) */
 
     }
 
@@ -45,15 +45,15 @@ public class DBHelper extends SQLiteOpenHelper {
                 ");";
         db.execSQL(qCreate_SubjectRoom_l);
 
-        String qCreate_Chat_l ="CREATE TABLE Chat (" +
+        String qCreate_Chat_l = "CREATE TABLE Chat (" +
                 "rid INTEGER, " +
                 "senderID varchar(20), " +
                 "senderText varchar(1024), " +
-                "year varchar(20), "+
-                "month varchar(10), "+
-                "day varchar(10), "+
+                "year varchar(20), " +
+                "month varchar(10), " +
+                "day varchar(10), " +
                 "time DATETIME DEFAULT CURRENT_TIMESTAMP," +
-                "me varchar(20) "+
+                "me varchar(20) " +
                 ");";
         db.execSQL(qCreate_Chat_l);
         db.execSQL("CREATE TABLE image_profile (id INTEGER PRIMARY KEY AUTOINCREMENT, path VARCHAR(500));");

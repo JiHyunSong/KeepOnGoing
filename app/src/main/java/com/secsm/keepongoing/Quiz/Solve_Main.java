@@ -68,12 +68,13 @@ public class Solve_Main extends Activity {
 
     }
 
-public void settingTextView(){
-    TextView textview=(TextView) findViewById(R.id.textview_solve);
-    textview.setText("aaa\naaa\naaaa\naaaaaaaaaaa\naaaaaaaaaaaaaa\naaaaaaaaaaa\naaaaaaa\naaaa\naaaaaaa\naaaaa\naaaaaa\naa\naaaaaaaaaaaa\naaaaaaa\\nnaaaaaa\naa\naaa");
+    public void settingTextView() {
+        TextView textview = (TextView) findViewById(R.id.textview_solve);
+        textview.setText("aaa\naaa\naaaa\naaaaaaaaaaa\naaaaaaaaaaaaaa\naaaaaaaaaaa\naaaaaaa\naaaa\naaaaaaa\naaaaa\naaaaaa\naa\naaaaaaaaaaaa\naaaaaaa\\nnaaaaaa\naa\naaa");
 
 
-}
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -110,7 +111,6 @@ public void settingTextView(){
         _arrAdapter.add($inputValue);
         _arrAdapter.notifyDataSetChanged();
     }
-
 
 
     public void addListenerOnButton() {

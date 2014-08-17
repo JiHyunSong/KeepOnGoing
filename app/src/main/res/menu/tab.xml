@@ -1,18 +1,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.secsm.keepongoing.TabActivity" >
+    tools:context="com.secsm.keepongoing.TabActivity">
 
     <item
         android:id="@+id/actionBarFirstBtn"
         android:icon="@drawable/ic_action_search"
+        android:showAsAction="always"
         android:title="첫째"
-        android:visible="false"
-        android:showAsAction="always"/>
+        android:visible="false" />
 
     <item
         android:id="@+id/actionBarSecondBtn"
         android:icon="@drawable/ic_action_settings"
+        android:showAsAction="always"
         android:title="둘째"
-        android:visible="false"
-        android:showAsAction="always"/>
+        android:visible="false" />
 </menu>

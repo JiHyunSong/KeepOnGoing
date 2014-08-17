@@ -70,8 +70,7 @@ public class MainmenuActivity extends Activity {
         // add ListView
 
         // setup rooms
-        if (KogPreference.DEBUG_MODE)
-        {
+        if (KogPreference.DEBUG_MODE) {
             // mock room
             ArrayList<String> mockRooms = new ArrayList<String>();
             mockRooms.add("tempRoom1");
@@ -128,20 +127,20 @@ public class MainmenuActivity extends Activity {
 
         public void onItemClick(AdapterView<?> adapterView, View arg1, int position, long arg3) {
             if (adapterView.getId() == R.id.tab_friends) {
-                Log.i(LOG_TAG,"tab2, friends Clicked");
+                Log.i(LOG_TAG, "tab2, friends Clicked");
             } else if (adapterView.getId() == R.id.tab_rooms) {
-                Log.i(LOG_TAG,"tab3, rooms Clicked");
+                Log.i(LOG_TAG, "tab3, rooms Clicked");
 
             } else if (adapterView.getId() == R.id.tab_settings) {
-                Log.i(LOG_TAG,"tab4, settings Clicked");
+                Log.i(LOG_TAG, "tab4, settings Clicked");
                 switch (position) {
                     case 1: // 알람 설정
-                        Log.i(LOG_TAG,"tab4, settings Clicked");
+                        Log.i(LOG_TAG, "tab4, settings Clicked");
                         Intent intent_notice = new Intent(MainmenuActivity.this, NoticeActivity.class);
                         startActivity(intent_notice);
                         break;
                     case 2: // 목표 시간 설정
-                        Log.i(LOG_TAG,"tab4, settings Clicked");
+                        Log.i(LOG_TAG, "tab4, settings Clicked");
 
                         break;
                     case 3: // 퀴즈 모음
@@ -159,8 +158,7 @@ public class MainmenuActivity extends Activity {
         getMenuInflater().inflate(R.menu.mainmenu, menu);
         int tabPosition = tabHost.getCurrentTab();
         Log.i(LOG_TAG, "onCreate Options Menu");
-        switch (tabPosition)
-        {
+        switch (tabPosition) {
             case 1:
                 Log.i(LOG_TAG, "tab 1");
                 break;

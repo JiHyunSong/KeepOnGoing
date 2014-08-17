@@ -53,7 +53,7 @@ public class FriendsArrayAdapters extends BaseAdapter {
             viewHolder.name = (TextView) convertView.findViewById(R.id.txtFriendNickname);
             convertView.setTag(viewHolder);
 
-        }else{
+        } else {
             // reuse
             viewHolder = (ViewHolder) convertView.getTag();
 

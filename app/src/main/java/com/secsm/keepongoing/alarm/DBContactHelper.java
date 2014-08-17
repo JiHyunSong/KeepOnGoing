@@ -1,4 +1,5 @@
 package com.secsm.keepongoing.Alarm;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -60,7 +61,7 @@ public class DBContactHelper
 
         ContentValues values = new ContentValues();
 
-     //   values.put(KEY_ID, contact.getID()); // Contact Name
+        //   values.put(KEY_ID, contact.getID()); // Contact Name
         values.put(KEY_NAME, contact.gethour()); // Contact Name
         values.put(KEY_PH_NO, contact.getminute()); // Contact Phone
 
@@ -73,13 +74,14 @@ public class DBContactHelper
     public Contact getContact(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(TABLE_CONTACTS, new String[] { KEY_ID,
-                        KEY_NAME, KEY_PH_NO }, KEY_ID + "=?",
-                new String[] { String.valueOf(id) }, null, null, null, null);
+        Cursor cursor = db.query(TABLE_CONTACTS, new String[]{KEY_ID,
+                        KEY_NAME, KEY_PH_NO}, KEY_ID + "=?",
+                new String[]{String.valueOf(id)}, null, null, null, null
+        );
         if (cursor != null)
             cursor.moveToFirst();
 
-        Contact contact = new Contact(Integer.parseInt(cursor.getString(0)),Integer.parseInt(cursor.getString(1)),
+        Contact contact = new Contact(Integer.parseInt(cursor.getString(0)), Integer.parseInt(cursor.getString(1)),
                 Integer.parseInt(cursor.getString(2)));
         // return contact
         return contact;
@@ -120,14 +122,14 @@ public class DBContactHelper
 
         // updating row
         return db.update(TABLE_CONTACTS, values, KEY_ID + " = ?",
-                new String[] { String.valueOf(contact.getID()) });
+                new String[]{String.valueOf(contact.getID())});
     }
 
     // Contact 정보 삭제하기
     public void deleteContact(Contact contact) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_CONTACTS, KEY_ID + " = ?",
-                new String[] { String.valueOf(contact.getID()) });
+                new String[]{String.valueOf(contact.getID())});
         db.close();
     }
 

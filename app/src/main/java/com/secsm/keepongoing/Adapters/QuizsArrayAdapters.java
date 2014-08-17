@@ -23,7 +23,7 @@ public class QuizsArrayAdapters extends BaseAdapter {
     public QuizsArrayAdapters(Context context, int layout, ArrayList<String> quizArrayList) {
         this.context = context;
         quizArrayList = quizArrayList;
-        inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.layout = layout;
     }
 
@@ -42,12 +42,13 @@ public class QuizsArrayAdapters extends BaseAdapter {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        if(convertView == null)
+        if (convertView == null)
             convertView = inflater.inflate(layout, parent, false);
 
-        TextView name = (TextView)convertView.findViewById(R.id.txtQuizName);
+        TextView name = (TextView) convertView.findViewById(R.id.txtQuizName);
         name.setText(quizArrayList.get(position));
 
         return convertView;
 
-    }}
+    }
+}

@@ -7,6 +7,7 @@ package com.secsm.keepongoing.Shared;
 /**
  * 이 클래스는 Byte 관련 함수를 제공합니다.
  * This is for the Encryption
+ *
  * @author <a href="mailto:kangwoo@jarusoft.com">kangwoo</a>
  * @version 1.0
  * @since 1.0
@@ -17,35 +18,35 @@ public class ByteUtils {
 
     /**
      * <p>문자열을 바이트로 변환한다.</p>
-     *
+     * <p/>
      * <pre>
      * ByteUtils.toByte("1", *)    = 0x01
      * ByteUtils.toByte("-1", *)   = 0xff
      * ByteUtils.toByte("a", 0x00) = 0x00
      * </pre>
      *
-     * @param value 10진수 문자열 값
+     * @param value        10진수 문자열 값
      * @param defaultValue
      * @return
      */
     public static byte toByte(String value, byte defaultValue) {
         try {
             return Byte.parseByte(value);
-        } catch(Exception e) {
+        } catch (Exception e) {
             return defaultValue;
         }
     }
 
     /**
      * <p>문자열을 바이트로 변환한다.</p>
-     *
+     * <p/>
      * <pre>
      * ByteUtils.toByteObject("1", *)    = 0x01
      * ByteUtils.toByteObject("-1", *)   = 0xff
      * ByteUtils.toByteObject("a", 0x00) = 0x00
      * </pre>
      *
-     * @param value 10진수 문자열 값
+     * @param value        10진수 문자열 값
      * @param defaultValue
      * @return
      */
@@ -66,7 +67,7 @@ public class ByteUtils {
      * @return unsinged byte
      */
     public static int unsignedByte(byte b) {
-        return  b & 0xFF;
+        return b & 0xFF;
     }
 
     /**
@@ -128,7 +129,7 @@ public class ByteUtils {
      */
     public static void toBytes(int value, byte[] dest, int destPos) {
         for (int i = 0; i < 4; i++) {
-            dest[i + destPos] = (byte)(value >> ((7 - i) * 8));
+            dest[i + destPos] = (byte) (value >> ((7 - i) * 8));
         }
     }
 
@@ -153,7 +154,7 @@ public class ByteUtils {
      */
     public static void toBytes(long value, byte[] dest, int destPos) {
         for (int i = 0; i < 8; i++) {
-            dest[i + destPos] = (byte)(value >> ((7 - i) * 8));
+            dest[i + destPos] = (byte) (value >> ((7 - i) * 8));
         }
     }
 
@@ -172,7 +173,7 @@ public class ByteUtils {
     /**
      * <p>8, 10, 16진수 문자열을 바이트 배열로 변환한다.</p>
      * <p>8, 10진수인 경우는 문자열의 3자리가, 16진수인 경우는 2자리가, 하나의 byte로 바뀐다.</p>
-     *
+     * <p/>
      * <pre>
      * ByteUtils.toBytes(null)     = null
      * ByteUtils.toBytes("0E1F4E", 16) = [0x0e, 0xf4, 0x4e]
@@ -180,7 +181,7 @@ public class ByteUtils {
      * </pre>
      *
      * @param digits 문자열
-     * @param radix 진수(8, 10, 16만 가능)
+     * @param radix  진수(8, 10, 16만 가능)
      * @return
      * @throws NumberFormatException
      */
@@ -200,7 +201,7 @@ public class ByteUtils {
         byte[] bytes = new byte[length];
         for (int i = 0; i < length; i++) {
             int index = i * divLen;
-            bytes[i] = (byte)(Short.parseShort(digits.substring(index, index+divLen), radix));
+            bytes[i] = (byte) (Short.parseShort(digits.substring(index, index + divLen), radix));
         }
         return bytes;
     }
@@ -208,7 +209,7 @@ public class ByteUtils {
     /**
      * <p>16진수 문자열을 바이트 배열로 변환한다.</p>
      * <p>문자열의 2자리가 하나의 byte로 바뀐다.</p>
-     *
+     * <p/>
      * <pre>
      * ByteUtils.toBytesFromHexString(null)     = null
      * ByteUtils.toBytesFromHexString("0E1F4E") = [0x0e, 0xf4, 0x4e]
@@ -232,14 +233,14 @@ public class ByteUtils {
         byte[] bytes = new byte[length];
         for (int i = 0; i < length; i++) {
             int index = i * 2;
-            bytes[i] = (byte)(Short.parseShort(digits.substring(index, index+2), 16));
+            bytes[i] = (byte) (Short.parseShort(digits.substring(index, index + 2), 16));
         }
         return bytes;
     }
 
     /**
      * <p>unsigned byte(바이트)를 16진수 문자열로 바꾼다.</p>
-     *
+     * <p/>
      * ByteUtils.toHexString((byte)1)   = "01"
      * ByteUtils.toHexString((byte)255) = "ff"
      *
@@ -256,7 +257,7 @@ public class ByteUtils {
 
     /**
      * <p>unsigned byte(바이트) 배열을 16진수 문자열로 바꾼다.</p>
-     *
+     * <p/>
      * <pre>
      * ByteUtils.toHexString(null)                   = null
      * ByteUtils.toHexString([(byte)1, (byte)255])   = "01ff"
@@ -281,7 +282,7 @@ public class ByteUtils {
 
     /**
      * <p>unsigned byte(바이트) 배열을 16진수 문자열로 바꾼다.</p>
-     *
+     * <p/>
      * <pre>
      * ByteUtils.toHexString(null, *, *)                   = null
      * ByteUtils.toHexString([(byte)1, (byte)255], 0, 2)   = "01ff"
@@ -308,7 +309,7 @@ public class ByteUtils {
 
     /**
      * <p>두 배열의 값이 동일한지 비교한다.</p>
-     *
+     * <p/>
      * <pre>
      * ArrayUtils.equals(null, null)                        = true
      * ArrayUtils.equals(["one", "two"], ["one", "two"])    = true

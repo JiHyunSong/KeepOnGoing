@@ -37,7 +37,7 @@ import java.util.Calendar;
 public class StudyRoomActivity extends Activity {
 
     private Intent intent;
-    private static String LOG_TAG="StudyRoom Activity";
+    private static String LOG_TAG = "StudyRoom Activity";
     private Button sendMsgBtn;
     private MessageAdapter messageHistoryMAdaptor;
     private EditText messageTxt;
@@ -50,6 +50,7 @@ public class StudyRoomActivity extends Activity {
     private MenuItem actionBarFirstBtn, actionBarSecondBtn;
     private MenuItem actionBarThirdBtn, actionBarFourthBtn;
     private MenuItem actionBarFifthBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,9 +60,8 @@ public class StudyRoomActivity extends Activity {
 
         mDBHelper = new DBHelper(this);
         intent = getIntent();
-        rID = (int)intent.getIntExtra("roomID", -1);
-        if(rID == -1)
-        {
+        rID = (int) intent.getIntExtra("roomID", -1);
+        if (rID == -1) {
             // TODO : 잘못된 접근, 되돌아가기
         }
 
@@ -100,31 +100,30 @@ public class StudyRoomActivity extends Activity {
         String data = "";
         String msg = messageTxt.getText().toString();
         msg = msg.trim().replace(':', ' ');
-        if(msg != null && !msg.equals(""))
-        {
+        if (msg != null && !msg.equals("")) {
             message = msg;
-					/* encoding the message before send */
-            try
-            {
+                    /* encoding the message before send */
+            try {
                 sendText(Integer.toString(myID), msg);
                 messageTxt.setText("");
-            }catch(Exception ex){}
+            } catch (Exception ex) {
+            }
         }
     }
+
     /* message info must need the time */
-    public String getRealTime()
-    {
+    public String getRealTime() {
         long time = System.currentTimeMillis();
         Timestamp currentTimestamp = new Timestamp(time);
 
         // I/StudyRoom Activity﹕ long : 1408229086924
-        Log.i(LOG_TAG, "long : " + time );
+        Log.i(LOG_TAG, "long : " + time);
         // I/StudyRoom Activity﹕ Timestamp : 2014-08-17 07:44:46.924
-        Log.i(LOG_TAG, "Timestamp : " + currentTimestamp );
+        Log.i(LOG_TAG, "Timestamp : " + currentTimestamp);
         // I/StudyRoom Activity﹕ Timestamp.toString().substring(0, 10) : 2014-08-17
-        Log.i(LOG_TAG, "Timestamp.toString().substring(0, 19) : " + currentTimestamp.toString().substring(0, 19) );
+        Log.i(LOG_TAG, "Timestamp.toString().substring(0, 19) : " + currentTimestamp.toString().substring(0, 19));
         // I/StudyRoom Activity﹕ Timestamp.getTime() : 1408229086924
-        Log.i(LOG_TAG, "Timestamp.getTime() : " + currentTimestamp.getTime() );
+        Log.i(LOG_TAG, "Timestamp.getTime() : " + currentTimestamp.getTime());
         Log.i(LOG_TAG, "");
 
 //
@@ -138,13 +137,11 @@ public class StudyRoomActivity extends Activity {
     }
 
     /* this is update the message from someone(include me) */
-    public void sendText(String _senderID, String _text)
-    {
+    public void sendText(String _senderID, String _text) {
         String time;
         Msg m;
         time = getRealTime();
-        if(KogPreference.DEBUG_MODE)
-        {
+        if (KogPreference.DEBUG_MODE) {
             m = new Msg(StudyRoomActivity.this, "나", _text, time, "true");
             insertIntoMsgInSQLite("나", _text, time, "true");
             messageHistoryMAdaptor.add(m);
@@ -181,43 +178,47 @@ public class StudyRoomActivity extends Activity {
 //            messageHistoryMAdaptor.add(m);
 //        }
     }
+
     /* getting the profile image from the server  */
 	/* aURL is perfect URL like : http://203.252.195.122/files/tmp_1348736125550.jpg */
-    public Bitmap getRemoteImage(final URL _aURL){
+    public Bitmap getRemoteImage(final URL _aURL) {
         Bitmap bm = null;
-        try{
+        try {
             final URLConnection conn = _aURL.openConnection();
             conn.connect();
             final BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
             bm = BitmapFactory.decodeStream(bis);
             bis.close();
-        }catch(IOException e){
+        } catch (IOException e) {
             Log.d("down", e.toString());
         }
         return bm;
     }
+
     /* before we send the message to server(to friend or me),
      * we have to make the protocol format.
      * at this time, use this method */
     private String getSendMsg() {
         Log.i("getSendMsg()", "msg :" + message + " myID :" + myID);
-        if(!"".equals(myID)) {
+        if (!"".equals(myID)) {
 //            return myID + ":" + message + ":" + myStatus + ":" + roomID + ":" + talking + ":false";
 
         }
         return null;
 
     }
+
     private String getSendMsg(String status) {
-        if(!"".equals(myID)){
+        if (!"".equals(myID)) {
 //            Log.i("getSendMsg", myID + ":" + null + ":" +  status + ":" + roomID + ":" + talking + ":false");
 //            return myID + ":" + null + ":" +  status + ":" + roomID + ":" + talking + ":false";
 
         }
         return null;
     }
+
     private String getSendMsg(String _status, String _msgNull) {
-        if(!"".equals(myID)) {
+        if (!"".equals(myID)) {
 //            return myID + ":" + _msgNull + ":" + _status + ":" + roomID + ":" + talking + ":false";
         }
         return null;
@@ -231,17 +232,17 @@ public class StudyRoomActivity extends Activity {
     // Action bar     //
     ////////////////////
 
-    MenuItem.OnMenuItemClickListener ab_friend_list_listener = new MenuItem.OnMenuItemClickListener(){
+    MenuItem.OnMenuItemClickListener ab_friend_list_listener = new MenuItem.OnMenuItemClickListener() {
         @Override
-        public boolean onMenuItemClick(MenuItem mi){
+        public boolean onMenuItemClick(MenuItem mi) {
             Log.i(LOG_TAG, "onMenuItemClicked ab_stopwatchTab_settings_listener");
             return true;
         }
     };
 
-    MenuItem.OnMenuItemClickListener ab_solve_quiz_listener = new MenuItem.OnMenuItemClickListener(){
+    MenuItem.OnMenuItemClickListener ab_solve_quiz_listener = new MenuItem.OnMenuItemClickListener() {
         @Override
-        public boolean onMenuItemClick(MenuItem mi){
+        public boolean onMenuItemClick(MenuItem mi) {
             Log.i(LOG_TAG, "onMenuItemClicked ab_friends_add_listener");
 
             Intent intent = new Intent(StudyRoomActivity.this, Solve_Main.class);
@@ -252,11 +253,11 @@ public class StudyRoomActivity extends Activity {
             return true;
         }
     };
-    MenuItem.OnMenuItemClickListener ab_add_quiz_listener = new MenuItem.OnMenuItemClickListener(){
+    MenuItem.OnMenuItemClickListener ab_add_quiz_listener = new MenuItem.OnMenuItemClickListener() {
         @Override
-        public boolean onMenuItemClick(MenuItem mi){
+        public boolean onMenuItemClick(MenuItem mi) {
             Log.i(LOG_TAG, "onMenuItemClicked ab_rooms_notify_listener");
-            
+
             Intent intent = new Intent(StudyRoomActivity.this, Quiz_Main.class);
             startActivity(intent);
 //            StudyRoomActivity.this.finish();
@@ -265,16 +266,16 @@ public class StudyRoomActivity extends Activity {
         }
     };
 
-    MenuItem.OnMenuItemClickListener ab_invite_friend_listener = new MenuItem.OnMenuItemClickListener(){
+    MenuItem.OnMenuItemClickListener ab_invite_friend_listener = new MenuItem.OnMenuItemClickListener() {
         @Override
-        public boolean onMenuItemClick(MenuItem mi){
+        public boolean onMenuItemClick(MenuItem mi) {
             Log.i(LOG_TAG, "onMenuItemClicked ab_rooms_add_listener");
             return true;
         }
     };
-    MenuItem.OnMenuItemClickListener ab_kick_off_friend_listener = new MenuItem.OnMenuItemClickListener(){
+    MenuItem.OnMenuItemClickListener ab_kick_off_friend_listener = new MenuItem.OnMenuItemClickListener() {
         @Override
-        public boolean onMenuItemClick(MenuItem mi){
+        public boolean onMenuItemClick(MenuItem mi) {
             Log.i(LOG_TAG, "onMenuItemClicked ab_rooms_add_listener");
             return true;
         }
@@ -310,7 +311,6 @@ public class StudyRoomActivity extends Activity {
     }
 
 
-
     //////////////////////////////////////////////////
     // for exit()                                   //
     //////////////////////////////////////////////////
@@ -321,9 +321,9 @@ public class StudyRoomActivity extends Activity {
 
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_ENTER){
+        if (keyCode == KeyEvent.KEYCODE_ENTER) {
             sendMessage();
-        }else if (keyCode == KeyEvent.KEYCODE_BACK) {
+        } else if (keyCode == KeyEvent.KEYCODE_BACK) {
             setResult(RESULT_OK);
             StudyRoomActivity.this.finish();
 
@@ -337,13 +337,13 @@ public class StudyRoomActivity extends Activity {
     //////////////////////////////////////////////////
 
 
-    private void insertIntoMsgInSQLite(String _senderID, String _senderText, String _time, String _me){
+    private void insertIntoMsgInSQLite(String _senderID, String _senderText, String _time, String _me) {
         SQLiteDatabase db;
         db = mDBHelper.getWritableDatabase();
         //		Log.i(LOG_TAG, "insert msg");
         Calendar c = Calendar.getInstance();
         String year = Integer.toString(c.get(Calendar.YEAR));
-        String month = Integer.toString(c.get(Calendar.MONTH) +1);
+        String month = Integer.toString(c.get(Calendar.MONTH) + 1);
         String day = Integer.toString(c.get(Calendar.DATE));
         //		Log.i("day", "me : " + me);
 
@@ -352,8 +352,8 @@ public class StudyRoomActivity extends Activity {
                 //"(room_id, senderID, senderText, year, month, day, time, me) " +
                 "(rid, senderID, senderText, year, month, day, me) " +
                 "VALUES (" +
-                "'"+ rID + "','"
-                +_senderID + "','"
+                "'" + rID + "','"
+                + _senderID + "','"
                 + _senderText + "','"
                 + year + "','"
                 + month + "','"
@@ -365,8 +365,7 @@ public class StudyRoomActivity extends Activity {
     }
 
     /* load the message from the SQLite */
-    public void loadText()
-    {
+    public void loadText() {
         try {
             SQLiteDatabase db;
             Cursor cursor = null;
@@ -390,8 +389,7 @@ public class StudyRoomActivity extends Activity {
             cursor.close();
             db.close();
             mDBHelper.close();
-        }catch (Exception e)
-        {
+        } catch (Exception e) {
             Log.e(LOG_TAG, "" + e.toString());
             e.printStackTrace();
         }
@@ -401,10 +399,10 @@ public class StudyRoomActivity extends Activity {
     //////////////////////////////////////////////////
     // Listening the message from the server        //
     //////////////////////////////////////////////////
-    Handler handler = new Handler(){
-        public void handleMessage(Message msg){
+    Handler handler = new Handler() {
+        public void handleMessage(Message msg) {
             String friend_id = null, text = null;
-            Bundle b= msg.getData();
+            Bundle b = msg.getData();
 
             friend_id = b.getString("friend_id");
             text = b.getString("text");
