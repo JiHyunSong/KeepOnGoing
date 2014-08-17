@@ -21,7 +21,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.secsm.keepongoing.R;
-import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 
 import org.json.JSONObject;
@@ -154,10 +153,9 @@ public class Quiz_Main extends Activity {
         String get_url = KogPreference.REST_URL +
                 "Register" +
                 "?nickname=" + nickName +
-                "&password=" + Encrypt.encodingMsg(password) +
-                "&image=" + image +
-                "&phone=" + phone +
-                "&gcmid=" + KogPreference.getRegId(Quiz_Main.this);
+                "&rid=" + KogPreference.getRid(Quiz_Main.this) +
+                "&question=" + image +
+                "&solution=" + phone;
 
         Log.i(LOG_TAG, "get_url : " + get_url);
 

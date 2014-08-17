@@ -373,7 +373,7 @@ public class TabActivity extends Activity {
                 {
                     Intent intent = new Intent(TabActivity.this, AddStudyRoomActivity.class);
                     startActivity(intent);
-                    TabActivity.this.finish();
+//                    TabActivity.this.finish();
                 }
 
             } else if (adapterView.getId() == R.id.room_list) {
@@ -381,9 +381,12 @@ public class TabActivity extends Activity {
                 Log.i(LOG_TAG,"position : " + position);
                 Intent intent = new Intent(TabActivity.this, StudyRoomActivity.class);
                 if(KogPreference.DEBUG_MODE) {
+                    //TODO : change rid, not position value
+                    KogPreference.setRid(TabActivity.this, "" + position);
                     intent.putExtra("roomID", position);
                 }else{
-                     intent.putExtra("roomID", -1);
+                    KogPreference.setRid(TabActivity.this, "" + (-1));
+                    intent.putExtra("roomID", -1);
                 }
                 startActivity(intent);
 //                TabActivity.this.finish();
@@ -507,7 +510,7 @@ public class TabActivity extends Activity {
 
             Intent intent = new Intent(TabActivity.this, AddFriendActivity.class);
             startActivity(intent);
-            TabActivity.this.finish();
+//            TabActivity.this.finish();
 
 
             return true;
@@ -525,6 +528,10 @@ public class TabActivity extends Activity {
         @Override
         public boolean onMenuItemClick(MenuItem mi){
             Log.i(LOG_TAG, "onMenuItemClicked ab_rooms_add_listener");
+
+            Intent intent = new Intent(TabActivity.this, AddStudyRoomActivity.class);
+            startActivity(intent);
+
             return true;
         }
     };
