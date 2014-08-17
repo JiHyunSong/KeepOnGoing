@@ -88,25 +88,29 @@ public class StudyRoomActivity extends Activity {
         sendMsgBtn.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-                Log.i(LOG_TAG, "button Clicked");
-                String data = "";
-                String msg = messageTxt.getText().toString();
-                msg = msg.trim().replace(':', ' ');
-                if(msg != null && !msg.equals(""))
-                {
-                    message = msg;
-					/* encoding the message before send */
-                    try
-                    {
-                        sendText(Integer.toString(myID), msg);
-                        messageTxt.setText("");
-                    }catch(Exception ex){}
-                }
+                sendMessage();
             }
+
         });
     }
 
 
+    private void sendMessage() {
+        Log.i(LOG_TAG, "button Clicked");
+        String data = "";
+        String msg = messageTxt.getText().toString();
+        msg = msg.trim().replace(':', ' ');
+        if(msg != null && !msg.equals(""))
+        {
+            message = msg;
+					/* encoding the message before send */
+            try
+            {
+                sendText(Integer.toString(myID), msg);
+                messageTxt.setText("");
+            }catch(Exception ex){}
+        }
+    }
     /* message info must need the time */
     public String getRealTime()
     {
@@ -317,7 +321,9 @@ public class StudyRoomActivity extends Activity {
 
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
+        if (keyCode == KeyEvent.KEYCODE_ENTER){
+            sendMessage();
+        }else if (keyCode == KeyEvent.KEYCODE_BACK) {
             setResult(RESULT_OK);
             StudyRoomActivity.this.finish();
 
