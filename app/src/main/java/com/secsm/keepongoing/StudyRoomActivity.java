@@ -1,5 +1,6 @@
 package com.secsm.keepongoing;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -21,15 +22,14 @@ import android.widget.ListView;
 import com.secsm.keepongoing.Adapters.MessageAdapter;
 import com.secsm.keepongoing.Adapters.Msg;
 import com.secsm.keepongoing.DB.DBHelper;
+import com.secsm.keepongoing.Quiz.Quiz_Main;
+import com.secsm.keepongoing.Quiz.Solve_Main;
 import com.secsm.keepongoing.Shared.KogPreference;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.sql.Date;
-import java.sql.SQLClientInfoException;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -47,11 +47,15 @@ public class StudyRoomActivity extends Activity {
     private int myID;
     private ArrayList<Msg> mTexts = new ArrayList<Msg>();
     private ListView messageList;
-
+    private MenuItem actionBarFirstBtn, actionBarSecondBtn;
+    private MenuItem actionBarThirdBtn, actionBarFourthBtn;
+    private MenuItem actionBarFifthBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_study_room);
+        ActionBar bar = getActionBar();
+        bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.NAVIGATION_MODE_STANDARD);
 
         mDBHelper = new DBHelper(this);
         intent = getIntent();
@@ -215,11 +219,77 @@ public class StudyRoomActivity extends Activity {
         return null;
     }
 
+    ////////////////////
+    // Action bar     //
+    ////////////////////
+
+    ////////////////////
+    // Action bar     //
+    ////////////////////
+
+    MenuItem.OnMenuItemClickListener ab_friend_list_listener = new MenuItem.OnMenuItemClickListener(){
+        @Override
+        public boolean onMenuItemClick(MenuItem mi){
+            Log.i(LOG_TAG, "onMenuItemClicked ab_stopwatchTab_settings_listener");
+            return true;
+        }
+    };
+
+    MenuItem.OnMenuItemClickListener ab_solve_quiz_listener = new MenuItem.OnMenuItemClickListener(){
+        @Override
+        public boolean onMenuItemClick(MenuItem mi){
+            Log.i(LOG_TAG, "onMenuItemClicked ab_friends_add_listener");
+
+            Intent intent = new Intent(StudyRoomActivity.this, Solve_Main.class);
+            startActivity(intent);
+//            StudyRoomActivity.this.finish();
+
+
+            return true;
+        }
+    };
+    MenuItem.OnMenuItemClickListener ab_add_quiz_listener = new MenuItem.OnMenuItemClickListener(){
+        @Override
+        public boolean onMenuItemClick(MenuItem mi){
+            Log.i(LOG_TAG, "onMenuItemClicked ab_rooms_notify_listener");
+            
+            Intent intent = new Intent(StudyRoomActivity.this, Quiz_Main.class);
+            startActivity(intent);
+//            StudyRoomActivity.this.finish();
+
+            return true;
+        }
+    };
+
+    MenuItem.OnMenuItemClickListener ab_invite_friend_listener = new MenuItem.OnMenuItemClickListener(){
+        @Override
+        public boolean onMenuItemClick(MenuItem mi){
+            Log.i(LOG_TAG, "onMenuItemClicked ab_rooms_add_listener");
+            return true;
+        }
+    };
+    MenuItem.OnMenuItemClickListener ab_kick_off_friend_listener = new MenuItem.OnMenuItemClickListener(){
+        @Override
+        public boolean onMenuItemClick(MenuItem mi){
+            Log.i(LOG_TAG, "onMenuItemClicked ab_rooms_add_listener");
+            return true;
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.study_room, menu);
+        actionBarFirstBtn = menu.findItem(R.id.actionBarFirstBtn);
+        actionBarFirstBtn.setOnMenuItemClickListener(ab_friend_list_listener);
+        actionBarSecondBtn = menu.findItem(R.id.actionBarSecondBtn);
+        actionBarSecondBtn.setOnMenuItemClickListener(ab_solve_quiz_listener);
+        actionBarThirdBtn = menu.findItem(R.id.actionBarThirdBtn);
+        actionBarThirdBtn.setOnMenuItemClickListener(ab_add_quiz_listener);
+        actionBarFourthBtn = menu.findItem(R.id.actionBarFourthBtn);
+        actionBarFourthBtn.setOnMenuItemClickListener(ab_invite_friend_listener);
+        actionBarFifthBtn = menu.findItem(R.id.actionBarFifthBtn);
+        actionBarFifthBtn.setOnMenuItemClickListener(ab_kick_off_friend_listener);
         return true;
     }
 
@@ -242,49 +312,17 @@ public class StudyRoomActivity extends Activity {
     //////////////////////////////////////////////////
     protected void onDestroy() {
         super.onDestroy();
-//        try {
-//            socket_.close();
-//            Log.d("onDestroy", "socket close");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
         Log.d("info>> ", "unregisterReceiver()...");
     }
 
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-//            try {
-//                String data = getSendMsg("LOGOUT", null);
-//                if(data!=null) {
-//                    try{
-////                        cipher.init(Cipher.ENCRYPT_MODE, key);
-////                        byte[] encrypt = cipher.doFinal(data.getBytes());
-////                        String encryptStr = ByteUtils.toHexString(encrypt);
-////                        Log.i("send", "encrypt : " + ByteUtils.toHexString(encrypt));
-////                        out_.println(encryptStr);
-////                        out_.flush();
-//                    }catch(Exception e){
-//                        Log.e("write", e.toString());
-//                    }
-//
-//                }
-////                socket_.close();
-//                Log.d("socket close", "socket close");
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-            // unregisterReceiver(mReceiver);
-            // unregisterReceiver(receiver);
             setResult(RESULT_OK);
-            finish();
+            StudyRoomActivity.this.finish();
 
-            Intent intent = new Intent(StudyRoomActivity.this, TabActivity.class);
-//            intent.putExtra("phoneNo", phoneNo);
-            //intent.putExtra("roomName", roomNameArray.get(position));
-            //intent.putExtra("roomID", roomIDArrayFromSQLite.get(position));
-            //startActivityForResult(intent, CHATROOM_REQUEST_CODE);
-            startActivity(intent);
+//            Intent intent = new Intent(StudyRoomActivity.this, TabActivity.class);
+//            startActivity(intent);
         }
         return false;
     }
