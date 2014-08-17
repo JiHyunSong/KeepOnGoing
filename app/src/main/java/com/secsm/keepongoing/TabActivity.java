@@ -26,6 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.android.volley.toolbox.ImageLoader;
 import com.secsm.keepongoing.Adapters.FriendNameAndIcon;
 import com.secsm.keepongoing.Adapters.FriendsArrayAdapters;
 import com.secsm.keepongoing.Alarm.Contact;
@@ -36,6 +37,7 @@ import com.secsm.keepongoing.DB.DBHelper;
 import com.secsm.keepongoing.Quiz.Quiz_Main;
 import com.secsm.keepongoing.Quiz.Solve_Main;
 import com.secsm.keepongoing.Shared.KogPreference;
+import com.secsm.keepongoing.Shared.MyVolley;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -74,6 +76,7 @@ public class TabActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab);
 
+        MyVolley.init(TabActivity.this);
         ActionBar bar = getActionBar();
         bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.NAVIGATION_MODE_STANDARD);
 
@@ -350,6 +353,16 @@ public class TabActivity extends Activity {
         }
     };
 
+
+    void getImageFromURL(String img_url, ImageView imgView) {
+        // TODO R.drawable.error_image
+        ImageLoader imageLoader = MyVolley.getImageLoader();
+        imageLoader.get(img_url,
+                ImageLoader.getImageListener(imgView,
+                        R.drawable.no_image,
+                        R.drawable.no_image)
+        );
+    }
 
     ListView.OnItemLongClickListener itemLongClickListener = new ListView.OnItemLongClickListener() {
         int selectedPosition = 0;

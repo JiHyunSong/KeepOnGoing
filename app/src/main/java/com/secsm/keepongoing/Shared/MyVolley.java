@@ -21,7 +21,7 @@ public class MyVolley {
 // no instances
     }
 
-    static void init(Context context) {
+    public static void init(Context context) {
         mRequestQueue = Volley.newRequestQueue(context);
         int memClass = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE))
                 .getMemoryClass();
