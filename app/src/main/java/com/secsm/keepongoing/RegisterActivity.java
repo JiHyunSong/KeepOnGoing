@@ -3,9 +3,7 @@ package com.secsm.keepongoing;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,7 +19,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.secsm.keepongoing.R;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 
@@ -31,10 +28,10 @@ public class RegisterActivity extends Activity {
 
     private static String LOG_TAG = "Profile";
     private String rMessage;
+    private RequestQueue vQueue;
     private EditText nickName, password1, password2, phoneNum;
     private Button btnRegister;
     private int status_code;
-    private RequestQueue vQueue;
     private Intent intent;
     private String phoneNo;
     String rNickName;
@@ -131,7 +128,6 @@ public class RegisterActivity extends Activity {
                 "&image=" + image +
                 "&phone=" + phone +
                 "&gcmid=" + KogPreference.getRegId(RegisterActivity.this);
-        // TODO : GCM ID
 
         Log.i(LOG_TAG, "post btn event trigger");
 
@@ -151,6 +147,7 @@ public class RegisterActivity extends Activity {
                             } else if(status_code == 9001){
                                 Toast.makeText(getBaseContext(), "회원가입이 불가능합니다.", Toast.LENGTH_SHORT).show();
                             }else {
+                                Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
                                 if(KogPreference.DEBUG_MODE) {
                                     Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
                                 }
@@ -163,6 +160,7 @@ public class RegisterActivity extends Activity {
             @Override
             public void onErrorResponse(VolleyError error){
                 Log.i(LOG_TAG, "Response Error");
+                Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
                 if(KogPreference.DEBUG_MODE)
                 {
                     Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
