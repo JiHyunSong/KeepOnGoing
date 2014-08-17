@@ -20,6 +20,7 @@ public final class KogPreference {
     private static String RID_TAG = "RID";
     private static String GCM_TAG = "GCMID";
     public static String REST_URL = "http://210.118.74.195:8080/KOG_Server_Rest/rest/";
+    public static String MEDIA_URL = "http://210.118.74.195:8080/KOG_Server_Rest/upload/UserImage/";
 
     public KogPreference() {
         // not called
