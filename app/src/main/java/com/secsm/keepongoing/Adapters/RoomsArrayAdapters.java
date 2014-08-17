@@ -17,6 +17,7 @@ import java.util.ArrayList;
  */
 public class RoomsArrayAdapters extends BaseAdapter {
 
+    private ViewHolder viewHolder = null;
     Context context;
     ArrayList<RoomNaming> roomArrayList;
     LayoutInflater inflater;
@@ -35,7 +36,7 @@ public class RoomsArrayAdapters extends BaseAdapter {
     }
 
     public Object getItem(int position) {
-        return roomArrayList.get(position).name;
+        return roomArrayList.get(position).roomname;
     }
 
     public long getItemId(int position) {
@@ -44,19 +45,49 @@ public class RoomsArrayAdapters extends BaseAdapter {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null)
+        if (convertView == null) {
             convertView = inflater.inflate(layout, parent, false);
+            viewHolder = new ViewHolder();
+            viewHolder.type = (TextView) convertView.findViewById(R.id.txtRoomType);
 
-        TextView type = (TextView) convertView.findViewById(R.id.txtRoomType);
-        type.setText(roomArrayList.get(position).type);
+            viewHolder.roomname = (TextView) convertView.findViewById(R.id.txtRoomName);
+            viewHolder.start_time = (TextView) convertView.findViewById(R.id.txtRoomTime);
+            convertView.setTag(viewHolder);
 
-        TextView name = (TextView) convertView.findViewById(R.id.txtRoomName);
-        name.setText(roomArrayList.get(position).name);
+        }else {
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
 
-        TextView time = (TextView) convertView.findViewById(R.id.txtRoomTime);
-        time.setText(roomArrayList.get(position).time);
+        viewHolder.type.setText(roomArrayList.get(position).type);
+
+        viewHolder.roomname.setText(roomArrayList.get(position).roomname);
+        if("liferoom".equals(roomArrayList.get(position).type))
+        {
+            viewHolder.start_time.setText("");
+        }else{
+            viewHolder.start_time.setText(roomArrayList.get(position).start_time);
+        }
         return convertView;
 
     }
 
+    class ViewHolder {
+        public TextView type = null;
+        public TextView roomname = null;
+        public TextView start_time = null;
+//        public String name = null;
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        free();
+        super.finalize();
+    }
+
+    private void free() {
+        inflater = null;
+//        infoList = null;
+        viewHolder = null;
+        context = null;
+    }
 }

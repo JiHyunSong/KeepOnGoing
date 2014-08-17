@@ -35,6 +35,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.secsm.keepongoing.Adapters.FriendNameAndIcon;
 import com.secsm.keepongoing.Adapters.FriendsArrayAdapters;
+import com.secsm.keepongoing.Adapters.RoomNaming;
+import com.secsm.keepongoing.Adapters.RoomsArrayAdapters;
 import com.secsm.keepongoing.Alarm.Contact;
 import com.secsm.keepongoing.Alarm.DBContactHelper;
 import com.secsm.keepongoing.Alarm.Preference;
@@ -82,6 +84,7 @@ public class TabActivity extends Activity {
     private MenuItem actionBarFirstBtn, actionBarSecondBtn;
 
     ArrayList<FriendNameAndIcon> mFriends;
+    ArrayList<RoomNaming> mRooms;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +98,8 @@ public class TabActivity extends Activity {
         bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.NAVIGATION_MODE_STANDARD);
 
         getFriendsRequest();
+
+        getStudyRoomsRequest();
 
         // layout (when the tab image button clicked, visibility change
         layoutStopwatch = (RelativeLayout) findViewById(R.id.tab_stopwatch_layout);
@@ -114,18 +119,19 @@ public class TabActivity extends Activity {
         // setup rooms
         if (KogPreference.DEBUG_MODE) {
             // mock room
-            ArrayList<String> mockRooms = new ArrayList<String>();
-            mockRooms.add("tempRoom1");
-            mockRooms.add("tempRoom2");
-            mockRooms.add("tempRoom3");
-
-            ArrayAdapter<String> mockRoomArrayAdapter;
-            mockRoomArrayAdapter = new ArrayAdapter<String>(this,
-                    R.layout.tab_list, mockRooms);
-            roomList = (ListView) findViewById(R.id.room_list);
-            roomList.setAdapter(mockRoomArrayAdapter);
+//            ArrayList<String> mRooms = new ArrayList<String>();
+//            mRooms.add("tempRoom1");
+//            mRooms.add("tempRoom2");
+//            mRooms.add("tempRoom3");
+//
+//            ArrayAdapter<String> RoomArrayAdapter;
+//            RoomArrayAdapter = new ArrayAdapter<String>(this,
+//                    R.layout.tab_list, mRooms);
+//            roomList = (ListView) findViewById(R.id.room_list);
+//            roomList.setAdapter(RoomArrayAdapter);
         }
 
+        roomList = (ListView) findViewById(R.id.room_list);
         friendList = (ListView) findViewById(R.id.friend_list);
 
         // add list item onClickListener
@@ -137,9 +143,9 @@ public class TabActivity extends Activity {
         arGeneral3.add("알람 설정");
         arGeneral3.add("목표 시간 설정");
         arGeneral3.add("퀴즈 모음");
-        if (KogPreference.isLogin(TabActivity.this))
+        if (!KogPreference.isLogin(TabActivity.this)) {
             arGeneral3.add("로그인");
-
+        }
         ArrayAdapter<String> optionArrayAdapter;
         optionArrayAdapter = new ArrayAdapter<String>(this,
                 R.layout.tab_list, arGeneral3);
@@ -392,14 +398,11 @@ public class TabActivity extends Activity {
                 Log.i(LOG_TAG, "tab3, rooms Clicked");
                 Log.i(LOG_TAG, "position : " + position);
                 Intent intent = new Intent(TabActivity.this, StudyRoomActivity.class);
-                if (KogPreference.DEBUG_MODE) {
-                    //TODO : change rid, not position value
-                    KogPreference.setRid(TabActivity.this, "" + position);
-                    intent.putExtra("roomID", position);
-                } else {
-                    KogPreference.setRid(TabActivity.this, "" + (-1));
-                    intent.putExtra("roomID", -1);
-                }
+
+                KogPreference.setRid(TabActivity.this, mRooms.get(position).getRid());
+                Log.i(LOG_TAG, "RID (mRooms.get(position).getRid()): " + mRooms.get(position).getRid());
+                Log.i(LOG_TAG, "RID (KogPreference.getRid(TabActivity.this)): " + KogPreference.getRid(TabActivity.this));
+
                 startActivity(intent);
 //                TabActivity.this.finish();
 
@@ -733,12 +736,9 @@ public class TabActivity extends Activity {
 
 
     private void getStudyRoomsRequest() {
-
-        //TODO : check POST/GET METHOD and get_URL
         String get_url = KogPreference.REST_URL +
-                "Room" +
-                "?nickname=" + KogPreference.getNickName(TabActivity.this) +
-                "&date=" + getRealDate();
+                "Rooms" +
+                "?nickname=" + KogPreference.getNickName(TabActivity.this);
 
         Log.i(LOG_TAG, "URL : " + get_url);
 
@@ -749,33 +749,56 @@ public class TabActivity extends Activity {
                         Log.i(LOG_TAG, "get JSONObject");
                         Log.i(LOG_TAG, response.toString());
 
+                        //{"message":[
+                        // {"startTime":null,"roomname":"KOF STUDY","rid":"23","meetDays":null,"rule":"meet 6days","maxHolidayCount":"2","showupTime":null,"type":"liferoom","durationTime":null},
+                        // {"startTime":null,"roomname":"liferoom","rid":"29","meetDays":null,"rule":"tt","maxHolidayCount":"1","showupTime":null,"type":"liferoom","durationTime":null},
+                        // {"startTime":null,"roomname":"lif","rid":"30","meetDays":null,"rule":"134","maxHolidayCount":"1","showupTime":null,"type":"liferoom","durationTime":null},
+                        // {"startTime":null,"roomname":"??","rid":"31","meetDays":null,"rule":"???","maxHolidayCount":"1","showupTime":null,"type":"liferoom","durationTime":null},
+                        // {"startTime":null,"roomname":"??2?","rid":"34","meetDays":null,"rule":"??","maxHolidayCount":"5","showupTime":null,"type":"liferoom","durationTime":null},
+                        // {"startTime":"04:26:09","roomname":"tesmpSub","rid":"33","meetDays":"mon|tue|wed|fri|sun","rule":"???","maxHolidayCount":null,"showupTime":"18","type":"subjectroom","durationTime":"16"}
+                        // ],"status":"200"}
+
                         try {
                             status_code = response.getInt("status");
                             if (status_code == 200) {
                                 JSONArray rMessage;
                                 rMessage = response.getJSONArray("message");
                                 //////// real action ////////
-                                mFriends = new ArrayList<FriendNameAndIcon>();
+                                mRooms = new ArrayList<RoomNaming>();
                                 JSONObject rObj;
 
                                 //{"message":[{"targetTime":null,"image":"http:\/\/210.118.74.195:8080\/KOG_Server_Rest\/upload\/UserImage\/default.png","nickname":"jonghean"}],"status":"200"}
+                                Log.i(LOG_TAG, "room size : " + rMessage.length());
                                 for(int i=0; i< rMessage.length(); i++)
                                 {
+//                                    Log.i(LOG_TAG, "index : " + i);
+//                                    Log.i(LOG_TAG, "rMessage.getJSONObject(i) : " + rMessage.getJSONObject(i));
                                     rObj = rMessage.getJSONObject(i);
-                                    Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" + rObj.getString("nickname") + "|" +rObj.getString("targetTime"));
-                                    mFriends.add(new FriendNameAndIcon(rObj.getString("image"),
-                                            rObj.getString("nickname"),
-                                            rObj.getString("targetTime")));
+                                    //rMessage.getJSONObject(i) : {"startTime":"04:26:09","roomname":"tesmpSub","rid":"33","meetDays":"mon|tue|wed|fri|sun","rule":"???","maxHolidayCount":null,"showupTime":"18","type":"subjectroom","durationTime":"16"}
+                                    //add Rooms : subjectroom|33|???|tesmpSub|null|04:26:09|16|18|mon|tue|wed|fri|sun
+                                    //add Rooms : liferoom|23|meet 6days|KOF STUDY|2|null|null|null|null
+//                                    Log.i(LOG_TAG, "add Rooms : " + rObj.getString("type") + "|" + rObj.getString("rid") + "|" + rObj.getString("rule") + "|" +rObj.getString("roomname")
+//                                            + "|" +rObj.getString("maxHolidayCount")+ "|" +rObj.getString("startTime")+ "|" +rObj.getString("durationTime")
+//                                            + "|" +rObj.getString("showupTime")+ "|" +rObj.getString("meetDays"));
+                                    mRooms.add(new RoomNaming(rObj.getString("type"),
+                                            rObj.getString("rid"),
+                                            rObj.getString("rule"),
+                                            rObj.getString("roomname"),
+                                            rObj.getString("maxHolidayCount"),
+                                            rObj.getString("startTime"),
+                                            rObj.getString("durationTime"),
+                                            rObj.getString("showupTime"),
+                                            rObj.getString("meetDays")));
                                 }
 
-                                FriendsArrayAdapters mockFriendArrayAdapter;
-                                mockFriendArrayAdapter = new FriendsArrayAdapters(TabActivity.this, R.layout.friend_list_item, mFriends);
-                                friendList.setAdapter(mockFriendArrayAdapter);
+                                RoomsArrayAdapters roomsArrayAdapter;
+                                roomsArrayAdapter = new RoomsArrayAdapters(TabActivity.this, R.layout.room_list_item, mRooms);
+                                roomList.setAdapter(roomsArrayAdapter);
 
 
                                 /////////////////////////////
                             } else {
-                                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getBaseContext(), "통신 에러 : \n스터디 방 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
                                 if (KogPreference.DEBUG_MODE) {
                                     Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
                                 }
@@ -786,7 +809,7 @@ public class TabActivity extends Activity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), "통신 에러 : \n스터디 방 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
                 Log.i(LOG_TAG, "Response Error");
                 if (KogPreference.DEBUG_MODE) {
                     Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();

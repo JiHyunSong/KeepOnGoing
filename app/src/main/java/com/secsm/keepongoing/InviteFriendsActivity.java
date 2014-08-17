@@ -382,7 +382,7 @@ public class InviteFriendsActivity extends Activity {
                                 //////// real action ////////
                                 for(int i=0; i<selected_Friends.size(); i++)
                                 {
-                                    inviteFriendToRoom(rid, selected_Friends.get(i).getName());
+                                    inviteFriendToRoomRequest(rid, selected_Friends.get(i).getName());
                                 }
 
                                 GoTabPage();
@@ -444,7 +444,7 @@ public class InviteFriendsActivity extends Activity {
                                 //////// real action ////////
                                 for(int i=0; i<selected_Friends.size(); i++)
                                 {
-                                    inviteFriendToRoom(rid, selected_Friends.get(i).getName());
+                                    inviteFriendToRoomRequest(rid, selected_Friends.get(i).getName());
                                 }
 
                                 GoTabPage();
@@ -474,7 +474,7 @@ public class InviteFriendsActivity extends Activity {
     }
 
 
-    private void inviteFriendToRoom(String rid, final String friendName) {
+    private void inviteFriendToRoomRequest(String rid, final String friendName) {
 
         //TODO : check POST/GET METHOD and get_URL
         String get_url = KogPreference.REST_URL +
