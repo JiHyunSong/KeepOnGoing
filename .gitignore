@@ -3,3 +3,13 @@
 /.idea/workspace.xml
 .DS_Store
 /build
+*/build/
+
+*~
+*.swp
+*.iml
+*.iws
+*.ipr
+.idea/
+.gradle/
+local.properties
