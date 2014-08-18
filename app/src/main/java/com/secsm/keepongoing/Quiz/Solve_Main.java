@@ -22,6 +22,7 @@ import com.android.volley.toolbox.Volley;
 import com.secsm.keepongoing.R;
 import com.secsm.keepongoing.Shared.KogPreference;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -33,12 +34,17 @@ public class Solve_Main extends Activity {
     listAdapter_Solve mAdapter = null;
     private Button btnSubmit;
     private int status_code;
-    private JSONObject rMessageget;
-    private String rMessageput;
+     private String rMessageput;
     private RequestQueue vQueue;
     private String question;
     private String questiontype;
+    private String solution;
+    private String answer;
     private String num;
+    TextView subject,textview;
+    String[] arr = null;
+    ArrayList<Quiz_data> list;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,31 +52,48 @@ public class Solve_Main extends Activity {
         setContentView(R.layout.activity_solve__main);
         list = new ArrayList<Quiz_data>();
 
-         questionRequest(num);
-
-        settingTextView();
-
+        subject =  (TextView) findViewById(R.id. solve_subject_solve);
+        textview = (TextView) findViewById(R.id.textview_solve);
 
 
-        list.add(new Quiz_data("multi"));
-        list.add(new Quiz_data("essay"));
-        list.add(new Quiz_data("tf"));
 
         mAdapter = new listAdapter_Solve(this, list);
         listView = (ListView) findViewById(R.id.listView_Quiz_solve);
         //listView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
         listView.setAdapter(mAdapter);
+        questionRequest(num);
+        settingTextView();
         addListenerOnButton();
+
+    }
+
+    public void addlist(String solution,String answer){
+        String[] listnum = solution.trim().split("\\|");
+        String[] listtype;
+
+
+        for(int i=0;i<listnum.length;i++) {
+
+            listtype=listnum[i].split("\\$");
+            if(listtype[1].toString().equals("multi"))
+                list.add(new Quiz_data("multi"));
+                if(listtype[1].toString().equals("essay"))
+                    list.add(new Quiz_data("essay"));
+                    if(listtype[1].toString().equals("tf"))
+                        list.add(new Quiz_data("tf"));
+
+            Log.e("minsu) : ","minsu): solution : "+i+" type : "+listtype[1]);
+
+        }
+        settingListView();
+
 
     }
 
     public void settingTextView() {
 
-        TextView subject =  (TextView) findViewById(R.id. solve_subject_solve);
-        TextView textview = (TextView) findViewById(R.id.textview_solve);
         subject.setText(questiontype);
-        subject.setText(question);
-
+        textview.setText(question);
 
         /*subject.setText("수학");
         textview.setText("다음중 가장 안정적인 숫자는?\n1.1024\n2. 3\n" +"3. 5\n" + "4. 6"
@@ -101,8 +124,7 @@ public class Solve_Main extends Activity {
         settingListView();
     }
 
-    String[] arr = null;
-    ArrayList<Quiz_data> list;
+
 
     private void settingListView() {
 
@@ -125,12 +147,12 @@ public class Solve_Main extends Activity {
                 //@민수 제출
 
 
-                Toast.makeText(Solve_Main.this,"@SERVER : \n"
+              /* Toast.makeText(Solve_Main.this,"@SERVER : \n"
                                 +
                                 "Answer : "+ request_check(list)
                         , Toast.LENGTH_SHORT
-                ).show();
-                answerRegisterRequest(request_check(list).toString());
+                ).show();*/
+                answerRegisterRequest(subject.getText().toString(),request_check(list).toString());
             }
 
         });
@@ -148,6 +170,8 @@ public class Solve_Main extends Activity {
             temp+= "4";
         if(arrays.get(position).chk5)
             temp+= "5";
+        if(temp=="")
+            return "error";
         return temp;
     }
 
@@ -157,44 +181,64 @@ public class Solve_Main extends Activity {
         for(position=0;position<arrays.size();position++) {
             Log.e("minsu) : ", "list content name: " + arrays.get(position).name);
             if(arrays.get(position).name.equals("multi")){
-                if(mulitiplecheck(arrays,position).equals("error"))
-                    result+=position+ arrays.get(position).name+"|";
-                else {
-                    result += position+arrays.get(position).name+mulitiplecheck(arrays, position)+"|";
+                if(mulitiplecheck(arrays,position).equals("error")) {
+                    return "error";
+                }else {
+                    result += position+"$"+arrays.get(position).name+"$"+mulitiplecheck(arrays, position)+"|";
                 }
             }
             else if(arrays.get(position).name.equals("essay")){
                 if(arrays.get(position).essay.equals("")) {
-                    result+=position+ arrays.get(position).name+"|";
+                    return "error";
                 }
                 else {
-                    result+=position+ arrays.get(position).name+arrays.get(position).essay+"|";
-                    Log.e("minsu) : ", "list content string: " + result);
+                    result+=position+"$"+arrays.get(position).name+"$"+arrays.get(position).essay+"|";
                 }}
             else if(arrays.get(position).name.equals("tf")){
                 if(arrays.get(position).truebtn==true) {
-                    result+=position+ arrays.get(position).name+true+"|";
+                    result+=position+"$"+arrays.get(position).name+"$"+ true+"|";
                 }
                 else if(arrays.get(position).falsebtn==true) {
-                    result+=position+arrays.get(position).name+false+"|";
+                    result+=position+"$"+arrays.get(position).name+"$"+false+"|";
                 }
                 else
-                    result+=position+ arrays.get(position).name+"|";
+                    return "error";
             }
         }
         return result;
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     //@통신
-    private void answerRegisterRequest(String answer) {
+    private void answerRegisterRequest(String type, String answer) {
         String get_url = KogPreference.REST_URL +
                 "Room/Quiz" +
                 "?srid=" + KogPreference.getRid(Solve_Main.this) +
-                "&num="+"7"+
-                "&type="+"type"+//type 받아와야됨
+                "&num="+"18"+
+                "&type="+type+//type 받아와야됨
                  "&answer=" + answer+
-                "&nickname="+"jenny";// + KogPreference.getNickName(Solve_Main.this);
+                "&nickname="+ KogPreference.getNickName(Solve_Main.this);
 
 
         Log.i(LOG_TAG, "get_url : " + get_url);
@@ -210,8 +254,7 @@ public class Solve_Main extends Activity {
                             status_code = response.getInt("status");
                             if (status_code == 200) {
                                 rMessageput = response.getString("message");
-                                // real action
-                      //          GoNextPage();
+                                Toast.makeText(getBaseContext(), LOG_TAG , Toast.LENGTH_SHORT).show();
 
                             } else if (status_code == 9001) {
                                 Toast.makeText(getBaseContext(), "답안 등록이 불가능합니다.", Toast.LENGTH_SHORT).show();
@@ -240,12 +283,13 @@ public class Solve_Main extends Activity {
     //@통신
 
 
+
     private void questionRequest(String num) {
         String get_url = KogPreference.REST_URL +
                 "Room/Quiz" +
-                "?srid=" + "35"+ //KogPreference.getRid(Solve_Main.this) +
-                "&num="+"2"+//num 받아와야됨
-                "&nickname=" + "qwer";//KogPreference.getNickName(Solve_Main.this);
+                "?srid=" + KogPreference.getRid(Solve_Main.this) +
+                "&num="+"19"+//num 받아와야됨
+                "&nickname=" + KogPreference.getNickName(Solve_Main.this);
 
         Log.i(LOG_TAG, "get_url : " + get_url);
 
@@ -254,24 +298,27 @@ public class Solve_Main extends Activity {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.i(LOG_TAG, "get JSONObject");
-                        Log.i(LOG_TAG, "hi : "+response.toString());
 
                         try {
                             status_code = response.getInt("status");
                             Log.e(LOG_TAG, "minsu) : status code :" + Integer.toString(status_code));
                             if (status_code == 200) {
-                               rMessageget = response.getJSONObject("message");
-                                Toast.makeText(Solve_Main.this, "rMessageget :. "+rMessageget, Toast.LENGTH_SHORT).show();
-                                Log.i("minsu) : ","anything2");
-                                Log.e(LOG_TAG, "minsu) : message :" + rMessageget);
+                                JSONArray rMessageget;
 
-                                Log.e("minsu) : ","minsu) get: "+
-                                        rMessageget.getString("type")+"|"+
-                                        rMessageget.getString("question")+"|"+
-                                        rMessageget.getString("solution")+"|"+
-                                        rMessageget.getString("answer"));
-                                questiontype=rMessageget.getString("type");
-                                question=rMessageget.getString("solution");
+                                rMessageget = response.getJSONArray("message");
+                                JSONObject rObj;
+
+
+                                rObj=rMessageget.getJSONObject(0);
+
+                                questiontype=rObj.getString("type").toString();
+                                question=rObj.getString("question").toString();
+                                solution=rObj.getString("solution").toString();
+                             //   answer=rObj.getString("answer").toString();
+                                Log.e("minsu) :","contents2 : "+question+" | "+questiontype+" | "+solution);
+                                settingTextView();
+
+                                addlist(solution,answer);
 
                                 // real action
                                 //          GoNextPage();

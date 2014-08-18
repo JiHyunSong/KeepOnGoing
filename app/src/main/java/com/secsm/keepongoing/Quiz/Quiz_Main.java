@@ -167,9 +167,10 @@ public class Quiz_Main extends Activity {
     }
 
     //@통신
-    private void quizRegisterRequest(String question,String type, String solution) {
+    private void quizRegisterRequest(String question, String type, String solution) {
         question = question.trim().replace(" ", "%20");
         solution = solution.trim().replace(" ", "%20");
+       final  String temp= solution;
         String get_url = KogPreference.REST_URL +
                 "Room/Quiz" +
                 "?srid=" +"35"+//+ KogPreference.getRid(Quiz_Main.this) +
@@ -192,6 +193,7 @@ public class Quiz_Main extends Activity {
                             if (status_code == 200) {
                                 rMessage = response.getString("message");
                                 Toast.makeText(getBaseContext(), LOG_TAG +rMessage, Toast.LENGTH_SHORT).show();
+                                Log.e("minsu ):","minsue:) send solution : "+ temp);
 
                             } else if (status_code == 9001) {
                                 Toast.makeText(getBaseContext(), "퀴즈 등록이 불가능합니다.", Toast.LENGTH_SHORT).show();
@@ -224,15 +226,15 @@ public class Quiz_Main extends Activity {
     public String mulitiplecheck(ArrayList<Quiz_data> arrays,int position){
         String temp="";
         if(arrays.get(position).chk1)
-            temp+= "1 ";
+            temp+= "1";
         if(arrays.get(position).chk2)
-            temp+= "2 ";
+            temp+= "2";
         if(arrays.get(position).chk3)
-            temp+= "3 ";
+            temp+= "3";
         if(arrays.get(position).chk4)
-            temp+= "4 ";
+            temp+= "4";
         if(arrays.get(position).chk5)
-            temp+= "5 ";
+            temp+= "5";
         if(temp=="")
             return "error";
         return temp;
@@ -247,7 +249,7 @@ public class Quiz_Main extends Activity {
                 if(mulitiplecheck(arrays,position).equals("error")) {
                     return "error";
                 }else {
-                    result += position+arrays.get(position).name+mulitiplecheck(arrays, position)+"|";
+                    result += position+"$"+arrays.get(position).name+"$"+mulitiplecheck(arrays, position)+"|";
                 }
             }
             else if(arrays.get(position).name.equals("essay")){
@@ -255,14 +257,14 @@ public class Quiz_Main extends Activity {
                     return "error";
                 }
                 else {
-                    result+=position+arrays.get(position).name+arrays.get(position).essay+"|";
+                    result+=position+"$"+arrays.get(position).name+"$"+arrays.get(position).essay+"|";
                 }}
             else if(arrays.get(position).name.equals("tf")){
                 if(arrays.get(position).truebtn==true) {
-                    result+=position+arrays.get(position).name+ true+"|";
+                    result+=position+"$"+arrays.get(position).name+"$"+ true+"|";
                 }
                 else if(arrays.get(position).falsebtn==true) {
-                    result+=position+arrays.get(position).name+false+"|";
+                    result+=position+"$"+arrays.get(position).name+"$"+false+"|";
                 }
                 else
                     return "error";

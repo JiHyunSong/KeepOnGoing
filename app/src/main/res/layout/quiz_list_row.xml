@@ -25,7 +25,7 @@
 
         <RelativeLayout
             android:id="@+id/tflayout"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="60dp"
             android:layout_centerHorizontal="true"
             android:gravity="center_vertical"
@@ -43,16 +43,14 @@
                     android:id="@+id/True"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="True"
-                    android:textSize="30dp" />
+                    android:text="True" />
 
                 <RadioButton
                     android:id="@+id/False"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="80dp"
-                    android:text="False"
-                    android:textSize="30dp" />
+                    android:text="False"/>
 
 
             </RadioGroup>
@@ -61,7 +59,7 @@
 
         <RelativeLayout
             android:id="@+id/multiple"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="60dp"
             android:layout_centerHorizontal="true"
             android:gravity="center_vertical"
@@ -101,7 +99,7 @@
 
             <CheckBox
                 android:id="@+id/check5"
-                android:layout_width="70dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
                 android:layout_toRightOf="@+id/check4"
