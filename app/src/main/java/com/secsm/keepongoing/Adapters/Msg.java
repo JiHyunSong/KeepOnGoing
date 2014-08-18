@@ -21,49 +21,54 @@ public class Msg {
     private String MessageType;
     private String Id = null;
 
+    public String getMessageType() {
+        return MessageType;
+    }
+
     /* if flag is true, me! exchange format */
-    public Msg(Context context, String _Name, String _Text, String _Time, String _Flag) {
+    public Msg(Context context, String _Name, String _Text, String _Time, String _Flag, String _MessageType, String _FileName) {
         this.Name = _Name + " : ";
         this.Text = _Text;
         this.Time = _Time;
+        this.FileName = _FileName;
         this.Flag = _Flag;
-//        this.MessageType = _MessageType;
+        this.MessageType = _MessageType;
 
-        String prof = null;
-        SQLiteDatabase db;
-        DBHelper mDBHelper;
-        mDBHelper = new DBHelper(context);
-        Cursor cursor = null;
-        db = mDBHelper.getReadableDatabase();
-        String myID = "" + KogPreference.getInt(context, "uid");
-
-        Log.i("MSG", "이름 ? " + _Name);
-        if ("나".equals(_Name)) {
-            Id = myID;
-            cursor = db.rawQuery("SELECT path FROM image_profile", null);
-            if (cursor.moveToNext()) {
-                prof = cursor.getString(0);
-                Log.i("나:", "getString(0) : " + cursor.getString(0));
-                prof = prof.substring(prof.lastIndexOf("/") + 1, prof.length());
-                Log.i("나:", "prof : " + prof);
-            }
-        } else {
-            Log.i("MSGSelcet", "friendList_ph, Name is : " + _Name);
-            cursor = db.rawQuery("SELECT * FROM friendList_ph where name = '" + _Name + "'", null);
-            if (cursor.moveToNext()) {
-                Log.i("MSGSelect", "id : " + cursor.getString(0));
-                Id = cursor.getString(0);
-                prof = cursor.getString(3);
-                Log.i("getNameFromSQLite", "getNameFromSQLite catch right name! : " + prof);
-            } else {
-                prof = "fail";
-            }
-        }
-        cursor.close();
-        db.close();
-        mDBHelper.close();
-
-        this.FileName = prof;
+//        String prof = null;
+//        SQLiteDatabase db;
+//        DBHelper mDBHelper;
+//        mDBHelper = new DBHelper(context);
+//        Cursor cursor = null;
+//        db = mDBHelper.getReadableDatabase();
+//        String myID = "" + KogPreference.getInt(context, "uid");
+//
+//        Log.i("MSG", "이름 ? " + _Name);
+//        if ("나".equals(_Name)) {
+//            Id = myID;
+//            cursor = db.rawQuery("SELECT path FROM image_profile", null);
+//            if (cursor.moveToNext()) {
+//                prof = cursor.getString(0);
+//                Log.i("나:", "getString(0) : " + cursor.getString(0));
+//                prof = prof.substring(prof.lastIndexOf("/") + 1, prof.length());
+//                Log.i("나:", "prof : " + prof);
+//            }
+//        } else {
+//            Log.i("MSGSelcet", "friendList_ph, Name is : " + _Name);
+//            cursor = db.rawQuery("SELECT * FROM friendList_ph where name = '" + _Name + "'", null);
+//            if (cursor.moveToNext()) {
+//                Log.i("MSGSelect", "id : " + cursor.getString(0));
+//                Id = cursor.getString(0);
+//                prof = cursor.getString(3);
+//                Log.i("getNameFromSQLite", "getNameFromSQLite catch right name! : " + prof);
+//            } else {
+//                prof = "fail";
+//            }
+//        }
+//        cursor.close();
+//        db.close();
+//        mDBHelper.close();
+//
+//        this.FileName = prof;
 
     }
 

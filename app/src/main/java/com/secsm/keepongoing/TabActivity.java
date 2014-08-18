@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,6 +43,7 @@ import com.secsm.keepongoing.Alarm.DBContactHelper;
 import com.secsm.keepongoing.Alarm.Preference;
 import com.secsm.keepongoing.Alarm.alram_list;
 import com.secsm.keepongoing.DB.DBHelper;
+import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MyVolley;
 
@@ -83,6 +85,7 @@ public class TabActivity extends Activity {
 
     ArrayList<FriendNameAndIcon> mFriends;
     ArrayList<RoomNaming> mRooms;
+    ArrayList<String> arGeneral3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,12 +140,14 @@ public class TabActivity extends Activity {
         friendList.setOnItemClickListener(itemClickListener);
 
         // setup tab_settings
-        ArrayList<String> arGeneral3 = new ArrayList<String>();
+        arGeneral3 = new ArrayList<String>();
         arGeneral3.add("알람 설정");
         arGeneral3.add("목표 시간 설정");
         arGeneral3.add("퀴즈 모음");
         if (!KogPreference.isLogin(TabActivity.this)) {
             arGeneral3.add("로그인");
+        }else{
+            arGeneral3.add("로그아웃");
         }
         ArrayAdapter<String> optionArrayAdapter;
         optionArrayAdapter = new ArrayAdapter<String>(this,
@@ -497,6 +502,8 @@ public class TabActivity extends Activity {
                 Log.i(LOG_TAG, "tab4, settings Clicked");
                 Log.i(LOG_TAG, "position : " + position);
                 switch (position) {
+                    case 0:
+                        break;
                     case 1: // 알람 설정
                         Log.i(LOG_TAG, "tab4, settings Clicked");
                         Intent intent_notice = new Intent(TabActivity.this, NoticeActivity.class);
@@ -507,6 +514,15 @@ public class TabActivity extends Activity {
 
                         break;
                     case 3: // 퀴즈 모음
+                        if(arGeneral3.get(position).toString().equals("로그아웃"))
+                        {
+                            Log.i(LOG_TAG, "tab4, 로그아웃");
+                            KogPreference.setLogin(TabActivity.this, false);
+                            KogPreference.setAutoLogin(TabActivity.this, false);
+                            Intent intent = new Intent(TabActivity.this, LoginActivity.class);
+                            startActivity(intent);
+                            TabActivity.this.finish();
+                        }
                         break;
                     case 4: // 로그인
                         break;
@@ -575,6 +591,11 @@ public class TabActivity extends Activity {
             _text.setText("00:00:00");
         else
             _text.setText(Preference.getString(TabActivity.this, "Resumetimer"));
+
+
+        getFriendsRequest();
+
+        getStudyRoomsRequest();
 
 
         DBContactHelper helper = new DBContactHelper(this);
@@ -764,7 +785,7 @@ public class TabActivity extends Activity {
 
         Log.i(LOG_TAG, "URL : " + get_url);
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, get_url, null,
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, Encrypt.encodeIfNeed(get_url), null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -784,10 +805,12 @@ public class TabActivity extends Activity {
                                 for(int i=0; i< rMessage.length(); i++)
                                 {
                                     rObj = rMessage.getJSONObject(i);
-                                    Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" + rObj.getString("nickname") + "|" +rObj.getString("targetTime"));
-                                    mFriends.add(new FriendNameAndIcon(rObj.getString("image"),
-                                            rObj.getString("nickname"),
-                                            rObj.getString("targetTime")));
+                                    if (!"null".equals(rObj.getString("nickname"))) {
+                                        Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" + rObj.getString("nickname") + "|" + rObj.getString("targetTime"));
+                                        mFriends.add(new FriendNameAndIcon(rObj.getString("image"),
+                                                rObj.getString("nickname"),
+                                                rObj.getString("targetTime")));
+                                    }
                                 }
 
                                 FriendsArrayAdapters mockFriendArrayAdapter;
@@ -828,7 +851,7 @@ public class TabActivity extends Activity {
 
         Log.i(LOG_TAG, "URL : " + get_url);
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, get_url, null,
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, Encrypt.encodeIfNeed(get_url), null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -855,8 +878,7 @@ public class TabActivity extends Activity {
 
                                 //{"message":[{"targetTime":null,"image":"http:\/\/210.118.74.195:8080\/KOG_Server_Rest\/upload\/UserImage\/default.png","nickname":"jonghean"}],"status":"200"}
                                 Log.i(LOG_TAG, "room size : " + rMessage.length());
-                                for(int i=0; i< rMessage.length(); i++)
-                                {
+                                for(int i=0; i< rMessage.length(); i++) {
 //                                    Log.i(LOG_TAG, "index : " + i);
 //                                    Log.i(LOG_TAG, "rMessage.getJSONObject(i) : " + rMessage.getJSONObject(i));
                                     rObj = rMessage.getJSONObject(i);
@@ -866,15 +888,17 @@ public class TabActivity extends Activity {
 //                                    Log.i(LOG_TAG, "add Rooms : " + rObj.getString("type") + "|" + rObj.getString("rid") + "|" + rObj.getString("rule") + "|" +rObj.getString("roomname")
 //                                            + "|" +rObj.getString("maxHolidayCount")+ "|" +rObj.getString("startTime")+ "|" +rObj.getString("durationTime")
 //                                            + "|" +rObj.getString("showupTime")+ "|" +rObj.getString("meetDays"));
-                                    mRooms.add(new RoomNaming(rObj.getString("type"),
-                                            rObj.getString("rid"),
-                                            rObj.getString("rule"),
-                                            rObj.getString("roomname"),
-                                            rObj.getString("maxHolidayCount"),
-                                            rObj.getString("startTime"),
-                                            rObj.getString("durationTime"),
-                                            rObj.getString("showupTime"),
-                                            rObj.getString("meetDays")));
+                                    if (!"null".equals(rObj.getString("rid"))){
+                                        mRooms.add(new RoomNaming(rObj.getString("type"),
+                                                rObj.getString("rid"),
+                                                rObj.getString("rule"),
+                                                rObj.getString("roomname"),
+                                                rObj.getString("maxHolidayCount"),
+                                                rObj.getString("startTime"),
+                                                rObj.getString("durationTime"),
+                                                rObj.getString("showupTime"),
+                                                rObj.getString("meetDays")));
+                                    }
                                 }
 
                                 RoomsArrayAdapters roomsArrayAdapter;

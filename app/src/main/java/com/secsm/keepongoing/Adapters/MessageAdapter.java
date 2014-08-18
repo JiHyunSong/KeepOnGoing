@@ -14,7 +14,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.ImageLoader;
 import com.secsm.keepongoing.R;
+import com.secsm.keepongoing.Shared.KogPreference;
+import com.secsm.keepongoing.Shared.MyVolley;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -36,6 +39,8 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;
         if (v == null) {
+            MyVolley.init(mContext);
+
             LayoutInflater vi = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = vi.inflate(R.layout.message_row, null);
 
@@ -53,6 +58,11 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
             viewHolder.wv_rl.addRule(RelativeLayout.RIGHT_OF, R.id.msg_person_photo);
             viewHolder.wv_rl.width = RelativeLayout.LayoutParams.MATCH_PARENT;
             viewHolder.wv_rl.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+            viewHolder.p_iv = (ImageView) v.findViewById(R.id.msg_bottomTextImageView);
+
+            // set invisible
+            viewHolder.wv.setVisibility(View.GONE);
+            viewHolder.p_iv.setVisibility(View.GONE);
 
             v.setTag(viewHolder);
         } else {
@@ -63,90 +73,178 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
 
         Msg m = items.get(position);
         if (m != null) {
+            if(m.getMessageType().equals("plaintext")) {
+                viewHolder.wv.setVisibility(View.GONE);
+                viewHolder.p_iv.setVisibility(View.GONE);
+                viewHolder.wv.setVisibility(View.VISIBLE);
 
-            if (viewHolder.tt != null && viewHolder.wv != null && viewHolder.time != null && viewHolder.iv != null) {
-                if ("나 : ".equals(m.getName())) {
-                    viewHolder.tt.setText(m.getTime());
-                    viewHolder.wv.setBackgroundColor(0); // 투명처리
-                    String htmlForm1 = "<metahttp-equiv='Content-Type' content='text'/html; charset = utf-8 /> " +
-                            "<html>" + "<body bgcolor='#ffc0cb'> ";
-                    String htmlFormText = m.getText();
-                    String htmlForm2 = "</body></html>";
+                if (viewHolder.tt != null && viewHolder.wv != null && viewHolder.time != null && viewHolder.iv != null) {
+                    if ("나 : ".equals(m.getName())) {
+                        viewHolder.tt.setText(m.getTime());
+                        viewHolder.wv.setBackgroundColor(0); // 투명처리
+                        String htmlForm1 = "<metahttp-equiv='Content-Type' content='text'/html; charset = utf-8 /> " +
+                                "<html>" + "<body bgcolor='#ffc0cb'> ";
+                        String htmlFormText = m.getText();
+                        String htmlForm2 = "</body></html>";
 
-//                    for(int i = 0 ; i < emoArr.length; i++){
-//                        htmlFormText = htmlFormText.replaceAll(repEmoArr[i], htmlEmoArr[i]);
-//                    }
-                    viewHolder.wv.loadUrl("about:blank");
-                    viewHolder.wv.invalidate();
-                    // TODO : check scrolling
+                        //                    for(int i = 0 ; i < emoArr.length; i++){
+                        //                        htmlFormText = htmlFormText.replaceAll(repEmoArr[i], htmlEmoArr[i]);
+                        //                    }
+                        viewHolder.wv.loadUrl("about:blank");
+                        viewHolder.wv.invalidate();
+                        // TODO : check scrolling
 
-                    viewHolder.wv.loadDataWithBaseURL("file:///android_asset/", htmlForm1 + htmlFormText + htmlForm2, "text/html", "utf-8", "file:///android_assest/");
+                        viewHolder.wv.loadDataWithBaseURL("file:///android_asset/", htmlForm1 + htmlFormText + htmlForm2, "text/html", "utf-8", "file:///android_assest/");
 
-                    viewHolder.time.setText(m.getName());
+                        viewHolder.time.setText(m.getName());
 
-                    // TODO : profile image path download from server
-//                    String fileName = imgFromServ(myID);
-                    String fileName = null;
+                        // TODO : profile image path download from server
+                        //                    String fileName = imgFromServ(myID);
+                        String fileName = null;
 
-                    Log.i("filename", "id : " + m.getId() + " | me : " + fileName);
-                    if (fileName != null) {
-                        if (fileName.matches(".*jpg.*")) {
-                            String mecodedURL = serverFilePath + fileName;
-                            Log.d("imageView", "file Name : " + fileName);
-                            try {
-                                URL mURL = new URL(mecodedURL);
-                                // TODO : profile image path download from server
-//                                Bitmap bm = getRemoteImage(mURL);
-//                                iv.setImageBitmap(bm);
-                            } catch (Exception e) {
-                                Log.e("photo", e.toString());
+                        Log.i("filename", "id : " + m.getId() + " | me : " + fileName);
+                        if (fileName != null) {
+                            if (fileName.matches(".*jpg.*")) {
+                                getProfileFromURL(m.getFileName(), viewHolder.iv);
+
+//                                String mecodedURL = serverFilePath + fileName;
+//                                Log.d("imageView", "file Name : " + fileName);
+//                                try {
+//                                    URL mURL = new URL(mecodedURL);
+//                                    // TODO : profile image path download from server
+//                                    //                                Bitmap bm = getRemoteImage(mURL);
+//                                    //                                iv.setImageBitmap(bm);
+//                                } catch (Exception e) {
+//                                    Log.e("photo", e.toString());
+//                                }
+                            } else {
+                                viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
                             }
                         } else {
                             viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
                         }
+
                     } else {
-                        viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
-                    }
+                        viewHolder.tt.setText(m.getName());
+                        viewHolder.wv.setBackgroundColor(0); // 투명처리
+                        String htmlForm1 = "<metahttp-equiv='Content-Type' content='text'/html; charset = utf-8 /> " +
+                                "<html>" + "<body> ";
+                        String htmlFormText = m.getText();
+                        String htmlForm2 = "</body></html>";
 
-                } else {
-                    viewHolder.tt.setText(m.getName());
-                    viewHolder.wv.setBackgroundColor(0); // 투명처리
-                    String htmlForm1 = "<metahttp-equiv='Content-Type' content='text'/html; charset = utf-8 /> " +
-                            "<html>" + "<body> ";
-                    String htmlFormText = m.getText();
-                    String htmlForm2 = "</body></html>";
+                        //                    for(int i = 0 ; i < emoArr.length; i++){
+                        //                        htmlFormText = htmlFormText.replaceAll(repEmoArr[i], htmlEmoArr[i]);
+                        //                    }
+                        //                    wv.loadDataWithBaseURL("file:///android_asset/", htmlForm1 + htmlFormText + htmlForm2 , "text/html", "utf-8", "file:///android_assest/");
 
-//                    for(int i = 0 ; i < emoArr.length; i++){
-//                        htmlFormText = htmlFormText.replaceAll(repEmoArr[i], htmlEmoArr[i]);
-//                    }
-//                    wv.loadDataWithBaseURL("file:///android_asset/", htmlForm1 + htmlFormText + htmlForm2 , "text/html", "utf-8", "file:///android_assest/");
+                        viewHolder.time.setText(m.getTime());
 
-                    viewHolder.time.setText(m.getTime());
+                        //        				String fileName = m.getFileName();
+                        // TODO : profile image path download from server
+                        //                    String fileName = imgFromServ(myID);
+                        String fileName = null;
+                        Log.i("filename", "id : " + m.getId() + " | friend : " + fileName);
+                        if (fileName != null) {
+                            if (fileName.matches(".*jpg.*")) {
+                                getProfileFromURL(m.getFileName(), viewHolder.iv);
 
-                    //        				String fileName = m.getFileName();
-                    // TODO : profile image path download from server
-//                    String fileName = imgFromServ(myID);
-                    String fileName = null;
-                    Log.i("filename", "id : " + m.getId() + " | friend : " + fileName);
-                    if (fileName != null) {
-                        if (fileName.matches(".*jpg.*")) {
-                            String mecodedURL = serverFilePath + fileName;
-                            Log.d("imageView", "file Name : " + fileName);
-                            try {
-                                URL mURL = new URL(mecodedURL);
-                                // TODO : profile image path download from server
-//                                Bitmap bm = getRemoteImage(mURL);
-//                                iv.setImageBitmap(bm);
-                            } catch (Exception e) {
-                                Log.e("photo", e.toString());
+//                                String mecodedURL = serverFilePath + fileName;
+//                                Log.d("imageView", "file Name : " + fileName);
+//                                try {
+//                                    URL mURL = new URL(mecodedURL);
+//                                    // TODO : profile image path download from server
+//                                    //                                Bitmap bm = getRemoteImage(mURL);
+//                                    //                                iv.setImageBitmap(bm);
+//                                } catch (Exception e) {
+//                                    Log.e("photo", e.toString());
+//                                }
+                            } else {
+                                viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
                             }
                         } else {
                             viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
                         }
-                    } else {
-                        viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
-                    }
 
+                    }
+                }
+            }else // if m.getMessageType().equals("image")
+            {
+                viewHolder.wv.setVisibility(View.GONE);
+                viewHolder.p_iv.setVisibility(View.GONE);
+                viewHolder.p_iv.setVisibility(View.VISIBLE);
+
+                if (viewHolder.tt != null && viewHolder.p_iv != null && viewHolder.time != null && viewHolder.iv != null) {
+                    if ("나 : ".equals(m.getName())) {
+                        viewHolder.tt.setText(m.getTime());
+
+                        // set p_iv
+                        getImageFromURL(m.getText(), viewHolder.p_iv);
+
+
+                        viewHolder.time.setText(m.getName());
+
+                        // TODO : profile image path download from server
+                        //                    String fileName = imgFromServ(myID);
+                        String fileName = null;
+
+                        Log.i("filename", "id : " + m.getId() + " | me : " + fileName);
+                        if (fileName != null) {
+                            if (fileName.matches(".*jpg.*")) {
+                                getProfileFromURL(m.getFileName(), viewHolder.iv);
+
+//                                String mecodedURL = serverFilePath + fileName;
+//                                Log.d("imageView", "file Name : " + fileName);
+//                                try {
+//                                    URL mURL = new URL(mecodedURL);
+//
+//                                    // TODO : profile image path download from server
+//                                    //                                Bitmap bm = getRemoteImage(mURL);
+//                                    //                                iv.setImageBitmap(bm);
+//                                } catch (Exception e) {
+//                                    Log.e("photo", e.toString());
+//                                }
+                            } else {
+                                viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
+                            }
+                        } else {
+                            viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
+                        }
+
+                    } else {
+                        viewHolder.tt.setText(m.getName());
+
+                        // set p_iv
+                        getImageFromURL(m.getText(), viewHolder.p_iv);
+
+
+                        viewHolder.time.setText(m.getTime());
+
+                        //        				String fileName = m.getFileName();
+                        // TODO : profile image path download from server
+                        //                    String fileName = imgFromServ(myID);
+                        String fileName = null;
+                        Log.i("filename", "id : " + m.getId() + " | friend : " + fileName);
+                        if (fileName != null) {
+                            if (fileName.matches(".*jpg.*")) {
+                                getProfileFromURL(m.getFileName(), viewHolder.iv);
+//                                String mecodedURL = serverFilePath + fileName;
+//                                Log.d("imageView", "file Name : " + fileName);
+//                                try {
+//                                    URL mURL = new URL(mecodedURL);
+//                                    // TODO : profile image path download from server
+//                                    //                                Bitmap bm = getRemoteImage(mURL);
+//                                    //                                iv.setImageBitmap(bm);
+//                                } catch (Exception e) {
+//                                    Log.e("photo", e.toString());
+//                                }
+                            } else {
+                                viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
+                            }
+                        } else {
+                            viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
+                        }
+
+                    }
                 }
             }
             viewHolder.wv_rl.addRule(RelativeLayout.RIGHT_OF, R.id.msg_person_photo);
@@ -172,7 +270,28 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
         public RelativeLayout.LayoutParams wv_rl = null;
         public TextView time = null;
         public ImageView iv = null;
+        public ImageView p_iv = null;
     }
 
 
+    void getImageFromURL(String ImgURL, ImageView imgView) {
+        ImageLoader imageLoader = MyVolley.getImageLoader();
+        imageLoader.get(ImgURL,
+                ImageLoader.getImageListener(imgView,
+                        R.drawable.no_image,
+                        R.drawable.no_image)
+        );
+    }
+
+    void getProfileFromURL(String ImgURL, ImageView imgView) {
+        ImageLoader imageLoader = MyVolley.getImageLoader();
+        imageLoader.get(ImgURL,
+                ImageLoader.getImageListener(imgView,
+                        R.drawable.profile_default,
+                        R.drawable.profile_default)
+        );
+    }
+
 }
+
+
