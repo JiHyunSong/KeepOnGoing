@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -51,7 +53,7 @@ public class LoginActivity extends Activity {
     private Button mSignUpButton;
     private Button mSignInButton;
     private BootstrapButton easterEggButton;
-
+    private FrameLayout login_fl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +64,9 @@ public class LoginActivity extends Activity {
         savedNick = intent.getStringExtra("nickname");
 
         vQueue = Volley.newRequestQueue(this);
+        // fragment
+        login_fl = (FrameLayout) findViewById(R.id.login_fl);
+
         // Set up the login form.
         mNicknameView = (EditText) findViewById(R.id.nickname);
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -97,6 +102,7 @@ public class LoginActivity extends Activity {
         if (KogPreference.isAutoLogin(LoginActivity.this)) {
             mNicknameView.setText(KogPreference.getNickName(LoginActivity.this));
             mPasswordView.setText(KogPreference.getPassword(LoginActivity.this));
+
             UserLogin(KogPreference.getNickName(LoginActivity.this), KogPreference.getPassword(LoginActivity.this));
         } else if (!TextUtils.isEmpty(savedNick)) {
             mNicknameView.setText(savedNick);
@@ -147,6 +153,8 @@ public class LoginActivity extends Activity {
 
 
     private void UserLogin(final String nickName, final String password) {
+        login_fl.setVisibility(View.VISIBLE);
+
         String get_url = KogPreference.REST_URL +
                 "User" +
                 "?nickname=" + nickName +
@@ -168,7 +176,7 @@ public class LoginActivity extends Activity {
                             if (status_code == 200) {
                                 rMessage = response.getString("message");
                                 // real action
-
+                                login_fl.setVisibility(View.GONE);
                                 GoNextPage(nickName, password);
                             } else if (status_code == 9001) {
                                 Toast.makeText(getBaseContext(), "아이디와 패스워드를 확인해주세요", Toast.LENGTH_SHORT).show();
@@ -183,6 +191,8 @@ public class LoginActivity extends Activity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                login_fl.setVisibility(View.GONE);
+
                 Log.i(LOG_TAG, "Response Error");
                 if (KogPreference.DEBUG_MODE) {
                     Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();

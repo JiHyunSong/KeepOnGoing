@@ -129,8 +129,7 @@ public class TabActivity extends Activity {
 
         // setup tab_settings
         arGeneral3 = new ArrayList<String>();
-        arGeneral3.add("알람 설정");
-        arGeneral3.add("목표 시간 설정");
+        arGeneral3.add("알람 / 목표시간 설정");
         arGeneral3.add("퀴즈 모음");
         if (!KogPreference.isLogin(TabActivity.this)) {
             arGeneral3.add("로그인");

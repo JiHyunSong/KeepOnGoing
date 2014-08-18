@@ -4,28 +4,28 @@
     <!-- 강퇴 사진 친구초대 문제풀기&내기 친구목록-->
     <item
         android:id="@+id/actionBarFirstBtn"
-        android:icon="@drawable/ic_action_search"
+        android:icon="@drawable/ic_action_group"
         android:showAsAction="always"
         android:title="친구목록"
         android:visible="true" />
 
     <item
         android:id="@+id/actionBarSecondBtn"
-        android:icon="@drawable/ic_action_unread"
+        android:icon="@drawable/ic_action_read"
         android:showAsAction="always"
         android:title="문제풀기"
         android:visible="true" />
 
     <item
         android:id="@+id/actionBarThirdBtn"
-        android:icon="@drawable/ic_action_search"
+        android:icon="@drawable/ic_action_unread"
         android:showAsAction="always"
         android:title="문제내기"
         android:visible="true" />
 
     <item
         android:id="@+id/actionBarFourthBtn"
-        android:icon="@drawable/ic_action_unread"
+        android:icon="@drawable/ic_action_add_person"
         android:showAsAction="always"
         android:title="친구초대"
         android:visible="true" />
@@ -34,5 +34,5 @@
         android:icon="@drawable/ic_action_search"
         android:showAsAction="always"
         android:title="강퇴"
-        android:visible="true" />
+        android:visible="false" />
 </menu>

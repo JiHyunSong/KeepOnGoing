@@ -103,7 +103,7 @@ public class StudyRoomActivity extends Activity {
 
     private Handler mainHandler;
     private SocketListener sl;
-    SocketAsyncTask soc;
+    SocketAsyncTask soc=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -439,90 +439,6 @@ public class StudyRoomActivity extends Activity {
     String asyncFilePath;
     boolean imageUploadFlag = false;
 
-    class ImageUploadAsyncTask extends AsyncTask<Void, Void, Void> {
-        String urlString;
-
-        @Override
-        protected void onPreExecute() {
-            Log.d(LOG_TAG , "onPreExecute");
-        }
-
-        @Override
-        protected Void doInBackground(Void... unused) {
-            Log.d(LOG_TAG , "do In background");
-//            try {
-//                urlString = KogPreference.UPLOAD_URL + "?rid=" + KogPreference.getRid(StudyRoomActivity.this) + "&nickname=" + KogPreference.getNickName(StudyRoomActivity.this);
-//                mFileInputStream = new FileInputStream(asyncFilePath);
-//                connectUrl = new URL(urlString);
-//                Log.d("Test", "mFileInputStream  is " + mFileInputStream);
-//
-//                // open connection
-//                HttpURLConnection conn = (HttpURLConnection)connectUrl.openConnection();
-//                conn.setDoInput(true);
-//                conn.setDoOutput(true);
-//                conn.setUseCaches(false);
-//                conn.setRequestMethod("POST");
-//                conn.setRequestProperty("Connection", "Keep-Alive");
-//                conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-//
-//                // write data
-//                DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
-//                dos.writeBytes(twoHyphens + boundary + lineEnd);
-//                dos.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + asyncFilePath+"\"" + lineEnd);
-//                dos.writeBytes(lineEnd);
-//
-//                int bytesAvailable = mFileInputStream.available();
-//                int maxBufferSize = 1024;
-//                int bufferSize = Math.min(bytesAvailable, maxBufferSize);
-//
-//                byte[] buffer = new byte[bufferSize];
-//
-//                int bytesRead = mFileInputStream.read(buffer, 0, bufferSize);
-//
-//                Log.d("Test", "image byte is " + bytesRead);
-//
-//                // read image
-//                while (bytesRead > 0) {
-//                    dos.write(buffer, 0, bufferSize);
-//                    bytesAvailable = mFileInputStream.available();
-//                    bufferSize = Math.min(bytesAvailable, maxBufferSize);
-//                    bytesRead = mFileInputStream.read(buffer, 0, bufferSize);
-//                }
-//
-//                dos.writeBytes(lineEnd);
-//                dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
-//
-//                // close streams
-//                Log.e("Test" , "File is written");
-//                mFileInputStream.close();
-//                dos.flush(); // finish upload...
-//
-//                // get response
-////                int ch;
-////                InputStream is = conn.getInputStream();
-////                StringBuffer b =new StringBuffer();
-////                while( ( ch = is.read() ) != -1 ){
-////                    b.append( (char)ch );
-////                }
-////                String s=b.toString();
-////                Log.e("Test", "result = " + s);
-//                //			mEdityEntry.setText(s);
-//                dos.close();
-//
-//            } catch (Exception e) {
-//                Log.d("Test", "exception " + e.toString());
-//                // TODO: handle exception
-//            }
-            return(null);
-        }
-
-        @Override
-        protected void onPostExecute(Void unused) {
-            Log.d(LOG_TAG , "onPostExecute");
-            imageUploadFlag = false;
-        }
-    }
-
     void VolleyUploadImage()
     {
         Charset c = Charset.forName("utf-8");
@@ -530,27 +446,8 @@ public class StudyRoomActivity extends Activity {
         MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, Charset.forName("UTF-8"));
         try
         {
-//            entity.addPart("member_id", new StringBody(String.valueOf(member_id)));
-//            entity.addPart("title", new StringBody(space.title, c));
-//            entity.addPart("contents", new StringBody(space.contents, c));
             entity.addPart("file", new FileBody(new File(asyncFilePath)));
             Log.i("MULTIPART-ENTITY", "add addPART");
-//            entity.addPart("img_width", new StringBody(String.valueOf(space.width)));
-//            entity.addPart("img_height", new StringBody(String.valueOf(space.height)));
-
-//            int waver_count = space.waver_list.size();
-//            entity.addPart("waver_count", new StringBody(String.valueOf(waver_count)));
-
-//            int i=0;
-//            for ( Waver w : space.waver_list )
-//            {
-//                entity.addPart("waver_x_" + i, new StringBody(String.valueOf(w.x)));
-//                entity.addPart("waver_y_" + i, new StringBody(String.valueOf(w.y)));
-//                entity.addPart("waver_r_" + i, new StringBody(String.valueOf(w.size)));
-//                entity.addPart("waver_play_time_" + i, new StringBody(String.valueOf(w.playTime)));
-//                entity.addPart("waver_snd_file_" + i, new FileBody(new File(w.snd_url)));
-//                i++;
-//            }
         } catch (Exception e)
         {
             e.printStackTrace();
@@ -808,12 +705,16 @@ public class StudyRoomActivity extends Activity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.study_room, menu);
         actionBarFirstBtn = menu.findItem(R.id.actionBarFirstBtn);
+
         actionBarFirstBtn.setOnMenuItemClickListener(ab_friend_list_listener);
         actionBarSecondBtn = menu.findItem(R.id.actionBarSecondBtn);
+
         actionBarSecondBtn.setOnMenuItemClickListener(ab_solve_quiz_listener);
         actionBarThirdBtn = menu.findItem(R.id.actionBarThirdBtn);
+
         actionBarThirdBtn.setOnMenuItemClickListener(ab_add_quiz_listener);
         actionBarFourthBtn = menu.findItem(R.id.actionBarFourthBtn);
+
         actionBarFourthBtn.setOnMenuItemClickListener(ab_invite_friend_listener);
         actionBarFifthBtn = menu.findItem(R.id.actionBarFifthBtn);
         actionBarFifthBtn.setOnMenuItemClickListener(ab_kick_off_friend_listener);
@@ -840,6 +741,7 @@ public class StudyRoomActivity extends Activity {
     }
     void close()
     {
+        soc.sendMsgToSvr("exit");
         soc.cancel(true);
     }
 
@@ -851,6 +753,7 @@ public class StudyRoomActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
+        Log.i(LOG_TAG, "onPause");
         close();
     }
 
@@ -858,6 +761,7 @@ public class StudyRoomActivity extends Activity {
     protected void onResume() {
         super.onResume();
         init();
+        Log.i(LOG_TAG, "onResume");
 //        if(savedInstanceState != null)
 //        {
 //
@@ -899,15 +803,13 @@ public class StudyRoomActivity extends Activity {
     private void insertIntoMsgInSQLite(String _senderID, String _senderText, String _time, String _me, String _messageType) {
         SQLiteDatabase db;
         db = mDBHelper.getWritableDatabase();
-        //		Log.i(LOG_TAG, "insert msg");
+        Log.i(LOG_TAG, "insert msg");
         Calendar c = Calendar.getInstance();
         String year = Integer.toString(c.get(Calendar.YEAR));
         String month = Integer.toString(c.get(Calendar.MONTH) + 1);
         String day = Integer.toString(c.get(Calendar.DATE));
-        //		Log.i("day", "me : " + me);
-
-        // TODO : check _time
-        db.execSQL("INSERT INTO Chat " +
+        Log.i("day", "nickname : " + _senderID);
+        String query = "INSERT INTO Chat " +
                 //"(room_id, senderID, senderText, year, month, day, time, me) " +
                 "(rid, senderID, senderText, year, month, day, me, messageType) " +
                 "VALUES (" +
@@ -919,7 +821,23 @@ public class StudyRoomActivity extends Activity {
                 + day + "','"
                 //+ _time + "','"
                 + _me + "','"
-                + _messageType + " ');");
+                + _messageType + " ');";
+        // TODO : check _time
+        Log.i(LOG_TAG, "execSQL : " + query);
+        db.execSQL(query);
+//        db.execSQL("INSERT INTO Chat " +
+//                //"(room_id, senderID, senderText, year, month, day, time, me) " +
+//                "(rid, senderID, senderText, year, month, day, me, messageType) " +
+//                "VALUES (" +
+//                "'" + rID + "','"
+//                + _senderID + "','"
+//                + _senderText + "','"
+//                + year + "','"
+//                + month + "','"
+//                + day + "','"
+//                //+ _time + "','"
+//                + _me + "','"
+//                + _messageType + " ');");
         db.close();
         mDBHelper.close();
     }
@@ -935,6 +853,7 @@ public class StudyRoomActivity extends Activity {
                     "FROM Chat WHERE rid = '" + rID + "'", null);
             Log.i(LOG_TAG, "Load Text From db");
             cursor.moveToFirst();
+            Log.i(LOG_TAG, "curser.getCount() : " + cursor.getCount());
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
                     Log.i("loadText", cursor.getString(cursor.getColumnIndex("senderID")) + " :"
@@ -1022,30 +941,11 @@ public class StudyRoomActivity extends Activity {
 
         @Override
         protected void onPreExecute() {
-
-//            try{
-//
-//
-//            }catch (IOException e) {
-//                if(KogPreference.DEBUG_MODE)
-//                {
-//                    Toast.makeText(getBaseContext(), "소켓에러!\n" + e.toString() , Toast.LENGTH_SHORT).show();
-//                }
-//            }
-
         }
 
         private void sendMsgToSvr(String msg)
         {
             try {
-//                JSONObject jObj = new JSONObject();
-//                jObj.put("nickname", KogPreference.getNickName(StudyRoomActivity.this));
-//                jObj.put("rid", KogPreference.getRid(StudyRoomActivity.this));
-//                jObj.put("message", msg);
-
-//                bw.write(jObj.toString());
-
-//                Log.i(LOG_TAG, "client send message : " + jObj.toString());
                 bw.write(msg);
 
                 Log.i(LOG_TAG, "client send message : " + msg);
@@ -1079,7 +979,7 @@ public class StudyRoomActivity extends Activity {
                         break;
 
                     read = br.readLine();
-                    Log.i("R: Received:", "R: Received before decrypt: " + read);
+                    Log.i("R: Received:", "R: Received: " + read);
 
 
 
@@ -1135,79 +1035,7 @@ public class StudyRoomActivity extends Activity {
 
         }
     }
-//    private void sendMsgToSvr(String msg)
-//    {
-//        try {
-//            JSONObject jObj = new JSONObject();
-//            jObj.put("nickname", KogPreference.getNickName(StudyRoomActivity.this));
-//            jObj.put("rid", KogPreference.getRid(StudyRoomActivity.this));
-//            jObj.put("message", msg);
-//
-//            bw.write(jObj.toString());
-//            bw.newLine();
-//            bw.flush();
-//        }catch (Exception e) {
-//            if(KogPreference.DEBUG_MODE)
-//            {
-//                Toast.makeText(getBaseContext(), "Json Exception!\n" + e.toString() , Toast.LENGTH_SHORT).show();
-//
-//            }
-//        }
-//    }
 
-
-//
-//    public void initConnection() {
-//        try{
-//
-//            client = new Socket(KogPreference.CHAT_IP, KogPreference.CHAT_PORT);
-//            br = new BufferedReader(new InputStreamReader(client.getInputStream()));
-//            bw = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
-//            Log.i(LOG_TAG, "id : " + getInitialMsg());
-//
-//            bw.write(getInitialMsg());
-//            bw.newLine();
-//            bw.flush();
-//
-//        }catch (IOException e) {
-//            if(KogPreference.DEBUG_MODE)
-//            {
-//                Toast.makeText(getBaseContext(), "소켓에러!\n" + e.toString() , Toast.LENGTH_SHORT).show();
-//
-//            }
-//        }
-//    }
-//
-//    private Thread updateThread = new Thread() {
-//        public void run() {
-//            try {
-//                String read;
-//                JSONObject rMsg;
-//                while (true) {
-//                    read = br.readLine();
-//                    Log.i("R: Received:", "R: Received before decrypt: " + read);
-//
-//
-//                    if (read != null) {
-//                        Log.i("R: Received:", "R: Received:" + read);
-//                    }
-//
-//                    rMsg = new JSONObject(read);
-//
-//                    Message ms = handler.obtainMessage();
-//                    Bundle b = new Bundle();
-//                    b.putString("nickname", rMsg.getString("nickname"));
-//                    b.putString("rid", rMsg.getString("rid"));
-//                    b.putString("message", rMsg.getString("message"));
-//                    ms.setData(b);
-//                    handler.sendMessage(ms);
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    };
-//
 
     ////////////////////////////////////
     // REST API                       //

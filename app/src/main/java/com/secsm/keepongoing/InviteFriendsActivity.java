@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -53,7 +54,7 @@ public class InviteFriendsActivity extends Activity {
     private BootstrapEditText invite_friend_search_et;
     ArrayList<FriendNameAndIcon> mFriends, selected_Friends;
     private ListView invite_friend_list, to_invite_friend_list;
-
+    private FrameLayout invite_friend_fl;
     String type, rule, roomname, max_holiday_count, start_time, duration_time, showup_time, meet_days;
     String rid = null;
 //    intent.putExtra("type", "life_room");
@@ -75,6 +76,8 @@ public class InviteFriendsActivity extends Activity {
         setContentView(R.layout.activity_invite_friends);
         MyVolley.init(InviteFriendsActivity.this);
         vQueue = Volley.newRequestQueue(this);
+
+        invite_friend_fl = (FrameLayout) findViewById(R.id.invite_friend_fl);
 
         intent = getIntent();
         type = intent.getStringExtra("type");
@@ -355,6 +358,7 @@ public class InviteFriendsActivity extends Activity {
 
     // room create
     private void createLifeRoomRequest() {
+        invite_friend_fl.setVisibility(View.VISIBLE);
 //    String type, rule, max_holiday_count, start_time, duration_time, showup_time, meet_days;
         String _roomname = roomname.trim().replace(" ", "%20");
         _roomname = _roomname.trim().replace("\n", "%0D%0A");
@@ -391,20 +395,25 @@ public class InviteFriendsActivity extends Activity {
                                     inviteFriendToRoomRequest(rid, selected_Friends.get(i).getName());
                                 }
 
+                                invite_friend_fl.setVisibility(View.GONE);
                                 GoTabPage();
                                 /////////////////////////////
                             } else {
+                                invite_friend_fl.setVisibility(View.GONE);
+
                                 Toast.makeText(getBaseContext(), "통신 에러 : \n방을 생성할 수 없습니다", Toast.LENGTH_SHORT).show();
                                 if (KogPreference.DEBUG_MODE) {
                                     Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         } catch (Exception e) {
+                            invite_friend_fl.setVisibility(View.GONE);
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                invite_friend_fl.setVisibility(View.GONE);
                 Log.i(LOG_TAG, "Response Error");
                 Toast.makeText(getBaseContext(), "통신 에러 : \n방을 생성할 수 없습니다", Toast.LENGTH_SHORT).show();
                 if (KogPreference.DEBUG_MODE) {
@@ -418,6 +427,8 @@ public class InviteFriendsActivity extends Activity {
     }
 
     private void createSubjectRoomRequest() {
+        invite_friend_fl.setVisibility(View.VISIBLE);
+
 //    String type, rule, max_holiday_count, start_time, duration_time, showup_time, meet_days;
         String _roomname = roomname.trim().replace(" ", "%20");
         _roomname = _roomname.trim().replace("\n", "%0D%0A");
@@ -457,21 +468,25 @@ public class InviteFriendsActivity extends Activity {
                                 {
                                     inviteFriendToRoomRequest(rid, selected_Friends.get(i).getName());
                                 }
+                                invite_friend_fl.setVisibility(View.GONE);
 
                                 GoTabPage();
                                 /////////////////////////////
                             } else {
+                                invite_friend_fl.setVisibility(View.GONE);
                                 Toast.makeText(getBaseContext(), "통신 에러 : \n방을 생성할 수 없습니다", Toast.LENGTH_SHORT).show();
                                 if (KogPreference.DEBUG_MODE) {
                                     Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         } catch (Exception e) {
+                            invite_friend_fl.setVisibility(View.GONE);
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                invite_friend_fl.setVisibility(View.GONE);
                 Log.i(LOG_TAG, "Response Error");
                 Toast.makeText(getBaseContext(), "통신 에러 : \n방을 생성할 수 없습니다", Toast.LENGTH_SHORT).show();
                 if (KogPreference.DEBUG_MODE) {

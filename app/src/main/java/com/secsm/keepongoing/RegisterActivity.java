@@ -77,6 +77,7 @@ public class RegisterActivity extends Activity {
         Intent intent = new Intent(this, LoginActivity.class);
         intent.putExtra("nickname", rNickName);
         startActivity(intent);
+        RegisterActivity.this.finish();
     }
 
     private void invisibleAlert() {
