@@ -18,6 +18,21 @@ android {
     }
     productFlavors {
     }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LGPL2.1'
+        exclude 'AndroidManifest.xml'
+    }
+
 }
 
 dependencies {
@@ -29,4 +44,8 @@ dependencies {
     compile 'com.google.android.gms:play-services:+'
     compile 'eu.inmite.android.lib:android-styled-dialogs:1.2.0'
     compile 'com.android.support:support-v4:20.+'
+    compile 'com.google.code.gson:gson:2.2.+'
+    compile 'org.apache.httpcomponents:httpclient-android:4.3.5'
+    compile files('/Users/JinS/Dropbox/Android/KeepOnGoing/libs/apache-mime4j-0.6.jar')
+    compile files('/Users/JinS/Dropbox/Android/KeepOnGoing/libs/httpmime-4.0.jar')
 }

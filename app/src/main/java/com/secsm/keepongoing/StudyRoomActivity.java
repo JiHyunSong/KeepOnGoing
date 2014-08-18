@@ -44,10 +44,14 @@ import com.secsm.keepongoing.Quiz.Solve_Main;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.KogSocketConnecter;
+import com.secsm.keepongoing.Shared.MultipartRequest;
 import com.secsm.keepongoing.Shared.MyVolley;
 import com.secsm.keepongoing.Shared.SocketListener;
 import com.secsm.keepongoing.Shared.SocketManager;
 
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,9 +67,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.Socket;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -138,10 +144,7 @@ public class StudyRoomActivity extends Activity {
         * */
 
 
-        getFriendsRequest();
-        soc = new SocketAsyncTask();
-        soc.execute();
-
+        init();
         /* at First, holding the focus */
         messageTxt.requestFocus();
 
@@ -415,18 +418,22 @@ public class StudyRoomActivity extends Activity {
     private void DoFileUpload(String filePath) throws IOException {
         Log.d("Test" , "file path = " + filePath);
         imageUploadFlag = true;
-        try {
-            soc.wait(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            soc.wait(10000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
-        ImageUploadAsyncTask imgUploadSync = new ImageUploadAsyncTask();
+//        ImageUploadAsyncTask imgUploadSync = new ImageUploadAsyncTask();
+//
+//        imgUploadSync.execute();
 
-        imgUploadSync.execute();
+
 //        HttpFileUpload( KogPreference.UPLOAD_URL + "?rid=" + KogPreference.getRid(StudyRoomActivity.this) + "&nickname=" + KogPreference.getNickName(StudyRoomActivity.this)
 //                , "", filePath);
         asyncFilePath = filePath;
+
+        VolleyUploadImage();
 
     }
     String asyncFilePath;
@@ -442,79 +449,127 @@ public class StudyRoomActivity extends Activity {
 
         @Override
         protected Void doInBackground(Void... unused) {
-            Log.d(LOG_TAG , "onPreExecute");
-            try {
-                urlString = KogPreference.UPLOAD_URL + "?rid=" + KogPreference.getRid(StudyRoomActivity.this) + "&nickname=" + KogPreference.getNickName(StudyRoomActivity.this);
-                mFileInputStream = new FileInputStream(asyncFilePath);
-                connectUrl = new URL(urlString);
-                Log.d("Test", "mFileInputStream  is " + mFileInputStream);
-
-                // open connection
-                HttpURLConnection conn = (HttpURLConnection)connectUrl.openConnection();
-                conn.setDoInput(true);
-                conn.setDoOutput(true);
-                conn.setUseCaches(false);
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Connection", "Keep-Alive");
-                conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-
-                // write data
-                DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
-                dos.writeBytes(twoHyphens + boundary + lineEnd);
-                dos.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + asyncFilePath+"\"" + lineEnd);
-                dos.writeBytes(lineEnd);
-
-                int bytesAvailable = mFileInputStream.available();
-                int maxBufferSize = 1024;
-                int bufferSize = Math.min(bytesAvailable, maxBufferSize);
-
-                byte[] buffer = new byte[bufferSize];
-
-                int bytesRead = mFileInputStream.read(buffer, 0, bufferSize);
-
-                Log.d("Test", "image byte is " + bytesRead);
-
-                // read image
-                while (bytesRead > 0) {
-                    dos.write(buffer, 0, bufferSize);
-                    bytesAvailable = mFileInputStream.available();
-                    bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                    bytesRead = mFileInputStream.read(buffer, 0, bufferSize);
-                }
-
-                dos.writeBytes(lineEnd);
-                dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
-
-                // close streams
-                Log.e("Test" , "File is written");
-                mFileInputStream.close();
-                dos.flush(); // finish upload...
-
-                // get response
-                int ch;
-                InputStream is = conn.getInputStream();
-                StringBuffer b =new StringBuffer();
-                while( ( ch = is.read() ) != -1 ){
-                    b.append( (char)ch );
-                }
-                String s=b.toString();
-                Log.e("Test", "result = " + s);
-                //			mEdityEntry.setText(s);
-                dos.close();
-
-            } catch (Exception e) {
-                Log.d("Test", "exception " + e.toString());
-                // TODO: handle exception
-            }
+            Log.d(LOG_TAG , "do In background");
+//            try {
+//                urlString = KogPreference.UPLOAD_URL + "?rid=" + KogPreference.getRid(StudyRoomActivity.this) + "&nickname=" + KogPreference.getNickName(StudyRoomActivity.this);
+//                mFileInputStream = new FileInputStream(asyncFilePath);
+//                connectUrl = new URL(urlString);
+//                Log.d("Test", "mFileInputStream  is " + mFileInputStream);
+//
+//                // open connection
+//                HttpURLConnection conn = (HttpURLConnection)connectUrl.openConnection();
+//                conn.setDoInput(true);
+//                conn.setDoOutput(true);
+//                conn.setUseCaches(false);
+//                conn.setRequestMethod("POST");
+//                conn.setRequestProperty("Connection", "Keep-Alive");
+//                conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+//
+//                // write data
+//                DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
+//                dos.writeBytes(twoHyphens + boundary + lineEnd);
+//                dos.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + asyncFilePath+"\"" + lineEnd);
+//                dos.writeBytes(lineEnd);
+//
+//                int bytesAvailable = mFileInputStream.available();
+//                int maxBufferSize = 1024;
+//                int bufferSize = Math.min(bytesAvailable, maxBufferSize);
+//
+//                byte[] buffer = new byte[bufferSize];
+//
+//                int bytesRead = mFileInputStream.read(buffer, 0, bufferSize);
+//
+//                Log.d("Test", "image byte is " + bytesRead);
+//
+//                // read image
+//                while (bytesRead > 0) {
+//                    dos.write(buffer, 0, bufferSize);
+//                    bytesAvailable = mFileInputStream.available();
+//                    bufferSize = Math.min(bytesAvailable, maxBufferSize);
+//                    bytesRead = mFileInputStream.read(buffer, 0, bufferSize);
+//                }
+//
+//                dos.writeBytes(lineEnd);
+//                dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+//
+//                // close streams
+//                Log.e("Test" , "File is written");
+//                mFileInputStream.close();
+//                dos.flush(); // finish upload...
+//
+//                // get response
+////                int ch;
+////                InputStream is = conn.getInputStream();
+////                StringBuffer b =new StringBuffer();
+////                while( ( ch = is.read() ) != -1 ){
+////                    b.append( (char)ch );
+////                }
+////                String s=b.toString();
+////                Log.e("Test", "result = " + s);
+//                //			mEdityEntry.setText(s);
+//                dos.close();
+//
+//            } catch (Exception e) {
+//                Log.d("Test", "exception " + e.toString());
+//                // TODO: handle exception
+//            }
             return(null);
         }
 
         @Override
         protected void onPostExecute(Void unused) {
-            Log.d(LOG_TAG , "onPreExecute");
+            Log.d(LOG_TAG , "onPostExecute");
             imageUploadFlag = false;
         }
     }
+
+    void VolleyUploadImage()
+    {
+        Charset c = Charset.forName("utf-8");
+        String URL = KogPreference.UPLOAD_URL + "?rid=" + KogPreference.getRid(StudyRoomActivity.this) + "&nickname=" + KogPreference.getNickName(StudyRoomActivity.this);
+        MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, Charset.forName("UTF-8"));
+        try
+        {
+//            entity.addPart("member_id", new StringBody(String.valueOf(member_id)));
+//            entity.addPart("title", new StringBody(space.title, c));
+//            entity.addPart("contents", new StringBody(space.contents, c));
+            entity.addPart("file", new FileBody(new File(asyncFilePath)));
+            Log.i("MULTIPART-ENTITY", "add addPART");
+//            entity.addPart("img_width", new StringBody(String.valueOf(space.width)));
+//            entity.addPart("img_height", new StringBody(String.valueOf(space.height)));
+
+//            int waver_count = space.waver_list.size();
+//            entity.addPart("waver_count", new StringBody(String.valueOf(waver_count)));
+
+//            int i=0;
+//            for ( Waver w : space.waver_list )
+//            {
+//                entity.addPart("waver_x_" + i, new StringBody(String.valueOf(w.x)));
+//                entity.addPart("waver_y_" + i, new StringBody(String.valueOf(w.y)));
+//                entity.addPart("waver_r_" + i, new StringBody(String.valueOf(w.size)));
+//                entity.addPart("waver_play_time_" + i, new StringBody(String.valueOf(w.playTime)));
+//                entity.addPart("waver_snd_file_" + i, new FileBody(new File(w.snd_url)));
+//                i++;
+//            }
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        MultipartRequest req = new MultipartRequest(Request.Method.POST, URL, entity, errListener);
+        vQueue.add(req);
+        Log.i("MULTIPART-ENTITY", "add queue");
+
+        vQueue.start();
+    }
+
+    Response.ErrorListener errListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError arg0) {
+// TODO Auto-generated method stub
+            Log.d("errrrrrooooor", arg0.toString());
+        }
+    };
 
     private void HttpFileUpload(String urlString, String params, String fileName) {
         try {
@@ -777,6 +832,12 @@ public class StudyRoomActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    void init()
+    {
+        getFriendsRequest();
+        soc = new SocketAsyncTask();
+        soc.execute();
+    }
     void close()
     {
         soc.cancel(true);
@@ -785,6 +846,29 @@ public class StudyRoomActivity extends Activity {
     //////////////////////////////////////////////////
     // for exit()                                   //
     //////////////////////////////////////////////////
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        close();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        init();
+//        if(savedInstanceState != null)
+//        {
+//
+//        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
     protected void onDestroy() {
         super.onDestroy();
 
@@ -1036,6 +1120,7 @@ public class StudyRoomActivity extends Activity {
             try
             {
                 client.close();
+                client = null;
 
             }catch (Exception e)
             {
@@ -1139,7 +1224,7 @@ public class StudyRoomActivity extends Activity {
         //TODO : check POST/GET METHOD and get_URL
         String get_url = KogPreference.REST_URL +
                 "Room/User" +
-                "?nickname=" + KogPreference.getNickName(StudyRoomActivity.this) +
+                "?rid=" + KogPreference.getRid(StudyRoomActivity.this) +
                 "&date=" + getRealDate();
 
         Log.i(LOG_TAG, "URL : " + get_url);

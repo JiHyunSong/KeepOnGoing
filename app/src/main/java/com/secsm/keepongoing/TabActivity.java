@@ -120,21 +120,6 @@ public class TabActivity extends Activity {
         Log.i(LOG_TAG, "onCreate");
         mDBHelper = new DBHelper(this);
 
-        // setup rooms
-        if (KogPreference.DEBUG_MODE) {
-            // mock room
-//            ArrayList<String> mRooms = new ArrayList<String>();
-//            mRooms.add("tempRoom1");
-//            mRooms.add("tempRoom2");
-//            mRooms.add("tempRoom3");
-//
-//            ArrayAdapter<String> RoomArrayAdapter;
-//            RoomArrayAdapter = new ArrayAdapter<String>(this,
-//                    R.layout.tab_list, mRooms);
-//            roomList = (ListView) findViewById(R.id.room_list);
-//            roomList.setAdapter(RoomArrayAdapter);
-        }
-
         roomList = (ListView) findViewById(R.id.room_list);
         friendList = (ListView) findViewById(R.id.friend_list);
 

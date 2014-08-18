@@ -63,7 +63,7 @@ public class RegisterActivity extends Activity {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (isValidProfile()) {
-                    register(nickName.getText().toString(), password1.getText().toString(), "profile_default.png", phoneNum.getText().toString());
+                    register(nickName.getText().toString(), password1.getText().toString(), null, phoneNum.getText().toString());
                 } else {
                 }
 

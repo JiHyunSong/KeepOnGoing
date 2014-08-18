@@ -1,8 +1,7 @@
 apply plugin: 'android-library'
-
 android {
     compileSdkVersion 20
-    buildToolsVersion "20.0.0"
+    buildToolsVersion '20.0.0'
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 20
@@ -14,4 +13,11 @@ android {
             res.srcDirs = ['res']
         }
     }
+    productFlavors {
+    }
+    buildTypes {
+    }
+}
+
+dependencies {
 }
