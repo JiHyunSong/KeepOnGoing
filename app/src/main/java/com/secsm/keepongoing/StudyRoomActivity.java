@@ -17,17 +17,38 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.secsm.keepongoing.Adapters.FriendNameAndIcon;
+import com.secsm.keepongoing.Adapters.FriendsArrayAdapters;
 import com.secsm.keepongoing.Adapters.MessageAdapter;
 import com.secsm.keepongoing.Adapters.Msg;
 import com.secsm.keepongoing.DB.DBHelper;
 import com.secsm.keepongoing.Quiz.Quiz_Main;
 import com.secsm.keepongoing.Quiz.Solve_Main;
 import com.secsm.keepongoing.Shared.KogPreference;
+import com.secsm.keepongoing.Shared.MyVolley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.Socket;
 import java.net.URL;
 import java.net.URLConnection;
 import java.sql.Timestamp;
@@ -39,17 +60,26 @@ public class StudyRoomActivity extends Activity {
     private Intent intent;
     private static String LOG_TAG = "StudyRoom Activity";
     private Button sendMsgBtn;
+    private Button additionalBtn; // send Picture
     private MessageAdapter messageHistoryMAdaptor;
     private EditText messageTxt;
     private String message;
     private DBHelper mDBHelper;
     private int rID;
-    private int myID;
+//    private int myID;
     private ArrayList<Msg> mTexts = new ArrayList<Msg>();
     private ListView messageList;
     private MenuItem actionBarFirstBtn, actionBarSecondBtn;
     private MenuItem actionBarThirdBtn, actionBarFourthBtn;
     private MenuItem actionBarFifthBtn;
+    ArrayList<FriendNameAndIcon> mFriends;
+
+    private RequestQueue vQueue;
+
+    private Socket client = null;
+    private BufferedReader br = null;
+    private BufferedWriter bw = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,14 +88,19 @@ public class StudyRoomActivity extends Activity {
         ActionBar bar = getActionBar();
         bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.NAVIGATION_MODE_STANDARD);
 
+        MyVolley.init(StudyRoomActivity.this);
+        vQueue = Volley.newRequestQueue(this);
+
+
         mDBHelper = new DBHelper(this);
         intent = getIntent();
         rID = (int) intent.getIntExtra("roomID", -1);
+        rID = Integer.parseInt(KogPreference.getRid(StudyRoomActivity.this));
         if (rID == -1) {
             // TODO : 잘못된 접근, 되돌아가기
         }
 
-        myID = KogPreference.getInt(StudyRoomActivity.this, "uid");
+//        myID = KogPreference.getInt(StudyRoomActivity.this, "uid");
 
         /* initial UI */
         sendMsgBtn = (Button) findViewById(R.id.study_room_sendMsgBtn);
@@ -75,16 +110,20 @@ public class StudyRoomActivity extends Activity {
         messageHistoryMAdaptor = new MessageAdapter(StudyRoomActivity.this, R.layout.message_row, mTexts);
         messageList = (ListView) findViewById(R.id.study_room_message_list);
         messageList.setAdapter(messageHistoryMAdaptor);
-//        roomList = (ListView) findViewById(R.id.room_list);
-//        roomList.setAdapter(mockRoomArrayAdapter);
 
 		/* IF there is and exists room, load the stored message */
         loadText();
 
+        /* Init connection w/ server
+        *
+        * send my nickname! as a type json
+        * */
+//        initConnection();
+
         /* at First, holding the focus */
         messageTxt.requestFocus();
 
-        		/* when you click "send" */
+        /* when you click "send" */
         sendMsgBtn.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
@@ -94,17 +133,60 @@ public class StudyRoomActivity extends Activity {
         });
     }
 
+// JSON
+// nickname
+// rid
+// message
+
+
+    public String getInitialMsg(){
+        try {
+            JSONObject jObj = new JSONObject();
+            jObj.put("id", KogPreference.getNickName(StudyRoomActivity.this));
+            return jObj.toString();
+        }catch (JSONException e) {
+            if(KogPreference.DEBUG_MODE)
+            {
+                Toast.makeText(getBaseContext(), "Json Exception!\n" + e.toString() , Toast.LENGTH_SHORT).show();
+
+            }
+        }
+        return "";
+    }
+    public void initConnection() {
+        try{
+
+            client = new Socket(KogPreference.CHAT_IP, KogPreference.CHAT_PORT);
+            br = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            bw = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
+            Log.i(LOG_TAG, "id : " + getInitialMsg());
+
+            bw.write(getInitialMsg());
+            bw.newLine();
+            bw.flush();
+
+        }catch (IOException e) {
+            if(KogPreference.DEBUG_MODE)
+            {
+                Toast.makeText(getBaseContext(), "소켓에러!\n" + e.toString() , Toast.LENGTH_SHORT).show();
+
+            }
+        }
+    }
+
+
 
     private void sendMessage() {
         Log.i(LOG_TAG, "button Clicked");
         String data = "";
         String msg = messageTxt.getText().toString();
         msg = msg.trim().replace(':', ' ');
+
         if (msg != null && !msg.equals("")) {
             message = msg;
-                    /* encoding the message before send */
             try {
-                sendText(Integer.toString(myID), msg);
+                sendText(KogPreference.getNickName(StudyRoomActivity.this), msg);
+
                 messageTxt.setText("");
             } catch (Exception ex) {
             }
@@ -115,24 +197,14 @@ public class StudyRoomActivity extends Activity {
     public String getRealTime() {
         long time = System.currentTimeMillis();
         Timestamp currentTimestamp = new Timestamp(time);
-
         // I/StudyRoom Activity﹕ long : 1408229086924
-        Log.i(LOG_TAG, "long : " + time);
+        // Log.i(LOG_TAG, "long : " + time);
         // I/StudyRoom Activity﹕ Timestamp : 2014-08-17 07:44:46.924
-        Log.i(LOG_TAG, "Timestamp : " + currentTimestamp);
+        // Log.i(LOG_TAG, "Timestamp : " + currentTimestamp);
         // I/StudyRoom Activity﹕ Timestamp.toString().substring(0, 10) : 2014-08-17
-        Log.i(LOG_TAG, "Timestamp.toString().substring(0, 19) : " + currentTimestamp.toString().substring(0, 19));
+        // Log.i(LOG_TAG, "Timestamp.toString().substring(0, 19) : " + currentTimestamp.toString().substring(0, 19));
         // I/StudyRoom Activity﹕ Timestamp.getTime() : 1408229086924
-        Log.i(LOG_TAG, "Timestamp.getTime() : " + currentTimestamp.getTime());
-        Log.i(LOG_TAG, "");
-
-//
-//
-//        Calendar c = Calendar.getInstance();
-//        String hour = Integer.toString(c.get(Calendar.HOUR_OF_DAY));
-//        String min = Integer.toString(c.get(Calendar.MINUTE));
-//        String sec = Integer.toString(c.get(Calendar.SECOND));
-//
+        // Log.i(LOG_TAG, "Timestamp.getTime() : " + currentTimestamp.getTime());
         return currentTimestamp.toString().substring(0, 19);
     }
 
@@ -181,52 +253,20 @@ public class StudyRoomActivity extends Activity {
 
     /* getting the profile image from the server  */
 	/* aURL is perfect URL like : http://203.252.195.122/files/tmp_1348736125550.jpg */
-    public Bitmap getRemoteImage(final URL _aURL) {
-        Bitmap bm = null;
-        try {
-            final URLConnection conn = _aURL.openConnection();
-            conn.connect();
-            final BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
-            bm = BitmapFactory.decodeStream(bis);
-            bis.close();
-        } catch (IOException e) {
-            Log.d("down", e.toString());
-        }
-        return bm;
+    void getImageFromURL(String img_name, ImageView imgView) {
+
+        String ImgURL = KogPreference.MEDIA_URL + img_name;
+        // TODO R.drawable.error_image
+        ImageLoader imageLoader = MyVolley.getImageLoader();
+        imageLoader.get(ImgURL,
+                ImageLoader.getImageListener(imgView,
+                        R.drawable.no_image,
+                        R.drawable.no_image)
+        );
     }
 
-    /* before we send the message to server(to friend or me),
-     * we have to make the protocol format.
-     * at this time, use this method */
-    private String getSendMsg() {
-        Log.i("getSendMsg()", "msg :" + message + " myID :" + myID);
-        if (!"".equals(myID)) {
-//            return myID + ":" + message + ":" + myStatus + ":" + roomID + ":" + talking + ":false";
 
-        }
-        return null;
 
-    }
-
-    private String getSendMsg(String status) {
-        if (!"".equals(myID)) {
-//            Log.i("getSendMsg", myID + ":" + null + ":" +  status + ":" + roomID + ":" + talking + ":false");
-//            return myID + ":" + null + ":" +  status + ":" + roomID + ":" + talking + ":false";
-
-        }
-        return null;
-    }
-
-    private String getSendMsg(String _status, String _msgNull) {
-        if (!"".equals(myID)) {
-//            return myID + ":" + _msgNull + ":" + _status + ":" + roomID + ":" + talking + ":false";
-        }
-        return null;
-    }
-
-    ////////////////////
-    // Action bar     //
-    ////////////////////
 
     ////////////////////
     // Action bar     //
@@ -458,4 +498,81 @@ public class StudyRoomActivity extends Activity {
 //            }
         }
     };
+
+
+    ////////////////////////////////////
+    // REST API                       //
+    ////////////////////////////////////
+
+    public String getRealDate() {
+        long time = System.currentTimeMillis();
+        Timestamp currentTimestamp = new Timestamp(time);
+        return currentTimestamp.toString().substring(0, 10);
+    }
+
+    private void getFriendsRequest() {
+
+        //TODO : check POST/GET METHOD and get_URL
+        String get_url = KogPreference.REST_URL +
+                "/Room/User" +
+                "?nickname=" + KogPreference.getNickName(StudyRoomActivity.this) +
+                "&date=" + getRealDate();
+
+        Log.i(LOG_TAG, "URL : " + get_url);
+
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, get_url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(LOG_TAG, "get JSONObject");
+                        Log.i(LOG_TAG, response.toString());
+
+                        try {
+                            int status_code = response.getInt("status");
+                            if (status_code == 200) {
+                                JSONArray rMessage;
+                                rMessage = response.getJSONArray("message");
+                                //////// real action ////////
+                                mFriends = new ArrayList<FriendNameAndIcon>();
+                                JSONObject rObj;
+
+                                //{"message":[{"targetTime":null,"image":"http:\/\/210.118.74.195:8080\/KOG_Server_Rest\/upload\/UserImage\/default.png","nickname":"jonghean"}],"status":"200"}
+                                for(int i=0; i< rMessage.length(); i++)
+                                {
+                                    rObj = rMessage.getJSONObject(i);
+                                    Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" + rObj.getString("nickname") + "|" +rObj.getString("targetTime"));
+                                    mFriends.add(new FriendNameAndIcon(rObj.getString("image"),
+                                            rObj.getString("nickname"),
+                                            rObj.getString("targetTime")));
+                                }
+
+//                                FriendsArrayAdapters mockFriendArrayAdapter;
+//                                mockFriendArrayAdapter = new FriendsArrayAdapters(TabActivity.this, R.layout.friend_list_item, mFriends);
+//                                friendList.setAdapter(mockFriendArrayAdapter);
+
+
+                                /////////////////////////////
+                            } else {
+                                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+                                if (KogPreference.DEBUG_MODE) {
+                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        } catch (Exception e) {
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+                Log.i(LOG_TAG, "Response Error");
+                if (KogPreference.DEBUG_MODE) {
+                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        }
+        );
+        vQueue.add(jsObjRequest);
+    }
 }

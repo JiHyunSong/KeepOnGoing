@@ -18,6 +18,7 @@ public class Msg {
     private String FileName;
     /* flag for the message from me or the other */
     private String Flag;
+    private String MessageType;
     private String Id = null;
 
     /* if flag is true, me! exchange format */
@@ -26,6 +27,7 @@ public class Msg {
         this.Text = _Text;
         this.Time = _Time;
         this.Flag = _Flag;
+//        this.MessageType = _MessageType;
 
         String prof = null;
         SQLiteDatabase db;

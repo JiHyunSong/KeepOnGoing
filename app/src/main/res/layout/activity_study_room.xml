@@ -36,11 +36,12 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/study_room_emoticon"
+            android:id="@+id/study_room_additional"
             android:layout_width="45dp"
             android:layout_height="fill_parent"
             android:layout_weight="0.0"
-            android:visibility="gone" />
+            android:text="+"
+            android:visibility="visible" />
 
         <EditText
             android:id="@+id/study_room_messageTxtView"

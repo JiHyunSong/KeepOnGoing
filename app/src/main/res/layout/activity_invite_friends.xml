@@ -9,6 +9,11 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.secsm.keepongoing.InviteFriendsActivity">
 
+    <FrameLayout
+        android:id="@+id/invite_friend_fl"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:visibility="gone"/>
 
     <RelativeLayout
         android:id="@+id/invite_friend_rl1"
@@ -29,9 +34,9 @@
                 android:gravity="top|left"
                 android:hint="초대할 친구 이름"
                 android:lines="1"
+                android:maxLines="1"
                 bootstrapbutton:be_roundedCorners="true"
-                bootstrapbutton:be_state="info"
-                android:maxLines="1" />
+                bootstrapbutton:be_state="info" />
 
             <Button
                 android:id="@+id/invite_friend_create_room_btn"
@@ -57,11 +62,12 @@
             android:gravity="center"
             android:text="선택된 친구들 목록 ▼" />
         ▼
+
         <ListView
             android:id="@+id/to_invite_friend_list"
             android:layout_width="fill_parent"
-            android:layout_below="@id/invite_friend_top"
             android:layout_height="wrap_content"
+            android:layout_below="@id/invite_friend_top"
             android:minHeight="100dp" />
 
         <TextView

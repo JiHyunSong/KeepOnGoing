@@ -47,6 +47,23 @@
             android:minHeight="10dp"
             android:padding="5dp"
             android:scrollbars="none" />
+
+        <ImageView
+            android:id="@+id/msg_bottomTextImageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_margin="5dp"
+            android:layout_toRightOf="@id/msg_person_photo"
+            android:background="@drawable/round_corner2"
+            android:clickable="false"
+            android:focusable="false"
+            android:minHeight="10dp"
+            android:padding="5dp"
+            android:visibility="gone"
+            android:scrollbars="none" />
+
+
     </RelativeLayout>
 
 </RelativeLayout>
