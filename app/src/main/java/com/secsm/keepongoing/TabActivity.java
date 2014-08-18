@@ -56,6 +56,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class TabActivity extends Activity {
+    private String rMessage;
+
+
     final static int TAB_DELAY = 10;
 
     public static final int ROOMNAME_REQUEST_CODE = 1;
@@ -206,7 +209,7 @@ public class TabActivity extends Activity {
 
         _current_time_text = (TextView) findViewById(R.id.currenttime);
         _current_time_text2 = (TextView) findViewById(R.id.currenttime2);
-        _goal_time = (TextView) findViewById(R.id.goal_time);
+        _goal_time = (TextView) findViewById(R.id.goal);
         TimerTask adTast2 = new TimerTask() {
             public void run() {
                 replace_current_time_Handler.sendEmptyMessage(0);
@@ -295,9 +298,10 @@ public class TabActivity extends Activity {
                 //startActivity(intent);
                 Date start = new Date();
 
-                Toast.makeText(TabActivity.this,
-                        "@SERVER : \n"+start.toString()+"|달성시간"+_text.getText(),2).show();
-//                acheivetimeRegisterRequest(_goal_time.getText().toString(),_text.getText().toString(),start.toString().substring(11,19));
+       /*         Toast.makeText(TabActivity.this,
+                        "@SERVER : \n"+start.toString()+"|달성시간"+_text.getText(),2).show();*/
+                   acheivetimeRegisterRequest(_goal_time.getText().toString(),_text.getText().toString(),_current_time_text.getText().toString());
+
 
 
                 _text.setText("00:00:00");
@@ -307,59 +311,128 @@ public class TabActivity extends Activity {
         });
     }
 
-//
-//    //@통신
-//    private void acheivetimeRegisterRequest(String target_time,String accomplished_time,String date) {
-//        String get_url = KogPreference.REST_URL +
-//                "Register" +
-//                "?nickname=" + KogPreference.getNickName(TabActivity.this) +
-//                "&rid=" + KogPreference.getRid(TabActivity.this) +
-//                "&target_time=" + target_time +
-//                "&accomplished_time=" + accomplished_time+
-//                "&date=" + date;
-//
-//
-//
-//        Log.i(LOG_TAG, "get_url : " + get_url);
-//
-//        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, get_url, null,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        Log.i(LOG_TAG, "get JSONObject");
-//                        Log.i(LOG_TAG, response.toString());
-//
-//                        try {
-//                            status_code = response.getInt("status");
-//                            if (status_code == 200) {
-//                                rMessage = response.getString("message");
-//                                // real action
-//                                GoNextPage();
-//                            } else if (status_code == 9001) {
-//                                Toast.makeText(getBaseContext(), "회원가입이 불가능합니다.", Toast.LENGTH_SHORT).show();
-//                            } else {
-//                                Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
-//                                if (KogPreference.DEBUG_MODE) {
-//                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-//                                }
-//                            }
-//                        } catch (Exception e) {
-//                        }
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Log.i(LOG_TAG, "Response Error");
-//                Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
-//                if (KogPreference.DEBUG_MODE) {
-//                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        }
-//        );
-//        vQueue.add(jsObjRequest);
-//    }
-//
+
+    //@통신
+    private void acheivetimeRegisterRequest(String target_time,String accomplished_time,String date) {
+        target_time = target_time.trim().replace(" ", "%20");
+        accomplished_time = accomplished_time.trim().replace(" ", "%20");
+        date = date.trim().replace(" ", "%20");
+        final String temp_target_time=target_time;
+        final String temp_accomplished_time=accomplished_time;
+        final String temp_date=date;
+        String get_url = KogPreference.REST_URL +
+                "Time" +
+                "?nickname=" + KogPreference.getNickName(TabActivity.this) +
+                "&target_time=" + target_time +
+                "&accomplished_time=" + accomplished_time+
+                "&date=" + date;
+
+
+
+        Log.i(LOG_TAG, "get_url : " + get_url);
+
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, get_url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(LOG_TAG, "POST JSONObject");
+                        Log.i(LOG_TAG, response.toString());
+
+                        try {
+                            status_code = response.getInt("status");
+                            if (status_code == 200) {
+                                rMessage = response.getString("message");
+                                // real action
+                               // GoNextPage();
+
+                                Toast.makeText(getBaseContext(), LOG_TAG +rMessage, Toast.LENGTH_SHORT).show();
+                            } else if (status_code == 9001) {
+
+                                    Toast.makeText(getBaseContext(), "시간등록이 불가능합니다.", Toast.LENGTH_SHORT).show();
+                            }
+                            else if(status_code ==1001) {
+                                acheivetimeputRequest(temp_target_time, temp_accomplished_time, temp_date);
+                                Toast.makeText(getBaseContext(), "중복", Toast.LENGTH_SHORT).show();
+                            }
+                            else {
+                                Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
+                                if (KogPreference.DEBUG_MODE) {
+                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        } catch (Exception e) {
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i(LOG_TAG, "Response Error");
+                Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
+                if (KogPreference.DEBUG_MODE) {
+                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+        );
+
+
+        vQueue.add(jsObjRequest);
+
+
+
+
+    }
+    //@통신
+    private void acheivetimeputRequest(String target_time,String accomplished_time,String date) {
+        String get_url = KogPreference.REST_URL +
+                "Time" +
+                "?nickname=" + KogPreference.getNickName(TabActivity.this) +
+                "&target_time=" + target_time +
+                "&accomplished_time=" + accomplished_time+
+                "&date=" + date;
+
+
+
+        Log.i(LOG_TAG, "get_url : " + get_url);
+
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.PUT, get_url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(LOG_TAG, "get JSONObject");
+                        Log.i(LOG_TAG, response.toString());
+
+                        try {
+                            status_code = response.getInt("status");
+                            if (status_code == 200) {
+                                rMessage = response.getString("message");
+                                // real action
+                                // GoNextPage();
+                                Toast.makeText(getBaseContext(), LOG_TAG +rMessage, Toast.LENGTH_SHORT).show();
+                            } else if (status_code == 9001) {
+                                Toast.makeText(getBaseContext(), "시간등록이 불가능합니다. PUT", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
+                                if (KogPreference.DEBUG_MODE) {
+                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        } catch (Exception e) {
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i(LOG_TAG, "Response Error");
+                Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
+                if (KogPreference.DEBUG_MODE) {
+                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+        );
+        vQueue.add(jsObjRequest);
+    }
 
 
 

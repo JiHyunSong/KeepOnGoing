@@ -19,6 +19,7 @@ public final class KogPreference {
     private static String PASSWORD_TAG = "PASSWORD";
     private static String RID_TAG = "RID";
     private static String GCM_TAG = "GCMID";
+    private static String QUIZ_NUM_TAG = "QUIZNUM";
     public static String REST_URL = "http://210.118.74.195:8080/KOG_Server_Rest/rest/";
     public static String MEDIA_URL = "http://210.118.74.195:8080/KOG_Server_Rest/upload/UserImage/";
     public static final String CHAT_IP = "210.118.74.195";
@@ -242,6 +243,24 @@ public final class KogPreference {
         } catch (ClassCastException e) {
             Log.e(LOG_TAG, "get Registration ID fail, ClassCaseException : " + e.getStackTrace());
             return "";
+        }
+    }
+
+
+    public static String getQuizNum(final Context context) {
+        try {
+            return getString(context, QUIZ_NUM_TAG);
+        } catch (ClassCastException e) {
+            Log.e(LOG_TAG, "getQuizNum fail, ClassCaseException : " + e.getStackTrace());
+            return "";
+        }
+    }
+
+    public static void setQuizNum(final Context context, final String value) {
+        try {
+            setString(context, QUIZ_NUM_TAG, value);
+        } catch (ClassCastException e) {
+            Log.e(LOG_TAG, "setQuizNum ClassCaseException : " + e.getStackTrace());
         }
     }
 
