@@ -246,12 +246,12 @@ public class StudyRoomActivity extends Activity {
 
         String _profileImageName = getProfileImageName(_senderNickname);
 
-        if (KogPreference.DEBUG_MODE) {
-            m = new Msg(StudyRoomActivity.this, "나", _text, time, "true", _messageType, _profileImageName);
-            insertIntoMsgInSQLite("나", _text, time, "true", _messageType);
-            messageHistoryMAdaptor.add(m);
-
-        }
+//        if (KogPreference.DEBUG_MODE) {
+//            m = new Msg(StudyRoomActivity.this, "나", _text, time, "true", _messageType, _profileImageName);
+//            insertIntoMsgInSQLite("나", _text, time, "true", _messageType);
+//            messageHistoryMAdaptor.add(m);
+//
+//        }
         String Name;
         time = getRealTime();
         if(_senderNickname.equals(KogPreference.getNickName(StudyRoomActivity.this))){
@@ -841,6 +841,7 @@ public class StudyRoomActivity extends Activity {
             cursor = db.rawQuery("SELECT " +
                     "senderID, senderText, time, me, messageType " +
                     "FROM Chat WHERE rid = '" + rID + "'", null);
+            Log.i(LOG_TAG, "Load Text From db");
             cursor.moveToFirst();
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
