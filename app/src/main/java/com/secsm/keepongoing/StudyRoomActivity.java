@@ -71,6 +71,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.Socket;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -1079,17 +1080,12 @@ public class StudyRoomActivity extends Activity {
                                     rObj = rMessage.getJSONObject(i);
                                     if (!"null".equals(rObj.getString("nickname"))) {
                                         Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" + rObj.getString("nickname") + "|" + rObj.getString("targetTime"));
-                                        mFriends.add(new FriendNameAndIcon(rObj.getString("image"),
-                                                rObj.getString("nickname"),
-                                                rObj.getString("targetTime")));
+                                        mFriends.add(new FriendNameAndIcon(
+                                                URLDecoder.decode(rObj.getString("image"), "UTF-8"),
+                                                URLDecoder.decode(rObj.getString("nickname"), "UTF-8"),
+                                                URLDecoder.decode(rObj.getString("targetTime"), "UTF-8")));
                                     }
                                 }
-
-//                                FriendsArrayAdapters mockFriendArrayAdapter;
-//                                mockFriendArrayAdapter = new FriendsArrayAdapters(TabActivity.this, R.layout.friend_list_item, mFriends);
-//                                friendList.setAdapter(mockFriendArrayAdapter);
-
-
                                 /////////////////////////////
                             } else {
                                 Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();

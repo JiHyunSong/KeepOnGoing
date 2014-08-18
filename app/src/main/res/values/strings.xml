@@ -42,5 +42,6 @@
     </string-array>
 
     <string name="title_activity_solve__main">Solve_Main</string>
+    <string name="title_activity_room_friends">RoomFriendsActivity</string>
 
 </resources>
