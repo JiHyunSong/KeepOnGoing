@@ -12,7 +12,6 @@
         android:id="@+id/room_friends_layout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@id/tab_name"
         android:visibility="invisible">
 
         <ListView
