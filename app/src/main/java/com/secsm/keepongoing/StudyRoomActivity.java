@@ -469,6 +469,7 @@ public class StudyRoomActivity extends Activity {
                 int bufferSize = Math.min(bytesAvailable, maxBufferSize);
 
                 byte[] buffer = new byte[bufferSize];
+
                 int bytesRead = mFileInputStream.read(buffer, 0, bufferSize);
 
                 Log.d("Test", "image byte is " + bytesRead);
@@ -539,7 +540,6 @@ public class StudyRoomActivity extends Activity {
             int bytesAvailable = mFileInputStream.available();
             int maxBufferSize = 1024;
             int bufferSize = Math.min(bytesAvailable, maxBufferSize);
-
             byte[] buffer = new byte[bufferSize];
             int bytesRead = mFileInputStream.read(buffer, 0, bufferSize);
 
@@ -777,19 +777,27 @@ public class StudyRoomActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    void close()
+    {
+        soc.cancel(true);
+    }
 
     //////////////////////////////////////////////////
     // for exit()                                   //
     //////////////////////////////////////////////////
     protected void onDestroy() {
         super.onDestroy();
+
+        close();
         Log.d("info>> ", "unregisterReceiver()...");
     }
 
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_ENTER) {
-            sendMessage();
+            close();
+
+
         } else if (keyCode == KeyEvent.KEYCODE_BACK) {
             setResult(RESULT_OK);
             StudyRoomActivity.this.finish();
@@ -982,8 +990,13 @@ public class StudyRoomActivity extends Activity {
                 String read;
                 JSONObject rMsg;
                 while (true) {
+
+                    if(isCancelled())
+                        break;
+
                     read = br.readLine();
                     Log.i("R: Received:", "R: Received before decrypt: " + read);
+
 
 
                     if (read != null) {
@@ -1000,6 +1013,8 @@ public class StudyRoomActivity extends Activity {
                     ms.setData(b);
                     handler.sendMessage(ms);
                 }
+
+                return null;
             } catch (Exception e) {
 
                 e.printStackTrace();

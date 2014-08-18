@@ -487,7 +487,7 @@ public class TabActivity extends Activity {
                     Log.i(LOG_TAG, "stopwatch tab");
                     setInvisibleBody();
                     layoutStopwatch.setVisibility(View.VISIBLE);
-                    actionBarSecondBtn.setIcon(R.drawable.ic_action_settings);
+                    actionBarSecondBtn.setIcon(R.drawable.ic_action_new);
                     actionBarSecondBtn.setVisible(true);
                     actionBarSecondBtn.setOnMenuItemClickListener(ab_stopwatchTab_settings_listener);
                     break;
@@ -708,6 +708,9 @@ public class TabActivity extends Activity {
         inflater.inflate(R.menu.tab, menu);
         actionBarFirstBtn = menu.findItem(R.id.actionBarFirstBtn);
         actionBarSecondBtn = menu.findItem(R.id.actionBarSecondBtn);
+        actionBarSecondBtn.setIcon(R.drawable.ic_action_new);
+        actionBarSecondBtn.setVisible(true);
+        actionBarSecondBtn.setOnMenuItemClickListener(ab_stopwatchTab_settings_listener);
         return super.onCreateOptionsMenu(menu);
     }
 
