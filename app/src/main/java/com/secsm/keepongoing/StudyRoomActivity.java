@@ -320,7 +320,7 @@ public class StudyRoomActivity extends Activity {
         final View innerView = getLayoutInflater().inflate(R.layout.image_crop_row, null);
 
         Button camera = (Button)innerView.findViewById(R.id.btn_camera_crop);
-        Button gellary = (Button)innerView.findViewById(R.id.btn_gellary_crop);
+//        Button gellary = (Button)innerView.findViewById(R.id.btn_gellary_crop);
         Button cancel = (Button)innerView.findViewById(R.id.btn_cancel_crop);
 
         camera.setOnClickListener(new View.OnClickListener() {
@@ -330,12 +330,12 @@ public class StudyRoomActivity extends Activity {
             }
         });
 
-        gellary.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                doTakeAlbumAction();
-                setDismiss(mDialog);
-            }
-        });
+//        gellary.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                doTakeAlbumAction();
+//                setDismiss(mDialog);
+//            }
+//        });
 
         cancel.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

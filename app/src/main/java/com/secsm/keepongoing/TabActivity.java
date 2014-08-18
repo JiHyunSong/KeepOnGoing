@@ -50,6 +50,8 @@ import com.secsm.keepongoing.Shared.MyVolley;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -511,7 +513,7 @@ public class TabActivity extends Activity {
 
     void getImageFromURL(String img_name, ImageView imgView) {
 
-        String ImgURL = KogPreference.MEDIA_URL + img_name;
+        String ImgURL = img_name;
         // TODO R.drawable.error_image
         ImageLoader imageLoader = MyVolley.getImageLoader();
         imageLoader.get(ImgURL,
@@ -538,7 +540,7 @@ public class TabActivity extends Activity {
             // TODO Auto-generated method stub
             if (adapterView.getId() == R.id.friend_list) {
                 Log.i(LOG_TAG, "tab2, friends Clicked");
-                mDialog = createInflaterDialog("", mFriends.get(position).getName(), mFriends.get(position).getTargetTime());
+                mDialog = createInflaterDialog(mFriends.get(position).getProfile_path(), mFriends.get(position).getName(), mFriends.get(position).getTargetTime());
                 mDialog.show();
 
 
@@ -605,7 +607,10 @@ public class TabActivity extends Activity {
         info_txtFriendNickname = (TextView) innerView.findViewById(R.id.info_txtFriendNickname);
         info_txtTargetTime = (TextView) innerView.findViewById(R.id.info_txtTargetTime);
 
-        info_iconFriend.setBackgroundResource(R.drawable.ic_action_add_group);
+//        info_iconFriend.setBackgroundResource(R.drawable.ic_action_add_group);
+        Log.i(LOG_TAG, "profileUrl : " + profileUrl);
+        getImageFromURL(profileUrl, info_iconFriend);
+
         info_txtFriendNickname.setText(name);
         info_txtTargetTime.setText(targetTime);
         ab.setTitle("친구정보");
@@ -866,10 +871,15 @@ public class TabActivity extends Activity {
                                 {
                                     rObj = rMessage.getJSONObject(i);
                                     if (!"null".equals(rObj.getString("nickname"))) {
-                                        Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" + rObj.getString("nickname") + "|" + rObj.getString("targetTime"));
-                                        mFriends.add(new FriendNameAndIcon(rObj.getString("image"),
-                                                rObj.getString("nickname"),
-                                                rObj.getString("targetTime")));
+                                        Log.i(LOG_TAG, "add Friends : " + Encrypt.encodeIfNeed(rObj.getString("image")) + "|" +
+                                                Encrypt.encodeIfNeed(rObj.getString("nickname")) + "|" + Encrypt.encodeIfNeed(rObj.getString("targetTime")));
+
+
+                                        mFriends.add(new FriendNameAndIcon(
+//                                                URLDecoder.decode(rObj.getString("type"), "UTF-8"),
+                                                URLDecoder.decode(rObj.getString("image"), "UTF-8"),
+                                                URLDecoder.decode(rObj.getString("nickname"), "UTF-8"),
+                                                URLDecoder.decode(rObj.getString("targetTime"), "UTF-8")));
                                     }
                                 }
 
@@ -949,15 +959,16 @@ public class TabActivity extends Activity {
 //                                            + "|" +rObj.getString("maxHolidayCount")+ "|" +rObj.getString("startTime")+ "|" +rObj.getString("durationTime")
 //                                            + "|" +rObj.getString("showupTime")+ "|" +rObj.getString("meetDays"));
                                     if (!"null".equals(rObj.getString("rid"))){
-                                        mRooms.add(new RoomNaming(rObj.getString("type"),
-                                                rObj.getString("rid"),
-                                                rObj.getString("rule"),
-                                                rObj.getString("roomname"),
-                                                rObj.getString("maxHolidayCount"),
-                                                rObj.getString("startTime"),
-                                                rObj.getString("durationTime"),
-                                                rObj.getString("showupTime"),
-                                                rObj.getString("meetDays")));
+                                        mRooms.add(new RoomNaming(
+                                                URLDecoder.decode(rObj.getString("type"), "UTF-8"),
+                                                URLDecoder.decode(rObj.getString("rid"),"UTF-8"),
+                                                URLDecoder.decode(rObj.getString("rule"),"UTF-8"),
+                                                URLDecoder.decode(rObj.getString("roomname"), "UTF-8"),
+                                                URLDecoder.decode(rObj.getString("maxHolidayCount"),"UTF-8"),
+                                                URLDecoder.decode(rObj.getString("startTime"),"UTF-8"),
+                                                URLDecoder.decode(rObj.getString("durationTime"),"UTF-8"),
+                                                URLDecoder.decode(rObj.getString("showupTime"),"UTF-8"),
+                                                URLDecoder.decode(rObj.getString("meetDays"),"UTF-8")));
                                     }
                                 }
 

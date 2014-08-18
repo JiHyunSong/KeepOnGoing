@@ -297,12 +297,12 @@ public class AddStudyRoomActivity extends Activity {
             setResult(RESULT_OK);
             finish();
 
-            Intent intent = new Intent(AddStudyRoomActivity.this, TabActivity.class);
-//            intent.putExtra("phoneNo", phoneNo);
-            //intent.putExtra("roomName", roomNameArray.get(position));
-            //intent.putExtra("roomID", roomIDArrayFromSQLite.get(position));
-            //startActivityForResult(intent, CHATROOM_REQUEST_CODE);
-            startActivity(intent);
+//            Intent intent = new Intent(AddStudyRoomActivity.this, TabActivity.class);
+////            intent.putExtra("phoneNo", phoneNo);
+//            //intent.putExtra("roomName", roomNameArray.get(position));
+//            //intent.putExtra("roomID", roomIDArrayFromSQLite.get(position));
+//            //startActivityForResult(intent, CHATROOM_REQUEST_CODE);
+//            startActivity(intent);
         }
         return false;
     }
