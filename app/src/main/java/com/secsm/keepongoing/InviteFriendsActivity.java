@@ -315,10 +315,12 @@ public class InviteFriendsActivity extends Activity {
                                 for(int i=0; i< rMessage.length(); i++)
                                 {
                                     rObj = rMessage.getJSONObject(i);
-                                    Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" + rObj.getString("nickname") + "|" +rObj.getString("targetTime"));
-                                    mFriends.add(new FriendNameAndIcon(rObj.getString("image"),
-                                            rObj.getString("nickname"),
-                                            rObj.getString("targetTime")));
+                                    if (!"null".equals(rObj.getString("nickname"))) {
+                                        Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" + rObj.getString("nickname") + "|" + rObj.getString("targetTime"));
+                                        mFriends.add(new FriendNameAndIcon(rObj.getString("image"),
+                                                rObj.getString("nickname"),
+                                                rObj.getString("targetTime")));
+                                    }
                                 }
 
                                 friendsArrayAdapters = new FriendsArrayAdapters(InviteFriendsActivity.this, R.layout.friend_list_item, mFriends);
@@ -354,14 +356,18 @@ public class InviteFriendsActivity extends Activity {
     // room create
     private void createLifeRoomRequest() {
 //    String type, rule, max_holiday_count, start_time, duration_time, showup_time, meet_days;
+        String _roomname = roomname.trim().replace(" ", "%20");
+        _roomname = _roomname.trim().replace("\n", "%0D%0A");
 
-        //TODO : check POST/GET METHOD and get_URL
+        String _rule = rule.trim().replace(" ", "%20");
+        _rule = _rule.trim().replace("\n", "%0D%0A");
+
         String get_url = KogPreference.REST_URL +
                 "Room" +
                 "?nickname=" + KogPreference.getNickName(InviteFriendsActivity.this)+
                 "&type=" + type +
-                "&rule=" + rule +
-                "&roomname=" + roomname +
+                "&rule=" + _rule +
+                "&roomname=" + _roomname +
                 "&max_holiday_count=" + max_holiday_count;
 
         Log.i(LOG_TAG, "URL : " + get_url);
@@ -413,14 +419,19 @@ public class InviteFriendsActivity extends Activity {
 
     private void createSubjectRoomRequest() {
 //    String type, rule, max_holiday_count, start_time, duration_time, showup_time, meet_days;
+        String _roomname = roomname.trim().replace(" ", "%20");
+        _roomname = _roomname.trim().replace("\n", "%0D%0A");
+
+        String _rule = rule.trim().replace(" ", "%20");
+        _rule = _rule.trim().replace("\n", "%0D%0A");
 
         //TODO : check POST/GET METHOD and get_URL
         String get_url = KogPreference.REST_URL +
                 "Room" +
                 "?nickname=" + KogPreference.getNickName(InviteFriendsActivity.this)+
                 "&type=" + type +
-                "&rule=" + rule +
-                "&roomname=" + roomname +
+                "&rule=" + _rule +
+                "&roomname=" + _roomname +
                 "&start_time=" + start_time +
                 "&duration_time=" + duration_time +
                 "&showup_time=" + showup_time +

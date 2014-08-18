@@ -22,6 +22,7 @@ public final class KogPreference {
     private static String QUIZ_NUM_TAG = "QUIZNUM";
     public static String REST_URL = "http://210.118.74.195:8080/KOG_Server_Rest/rest/";
     public static String MEDIA_URL = "http://210.118.74.195:8080/KOG_Server_Rest/upload/UserImage/";
+    public static String UPLOAD_URL= "http://210.118.74.195:8080/KOG_Server_Rest/rest/UserImage";
     public static final String CHAT_IP = "210.118.74.195";
     public static final int CHAT_PORT = 9090;
 
@@ -152,9 +153,9 @@ public final class KogPreference {
         }
     }
 
-    public static void setLogin(final Context context) {
+    public static void setLogin(final Context context, final boolean value) {
         try {
-            setBoolean(context, LOGIN_TAG, true);
+            setBoolean(context, LOGIN_TAG, value);
         } catch (ClassCastException e) {
             Log.e(LOG_TAG, "set Login ClassCaseException : " + e.getStackTrace());
         }

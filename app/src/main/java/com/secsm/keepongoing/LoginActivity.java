@@ -24,6 +24,11 @@ import com.secsm.keepongoing.Shared.KogPreference;
 
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import eu.inmite.android.lib.dialogs.SimpleDialogFragment;
 
 /**
@@ -131,7 +136,7 @@ public class LoginActivity extends Activity {
 
         Toast.makeText(getBaseContext(), "로그인이 되었습니다.", Toast.LENGTH_SHORT).show();
 
-        KogPreference.setLogin(LoginActivity.this);
+        KogPreference.setLogin(LoginActivity.this, true);
         //KogPreference.setString(LoginActivity.this, "nickName", nickname);
         KogPreference.setNickName(LoginActivity.this, nickname);
 //        Intent intent = new Intent(this, MainmenuActivity.class);
@@ -151,7 +156,7 @@ public class LoginActivity extends Activity {
 
         Log.i(LOG_TAG, "post btn event trigger");
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, get_url, null,
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

@@ -1,7 +1,9 @@
 package com.secsm.keepongoing.Adapters;
 
 
+import com.android.volley.toolbox.ImageLoader;
 import com.secsm.keepongoing.R;
+import com.secsm.keepongoing.Shared.MyVolley;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -51,6 +53,8 @@ public class FriendsArrayAdapters extends BaseAdapter {
 
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
+            MyVolley.init(context);
+
             convertView = inflater.inflate(layout, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.icon = (ImageView) convertView.findViewById(R.id.iconFriend);
@@ -65,9 +69,11 @@ public class FriendsArrayAdapters extends BaseAdapter {
 
 
 //        viewHolder.icon.setImageBitmap();
+//                                getProfileFromURL(m.getFileName(), viewHolder.iv);
 
+        getProfileFromURL(friendArrayList.get(position).getProfile_path(),viewHolder.icon);
 
-        viewHolder.icon.setImageResource(friendArrayList.get(position).icon);
+//        viewHolder.icon.setImageResource(friendArrayList.get(position).icon);
 
         viewHolder.name.setText(friendArrayList.get(position).name);
 
@@ -109,4 +115,14 @@ public class FriendsArrayAdapters extends BaseAdapter {
 //        viewHolder = null;
 //        mContext = null;
     }
+
+    void getProfileFromURL(String ImgURL, ImageView imgView) {
+        ImageLoader imageLoader = MyVolley.getImageLoader();
+        imageLoader.get(ImgURL,
+                ImageLoader.getImageListener(imgView,
+                        R.drawable.profile_default,
+                        R.drawable.profile_default)
+        );
+    }
+
 }
