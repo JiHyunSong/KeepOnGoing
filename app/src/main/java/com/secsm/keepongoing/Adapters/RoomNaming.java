@@ -13,8 +13,9 @@ public class RoomNaming {
     String duration_time;
     String showup_time;
     String meet_days;
+    String quiz_num;
 
-    public RoomNaming(String type, String rid, String rule, String roomname, String max_holiday_count, String start_time, String duration_time, String showup_time, String meet_days) {
+    public RoomNaming(String type, String rid, String rule, String roomname, String max_holiday_count, String start_time, String duration_time, String showup_time, String meet_days, String quiz_num) {
         this.type = type;
         this.rid = rid;
         this.rule = rule;
@@ -24,8 +25,9 @@ public class RoomNaming {
         this.duration_time = duration_time;
         this.showup_time = showup_time;
         this.meet_days = meet_days;
+        this.quiz_num = quiz_num;
     }
-
+    public String getQuiz_num() {return quiz_num;}
     public String getRid() {
         return rid;
     }

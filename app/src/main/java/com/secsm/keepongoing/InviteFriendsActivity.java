@@ -451,7 +451,7 @@ public class InviteFriendsActivity extends Activity {
 
         Log.i(LOG_TAG, "URL : " + get_url);
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, get_url, null,
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

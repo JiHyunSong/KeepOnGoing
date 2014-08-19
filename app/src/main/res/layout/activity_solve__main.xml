@@ -69,9 +69,12 @@
                     <TextView
                         android:id="@+id/textview_solve"
                         android:layout_width="fill_parent"
-                        android:layout_height="200dp"
+                        android:layout_height="wrap_content"
                         android:layout_below="@+id/problemandsubject_solve"
                         android:gravity="top|left"
+                        android:lines="10"
+                        android:maxLines="10"
+                        android:singleLine="false"
                         android:scrollbars="vertical" />
                 </ScrollView>
 
@@ -91,10 +94,20 @@
                     android:layout_below="@id/listView_Quiz_solve"
                     android:gravity="right">
 
+                    <TextView
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/solve_main_tv"
+                        android:text="total score : "/>
                     <Button
                         android:id="@+id/btnSubmit_solve"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/solve_main_tv"
+                        android:layout_alignBaseline="@id/solve_main_tv"
                         android:text="제출" />
                 </RelativeLayout>
             </RelativeLayout>

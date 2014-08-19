@@ -1,21 +1,8 @@
 package com.secsm.keepongoing;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.secsm.keepongoing.Shared.ByteUtils;
-import com.secsm.keepongoing.Shared.Encrypt;
-import com.secsm.keepongoing.Shared.KogPreference;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -23,19 +10,21 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.secsm.keepongoing.Shared.Encrypt;
+import com.secsm.keepongoing.Shared.KogPreference;
 
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
 
 public class MainActivity extends Activity {
 
@@ -77,7 +66,7 @@ public class MainActivity extends Activity {
 
             if (mobile.isConnected() || wifi.isConnected()) {
 
-                if (KogPreference.getBoolean(MainActivity.this, "firstStart") || !KogPreference.DEBUG_MODE) {
+                if (KogPreference.DEBUG_MODE) {
                     GoTabPage();
                 } else {
                 /* if the first running */

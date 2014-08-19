@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.secsm.keepongoing.R;
@@ -58,11 +60,31 @@ public class AlramAdapter extends BaseAdapter {
         contact.gethour();
         contact.getminute();*/
         View v = convertview;
-
+        final View temp=v;
 
         if (v == null) {
             viewHolder = new ViewHolder();
             v = inflater.inflate(R.layout.list_row, null);
+            CheckBox vibratemode = (CheckBox) v.findViewById(R.id.vibratemode);
+            if (position == 0) {
+
+                vibratemode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                        Preference.putBoolean(mContext, "vibratemode",isChecked);
+
+                    }
+                });
+            }
+
+            if (position == 1) {
+
+                vibratemode.setVisibility(v.GONE);
+            }
+
+
+
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -78,15 +100,7 @@ public class AlramAdapter extends BaseAdapter {
                         v.getContext().startActivity(intent);
                         //     Toast.makeText(v.getContext(), "선택된자의 이름은 목표시간", 2).show();
                     }
-         /*           LayoutInflater mLayout = LayoutInflater.from(v.getContext());
-                    mLayout.inflate(R.layout.lert_dialog_text_entry, null);
 
-                    AlertDialog dialogBox = new AlertDialog.Builder(v.getContext())
-                            .setTitle("title")
-                            .setView(mLayout)
-                    .create();
-                    dialogBox.show();
-*/
 
 
                 }

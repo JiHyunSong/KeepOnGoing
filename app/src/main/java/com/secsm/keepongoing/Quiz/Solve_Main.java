@@ -20,11 +20,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.secsm.keepongoing.R;
+import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 
 public class Solve_Main extends Activity {
@@ -61,14 +63,14 @@ public class Solve_Main extends Activity {
         listView = (ListView) findViewById(R.id.listView_Quiz_solve);
         //listView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
         listView.setAdapter(mAdapter);
-        questionRequest(num);
+        questionRequest();
         settingTextView();
         addListenerOnButton();
 
     }
 
     public void addlist(String solution,String answer){
-        String[] listnum = solution.trim().split("\\|");
+        String[] listnum = solution.split("\\|");
         String[] listtype;
 
 
@@ -89,6 +91,39 @@ public class Solve_Main extends Activity {
 
 
     }
+    public int checkanswer(String solution,String answer){
+        int total=0;
+        String[] listnum = solution.split("\\|");
+        String[] listtype;
+        String[] ansnum = answer.split("\\|");
+        String[] anstype;
+
+        for(int i=0;i<listnum.length;i++) {
+            if(ansnum[i].split("\\$")!=null&&listnum[i].split("\\$")!=null) {
+                listtype = listnum[i].split("\\$");
+                anstype = ansnum[i].split("\\$");
+                if (listtype[1].toString().equals("multi")) {
+
+                    if (listtype[2].toString().equals(anstype[2].toString())) {
+                        total++;
+                    }
+                }
+                if (listtype[1].toString().equals("essay")) ;
+
+                if (listtype[1].toString().equals("tf")) {
+                    if (listtype[2].toString().equals(anstype[2].toString())) {
+                        total++;
+                    }
+                }
+            }
+        }
+        settingListView();
+
+return total;
+    }
+
+
+
 
     public void settingTextView() {
 
@@ -152,7 +187,13 @@ public class Solve_Main extends Activity {
                                 "Answer : "+ request_check(list)
                         , Toast.LENGTH_SHORT
                 ).show();*/
-                answerRegisterRequest(subject.getText().toString(),request_check(list).toString());
+
+
+                int total=checkanswer(solution,request_check(list).toString());
+                TextView solve_main_tv=(TextView)findViewById(R.id.solve_main_tv);
+                solve_main_tv.setText("total score without essay : +"+ total);
+
+                answerRegisterRequest(subject.getText().toString(), request_check(list).toString());
             }
 
         });
@@ -182,14 +223,14 @@ public class Solve_Main extends Activity {
             Log.e("minsu) : ", "list content name: " + arrays.get(position).name);
             if(arrays.get(position).name.equals("multi")){
                 if(mulitiplecheck(arrays,position).equals("error")) {
-                    return "error";
+                    result += position+"$"+arrays.get(position).name+"$"+"error"+"|";
                 }else {
                     result += position+"$"+arrays.get(position).name+"$"+mulitiplecheck(arrays, position)+"|";
                 }
             }
             else if(arrays.get(position).name.equals("essay")){
                 if(arrays.get(position).essay.equals("")) {
-                    return "error";
+                    result+=position+"$"+arrays.get(position).name+"$"+"error"+"|";
                 }
                 else {
                     result+=position+"$"+arrays.get(position).name+"$"+arrays.get(position).essay+"|";
@@ -202,7 +243,7 @@ public class Solve_Main extends Activity {
                     result+=position+"$"+arrays.get(position).name+"$"+false+"|";
                 }
                 else
-                    return "error";
+                    result+=position+"$"+arrays.get(position).name+"$"+"error"+"|";
             }
         }
         return result;
@@ -212,30 +253,15 @@ public class Solve_Main extends Activity {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //@통신
     private void answerRegisterRequest(String type, String answer) {
+        //@통신
+
+        answer = answer.trim().replace(" ", "%20");
+        answer = answer.trim().replace("\n", "%0A");
         String get_url = KogPreference.REST_URL +
                 "Room/Quiz" +
                 "?srid=" + KogPreference.getRid(Solve_Main.this) +
-                "&num="+"18"+
+                "&num="+ KogPreference.getQuizNum(Solve_Main.this) +
                 "&type="+type+//type 받아와야됨
                  "&answer=" + answer+
                 "&nickname="+ KogPreference.getNickName(Solve_Main.this);
@@ -243,7 +269,7 @@ public class Solve_Main extends Activity {
 
         Log.i(LOG_TAG, "get_url : " + get_url);
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.PUT, get_url, null,
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.PUT, Encrypt.encodeIfNeed(get_url), null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -254,7 +280,6 @@ public class Solve_Main extends Activity {
                             status_code = response.getInt("status");
                             if (status_code == 200) {
                                 rMessageput = response.getString("message");
-                                Toast.makeText(getBaseContext(), LOG_TAG , Toast.LENGTH_SHORT).show();
 
                             } else if (status_code == 9001) {
                                 Toast.makeText(getBaseContext(), "답안 등록이 불가능합니다.", Toast.LENGTH_SHORT).show();
@@ -284,11 +309,11 @@ public class Solve_Main extends Activity {
 
 
 
-    private void questionRequest(String num) {
+    private void questionRequest() {
         String get_url = KogPreference.REST_URL +
                 "Room/Quiz" +
                 "?srid=" + KogPreference.getRid(Solve_Main.this) +
-                "&num="+"19"+//num 받아와야됨
+                "&num="+KogPreference.getQuizNum(Solve_Main.this) +//num 받아와야됨
                 "&nickname=" + KogPreference.getNickName(Solve_Main.this);
 
         Log.i(LOG_TAG, "get_url : " + get_url);
@@ -308,22 +333,20 @@ public class Solve_Main extends Activity {
                                 rMessageget = response.getJSONArray("message");
                                 JSONObject rObj;
 
-
                                 rObj=rMessageget.getJSONObject(0);
-
-                                questiontype=rObj.getString("type").toString();
-                                question=rObj.getString("question").toString();
-                                solution=rObj.getString("solution").toString();
-                             //   answer=rObj.getString("answer").toString();
+                                questiontype= URLDecoder.decode(rObj.getString("type").toString(), "UTF-8");
+                                question=URLDecoder.decode(rObj.getString("question").toString(), "UTF-8");
+                                solution=URLDecoder.decode(rObj.getString("solution").toString(), "UTF-8");
                                 Log.e("minsu) :","contents2 : "+question+" | "+questiontype+" | "+solution);
                                 settingTextView();
+                                //question = question.replace("\\\n", System.getProperty("line.separator"));
 
                                 addlist(solution,answer);
 
                                 // real action
                                 //          GoNextPage();
                             } else if (status_code == 9001) {
-                                Toast.makeText(getBaseContext(), "답안 등록이 불가능합니다.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getBaseContext(), "문제 가져오기가 불가능합니다.", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
                                 if (KogPreference.DEBUG_MODE) {

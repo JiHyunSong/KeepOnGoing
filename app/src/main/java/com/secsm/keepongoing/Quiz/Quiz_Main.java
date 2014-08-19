@@ -22,10 +22,16 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.secsm.keepongoing.R;
+import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
+import com.secsm.keepongoing.Shared.MultipartRequest;
 
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.StringBody;
 import org.json.JSONObject;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 public class Quiz_Main extends Activity {
@@ -156,7 +162,15 @@ public class Quiz_Main extends Activity {
             public void onClick(View v) {
                 listView.clearFocus();
                 //@통신
-               quizRegisterRequest(input_problem.getText().toString(),String.valueOf(spinner1.getSelectedItem()),request_check(list));
+
+                if(request_check(list).equals("error"))
+                    Toast.makeText(Quiz_Main.this,"모든 답안을 입력하세요",Toast.LENGTH_SHORT).show();
+                else if(request_check(list).equals(""))
+                    Toast.makeText(Quiz_Main.this,"문제를 입력하세요",Toast.LENGTH_SHORT).show();
+                else {
+                //    MultipartEntity(input_problem.getText().toString(), String.valueOf(spinner1.getSelectedItem()), request_check(list));
+                 quizRegisterRequest(input_problem.getText().toString(), String.valueOf(spinner1.getSelectedItem()), request_check(list));
+                }
             }
 
         });
@@ -170,18 +184,34 @@ public class Quiz_Main extends Activity {
     private void quizRegisterRequest(String question, String type, String solution) {
         question = question.trim().replace(" ", "%20");
         solution = solution.trim().replace(" ", "%20");
+        question = question.trim().replace("\n", "%0A");
+        solution = solution.trim().replace("\n", "%0A");
+        Log.i("minsu: ) ","minsu: whffu"+question);
+
        final  String temp= solution;
         String get_url = KogPreference.REST_URL +
                 "Room/Quiz" +
-                "?srid=" +"35"+//+ KogPreference.getRid(Quiz_Main.this) +
-                "&type=" + "type" +
+                "?srid=" +KogPreference.getRid(Quiz_Main.this) +
+                "&type=" + type +
                 "&question=" + question +
                 "&solution=" + solution +
-                "&nickname=" + "jenny";//KogPreference.getNickName(Quiz_Main.this);
+                "&nickname=" + KogPreference.getNickName(Quiz_Main.this);
 
-        Log.i(LOG_TAG, "get_url : " + get_url);
+//        JSONObject jsonObj = new JSONObject();
+//        try {
+//            jsonObj.put("srid", KogPreference.getRid(Quiz_Main.this));
+//            jsonObj.put("type", type);
+//            jsonObj.put("question", question);
+//            jsonObj.put("solution", solution);
+//            jsonObj.put("nickname", KogPreference.getNickName(Quiz_Main.this));
+//        }
+//        catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, get_url, null,
+//        Log.i(LOG_TAG, "get_url : " + get_url);
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), null,
+    //    JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, KogPreference.REST_URL+"Room/Quiz", jsonObj,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -217,9 +247,57 @@ public class Quiz_Main extends Activity {
             }
         }
         );
+//        {
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> header = new HashMap<String, String>();
+//                header.put("Content-Type", "application/json");
+//                return header;
+//            }
+//        };
+
         vQueue.add(jsObjRequest);
     }
 
+/*
+            jsonObj.put("srid", KogPreference.getRid(Quiz_Main.this));
+            jsonObj.put("type", type);
+            jsonObj.put("question", question);
+            jsonObj.put("solution", solution);
+            jsonObj.put("nickname", KogPreference.getNickName(Quiz_Main.this));
+ */
+/*    void MultipartEntity(String question, String type, String solution)
+    {
+        Charset c = Charset.forName("utf-8");
+        String URL = KogPreference.REST_URL+"Room/Quiz";
+        MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, Charset.forName("UTF-8"));
+        try
+        {
+            entity.addPart("srid", new StringBody(KogPreference.getRid(Quiz_Main.this)));
+            entity.addPart("type", new StringBody(type));
+            entity.addPart("question", new StringBody(question));
+            entity.addPart("solution", new StringBody(solution));
+            entity.addPart("nickname", new StringBody(KogPreference.getNickName(Quiz_Main.this)));
+            Log.i("MULTIPART-ENTITY", "add addPART");
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        MultipartRequest req = new MultipartRequest(Request.Method.POST, URL, entity, errListener);
+        vQueue.add(req);
+        Log.i("MULTIPART-ENTITY", "add queue");
+
+        vQueue.start();
+    }
+
+    Response.ErrorListener errListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError arg0) {
+// TODO Auto-generated method stub
+            Log.d("errrrrrooooor", arg0.toString());
+        }
+    };*/
 
 
 

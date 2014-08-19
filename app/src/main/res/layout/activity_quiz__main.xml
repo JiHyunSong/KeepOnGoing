@@ -105,8 +105,8 @@
                     android:layout_margin="10dp"
                     android:gravity="top|left"
                     android:hint="rounded"
-                    android:lines="9"
-                    android:maxLines="9"
+                    android:lines="10"
+                    android:maxLines="10"
                     android:scrollbars="vertical"
                     bootstrapbutton:be_roundedCorners="true"
                     bootstrapbutton:be_state="info" />

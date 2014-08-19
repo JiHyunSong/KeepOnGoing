@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -51,7 +50,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -343,7 +341,6 @@ public class TabActivity extends Activity {
                             }
                             else if(status_code ==1001) {
                                 acheivetimeputRequest(temp_target_time, temp_accomplished_time, temp_date);
-                                Toast.makeText(getBaseContext(), "중복", Toast.LENGTH_SHORT).show();
                             }
                             else {
                                 Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
@@ -399,7 +396,7 @@ public class TabActivity extends Activity {
                                 rMessage = response.getString("message");
                                 // real action
                                 // GoNextPage();
-                                Toast.makeText(getBaseContext(), LOG_TAG +rMessage, Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getBaseContext(), LOG_TAG +rMessage, Toast.LENGTH_SHORT).show();
                             } else if (status_code == 9001) {
                                 Toast.makeText(getBaseContext(), "시간등록이 불가능합니다. PUT", Toast.LENGTH_SHORT).show();
                             } else {
@@ -513,7 +510,7 @@ public class TabActivity extends Activity {
 
     void getImageFromURL(String img_name, ImageView imgView) {
 
-        String ImgURL = img_name;
+        String ImgURL = KogPreference.MEDIA_URL+img_name;
         // TODO R.drawable.error_image
         ImageLoader imageLoader = MyVolley.getImageLoader();
         imageLoader.get(ImgURL,
@@ -548,8 +545,9 @@ public class TabActivity extends Activity {
                 Log.i(LOG_TAG, "tab3, rooms Clicked");
                 Log.i(LOG_TAG, "position : " + position);
                 Intent intent = new Intent(TabActivity.this, StudyRoomActivity.class);
-
+                intent.putExtra("type", mRooms.get(position).getType());
                 KogPreference.setRid(TabActivity.this, mRooms.get(position).getRid());
+                KogPreference.setQuizNum(TabActivity.this, mRooms.get(position).getQuiz_num());
                 Log.i(LOG_TAG, "RID (mRooms.get(position).getRid()): " + mRooms.get(position).getRid());
                 Log.i(LOG_TAG, "RID (KogPreference.getRid(TabActivity.this)): " + KogPreference.getRid(TabActivity.this));
 
@@ -561,18 +559,21 @@ public class TabActivity extends Activity {
                 Log.i(LOG_TAG, "tab4, settings Clicked");
                 Log.i(LOG_TAG, "position : " + position);
                 switch (position) {
-                    case 0:
-                        break;
-                    case 1: // 알람 설정
+                    case 0: // 알람 설정
                         Log.i(LOG_TAG, "tab4, settings Clicked");
-                        Intent intent_notice = new Intent(TabActivity.this, NoticeActivity.class);
-                        startActivity(intent_notice);
+                        Intent intent_alarm = new Intent(TabActivity.this, alram_list.class);
+                        startActivity(intent_alarm);
                         break;
-                    case 2: // 목표 시간 설정
+                    case 1: //
                         Log.i(LOG_TAG, "tab4, settings Clicked");
-
+//                        Intent intent_alarm = new Intent(TabActivity.this, NoticeActivity.class);
+//                        startActivity(intent_notice);
                         break;
-                    case 3: // 퀴즈 모음
+//                    case 2: // 목표 시간 설정
+//                        Log.i(LOG_TAG, "tab4, settings Clicked");
+//
+//                        break;
+                    case 2:
                         if(arGeneral3.get(position).toString().equals("로그아웃"))
                         {
                             Log.i(LOG_TAG, "tab4, 로그아웃");
@@ -892,7 +893,7 @@ public class TabActivity extends Activity {
                             } else {
                                 Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
                                 if (KogPreference.DEBUG_MODE) {
-                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         } catch (Exception e) {
@@ -968,7 +969,10 @@ public class TabActivity extends Activity {
                                                 URLDecoder.decode(rObj.getString("startTime"),"UTF-8"),
                                                 URLDecoder.decode(rObj.getString("durationTime"),"UTF-8"),
                                                 URLDecoder.decode(rObj.getString("showupTime"),"UTF-8"),
-                                                URLDecoder.decode(rObj.getString("meetDays"),"UTF-8")));
+                                                URLDecoder.decode(rObj.getString("meetDays"),"UTF-8"),
+                                                URLDecoder.decode(rObj.getString("num"),"UTF-8")
+                                            ));
+                                        Log.i(LOG_TAG, "num"+ URLDecoder.decode(rObj.getString("num"),"UTF-8"));
                                     }
                                 }
 

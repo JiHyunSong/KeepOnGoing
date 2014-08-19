@@ -1,18 +1,18 @@
 package com.secsm.keepongoing.Adapters;
 
 
-import com.android.volley.toolbox.ImageLoader;
-import com.secsm.keepongoing.R;
-import com.secsm.keepongoing.Shared.MyVolley;
-
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.android.volley.toolbox.ImageLoader;
+import com.secsm.keepongoing.R;
+import com.secsm.keepongoing.Shared.KogPreference;
+import com.secsm.keepongoing.Shared.MyVolley;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -117,6 +117,7 @@ public class FriendsArrayAdapters extends BaseAdapter {
     }
 
     void getProfileFromURL(String ImgURL, ImageView imgView) {
+        ImgURL = KogPreference.MEDIA_URL + ImgURL;
         ImageLoader imageLoader = MyVolley.getImageLoader();
         imageLoader.get(ImgURL,
                 ImageLoader.getImageListener(imgView,

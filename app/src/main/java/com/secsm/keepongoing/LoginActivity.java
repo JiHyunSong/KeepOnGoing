@@ -1,10 +1,8 @@
 package com.secsm.keepongoing;
 
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -18,20 +16,13 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 
 import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import eu.inmite.android.lib.dialogs.SimpleDialogFragment;
 
 /**
  * A login screen that offers login via email/password.
@@ -153,7 +144,7 @@ public class LoginActivity extends Activity {
 
 
     private void UserLogin(final String nickName, final String password) {
-        login_fl.setVisibility(View.VISIBLE);
+//        login_fl.setVisibility(View.VISIBLE);
 
         String get_url = KogPreference.REST_URL +
                 "User" +
@@ -176,7 +167,7 @@ public class LoginActivity extends Activity {
                             if (status_code == 200) {
                                 rMessage = response.getString("message");
                                 // real action
-                                login_fl.setVisibility(View.GONE);
+//                                login_fl.setVisibility(View.GONE);
                                 GoNextPage(nickName, password);
                             } else if (status_code == 9001) {
                                 Toast.makeText(getBaseContext(), "아이디와 패스워드를 확인해주세요", Toast.LENGTH_SHORT).show();
@@ -191,7 +182,7 @@ public class LoginActivity extends Activity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                login_fl.setVisibility(View.GONE);
+//                login_fl.setVisibility(View.GONE);
 
                 Log.i(LOG_TAG, "Response Error");
                 if (KogPreference.DEBUG_MODE) {

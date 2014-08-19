@@ -37,10 +37,13 @@ public class alert extends Activity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alert);
+
         vibrate_function();
 
         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+
+        if(Preference.getBoolean(alert.this, "vibratemode"))
         r.play();
 
         mManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
@@ -54,6 +57,8 @@ public class alert extends Activity {
                 mManager.set(AlarmManager.RTC_WAKEUP, mCalendar.getTime() + 10 * 60 * 1000, pendingIntent());
                 Log.e("minsu) : AlertActivity : ", "" + mCalendar.toString());
                 Toast.makeText(alert.this, "10분뒤에 울립니다.", 2).show();
+
+                if(Preference.getBoolean(alert.this, "vibratemode"))
                 r.stop();
                 mVibrator.cancel();   // 진동 중지
                 finish();
@@ -74,7 +79,9 @@ public class alert extends Activity {
                 mManager.set(AlarmManager.RTC_WAKEUP, mCalendar.getTime() + 24 * 60 * 60 * 1000, pendingIntent());
                 Log.e("minsu) : AlertActivity : ", "" + mCalendar.toString());
                 Toast.makeText(alert.this, "기상 완료", 2).show();
+                if(Preference.getBoolean(alert.this, "vibratemode"))
                 r.stop();
+
                 mVibrator.cancel();   // 진동 중지
                 finish();
             }

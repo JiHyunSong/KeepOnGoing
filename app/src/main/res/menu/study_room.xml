@@ -29,6 +29,7 @@
         android:showAsAction="always"
         android:title="친구초대"
         android:visible="true" />
+
     <item
         android:id="@+id/actionBarFifthBtn"
         android:icon="@drawable/ic_action_search"

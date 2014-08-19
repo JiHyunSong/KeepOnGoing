@@ -3,7 +3,6 @@ package com.secsm.keepongoing;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
@@ -43,11 +42,9 @@ import com.secsm.keepongoing.Quiz.Quiz_Main;
 import com.secsm.keepongoing.Quiz.Solve_Main;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
-import com.secsm.keepongoing.Shared.KogSocketConnecter;
 import com.secsm.keepongoing.Shared.MultipartRequest;
 import com.secsm.keepongoing.Shared.MyVolley;
 import com.secsm.keepongoing.Shared.SocketListener;
-import com.secsm.keepongoing.Shared.SocketManager;
 
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
@@ -67,7 +64,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.Socket;
 import java.net.URL;
@@ -105,13 +101,14 @@ public class StudyRoomActivity extends Activity {
     private Handler mainHandler;
     private SocketListener sl;
     SocketAsyncTask soc=null;
-
+    String type;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_study_room);
         ActionBar bar = getActionBar();
         bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.NAVIGATION_MODE_STANDARD);
+
 
         MyVolley.init(StudyRoomActivity.this);
         vQueue = Volley.newRequestQueue(this);
@@ -120,10 +117,13 @@ public class StudyRoomActivity extends Activity {
         mDBHelper = new DBHelper(this);
         intent = getIntent();
         rID = (int) intent.getIntExtra("roomID", -1);
+        type = (String) intent.getStringExtra("type");
         rID = Integer.parseInt(KogPreference.getRid(StudyRoomActivity.this));
         if (rID == -1) {
             // TODO : 잘못된 접근, 되돌아가기
         }
+
+        Log.i(LOG_TAG, "type" + type);
 
 //        myID = KogPreference.getInt(StudyRoomActivity.this, "uid");
 
@@ -205,7 +205,7 @@ public class StudyRoomActivity extends Activity {
             try {
                 Log.i(LOG_TAG, "sendMessage() , msg : " + msg);
                 sendMsgToSvr(msg);
-//                sendText(KogPreference.getNickName(StudyRoomActivity.this), msg);
+                sendText(KogPreference.getNickName(StudyRoomActivity.this), KogPreference.getRid(StudyRoomActivity.this), msg, "plaintext");
 
                 messageTxt.setText("");
             } catch (Exception ex) {
@@ -714,11 +714,18 @@ public class StudyRoomActivity extends Activity {
         actionBarThirdBtn = menu.findItem(R.id.actionBarThirdBtn);
 
         actionBarThirdBtn.setOnMenuItemClickListener(ab_add_quiz_listener);
+
         actionBarFourthBtn = menu.findItem(R.id.actionBarFourthBtn);
 
         actionBarFourthBtn.setOnMenuItemClickListener(ab_invite_friend_listener);
         actionBarFifthBtn = menu.findItem(R.id.actionBarFifthBtn);
         actionBarFifthBtn.setOnMenuItemClickListener(ab_kick_off_friend_listener);
+
+        if("liferoom".equals(type)) {
+            actionBarThirdBtn.setVisible(false);
+            actionBarSecondBtn.setVisible(false);
+        }
+
         return true;
     }
 
