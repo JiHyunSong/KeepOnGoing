@@ -166,7 +166,7 @@ public class MainActivity extends Activity {
                     }
                     _regId = _gcm.register(SENDER_ID);
                     msg = "Device registered, registration ID=" + _regId;
-
+                    Log.e("GCM", msg);
                     // For this demo: we don't need to send it because the device
                     // will send upstream messages to a server that echo back the
                     // message using the 'from' address in the message.

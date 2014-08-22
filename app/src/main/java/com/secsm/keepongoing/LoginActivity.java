@@ -148,7 +148,7 @@ public class LoginActivity extends Activity {
 
         String get_url = KogPreference.REST_URL +
                 "User" +
-                "?nickname=" + nickName +
+                "?nickname=" + nickName.trim() +
                 "&password=" + Encrypt.encodingMsg(password) +
                 "&gcmid=" + KogPreference.getRegId(LoginActivity.this);
         Log.i(LOG_TAG, "URL : " + get_url);

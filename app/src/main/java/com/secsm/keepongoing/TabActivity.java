@@ -467,7 +467,7 @@ public class TabActivity extends Activity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.imgBtn_tab_stopwatch:
-                    Log.i(LOG_TAG, "stopwatch tab");
+//                    Log.i(LOG_TAG, "stopwatch tab");
                     setInvisibleBody();
                     layoutStopwatch.setVisibility(View.VISIBLE);
                     actionBarSecondBtn.setIcon(R.drawable.ic_action_new);
@@ -476,7 +476,7 @@ public class TabActivity extends Activity {
                     break;
 
                 case R.id.imgBtn_tab_friends:
-                    Log.i(LOG_TAG, "friends tab");
+//                    Log.i(LOG_TAG, "friends tab");
                     setInvisibleBody();
                     layoutFriends.setVisibility(View.VISIBLE);
                     actionBarSecondBtn.setIcon(R.drawable.ic_action_add_person);
@@ -485,7 +485,7 @@ public class TabActivity extends Activity {
                     break;
 
                 case R.id.imgBtn_tab_rooms:
-                    Log.i(LOG_TAG, "rooms tab");
+//                    Log.i(LOG_TAG, "rooms tab");
                     setInvisibleBody();
 //                    actionBarRoomTabNotifyBtn.setVisibility(View.VISIBLE);
 //                    actionBarRoomTabAddBtn.setVisibility(View.VISIBLE);
@@ -499,7 +499,7 @@ public class TabActivity extends Activity {
                     break;
 
                 case R.id.imgBtn_tab_settings:
-                    Log.i(LOG_TAG, "settings tab");
+//                    Log.i(LOG_TAG, "settings tab");
                     setInvisibleBody();
                     layoutSettings.setVisibility(View.VISIBLE);
                     break;
