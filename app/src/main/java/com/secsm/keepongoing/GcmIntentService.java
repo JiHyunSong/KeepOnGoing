@@ -2,10 +2,12 @@ package com.secsm.keepongoing;
 
 import android.app.IntentService;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -15,7 +17,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 public class GcmIntentService extends IntentService {
     public static final int NOTIFICATION_ID = 1;
-
+    private static final String LOG_TAG = "GCM Intent Service";
     public GcmIntentService() {
         super("GcmIntentService");
     }
@@ -42,15 +44,48 @@ public class GcmIntentService extends IntentService {
                 sendNotification("Deleted messages on server: " + extras.toString());
                 // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
-                String msg = intent.getStringExtra("msg");
-                // Post notification of received message.
-//            sendNotification("Received: " + extras.toString());
-                sendNotification("Received: " + msg);
+                String msg = intent.getStringExtra("message");
+                String type = intent.getStringExtra("messageType");
+                // room invite
+                // friend invite
+                // chat message - message
+                // chat message - image
+
+
+                handleMessage(GcmIntentService.this, intent);
                 Log.i("GcmIntentService.java | onHandleIntent", "Received: " + extras.toString());
             }
         }
         // Release the wake lock provided by the WakefulBroadcastReceiver.
         GcmBroadcastReceiver.completeWakefulIntent(intent);
+    }
+
+
+    String senderName;
+    String message;
+    String roomID;
+    private void handleMessage(Context context, Intent intent) {
+
+        Log.e("C2DM", "handleMessage");
+        PushWakeLock.acquireCpuWakeLock(context);
+        Vibrator mVib = (Vibrator) context
+                .getSystemService(context.VIBRATOR_SERVICE);
+        mVib.vibrate(500);
+
+        senderName = intent.getExtras().getString("senderID");
+        roomID = intent.getExtras().getString("roomID");
+
+        message = intent.getExtras().getString("message");
+        Intent a = new Intent(context, PushWakeKogDialog.class);
+        Bundle b2 = new Bundle();
+        b2.putString("senderID", senderName);
+        b2.putString("roomID", roomID);
+        b2.putString("message", message);
+        a.putExtras(b2);
+
+        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        context.startActivity(a);
     }
 
     // Put the message into a notification and post it.
@@ -59,22 +94,22 @@ public class GcmIntentService extends IntentService {
     private void sendNotification(String msg) {
 
 
-//        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//
-//        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        intent.putExtra("msg", msg);
-//
-//        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_launcher)
-//                .setContentTitle("GCM Notification")
-//                .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
-//                .setContentText(msg)
-//                .setAutoCancel(true)
-//                .setVibrate(new long[]{0, 500});
-//
-//        mBuilder.setContentIntent(contentIntent);
-//        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        Intent intent = new Intent(getApplicationContext(), TabActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("msg", msg);
+
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_launcher)
+                .setContentTitle("GCM Notification")
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
+                .setContentText(msg)
+                .setAutoCancel(true)
+                .setVibrate(new long[]{0, 500});
+
+        mBuilder.setContentIntent(contentIntent);
+        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
     }
 }

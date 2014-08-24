@@ -70,36 +70,36 @@
         </activity>
         <activity
             android:name=".MainmenuActivity"
-            android:label="@string/title_activity_mainmenu" >
+            android:label="@string/title_activity_tab" >
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_login"
+            android:label="@string/title_activity_tab"
             android:windowSoftInputMode="adjustResize|stateVisible" >
         </activity>
         <activity
             android:name=".RegisterActivity"
-            android:label="@string/title_activity_register" >
+            android:label="@string/title_activity_tab" >
         </activity>
         <activity
             android:name=".AuthActivity"
-            android:label="@string/title_activity_auth" >
+            android:label="@string/title_activity_tab" >
         </activity>
         <activity
             android:name=".AuthNextActivity"
-            android:label="@string/title_activity_auth_next" >
+            android:label="@string/title_activity_tab" >
         </activity>
         <activity
             android:name=".ProfileActivity"
-            android:label="@string/title_activity_profile" >
+            android:label="@string/title_activity_tab" >
         </activity>
         <activity
             android:name=".StudyRoomActivity"
-            android:label="@string/title_activity_study_room" >
+            android:label="@string/title_activity_tab" >
         </activity>
         <activity
             android:name=".NoticeActivity"
-            android:label="@string/title_activity_notice" >
+            android:label="@string/title_activity_tab" >
         </activity>
         <activity
             android:name=".TabActivity"
@@ -107,43 +107,47 @@
         </activity>
         <activity
             android:name=".CreateRoomActivity"
-            android:label="@string/title_activity_create_room" >
+            android:label="@string/title_activity_tab" >
         </activity>
         <activity
             android:name=".Alarm.Alarm_main"
-            android:label="@string/title_activity_alarm_main" >
+            android:label="@string/title_activity_tab" >
         </activity>
         <activity
             android:name=".Alarm.alert"
-            android:label="@string/title_activity_alert" >
+            android:label="@string/title_activity_tab" >
         </activity>
         <activity
             android:name=".Alarm.alram_list"
-            android:label="@string/title_activity_alram_list" >
+            android:label="@string/title_activity_tab" >
         </activity>
         <activity
             android:name=".AddStudyRoomActivity"
-            android:label="@string/title_activity_add_study_room" >
+            android:label="@string/title_activity_tab" >
         </activity>
         <activity
             android:name=".AddFriendActivity"
-            android:label="@string/title_activity_add_friend" >
+            android:label="@string/title_activity_tab" >
         </activity>
         <activity
             android:name=".InviteFriendsActivity"
-            android:label="@string/title_activity_invite_friends" >
+            android:label="@string/title_activity_tab" >
         </activity>
         <activity
             android:name=".Quiz.Quiz_Main"
-            android:label="@string/title_activity_quiz__main"
+            android:label="@string/title_activity_tab"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".Quiz.Solve_Main"
-            android:label="@string/title_activity_solve__main" >
+            android:label="@string/title_activity_tab" >
         </activity>
         <activity
             android:name=".Shared.RoomFriendsActivity"
-            android:label="@string/title_activity_room_friends" >
+            android:label="@string/title_activity_tab" >
+        </activity>
+        <activity
+            android:name=".PushWakeKogDialog"
+            android:label="@string/title_activity_tab" >
         </activity>
     </application>
 
