@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -51,6 +52,7 @@ public class InviteFriendsActivity extends Activity {
     private String rMessage;
     FriendsArrayAdapters friendsArrayAdapters;
     FriendsArrayAdapters selected_friendsArrayAdapters;
+    private ProgressBar inviteProgressBar;
 
     private BootstrapEditText invite_friend_search_et;
     ArrayList<FriendNameAndIcon> mFriends, selected_Friends;
@@ -63,20 +65,23 @@ public class InviteFriendsActivity extends Activity {
         invite_friend_list.setEnabled(true);
         to_invite_friend_list.setEnabled(true);
         invite_friend_create_room_btn.setEnabled(true);
+        inviteProgressBar.setVisibility(View.GONE);
     }
 
     private void setAllDisable(){
         invite_friend_list.setEnabled(false);
         to_invite_friend_list.setEnabled(false);
         invite_friend_create_room_btn.setEnabled(false);
+        inviteProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invite_friends);
-        MyVolley.init(InviteFriendsActivity.this);
-        vQueue = Volley.newRequestQueue(this);
+//        MyVolley.init(InviteFriendsActivity.this);
+        vQueue = MyVolley.getRequestQueue();
+        inviteProgressBar = (ProgressBar) findViewById(R.id.invite_progress);
 
         intent = getIntent();
         type = intent.getStringExtra("type");

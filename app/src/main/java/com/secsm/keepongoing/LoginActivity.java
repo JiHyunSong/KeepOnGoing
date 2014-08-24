@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -23,6 +24,7 @@ import com.android.volley.toolbox.Volley;
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
+import com.secsm.keepongoing.Shared.MyVolley;
 
 import org.json.JSONObject;
 
@@ -46,6 +48,7 @@ public class LoginActivity extends Activity {
     private Button mSignUpButton;
     private Button mSignInButton;
     private BootstrapButton easterEggButton;
+    private ProgressBar loginProgressBar;
 
     private void setAllEnable()
     {
@@ -55,6 +58,7 @@ public class LoginActivity extends Activity {
         mSignInButton.setEnabled(true);
         mSignUpButton.setEnabled(true);
         easterEggButton.setEnabled(true);
+        loginProgressBar.setVisibility(View.GONE);
     }
 
     private void setAllDisable()
@@ -65,6 +69,7 @@ public class LoginActivity extends Activity {
         mSignInButton.setEnabled(false);
         mSignUpButton.setEnabled(false);
         easterEggButton.setEnabled(false);
+        loginProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -72,11 +77,10 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-
         intent = getIntent();
         savedNick = intent.getStringExtra("nickname");
 
-        vQueue = Volley.newRequestQueue(this);
+        vQueue = MyVolley.getRequestQueue();
 
         // Set up the login form.
         mNicknameView = (EditText) findViewById(R.id.nickname);
@@ -84,12 +88,14 @@ public class LoginActivity extends Activity {
 
         login_auto_login_cb = (CheckBox) findViewById(R.id.login_auto_login_cb);
 
+        loginProgressBar = (ProgressBar) findViewById(R.id.login_progress);
+
         // Sign In button
         mSignInButton = (Button) findViewById(R.id.sign_in_button);
         mSignInButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (isValidProfile()) {
-
+                    setAllDisable();
                     UserLogin(mNicknameView.getText().toString(), mPasswordView.getText().toString());
                 } else {
                     Toast.makeText(getBaseContext(), "아이디와 비밀번호를 확인해주세요", Toast.LENGTH_SHORT).show();
@@ -208,9 +214,11 @@ public class LoginActivity extends Activity {
                                 GoNextPage(nickName, password);
 //                                loginHandler.sendEmptyMessage(1);
                             } else if (status_code == 9001) {
+                                setAllEnable();
                                 Toast.makeText(getBaseContext(), "아이디와 패스워드를 확인해주세요", Toast.LENGTH_SHORT).show();
 //                                loginHandler.sendEmptyMessage(0);
                             } else {
+                                setAllEnable();
                                 if (KogPreference.DEBUG_MODE) {
                                     Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
                                 }
@@ -218,11 +226,13 @@ public class LoginActivity extends Activity {
 //                                loginHandler.sendEmptyMessage(-1);
                             }
                         } catch (Exception e) {
+                            setAllEnable();
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                setAllEnable();
                 Log.i(LOG_TAG, "Response Error");
                 Toast.makeText(getBaseContext(), "통 에러!", Toast.LENGTH_SHORT).show();
                 if (KogPreference.DEBUG_MODE) {

@@ -21,6 +21,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
+import com.secsm.keepongoing.Shared.MyVolley;
 
 import org.json.JSONObject;
 
@@ -45,7 +46,9 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 //        KogPreference.setString(MainActivity.this, "phoneNo", getPhoneNumber());
         Encrypt.initKey();
-        vQueue = Volley.newRequestQueue(this);
+//        vQueue = Volley.newRequestQueue(this);
+        MyVolley.init(MainActivity.this);
+        vQueue = MyVolley.getRequestQueue();
 
         _gcm = GoogleCloudMessaging.getInstance(this);
         _regId = getRegistrationId();
@@ -66,14 +69,10 @@ public class MainActivity extends Activity {
 
             if (mobile.isConnected() || wifi.isConnected()) {
 
-                if (KogPreference.DEBUG_MODE) {
-                    GoTabPage();
-                } else {
                 /* if the first running */
-                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                    MainActivity.this.finish();
-                }
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
+                MainActivity.this.finish();
                 Log.d(LOG_TAG, "Network connect success");
             } else {
                 Toast.makeText(getBaseContext(), "네트워크 연결이 불안정합니다.\n애플리케이션을 종료합니다.", Toast.LENGTH_SHORT).show();

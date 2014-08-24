@@ -95,8 +95,9 @@ public class TabActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab);
 
-        MyVolley.init(TabActivity.this);
-        vQueue = Volley.newRequestQueue(this);
+//        MyVolley.init(TabActivity.this);
+//        vQueue = Volley.newRequestQueue(this);
+        vQueue = MyVolley.getRequestQueue();
 
         ActionBar bar = getActionBar();
         bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.NAVIGATION_MODE_STANDARD);
