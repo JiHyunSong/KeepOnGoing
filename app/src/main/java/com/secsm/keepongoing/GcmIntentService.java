@@ -58,7 +58,7 @@ public class GcmIntentService extends IntentService {
     // a GCM message.
     private void sendNotification(String msg) {
 
-        
+
 //        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 //
 //        Intent intent = new Intent(getApplicationContext(), MainActivity.class);

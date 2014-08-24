@@ -3,6 +3,8 @@ package com.secsm.keepongoing;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -44,7 +46,27 @@ public class LoginActivity extends Activity {
     private Button mSignUpButton;
     private Button mSignInButton;
     private BootstrapButton easterEggButton;
-    private FrameLayout login_fl;
+
+    private void setAllEnable()
+    {
+        login_auto_login_cb.setEnabled(true);
+        mNicknameView.setEnabled(true);
+        mPasswordView.setEnabled(true);
+        mSignInButton.setEnabled(true);
+        mSignUpButton.setEnabled(true);
+        easterEggButton.setEnabled(true);
+    }
+
+    private void setAllDisable()
+    {
+        login_auto_login_cb.setEnabled(false);
+        mNicknameView.setEnabled(false);
+        mPasswordView.setEnabled(false);
+        mSignInButton.setEnabled(false);
+        mSignUpButton.setEnabled(false);
+        easterEggButton.setEnabled(false);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,8 +77,6 @@ public class LoginActivity extends Activity {
         savedNick = intent.getStringExtra("nickname");
 
         vQueue = Volley.newRequestQueue(this);
-        // fragment
-        login_fl = (FrameLayout) findViewById(R.id.login_fl);
 
         // Set up the login form.
         mNicknameView = (EditText) findViewById(R.id.nickname);
@@ -69,6 +89,7 @@ public class LoginActivity extends Activity {
         mSignInButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (isValidProfile()) {
+
                     UserLogin(mNicknameView.getText().toString(), mPasswordView.getText().toString());
                 } else {
                     Toast.makeText(getBaseContext(), "아이디와 비밀번호를 확인해주세요", Toast.LENGTH_SHORT).show();
@@ -142,6 +163,24 @@ public class LoginActivity extends Activity {
         LoginActivity.this.finish();
     }
 
+//    Handler loginHandler = new Handler(){
+//
+//        @Override
+//        public void handleMessage(Message msg) {
+//
+//            if(msg.what == 1) {
+////                Toast.makeText(LoginActivity.this, "응답 왔음 1", Toast.LENGTH_SHORT).show();
+//                GoNextPage(nickName, password);
+//            }
+//            else if(msg.what == -1)
+//                Toast.makeText(LoginActivity.this, "응답 왔음 -1", Toast.LENGTH_SHORT).show();
+//            else if(msg.what == 0)
+//                Toast.makeText(LoginActivity.this, "응답 왔음 0", Toast.LENGTH_SHORT).show();
+//
+//        }
+//    };
+
+
 
     private void UserLogin(final String nickName, final String password) {
 //        login_fl.setVisibility(View.VISIBLE);
@@ -166,15 +205,17 @@ public class LoginActivity extends Activity {
                             status_code = response.getInt("status");
                             if (status_code == 200) {
                                 rMessage = response.getString("message");
-                                // real action
-//                                login_fl.setVisibility(View.GONE);
                                 GoNextPage(nickName, password);
+//                                loginHandler.sendEmptyMessage(1);
                             } else if (status_code == 9001) {
                                 Toast.makeText(getBaseContext(), "아이디와 패스워드를 확인해주세요", Toast.LENGTH_SHORT).show();
+//                                loginHandler.sendEmptyMessage(0);
                             } else {
                                 if (KogPreference.DEBUG_MODE) {
                                     Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
                                 }
+
+//                                loginHandler.sendEmptyMessage(-1);
                             }
                         } catch (Exception e) {
                         }
@@ -182,9 +223,8 @@ public class LoginActivity extends Activity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-//                login_fl.setVisibility(View.GONE);
-
                 Log.i(LOG_TAG, "Response Error");
+                Toast.makeText(getBaseContext(), "통 에러!", Toast.LENGTH_SHORT).show();
                 if (KogPreference.DEBUG_MODE) {
                     Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
                 }
