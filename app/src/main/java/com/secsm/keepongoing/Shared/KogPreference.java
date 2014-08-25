@@ -35,6 +35,9 @@ public final class KogPreference {
     public static String REST_URL = "http://210.118.74.195:8080/KOG_Server_Rest/rest/";
     public static String MEDIA_URL = "http://210.118.74.195:8080/KOG_Server_Rest/upload/UserImage/";
     public static String UPLOAD_URL = "http://210.118.74.195:8080/KOG_Server_Rest/rest/UserImage";
+    public static String MESSAGE_TYPE_TEXT = "text";
+    public static String MESSAGE_TYPE_IMAGE = "image";
+    public static String MESSAGE_TYPE_QUIZ = "quiz";
     public static final String CHAT_IP = "210.118.74.195";
     public static final int CHAT_PORT = 9090;
 

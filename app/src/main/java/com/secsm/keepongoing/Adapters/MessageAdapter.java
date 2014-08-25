@@ -25,6 +25,7 @@ import java.util.ArrayList;
 /* my customized adapter for listview */
 public class MessageAdapter extends ArrayAdapter<Msg> {
     private static String serverFilePath = "http://203.252.195.122/files/";
+    private static String LOG_TAG = "MESSAGE ADAPTER";
     private ViewHolder viewHolder = null;
     private ArrayList<Msg> items;
     Context mContext;
@@ -73,7 +74,7 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
 
         Msg m = items.get(position);
         if (m != null) {
-            if (m.getMessageType().equals("plaintext")) {
+            if (m.getMessageType().equals(KogPreference.MESSAGE_TYPE_TEXT)) {
                 viewHolder.wv.setVisibility(View.GONE);
                 viewHolder.p_iv.setVisibility(View.GONE);
                 viewHolder.wv.setVisibility(View.VISIBLE);
@@ -278,6 +279,7 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
 
 
     void getImageFromURL(String ImgURL, ImageView imgView) {
+        Log.i(LOG_TAG, "getImageFromURL img URL : " + ImgURL);
         ImageLoader imageLoader = MyVolley.getImageLoader();
         imageLoader.get(ImgURL,
                 ImageLoader.getImageListener(imgView,
@@ -287,6 +289,7 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
     }
 
     void getProfileFromURL(String ImgURL, ImageView imgView) {
+        Log.i(LOG_TAG, "getProfileFromURL img URL : " + ImgURL);
         ImageLoader imageLoader = MyVolley.getImageLoader();
         imageLoader.get(ImgURL,
                 ImageLoader.getImageListener(imgView,

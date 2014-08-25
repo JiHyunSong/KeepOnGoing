@@ -165,7 +165,6 @@ public class StudyRoomActivity extends Activity {
 
         room_rule_tv.setText(rule);
 		/* IF there is and exists room, load the stored message */
-        loadText();
 
         /* Init connection w/ server
         *
@@ -184,7 +183,7 @@ public class StudyRoomActivity extends Activity {
         translateRightAnim.setAnimationListener(animListener);
 
 
-        init();
+//        init();
         /* at First, holding the focus */
 //        messageTxt.requestFocus();
 
@@ -247,7 +246,7 @@ public class StudyRoomActivity extends Activity {
             message = msg;
             try {
                 Log.i(LOG_TAG, "sendMessage() , msg : " + msg);
-                sendMsgToSvr(msg);
+                sendMsgToSvr(msg, KogPreference.MESSAGE_TYPE_TEXT);
 //                sendText(KogPreference.getNickName(StudyRoomActivity.this), KogPreference.getRid(StudyRoomActivity.this), msg, "plaintext");
 
                 messageTxt.setText("");
@@ -290,22 +289,12 @@ public class StudyRoomActivity extends Activity {
         String time;
         Msg m;
         time = getRealTime();
-
         String _profileImageName = getProfileImageName(_senderNickname);
-
-//        if (KogPreference.DEBUG_MODE) {
-//            m = new Msg(StudyRoomActivity.this, "나", _text, time, "true", _messageType, _profileImageName);
-//            insertIntoMsgInSQLite("나", _text, time, "true", _messageType);
-//            messageHistoryMAdaptor.add(m);
-//
-//        }
         String Name;
         time = getRealTime();
         if(_senderNickname.equals(KogPreference.getNickName(StudyRoomActivity.this))){
             m = new Msg(StudyRoomActivity.this, "나", _text, time, "true", _messageType, _profileImageName);
-//           Log.i("MSG", "Name : " + Name + "Text : " + text + "Time : " + time);
             insertIntoMsgInSQLite("나", _text, time, "true", _messageType);
-            //show up
             messageHistoryMAdaptor.add(m);
         }
         else if("".equals(_text)){
@@ -315,7 +304,6 @@ public class StudyRoomActivity extends Activity {
             m = new Msg(StudyRoomActivity.this, _senderNickname, _text, time, "false", _messageType, _profileImageName);
             Log.i("MSG", "Name : " + _senderNickname + "Text : " + _text + "Time : " + time);
             insertIntoMsgInSQLite(_senderNickname, _text, time, "false", _messageType);
-            //TODO
             messageHistoryMAdaptor.add(m);
         }
 
@@ -334,7 +322,6 @@ public class StudyRoomActivity extends Activity {
                         R.drawable.no_image)
         );
     }
-
 
     ///////////////////
     // upload image  //
@@ -510,73 +497,6 @@ public class StudyRoomActivity extends Activity {
         }
     };
 
-    private void HttpFileUpload(String urlString, String params, String fileName) {
-        try {
-            mFileInputStream = new FileInputStream(fileName);
-            connectUrl = new URL(urlString);
-            Log.d("Test", "mFileInputStream  is " + mFileInputStream);
-
-            // open connection
-            HttpURLConnection conn = (HttpURLConnection)connectUrl.openConnection();
-            conn.setDoInput(true);
-            conn.setDoOutput(true);
-            conn.setUseCaches(false);
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Connection", "Keep-Alive");
-            conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-
-            // write data
-            DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
-            dos.writeBytes(twoHyphens + boundary + lineEnd);
-            dos.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + fileName+"\"" + lineEnd);
-            dos.writeBytes(lineEnd);
-
-            int bytesAvailable = mFileInputStream.available();
-            int maxBufferSize = 1024;
-            int bufferSize = Math.min(bytesAvailable, maxBufferSize);
-            byte[] buffer = new byte[bufferSize];
-            int bytesRead = mFileInputStream.read(buffer, 0, bufferSize);
-
-            Log.d("Test", "image byte is " + bytesRead);
-
-            // read image
-            while (bytesRead > 0) {
-                dos.write(buffer, 0, bufferSize);
-                bytesAvailable = mFileInputStream.available();
-                bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                bytesRead = mFileInputStream.read(buffer, 0, bufferSize);
-            }
-
-            dos.writeBytes(lineEnd);
-            dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
-
-            // close streams
-            Log.e("Test" , "File is written");
-            mFileInputStream.close();
-            dos.flush(); // finish upload...
-
-            // get response
-            int ch;
-            InputStream is = conn.getInputStream();
-            StringBuffer b =new StringBuffer();
-            while( ( ch = is.read() ) != -1 ){
-                b.append( (char)ch );
-            }
-            String s=b.toString();
-            Log.e("Test", "result = " + s);
-            //			mEdityEntry.setText(s);
-            dos.close();
-
-        } catch (Exception e) {
-            Log.d("Test", "exception " + e.toString());
-            // TODO: handle exception
-        }
-    }
-
-
-
-
-
     /* copy the file from srcFile to destFile */
     public static boolean copyFile(File srcFile, File destFile) {
         boolean result = false;
@@ -684,10 +604,6 @@ public class StudyRoomActivity extends Activity {
             }
         }
     }
-
-
-
-
 
     ////////////////////
     // Action bar     //
@@ -852,14 +768,15 @@ public class StudyRoomActivity extends Activity {
 
     void init()
     {
+        if(soc_writer==null)
+        {
+            Log.i(LOG_TAG,"soc=null");
+            getFriendsRequest();
+            soc_writer = new SocketAsyncTask_Writer();
+            soc_writer.execute();
+        }
+
         if(!KogPreference.NO_AUTH){
-            if(soc_writer==null)
-            {
-                Log.i(LOG_TAG,"soc=null");
-                getFriendsRequest();
-                soc_writer = new SocketAsyncTask_Writer();
-                soc_writer.execute();
-            }
         }else
         {
             mFriends = new ArrayList<FriendNameAndIcon>();
@@ -874,10 +791,14 @@ public class StudyRoomActivity extends Activity {
     }
     void close()
     {
-        if(!KogPreference.NO_AUTH){
+        if(soc_reader != null){
             soc_reader.cancel(true);
+            soc_reader = null;
+        }
+        if(soc_writer != null ){
             soc_writer.sendMsgToSvr("exit");
             soc_writer.cancel(true);
+            soc_writer = null;
         }
     }
 
@@ -934,30 +855,28 @@ public class StudyRoomActivity extends Activity {
     //////////////////////////////////////////////////
     // DB                                           //
     //////////////////////////////////////////////////
-
+//            insertIntoMsgInSQLite("나", _text, time, "true", _messageType);
+//    insertIntoMsgInSQLite(_senderNickname, _text, time, "false", _messageType);
 
     private void insertIntoMsgInSQLite(String _senderID, String _senderText, String _time, String _me, String _messageType) {
         SQLiteDatabase db;
         db = mDBHelper.getWritableDatabase();
         Log.i(LOG_TAG, "insert msg");
-        Calendar c = Calendar.getInstance();
-        String year = Integer.toString(c.get(Calendar.YEAR));
-        String month = Integer.toString(c.get(Calendar.MONTH) + 1);
-        String day = Integer.toString(c.get(Calendar.DATE));
+//        Calendar c = Calendar.getInstance();
+//        String year = Integer.toString(c.get(Calendar.YEAR));
+//        String month = Integer.toString(c.get(Calendar.MONTH) + 1);
+//        String day = Integer.toString(c.get(Calendar.DATE));
         Log.i("day", "nickname : " + _senderID);
         String query = "INSERT INTO Chat " +
                 //"(room_id, senderID, senderText, year, month, day, time, me) " +
-                "(rid, senderID, senderText, year, month, day, me, messageType) " +
+                "(rid, senderID, senderText, time, me, messageType) " +
                 "VALUES (" +
                 "'" + rID + "','"
                 + _senderID + "','"
                 + _senderText + "','"
-                + year + "','"
-                + month + "','"
-                + day + "','"
-                //+ _time + "','"
+                + _time + "','"
                 + _me + "','"
-                + _messageType + " ');";
+                + _messageType + "');";
         // TODO : check _time
         Log.i(LOG_TAG, "execSQL : " + query);
         db.execSQL(query);
@@ -980,6 +899,9 @@ public class StudyRoomActivity extends Activity {
 
     /* load the message from the SQLite */
     public void loadText() {
+
+        Log.i(LOG_TAG, "loadText");
+
         try {
             SQLiteDatabase db;
             Cursor cursor = null;
@@ -988,20 +910,17 @@ public class StudyRoomActivity extends Activity {
                     "senderID, senderText, time, me, messageType " +
                     "FROM Chat WHERE rid = '" + rID + "'", null);
             Log.i(LOG_TAG, "Load Text From db");
-            cursor.moveToFirst();
             Log.i(LOG_TAG, "curser.getCount() : " + cursor.getCount());
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
-                    Log.i("loadText", cursor.getString(cursor.getColumnIndex("senderID")) + " :"
-                            + cursor.getString(cursor.getColumnIndex("senderText")));
-
-                    String _senderID = cursor.getString(cursor.getColumnIndex("senderID"));
+                    String _senderID = cursor.getString(0);
+                    Log.i("loadText", "sender ID : " + _senderID);
                     Msg m = new Msg(StudyRoomActivity.this,
-                            cursor.getString(cursor.getColumnIndex("senderID")),
-                            cursor.getString(cursor.getColumnIndex("senderText")),
-                            cursor.getString(cursor.getColumnIndex("time")),
-                            cursor.getString(cursor.getColumnIndex("me")),
-                            cursor.getString(cursor.getColumnIndex("messageType")),
+                            cursor.getString(0),
+                            cursor.getString(1),
+                            cursor.getString(2),
+                            cursor.getString(3),
+                            cursor.getString(4),
                             getProfileImageName(_senderID)
                     );
                     messageHistoryMAdaptor.add(m);
@@ -1022,50 +941,41 @@ public class StudyRoomActivity extends Activity {
     //////////////////////////////////////////////////
     Handler handler = new Handler() {
         public void handleMessage(Message msg) {
-            String f_nickname = null, rid= null, text = null;
+            String f_nickname = null, rid= null, text = null, messageType;
             Bundle b = msg.getData();
 
             f_nickname = b.getString("nickname");
             text = b.getString("message");
             rid = b.getString("rid");
+            messageType = b.getString("messageType");
 
 
             Log.i("handleMsg", "friend_id : " + f_nickname);
             Log.i("handleMsg", "text : " + text);
 
-            sendText(f_nickname, rid, text, "plaintext");
+            sendText(f_nickname, rid, text, messageType);
         }
     };
-//    KogSocketConnecter kogSC;
-//    public void initConnection(){
-//        kogSC = KogSocketConnecter.getInstance();
-////        sl = new SocketListener(getApplicationContext(), mainHandler);
-////        sl.start();
-////        getInitialMsg();
-//    }
-    public void sendMsgToSvr(String msg)
+
+    public void sendMsgToSvr(String msg, String messageType)
     {
         try {
             JSONObject jObj = new JSONObject();
             jObj.put("nickname", KogPreference.getNickName(StudyRoomActivity.this));
-            Log.i(LOG_TAG, "sendMsgToSvr in MainThread nickName : " + KogPreference.getNickName(StudyRoomActivity.this));
             jObj.put("rid", KogPreference.getRid(StudyRoomActivity.this));
-            Log.i(LOG_TAG, "sendMsgToSvr in MainThread rid : " + KogPreference.getRid(StudyRoomActivity.this));
             jObj.put("message", msg);
-            Log.i(LOG_TAG, "sendMsgToSvr in MainThread msg : " + msg);
-
+            jObj.put("messageType", messageType);
+            Log.i(LOG_TAG, "send msg : " + jObj.toString());
             soc_writer.sendMsgToSvr(jObj.toString());
-//            SocketManager.sendMsg(jObj.toString());
         } catch (Exception e)
         {
+            Toast.makeText(getBaseContext(), "메시지 전송 실패!", Toast.LENGTH_SHORT).show();
+
             Log.i(LOG_TAG,  "Json Exception!\n" + e.toString() );
             if(KogPreference.DEBUG_MODE)
             {
-
                 Toast.makeText(getBaseContext(), "Json Exception!\n" + e.toString() , Toast.LENGTH_SHORT).show();
-
             }
-
         }
     }
 
@@ -1101,6 +1011,7 @@ public class StudyRoomActivity extends Activity {
                         b.putString("nickname", rMsg.getString("nickname"));
                         b.putString("rid", rMsg.getString("rid"));
                         b.putString("message", rMsg.getString("message"));
+                        b.putString("messageType", rMsg.getString("messageType"));
                         ms.setData(b);
                         handler.sendMessage(ms);
                         //Log.i(LOG_TAG, "this is it~! : " + messageList.getItemAtPosition(0).toString());
@@ -1269,6 +1180,8 @@ public class StudyRoomActivity extends Activity {
                                     }
                                 }
                                 /////////////////////////////
+
+                                loadText();
                             } else {
                                 Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
                                 if (KogPreference.DEBUG_MODE) {
@@ -1290,6 +1203,7 @@ public class StudyRoomActivity extends Activity {
             }
         }
         );
-        vQueue.add(jsObjRequest);
+        if(mFriends==null)
+            vQueue.add(jsObjRequest);
     }
 }
