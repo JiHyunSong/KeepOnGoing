@@ -10,10 +10,14 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.secsm.keepongoing.Adapters.InviteRoom;
+
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 public final class KogPreference {
     private static String LOG_TAG = "Preference LOG";
@@ -26,9 +30,10 @@ public final class KogPreference {
     private static String RID_TAG = "RID";
     private static String GCM_TAG = "GCMID";
     private static String QUIZ_NUM_TAG = "QUIZNUM";
+    private static String INVITE_ROOM = "INVITE_ROOM";
     public static String REST_URL = "http://210.118.74.195:8080/KOG_Server_Rest/rest/";
     public static String MEDIA_URL = "http://210.118.74.195:8080/KOG_Server_Rest/upload/UserImage/";
-    public static String UPLOAD_URL= "http://210.118.74.195:8080/KOG_Server_Rest/rest/UserImage";
+    public static String UPLOAD_URL = "http://210.118.74.195:8080/KOG_Server_Rest/rest/UserImage";
     public static final String CHAT_IP = "210.118.74.195";
     public static final int CHAT_PORT = 9090;
 
@@ -304,5 +309,60 @@ public final class KogPreference {
             }
         }
         return urls;
+    }
+
+
+    public static void setInviteRooms(Context context, ArrayList<InviteRoom> values) {
+        SharedPreferences prefs = context
+                .getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        JSONArray a = new JSONArray();
+        for (int i = 0; i < values.size(); i++) {
+            String input = "{" +
+                    "\"" + "roomID" + "\"" + ":"  + "\"" + values.get(i).getRoomID() +  "\"" + "," +
+                    "\"" + "roomName" + "\"" + ":"  + "\"" + values.get(i).getRoomName() +   "\"" + "," +
+                    "\"" + "message" + "\"" + ":"  + "\"" + values.get(i).getMessage() +   "\""
+                    + "}";
+
+            Log.i(LOG_TAG, "put : " + input);
+
+            a.put(input);
+        }
+        if (!values.isEmpty()) {
+            editor.putString(INVITE_ROOM, a.toString());
+        } else {
+            editor.putString(INVITE_ROOM, null);
+        }
+        editor.commit();
+    }
+
+
+    public static ArrayList<InviteRoom> getInviteRooms(Context context) {
+        SharedPreferences prefs = context
+                .getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+//        Set<String> set = prefs.getStringSet(INVITE_ROOM, null);
+        String jsonArray = prefs.getString(INVITE_ROOM, null);
+        Log.i(LOG_TAG, "jsonArray : " + jsonArray);
+        ArrayList<InviteRoom> items = new ArrayList<InviteRoom>();
+        if (jsonArray != null) {
+            try {
+                JSONArray a = new JSONArray(jsonArray);
+                for (int i = 0; i < a.length(); i++) {
+
+                    String jsonOjectStr = a.getString(i);
+                    JSONObject jsonObject = new JSONObject(jsonOjectStr);
+                    String id = jsonObject.getString("roomID");
+                    String name = jsonObject.getString("roomName");
+                    String message = jsonObject.getString("message");
+                    InviteRoom myclass = new InviteRoom(id, name, message);
+
+                    items.add(myclass);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+        return items;
     }
 }

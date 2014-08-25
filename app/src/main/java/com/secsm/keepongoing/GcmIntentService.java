@@ -6,18 +6,23 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.secsm.keepongoing.Shared.KogPreference;
 
+import java.util.ArrayList;
 
 
 public class GcmIntentService extends IntentService {
     public static final int NOTIFICATION_ID = 1;
     private static final String LOG_TAG = "GCM Intent Service";
+    private static final int ROOM_INVITE = 0;
+    private static final int FRIEND_INVITE = 1;
+    private static final int CHAT_MESSAGE_CHAT = 2;
+    private static final int CHAT_MESSAGE_IMAGE = 3;
     public GcmIntentService() {
         super("GcmIntentService");
     }
@@ -45,15 +50,32 @@ public class GcmIntentService extends IntentService {
                 // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                 String msg = intent.getStringExtra("message");
-                String type = intent.getStringExtra("messageType");
+                int messageType = intent.getIntExtra("messageType", -1);
                 // room invite
                 // friend invite
                 // chat message - message
                 // chat message - image
-
-
-                handleMessage(GcmIntentService.this, intent);
                 Log.i("GcmIntentService.java | onHandleIntent", "Received: " + extras.toString());
+                switch(messageType)
+                {
+                    case ROOM_INVITE:
+                        pushRoomInvite(GcmIntentService.this, intent);
+                        break;
+                    case FRIEND_INVITE:
+                        pushFriendInvite(GcmIntentService.this, intent);
+                        break;
+                    case CHAT_MESSAGE_CHAT:
+                        pushChatMessage(GcmIntentService.this, intent);
+                        break;
+                    case CHAT_MESSAGE_IMAGE:
+                        break;
+                    default:
+                        Log.e(LOG_TAG, "GCM message type error");
+                        break;
+                }
+
+
+
             }
         }
         // Release the wake lock provided by the WakefulBroadcastReceiver.
@@ -64,9 +86,22 @@ public class GcmIntentService extends IntentService {
     String senderName;
     String message;
     String roomID;
-    private void handleMessage(Context context, Intent intent) {
 
-        Log.e("C2DM", "handleMessage");
+    private void pushRoomInvite(Context context, Intent intent) {
+        ArrayList<String> roomInvites = KogPreference.getStringArrayPref(context, "ROOM_INVITES");
+        String inviteRoomID = intent.getExtras().getString("roomID");
+        String inviteRoomName = intent.getExtras().getString("roomName");
+        String inviteRoomMessage = intent.getExtras().getString("message");
+//        roomInvites.add();
+
+    }
+
+    private void pushFriendInvite(Context context, Intent intent) {
+    }
+
+    private void pushChatMessage(Context context, Intent intent) {
+
+        Log.e("C2DM", "handle");
         PushWakeLock.acquireCpuWakeLock(context);
         Vibrator mVib = (Vibrator) context
                 .getSystemService(context.VIBRATOR_SERVICE);
