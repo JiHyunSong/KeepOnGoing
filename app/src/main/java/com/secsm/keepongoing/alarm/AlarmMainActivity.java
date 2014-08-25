@@ -141,7 +141,7 @@ public class AlarmMainActivity extends Activity {
 
             }
         });
-        Button ring = (Button) findViewById(R.id.ringring);
+        Button ring = (Button) findViewById(R.id.finish);
         ring.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 Preference.setLong(AlarmMainActivity.this, "diff", 0);

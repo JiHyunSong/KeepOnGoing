@@ -102,7 +102,7 @@ public class LoginActivity extends Activity {
             mNicknameView.setText(savedNick);
         }
 
-        if (KogPreference.DEBUG_MODE) {
+     //   if (KogPreference.DEBUG_MODE) {
             easterEggButton = (BootstrapButton) findViewById(R.id.easter_egg_button);
             easterEggButton.setVisibility(View.VISIBLE);
             // go to Register page
@@ -110,15 +110,13 @@ public class LoginActivity extends Activity {
                 public void onClick(View v) {
 
                     String easter_msg = "안녕";
-//                    SimpleDialogFragment.createBuilder(LoginActivity.this, android.support.v4.app.FragmentManager())
-//                            .setMessage(easter_msg).show();
+            //       SimpleDialogFragment.createBuilder(LoginActivity.this, android.support.v4.app.FragmentManager())
+          //                  .setMessage(easter_msg).show();
                     GoNextPage(mNicknameView.getText().toString(), mPasswordView.getText().toString());
-
-
                 }
             });
 
-        }
+        //}
 
     }
 

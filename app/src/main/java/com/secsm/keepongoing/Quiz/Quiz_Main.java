@@ -24,19 +24,15 @@ import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.secsm.keepongoing.R;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
-import com.secsm.keepongoing.Shared.MultipartRequest;
 
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.StringBody;
 import org.json.JSONObject;
 
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 public class Quiz_Main extends Activity {
     private ArrayAdapter<String> _arrAdapter;
     private ListView listView;
+    private CustomScrollView mScrollView;
     listAdapter mAdapter = null;
     private Spinner spinner1, spinner2;
     private Button btnSubmit;
@@ -54,11 +50,23 @@ public class Quiz_Main extends Activity {
         addListenerOnButton();
         addListenerOnSpinnerItemSelection();
         vQueue = Volley.newRequestQueue(this);
+        mScrollView=(CustomScrollView) findViewById(R.id.quizmain_scroll);
+        listView = (ListView) findViewById(R.id.listView_Quiz);
+
+    /*    listView.setOnTouvchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Log.e("minsu) ","touch zz");
+                mScrollView.requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+
+        });*/
 
         mAdapter = new listAdapter(this, list);
-        listView = (ListView) findViewById(R.id.listView_Quiz);
-        //listView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
         listView.setAdapter(mAdapter);
+        //listView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+        //listView.setAdapter(mAdapter);
 
 
 
@@ -91,6 +99,18 @@ public class Quiz_Main extends Activity {
                 settingListView();
             }
         });
+        BootstrapButton delete = (BootstrapButton) findViewById(R.id.delete);
+        delete.setOnClickListener(new BootstrapButton.OnClickListener() {
+            public void onClick(View v) {
+                if(list.size()-1>=0) {
+                    list.remove(list.size() - 1);
+                    settingListView();
+                }
+
+            }
+        });
+
+
         BootstrapButton tf = (BootstrapButton) findViewById(R.id.tf);
         tf.setOnClickListener(new BootstrapButton.OnClickListener() {
             public void onClick(View v) {

@@ -66,7 +66,9 @@ public class AlramAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             v = inflater.inflate(R.layout.list_row, null);
             CheckBox vibratemode = (CheckBox) v.findViewById(R.id.vibratemode);
+            vibratemode.setChecked(Preference.getBoolean(v.getContext(), "vibratemode"));
             if (position == 0) {
+
 
                 vibratemode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
@@ -114,6 +116,7 @@ public class AlramAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) v.getTag();
         }
         return v;
+
     }
 
 

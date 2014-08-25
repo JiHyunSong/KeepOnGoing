@@ -145,6 +145,10 @@
             android:name=".Shared.RoomFriendsActivity"
             android:label="@string/title_activity_room_friends" >
         </activity>
+        <activity
+            android:name=".Life_Study.achieve_time_show"
+            android:label="@string/title_activity_achieve_time_show" >
+        </activity>
     </application>
 
 </manifest>

@@ -14,9 +14,11 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.secsm.keepongoing.R;
 
@@ -73,7 +75,6 @@ public class listAdapter extends BaseAdapter {
         View v = convertview;
 
         Log.i("minsu)", "minsu) check position : " + position);
-
         if (v == null) {
             //뷰생성
             viewHolder = new ViewHolder();
@@ -85,6 +86,7 @@ public class listAdapter extends BaseAdapter {
             });
             viewHolder.check1 = (CheckBox) v.findViewById(R.id.check1);
 
+            viewHolder.question_number=(TextView) v.findViewById((R.id.question_number));
 
             viewHolder.check1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -197,6 +199,8 @@ public class listAdapter extends BaseAdapter {
         viewHolder.Truebtn.setTag(position);
 
 
+
+        viewHolder.question_number.setText((position+1)+". ");
         viewHolder.check1.setChecked(infoList.get(position).chk1);
         viewHolder.check2.setChecked(infoList.get(position).chk2);
         viewHolder.check3.setChecked(infoList.get(position).chk3);
@@ -214,7 +218,7 @@ public class listAdapter extends BaseAdapter {
         if (infoList.get(position).name == "essay") {
             EditText essay = (EditText) v.findViewById(R.id.essay);
             essay.setVisibility(View.VISIBLE);
-            RelativeLayout multiplechoice = (RelativeLayout) v.findViewById(R.id.multiple);
+            LinearLayout multiplechoice = (LinearLayout) v.findViewById(R.id.multiple);
             multiplechoice.setVisibility(View.GONE);
 
             RelativeLayout tflayout = (RelativeLayout) v.findViewById((R.id.tflayout));
@@ -223,7 +227,7 @@ public class listAdapter extends BaseAdapter {
 
             EditText essay = (EditText) v.findViewById(R.id.essay);
             essay.setVisibility(View.GONE);
-            RelativeLayout multiplechoice = (RelativeLayout) v.findViewById(R.id.multiple);
+            LinearLayout multiplechoice = (LinearLayout) v.findViewById(R.id.multiple);
             multiplechoice.setVisibility(View.GONE);
             RelativeLayout tflayout = (RelativeLayout) v.findViewById((R.id.tflayout));
             tflayout.setVisibility(View.VISIBLE);
@@ -232,7 +236,7 @@ public class listAdapter extends BaseAdapter {
         } else {
             EditText essay = (EditText) v.findViewById(R.id.essay);
             essay.setVisibility(View.GONE);
-            RelativeLayout multiplechoice = (RelativeLayout) v.findViewById(R.id.multiple);
+            LinearLayout multiplechoice = (LinearLayout) v.findViewById(R.id.multiple);
             multiplechoice.setVisibility(View.VISIBLE);
             RelativeLayout tflayout = (RelativeLayout) v.findViewById((R.id.tflayout));
             tflayout.setVisibility(View.GONE);
@@ -245,20 +249,10 @@ public class listAdapter extends BaseAdapter {
                 infoList.get(position).chk5
         );*/
 
-
         return v;
     }
 
 
-    // Adapter가 관리하는 Data List를 교체 한다.
-    // 교체 후 Adapter.notifyDataSetChanged() 메서드로 변경 사실을
-    // Adapter에 알려 주어 ListView에 적용 되도록 한다.
-//    public void setArrayList(ArrayList<Quiz_data> arrays){
-//        this.infoList = arrays;
-//    }
-
-//    public ArrayList<Quiz_data> getArrayList(){
-//        return infoList;
 //    }
 
     private View.OnClickListener buttonClickListener = new View.OnClickListener() {
@@ -279,6 +273,7 @@ public class listAdapter extends BaseAdapter {
         public RadioGroup TFGroup;
         public RadioButton Truebtn;
         public RadioButton Falsebtn;
+        public TextView question_number;
 
 
     }
@@ -322,6 +317,8 @@ public class listAdapter extends BaseAdapter {
         // in the afterDescendants mode if the EditText was focused
         listView.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
     }
+
+
 
 
 }

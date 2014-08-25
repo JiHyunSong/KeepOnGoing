@@ -1,0 +1,68 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.secsm.keepongoing.TabActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Base Area"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/slidingPage01"
+        android:layout_width="270dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_gravity="right"
+        android:background="#ffffff66"
+        android:visibility="invisible">
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="70dp"
+            android:text="Area #1"
+            android:textColor="#ff000000"
+            />
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="70dp"
+            android:text="Area #2"
+            android:textColor="#ff000000"
+            />
+
+
+
+  <ListView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:id="@+id/roomfriendslist">
+      </ListView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="right|top"
+        android:background="#00000000">
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Open"
+            android:onClick="onButton1Clicked"
+            />
+    </LinearLayout>
+
+</FrameLayout>
+
+

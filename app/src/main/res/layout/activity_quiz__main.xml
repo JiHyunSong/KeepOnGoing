@@ -48,12 +48,16 @@
                 bootstrapbutton:bb_roundedCorners="true" />
 
 
+
         </RelativeLayout>
 
-        <ScrollView
+        <com.secsm.keepongoing.Quiz.CustomScrollView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/buttongroup">
+            android:layout_below="@id/buttongroup"
+            android:scrollbars="none"
+            android:id="@+id/quizmain_scroll"
+            android:fillViewport="true">
 
             <RelativeLayout
                 android:id="@+id/quiz_rl"
@@ -99,7 +103,6 @@
                 <com.beardedhen.androidbootstrap.BootstrapEditText
                     android:id="@+id/txtOne"
                     android:layout_width="fill_parent"
-
                     android:layout_height="wrap_content"
                     android:layout_below="@id/problemandsubject"
                     android:layout_margin="10dp"
@@ -124,17 +127,26 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/listView_Quiz"
-                    android:gravity="right">
+                    >
+
+                    <com.beardedhen.androidbootstrap.BootstrapButton
+                        android:id="@+id/delete"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="40dp"
+                        android:text="문제 삭제"
+                        bootstrapbutton:bb_roundedCorners="true" />
 
                     <Button
                         android:id="@+id/btnSubmit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="제출" />
+                        android:text="제출"
+                        android:layout_alignParentRight="true"/>
                 </RelativeLayout>
             </RelativeLayout>
 
-        </ScrollView>
+        </com.secsm.keepongoing.Quiz.CustomScrollView>
     </RelativeLayout>
 
 </RelativeLayout>

@@ -105,15 +105,22 @@ public class Solve_Main extends Activity {
                 if (listtype[1].toString().equals("multi")) {
 
                     if (listtype[2].toString().equals(anstype[2].toString())) {
-                        total++;
+                        list.get(i).correct=true;
+                                total++;
                     }
+                    else
+                        list.get(i).correct=false;
+
                 }
                 if (listtype[1].toString().equals("essay")) ;
 
                 if (listtype[1].toString().equals("tf")) {
                     if (listtype[2].toString().equals(anstype[2].toString())) {
+                        list.get(i).correct=true;
                         total++;
                     }
+                    else
+                        list.get(i).correct=false;
                 }
             }
         }
@@ -181,12 +188,6 @@ return total;
                 listView.clearFocus();
                 //@민수 제출
 
-
-              /* Toast.makeText(Solve_Main.this,"@SERVER : \n"
-                                +
-                                "Answer : "+ request_check(list)
-                        , Toast.LENGTH_SHORT
-                ).show();*/
 
 
                 int total=checkanswer(solution,request_check(list).toString());
