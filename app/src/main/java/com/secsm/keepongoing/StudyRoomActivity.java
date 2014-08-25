@@ -64,7 +64,6 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -73,14 +72,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
 import java.net.Socket;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class StudyRoomActivity extends Activity {
 
@@ -311,9 +308,9 @@ public class StudyRoomActivity extends Activity {
 
     /* getting the profile image from the server  */
 	/* aURL is perfect URL like : http://203.252.195.122/files/tmp_1348736125550.jpg */
-    void getImageFromURL(String img_name, ImageView imgView) {
+    void getProfileImageFromURL(String img_name, ImageView imgView) {
 
-        String ImgURL = KogPreference.MEDIA_URL + img_name;
+        String ImgURL = KogPreference.DOWNLOAD_PROFILE_URL + img_name;
         // TODO R.drawable.error_image
         ImageLoader imageLoader = MyVolley.getImageLoader();
         imageLoader.get(ImgURL,
@@ -322,6 +319,19 @@ public class StudyRoomActivity extends Activity {
                         R.drawable.no_image)
         );
     }
+
+    void getChatImageFromURL(String img_name, ImageView imgView) {
+
+        String ImgURL = KogPreference.DOWNLOAD_CHAT_IMAGE_URL + KogPreference.getRid(StudyRoomActivity.this) + "/" + img_name;
+        // TODO R.drawable.error_image
+        ImageLoader imageLoader = MyVolley.getImageLoader();
+        imageLoader.get(ImgURL,
+                ImageLoader.getImageListener(imgView,
+                        R.drawable.no_image,
+                        R.drawable.no_image)
+        );
+    }
+
 
     ///////////////////
     // upload image  //
@@ -349,7 +359,7 @@ public class StudyRoomActivity extends Activity {
         final View innerView = getLayoutInflater().inflate(R.layout.image_crop_row, null);
 
         Button camera = (Button)innerView.findViewById(R.id.btn_camera_crop);
-//        Button gellary = (Button)innerView.findViewById(R.id.btn_gellary_crop);
+        Button gellary = (Button)innerView.findViewById(R.id.btn_gellary_crop);
         Button cancel = (Button)innerView.findViewById(R.id.btn_cancel_crop);
 
         camera.setOnClickListener(new View.OnClickListener() {
@@ -359,12 +369,12 @@ public class StudyRoomActivity extends Activity {
             }
         });
 
-//        gellary.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                doTakeAlbumAction();
-//                setDismiss(mDialog);
-//            }
-//        });
+        gellary.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                doTakeAlbumAction();
+                setDismiss(mDialog);
+            }
+        });
 
         cancel.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -447,19 +457,7 @@ public class StudyRoomActivity extends Activity {
     private void DoFileUpload(String filePath) throws IOException {
         Log.d("Test" , "file path = " + filePath);
         imageUploadFlag = true;
-//        try {
-//            soc.wait(10000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
 
-//        ImageUploadAsyncTask imgUploadSync = new ImageUploadAsyncTask();
-//
-//        imgUploadSync.execute();
-
-
-//        HttpFileUpload( KogPreference.UPLOAD_URL + "?rid=" + KogPreference.getRid(StudyRoomActivity.this) + "&nickname=" + KogPreference.getNickName(StudyRoomActivity.this)
-//                , "", filePath);
         asyncFilePath = filePath;
 
         VolleyUploadImage();
@@ -471,12 +469,13 @@ public class StudyRoomActivity extends Activity {
     void VolleyUploadImage()
     {
         Charset c = Charset.forName("utf-8");
-        String URL = KogPreference.UPLOAD_URL + "?rid=" + KogPreference.getRid(StudyRoomActivity.this) + "&nickname=" + KogPreference.getNickName(StudyRoomActivity.this);
+        String URL = KogPreference.UPLOAD_CHAT_IMAGE_URL + "?rid=" + KogPreference.getRid(StudyRoomActivity.this) + "&nickname=" + KogPreference.getNickName(StudyRoomActivity.this);
         MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, Charset.forName("UTF-8"));
         try
         {
             entity.addPart("file", new FileBody(new File(asyncFilePath)));
-            Log.i("MULTIPART-ENTITY", "add addPART");
+            // add addPART, asyncFilePath : /storage/sdcard0/Pictures/tmp_1408977926598.jpg
+            Log.i("MULTIPART-ENTITY", "add addPART, asyncFilePath : " + asyncFilePath);
         } catch (Exception e)
         {
             e.printStackTrace();
@@ -551,10 +550,10 @@ public class StudyRoomActivity extends Activity {
                 File original_file = getImageFile(mImageCaptureUri);
 
                 mImageCaptureUri = createSaveCropFile();
-                File cpoy_file = new File(mImageCaptureUri.getPath());
+                File copy_file = new File(mImageCaptureUri.getPath());
 			/* copy the image for crop to SD card */
-                copyFile(original_file , cpoy_file);
-                break;
+                copyFile(original_file , copy_file);
+//                break;
             }
 
             case PICK_FROM_CAMERA:
@@ -576,12 +575,12 @@ public class StudyRoomActivity extends Activity {
             case CROP_FROM_CAMERA:
             {
                 Log.w(LOG_TAG, "onActivityResult CROP_FROM_CAMERA");
-
+                //mImageCaptureUri = file:///storage/sdcard0/Pictures/tmp_1408977926598.jpg
                 Log.w(LOG_TAG, "mImageCaptureUri = " + mImageCaptureUri);
                 String full_path = mImageCaptureUri.getPath();
 //                String photo_path = full_path.substring(4, full_path.length());
                 String photo_path = full_path;
-
+                //비트맵 Image path = /storage/sdcard0/Pictures/tmp_1408977926598.jpg
                 Log.w(LOG_TAG, "비트맵 Image path = "+photo_path);
 
                 Bitmap photo = BitmapFactory.decodeFile(photo_path);
@@ -909,12 +908,12 @@ public class StudyRoomActivity extends Activity {
             cursor = db.rawQuery("SELECT " +
                     "senderID, senderText, time, me, messageType " +
                     "FROM Chat WHERE rid = '" + rID + "'", null);
-            Log.i(LOG_TAG, "Load Text From db");
-            Log.i(LOG_TAG, "curser.getCount() : " + cursor.getCount());
+//            Log.i(LOG_TAG, "Load Text From db");
+//            Log.i(LOG_TAG, "curser.getCount() : " + cursor.getCount());
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
                     String _senderID = cursor.getString(0);
-                    Log.i("loadText", "sender ID : " + _senderID);
+//                    Log.i("loadText", "sender ID : " + _senderID);
                     Msg m = new Msg(StudyRoomActivity.this,
                             cursor.getString(0),
                             cursor.getString(1),
@@ -971,7 +970,7 @@ public class StudyRoomActivity extends Activity {
         {
             Toast.makeText(getBaseContext(), "메시지 전송 실패!", Toast.LENGTH_SHORT).show();
 
-            Log.i(LOG_TAG,  "Json Exception!\n" + e.toString() );
+            Log.i(LOG_TAG, "Json Exception!\n" + e.toString());
             if(KogPreference.DEBUG_MODE)
             {
                 Toast.makeText(getBaseContext(), "Json Exception!\n" + e.toString() , Toast.LENGTH_SHORT).show();
@@ -1180,6 +1179,9 @@ public class StudyRoomActivity extends Activity {
                                     }
                                 }
                                 /////////////////////////////
+                                FriendsArrayAdapters mockFriendArrayAdapter;
+                                mockFriendArrayAdapter = new FriendsArrayAdapters(StudyRoomActivity.this, R.layout.friend_list_item, mFriends);
+                                friendList.setAdapter(mockFriendArrayAdapter);
 
                                 loadText();
                             } else {

@@ -6,8 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -19,7 +17,6 @@ import com.secsm.keepongoing.R;
 import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MyVolley;
 
-import java.net.URL;
 import java.util.ArrayList;
 
 /* my customized adapter for listview */
@@ -171,7 +168,7 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
 
                     }
                 }
-            } else // if m.getMessageType().equals("image")
+            } else if (m.getMessageType().equals(KogPreference.MESSAGE_TYPE_IMAGE))
             {
                 viewHolder.wv.setVisibility(View.GONE);
                 viewHolder.p_iv.setVisibility(View.GONE);
@@ -182,7 +179,7 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
                         viewHolder.tt.setText(m.getTime());
 
                         // set p_iv
-                        getImageFromURL(m.getText(), viewHolder.p_iv);
+                        getChatImageFromURL(m.getText(), viewHolder.p_iv);
 
 
                         viewHolder.time.setText(m.getName());
@@ -218,7 +215,7 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
                         viewHolder.tt.setText(m.getName());
 
                         // set p_iv
-                        getImageFromURL(m.getText(), viewHolder.p_iv);
+                        getChatImageFromURL(m.getText(), viewHolder.p_iv);
 
 
                         viewHolder.time.setText(m.getTime());
@@ -250,6 +247,9 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
 
                     }
                 }
+            }else
+            {
+
             }
             viewHolder.wv_rl.addRule(RelativeLayout.RIGHT_OF, R.id.msg_person_photo);
             viewHolder.wv_rl.width = RelativeLayout.LayoutParams.MATCH_PARENT;
@@ -278,8 +278,8 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
     }
 
 
-    void getImageFromURL(String ImgURL, ImageView imgView) {
-        Log.i(LOG_TAG, "getImageFromURL img URL : " + ImgURL);
+    void getChatImageFromURL(String ImgURL, ImageView imgView) {
+        Log.i(LOG_TAG, "getChatImageFromURL img URL : " + ImgURL);
         ImageLoader imageLoader = MyVolley.getImageLoader();
         imageLoader.get(ImgURL,
                 ImageLoader.getImageListener(imgView,

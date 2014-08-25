@@ -117,7 +117,7 @@ public class FriendsArrayAdapters extends BaseAdapter {
     }
 
     void getProfileFromURL(String ImgURL, ImageView imgView) {
-        ImgURL = KogPreference.MEDIA_URL + ImgURL;
+        ImgURL = KogPreference.DOWNLOAD_PROFILE_URL + ImgURL;
         ImageLoader imageLoader = MyVolley.getImageLoader();
         imageLoader.get(ImgURL,
                 ImageLoader.getImageListener(imgView,

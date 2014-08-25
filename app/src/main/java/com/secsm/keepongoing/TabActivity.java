@@ -325,7 +325,7 @@ public class TabActivity extends Activity {
                 "&accomplished_time=" + accomplished_time+
                 "&date=" + date;
 
-
+//http://210.118.74.195:8080/KOG_Server_Rest/rest/Time?nickname=jins&target_time=10:00:00&accomplished_time=00:00:00&date=2014/8/25
 
         Log.i(LOG_TAG, "get_url : " + get_url);
 
@@ -496,7 +496,7 @@ public class TabActivity extends Activity {
 
     void getImageFromURL(String img_name, ImageView imgView) {
 
-        String ImgURL = KogPreference.MEDIA_URL+img_name;
+        String ImgURL = KogPreference.DOWNLOAD_PROFILE_URL+img_name;
         // TODO R.drawable.error_image
         ImageLoader imageLoader = MyVolley.getImageLoader();
         imageLoader.get(ImgURL,
