@@ -103,9 +103,9 @@ public class TabActivity extends Activity {
         ActionBar bar = getActionBar();
         bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.NAVIGATION_MODE_STANDARD);
 
-        getFriendsRequest();
-
-        getStudyRoomsRequest();
+//        getFriendsRequest();
+//
+//        getStudyRoomsRequest();
 
         // layout (when the tab image button clicked, visibility change
         layoutStopwatch = (RelativeLayout) findViewById(R.id.tab_stopwatch_layout);
