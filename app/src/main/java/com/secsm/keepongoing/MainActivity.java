@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -19,6 +20,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.romainpiel.shimmer.Shimmer;
+import com.romainpiel.shimmer.ShimmerTextView;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 
@@ -27,7 +30,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 public class MainActivity extends Activity {
-
+    ShimmerTextView tv;
+    Shimmer shimmer;
     private static String LOG_TAG = "MainActivity";
     private RequestQueue vQueue;
     private int status_code;
@@ -50,11 +54,34 @@ public class MainActivity extends Activity {
         _gcm = GoogleCloudMessaging.getInstance(this);
         _regId = getRegistrationId();
 
+
+        //@민수 수정
+        tv = (ShimmerTextView) findViewById(R.id.shimmer_tv);
+        shimmer = new Shimmer();
+        shimmer.start(tv);
+
+
         if (TextUtils.isEmpty(_regId))
             registerInBackground();
 
         Handler handle = new Handler();
         handle.postDelayed(new splashHandler(), 2000);
+
+
+
+
+
+
+
+    }
+//@민수 수정
+    public void toggleAnimation(View target) {
+        if (shimmer != null && shimmer.isAnimating()) {
+            shimmer.cancel();
+        } else {
+            shimmer = new Shimmer();
+            shimmer.start(tv);
+        }
     }
 
 

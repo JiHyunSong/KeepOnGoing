@@ -5,6 +5,7 @@ package com.secsm.keepongoing.Quiz;
  */
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +15,11 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.secsm.keepongoing.R;
 
@@ -84,7 +87,7 @@ public class listAdapter_Solve extends BaseAdapter {
                 }
             });
             viewHolder.check1 = (CheckBox) v.findViewById(R.id.check1);
-
+            viewHolder.question_number=(TextView) v.findViewById((R.id.question_number));
 
             viewHolder.check1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -196,7 +199,7 @@ public class listAdapter_Solve extends BaseAdapter {
         viewHolder.Falsebtn.setTag(position);
         viewHolder.Truebtn.setTag(position);
 
-
+        viewHolder.question_number.setText((position+1)+". ");
         viewHolder.check1.setChecked(infoList.get(position).chk1);
         viewHolder.check2.setChecked(infoList.get(position).chk2);
         viewHolder.check3.setChecked(infoList.get(position).chk3);
@@ -214,7 +217,7 @@ public class listAdapter_Solve extends BaseAdapter {
         if (infoList.get(position).name == "essay") {
             EditText essay = (EditText) v.findViewById(R.id.essay);
             essay.setVisibility(View.VISIBLE);
-            RelativeLayout multiplechoice = (RelativeLayout) v.findViewById(R.id.multiple);
+            LinearLayout multiplechoice = (LinearLayout) v.findViewById(R.id.multiple);
             multiplechoice.setVisibility(View.GONE);
 
             RelativeLayout tflayout = (RelativeLayout) v.findViewById((R.id.tflayout));
@@ -223,7 +226,7 @@ public class listAdapter_Solve extends BaseAdapter {
 
             EditText essay = (EditText) v.findViewById(R.id.essay);
             essay.setVisibility(View.GONE);
-            RelativeLayout multiplechoice = (RelativeLayout) v.findViewById(R.id.multiple);
+            LinearLayout multiplechoice = (LinearLayout) v.findViewById(R.id.multiple);
             multiplechoice.setVisibility(View.GONE);
             RelativeLayout tflayout = (RelativeLayout) v.findViewById((R.id.tflayout));
             tflayout.setVisibility(View.VISIBLE);
@@ -232,7 +235,7 @@ public class listAdapter_Solve extends BaseAdapter {
         } else {
             EditText essay = (EditText) v.findViewById(R.id.essay);
             essay.setVisibility(View.GONE);
-            RelativeLayout multiplechoice = (RelativeLayout) v.findViewById(R.id.multiple);
+            LinearLayout multiplechoice = (LinearLayout) v.findViewById(R.id.multiple);
             multiplechoice.setVisibility(View.VISIBLE);
             RelativeLayout tflayout = (RelativeLayout) v.findViewById((R.id.tflayout));
             tflayout.setVisibility(View.GONE);
@@ -245,6 +248,10 @@ public class listAdapter_Solve extends BaseAdapter {
                 infoList.get(position).chk5
         );*/
 
+        if((infoList.get(position).correct)==false)
+            v.setBackgroundColor(Color.rgb(255, 0,0));
+        else
+            v.setBackgroundColor(Color.rgb(255, 255, 255));
 
         return v;
     }
@@ -279,6 +286,7 @@ public class listAdapter_Solve extends BaseAdapter {
         public RadioGroup TFGroup;
         public RadioButton Truebtn;
         public RadioButton Falsebtn;
+        public TextView question_number;
 
 
     }

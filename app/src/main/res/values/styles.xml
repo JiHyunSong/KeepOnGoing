@@ -9,5 +9,7 @@
         <!-- Customize your theme here. -->
         <item name="sdlDialogStyle">@style/DialogStyleLight.Custom</item>
     </style>
+     <style name="MyTextView">
+    </style>
 
 </resources>

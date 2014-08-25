@@ -10,13 +10,13 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:padding="5dp">
-
+        android:padding="5dp"
+        android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/imgBtn_tab_stopwatch"
             android:layout_width="fill_parent"
-            android:layout_height="50dp"
+            android:layout_height="match_parent"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_weight="1"
@@ -28,15 +28,14 @@
 
         <ImageButton
             android:id="@+id/imgBtn_tab_friends"
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_weight="1"
             android:background="@drawable/selector_tab_friend"
             android:gravity="center"
             android:text="@string/tab2" />
-
         <ImageButton
             android:id="@+id/imgBtn_tab_rooms"
             android:layout_width="fill_parent"
@@ -48,6 +47,7 @@
             android:gravity="center"
             android:text="@string/tab3" />
 
+
         <ImageButton
             android:id="@+id/imgBtn_tab_settings"
             android:layout_width="fill_parent"
@@ -58,7 +58,6 @@
             android:background="@drawable/selector_tab_option_button"
             android:gravity="center"
             android:text="@string/tab4" />
-
     </LinearLayout>
 
     <RelativeLayout
@@ -173,10 +172,12 @@
             android:layout_marginBottom="30dp"
             android:orientation="horizontal">
 
+
+
             <ToggleButton
 
                 android:id="@+id/toggleButton2"
-android:layout_toRightOf="@+id/ringring"
+                android:layout_toRightOf="@+id/finish"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/selector_tab_play_button"
@@ -185,12 +186,20 @@ android:layout_toRightOf="@+id/ringring"
                 android:textOn=""
                 />
             <Button
-                android:id="@+id/ringring"
+                android:id="@+id/finish"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/selector_tab_stop_button"
                 android:textSize="30dp" />
-
+            <ToggleButton
+                android:id="@+id/sliding"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30dp"
+                android:textOff="open"
+                android:textOn="close"
+                android:layout_toRightOf="@id/toggleButton2"
+                />
           </RelativeLayout>
 
 

@@ -1,4 +1,4 @@
-package com.secsm.keepongoing.Alarm;
+package com.secsm.keepongoing.Life_Study;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +10,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import com.secsm.keepongoing.Alarm.Alarm_main;
+import com.secsm.keepongoing.Alarm.Preference;
 import com.secsm.keepongoing.R;
 
 import java.util.ArrayList;
@@ -17,13 +19,13 @@ import java.util.ArrayList;
 /**
  * Created by KMINSU-PC-W1 on 2014-08-11.
  */
-public class AlramAdapter extends BaseAdapter {
+public class room_friends_Adapter extends BaseAdapter {
     private LayoutInflater inflater = null;
-    private ArrayList<AlramData> infoList = null;
+    private ArrayList<room_friends_Data> infoList = null;
     private ViewHolder viewHolder = null;
     public Context mContext = null;
 
-    public AlramAdapter(Context c, ArrayList<AlramData> arrays) {
+    public room_friends_Adapter(Context c, ArrayList<room_friends_Data> arrays) {
         this.mContext = c;
         this.inflater = LayoutInflater.from(c);
         this.infoList = arrays;
@@ -37,7 +39,7 @@ public class AlramAdapter extends BaseAdapter {
 
     // Adapter가 관리하는 Data의 Item 의 Position을 <객체> 형태로 얻어 옵니다.
     @Override
-    public AlramData getItem(int position) {
+    public room_friends_Data getItem(int position) {
         return infoList.get(position);
     }
 
@@ -51,14 +53,6 @@ public class AlramAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertview, ViewGroup parent) {
 
-//        DBContactHelper helper = new DBContactHelper(convertview.getContext());
-//        helper.addContact(new Contact("Name","Phone-number"));
-/*
-        DBContactHelper helper = new DBContactHelper(convertview.getContext());
-        Contact contact;
-        contact=helper.getContact(position);
-        contact.gethour();
-        contact.getminute();*/
         View v = convertview;
         final View temp=v;
 
@@ -123,11 +117,11 @@ public class AlramAdapter extends BaseAdapter {
     // Adapter가 관리하는 Data List를 교체 한다.
     // 교체 후 Adapter.notifyDataSetChanged() 메서드로 변경 사실을
     // Adapter에 알려 주어 ListView에 적용 되도록 한다.
-    public void setArrayList(ArrayList<AlramData> arrays) {
+    public void setArrayList(ArrayList<room_friends_Data> arrays) {
         this.infoList = arrays;
     }
 
-    public ArrayList<AlramData> getArrayList() {
+    public ArrayList<room_friends_Data> getArrayList() {
         return infoList;
     }
 

@@ -92,7 +92,7 @@
                 android:text="이스터애그"
                 bootstrapbutton:bb_icon_right="fa-android"
                 bootstrapbutton:bb_type="success"
-                android:visibility="gone" />
+                android:visibility="visible" />
         </LinearLayout>
     </ScrollView>
 

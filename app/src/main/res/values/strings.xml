@@ -43,5 +43,8 @@
 
     <string name="title_activity_solve__main">Solve_Main</string>
     <string name="title_activity_room_friends">RoomFriendsActivity</string>
+    <string name="title_activity_achieve_time_show">achieve_time_show</string>
+    <string name="shimmer">Shimmer</string>
+    <string name="toggle_animation">Toggle animation</string>
 
 </resources>
