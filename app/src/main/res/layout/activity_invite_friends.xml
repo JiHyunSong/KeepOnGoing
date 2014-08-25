@@ -9,11 +9,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.secsm.keepongoing.InviteFriendsActivity">
 
-    <FrameLayout
-        android:id="@+id/invite_friend_fl"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:visibility="gone"/>
 
     <RelativeLayout
         android:id="@+id/invite_friend_rl1"
@@ -87,4 +82,15 @@
             android:minHeight="300dp" />
 
     </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/invite_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+
 </RelativeLayout>

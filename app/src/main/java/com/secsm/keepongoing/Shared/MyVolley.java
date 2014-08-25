@@ -14,6 +14,7 @@ import com.android.volley.toolbox.Volley;
  * @author Ognyan Bankov
  */
 public class MyVolley {
+    private static MyVolley instance;
     private static RequestQueue mRequestQueue;
     private static ImageLoader mImageLoader;
 

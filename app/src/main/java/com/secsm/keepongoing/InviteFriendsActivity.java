@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -51,34 +52,36 @@ public class InviteFriendsActivity extends Activity {
     private String rMessage;
     FriendsArrayAdapters friendsArrayAdapters;
     FriendsArrayAdapters selected_friendsArrayAdapters;
+    private ProgressBar inviteProgressBar;
 
     private BootstrapEditText invite_friend_search_et;
     ArrayList<FriendNameAndIcon> mFriends, selected_Friends;
     private ListView invite_friend_list, to_invite_friend_list;
-    private FrameLayout invite_friend_fl;
+//    private FrameLayout invite_friend_fl;
     String type, rule, roomname, max_holiday_count, start_time, duration_time, showup_time, meet_days;
     String rid = null;
-//    intent.putExtra("type", "life_room");
-//    intent.putExtra("rule", add_study_room_rules_et.getText().toString());
-//    intent.putExtra("roomname", add_study_room_name_et.getText().toString());
-//    intent.putExtra("max_holiday_count", add_study_room_life_holiday_et.getText().toString());
 
-//    intent.putExtra("type", "life_room");
-//    intent.putExtra("rule", add_study_room_rules_et.getText().toString());
-//    intent.putExtra("roomname", add_study_room_name_et.getText().toString());
-//    intent.putExtra("start_time", add_study_room_subject_tp.toString());
-//    intent.putExtra("duration_time", add_study_room_subject_duration_time_et.getText().toString());
-//    intent.putExtra("showup_time", add_study_room_subject_show_up_time_et.getText().toString());
-//    intent.putExtra("meet_days", getMeetDays());
+    private void setAllEnable(){
+        invite_friend_list.setEnabled(true);
+        to_invite_friend_list.setEnabled(true);
+        invite_friend_create_room_btn.setEnabled(true);
+        inviteProgressBar.setVisibility(View.GONE);
+    }
+
+    private void setAllDisable(){
+        invite_friend_list.setEnabled(false);
+        to_invite_friend_list.setEnabled(false);
+        invite_friend_create_room_btn.setEnabled(false);
+        inviteProgressBar.setVisibility(View.VISIBLE);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invite_friends);
-        MyVolley.init(InviteFriendsActivity.this);
-        vQueue = Volley.newRequestQueue(this);
-
-        invite_friend_fl = (FrameLayout) findViewById(R.id.invite_friend_fl);
+//        MyVolley.init(InviteFriendsActivity.this);
+        vQueue = MyVolley.getRequestQueue();
+        inviteProgressBar = (ProgressBar) findViewById(R.id.invite_progress);
 
         intent = getIntent();
         type = intent.getStringExtra("type");
@@ -139,11 +142,12 @@ public class InviteFriendsActivity extends Activity {
             public void onClick(View v) {
                 Log.i(LOG_TAG, "type : " + type);
                 if ("liferoom".equals(type)) {
-
+                    setAllDisable();
                     createLifeRoomRequest();
 //                    inviteFriendRequest(f_nickName);
                 } else if("subjectroom".equals(type))
                 {
+                    setAllDisable();
                     createSubjectRoomRequest();
                 }
                 else {
@@ -258,6 +262,7 @@ public class InviteFriendsActivity extends Activity {
     }
 
     private void GoTabPage() {
+        setAllDisable();
         InviteFriendsActivity.this.finish();
     }
 
@@ -359,7 +364,6 @@ public class InviteFriendsActivity extends Activity {
 
     // room create
     private void createLifeRoomRequest() {
-        invite_friend_fl.setVisibility(View.VISIBLE);
 //    String type, rule, max_holiday_count, start_time, duration_time, showup_time, meet_days;
         String _roomname = roomname.trim().replace(" ", "%20");
         _roomname = _roomname.trim().replace("\n", "%0D%0A");
@@ -396,11 +400,10 @@ public class InviteFriendsActivity extends Activity {
                                     inviteFriendToRoomRequest(rid, selected_Friends.get(i).getName());
                                 }
 
-                                invite_friend_fl.setVisibility(View.GONE);
                                 GoTabPage();
                                 /////////////////////////////
                             } else {
-                                invite_friend_fl.setVisibility(View.GONE);
+                                setAllDisable();
 
                                 Toast.makeText(getBaseContext(), "통신 에러 : \n방을 생성할 수 없습니다", Toast.LENGTH_SHORT).show();
                                 if (KogPreference.DEBUG_MODE) {
@@ -408,13 +411,13 @@ public class InviteFriendsActivity extends Activity {
                                 }
                             }
                         } catch (Exception e) {
-                            invite_friend_fl.setVisibility(View.GONE);
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                invite_friend_fl.setVisibility(View.GONE);
+                setAllDisable();
+
                 Log.i(LOG_TAG, "Response Error");
                 Toast.makeText(getBaseContext(), "통신 에러 : \n방을 생성할 수 없습니다", Toast.LENGTH_SHORT).show();
                 if (KogPreference.DEBUG_MODE) {
@@ -428,7 +431,6 @@ public class InviteFriendsActivity extends Activity {
     }
 
     private void createSubjectRoomRequest() {
-        invite_friend_fl.setVisibility(View.VISIBLE);
 
 //    String type, rule, max_holiday_count, start_time, duration_time, showup_time, meet_days;
         String _roomname = roomname.trim().replace(" ", "%20");
@@ -469,26 +471,24 @@ public class InviteFriendsActivity extends Activity {
                                 {
                                     inviteFriendToRoomRequest(rid, selected_Friends.get(i).getName());
                                 }
-                                invite_friend_fl.setVisibility(View.GONE);
 
                                 GoTabPage();
                                 /////////////////////////////
                             } else {
-                                invite_friend_fl.setVisibility(View.GONE);
+                                setAllDisable();
                                 Toast.makeText(getBaseContext(), "통신 에러 : \n방을 생성할 수 없습니다", Toast.LENGTH_SHORT).show();
                                 if (KogPreference.DEBUG_MODE) {
                                     Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         } catch (Exception e) {
-                            invite_friend_fl.setVisibility(View.GONE);
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                invite_friend_fl.setVisibility(View.GONE);
                 Log.i(LOG_TAG, "Response Error");
+                setAllDisable();
                 Toast.makeText(getBaseContext(), "통신 에러 : \n방을 생성할 수 없습니다", Toast.LENGTH_SHORT).show();
                 if (KogPreference.DEBUG_MODE) {
                     Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
@@ -537,6 +537,7 @@ public class InviteFriendsActivity extends Activity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.i(LOG_TAG, "Response Error");
+                setAllDisable();
                 Toast.makeText(getBaseContext(), "통신 에러 : \n" + friendName + "친구를 초대할 수 없습니다", Toast.LENGTH_SHORT).show();
                 if (KogPreference.DEBUG_MODE) {
                     Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
