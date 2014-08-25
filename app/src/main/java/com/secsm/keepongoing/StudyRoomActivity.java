@@ -42,12 +42,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.secsm.keepongoing.Adapters.FriendNameAndIcon;
 import com.secsm.keepongoing.Adapters.FriendsArrayAdapters;
 import com.secsm.keepongoing.Adapters.MessageAdapter;
 import com.secsm.keepongoing.Adapters.Msg;
-import com.secsm.keepongoing.Alarm.alram_list;
 import com.secsm.keepongoing.DB.DBHelper;
 import com.secsm.keepongoing.Quiz.Quiz_Main;
 import com.secsm.keepongoing.Quiz.Solve_Main;
@@ -114,10 +112,11 @@ public class StudyRoomActivity extends Activity {
     private LinearLayout slidingPage01;
     private boolean isPageOpen = false;
     private ListView friendList;
-    private TextView room_role_tv;
+    private TextView room_rule_tv;
     private Handler mainHandler;
     private SocketListener sl;
-    SocketAsyncTask soc=null;
+    SocketAsyncTask_Reader soc_reader=null;
+    SocketAsyncTask_Writer soc_writer=null;
     String type;
     String rule;
     @Override
@@ -157,14 +156,14 @@ public class StudyRoomActivity extends Activity {
         messageList = (ListView) findViewById(R.id.study_room_message_list);
         messageList.setAdapter(messageHistoryMAdaptor);
 
-        room_role_tv = (TextView) findViewById(R.id.room_role_tv);
-        room_role_tv.setMovementMethod(new ScrollingMovementMethod());
+        room_rule_tv = (TextView) findViewById(R.id.room_role_tv);
+        room_rule_tv.setMovementMethod(new ScrollingMovementMethod());
 
         friendList = (ListView) findViewById(R.id.roomFriendList);
         friendList.setOnItemClickListener(itemClickListener);
 
 
-        room_role_tv.setText(rule);
+        room_rule_tv.setText(rule);
 		/* IF there is and exists room, load the stored message */
         loadText();
 
@@ -212,15 +211,18 @@ public class StudyRoomActivity extends Activity {
 // rid
 // message
 
-
     public String getInitialMsg(){
         try {
             JSONObject jObj = new JSONObject();
+            Log.i(LOG_TAG,  "jObj.toString()");
             jObj.put("nickname", KogPreference.getNickName(StudyRoomActivity.this));
             Log.i(LOG_TAG,  "jObj.toString() " + jObj.toString() + "\n");
 
+            Log.i(LOG_TAG,  "Log.i(LOG_TAG,  \"jObj.toString() \" + jObj.toString() + \"\\n\");");
+
             return jObj.toString();
-        }catch (JSONException e) {
+        }
+        catch (JSONException e) {
             Log.i(LOG_TAG,  "Json Exception!\n" + e.toString() );
             if(KogPreference.DEBUG_MODE)
             {
@@ -230,6 +232,7 @@ public class StudyRoomActivity extends Activity {
         }
         return "";
     }
+
 
 
 
@@ -245,7 +248,7 @@ public class StudyRoomActivity extends Activity {
             try {
                 Log.i(LOG_TAG, "sendMessage() , msg : " + msg);
                 sendMsgToSvr(msg);
-                sendText(KogPreference.getNickName(StudyRoomActivity.this), KogPreference.getRid(StudyRoomActivity.this), msg, "plaintext");
+//                sendText(KogPreference.getNickName(StudyRoomActivity.this), KogPreference.getRid(StudyRoomActivity.this), msg, "plaintext");
 
                 messageTxt.setText("");
             } catch (Exception ex) {
@@ -300,24 +303,22 @@ public class StudyRoomActivity extends Activity {
         time = getRealTime();
         if(_senderNickname.equals(KogPreference.getNickName(StudyRoomActivity.this))){
             m = new Msg(StudyRoomActivity.this, "나", _text, time, "true", _messageType, _profileImageName);
-//        	Log.i("MSG", "Name : " + Name + "Text : " + text + "Time : " + time);
+//           Log.i("MSG", "Name : " + Name + "Text : " + text + "Time : " + time);
             insertIntoMsgInSQLite("나", _text, time, "true", _messageType);
             //show up
             messageHistoryMAdaptor.add(m);
-        }else if("".equals(_text)){
+        }
+        else if("".equals(_text)){
 
-        }else if(_text.equals("EXIT")){
-            m = new Msg(StudyRoomActivity.this, "", _senderNickname + "님이 퇴장하셨습니다.", "", "false", _messageType, _profileImageName);
-//      	Log.i("MSG", "Name : " + Name + "Text : " + text + "Time : " + time);
-            insertIntoMsgInSQLite(_senderNickname, _text, time, "false", _messageType);
-            messageHistoryMAdaptor.add(m);
         }
         else{
             m = new Msg(StudyRoomActivity.this, _senderNickname, _text, time, "false", _messageType, _profileImageName);
-//	    	Log.i("MSG", "Name : " + Name + "Text : " + text + "Time : " + time);
+            Log.i("MSG", "Name : " + _senderNickname + "Text : " + _text + "Time : " + time);
             insertIntoMsgInSQLite(_senderNickname, _text, time, "false", _messageType);
+            //TODO
             messageHistoryMAdaptor.add(m);
         }
+
     }
 
     /* getting the profile image from the server  */
@@ -852,9 +853,13 @@ public class StudyRoomActivity extends Activity {
     void init()
     {
         if(!KogPreference.NO_AUTH){
-            getFriendsRequest();
-            soc = new SocketAsyncTask();
-            soc.execute();
+            if(soc_writer==null)
+            {
+                Log.i(LOG_TAG,"soc=null");
+                getFriendsRequest();
+                soc_writer = new SocketAsyncTask_Writer();
+                soc_writer.execute();
+            }
         }else
         {
             mFriends = new ArrayList<FriendNameAndIcon>();
@@ -870,8 +875,9 @@ public class StudyRoomActivity extends Activity {
     void close()
     {
         if(!KogPreference.NO_AUTH){
-            soc.sendMsgToSvr("exit");
-            soc.cancel(true);
+            soc_reader.cancel(true);
+            soc_writer.sendMsgToSvr("exit");
+            soc_writer.cancel(true);
         }
     }
 
@@ -1048,7 +1054,7 @@ public class StudyRoomActivity extends Activity {
             jObj.put("message", msg);
             Log.i(LOG_TAG, "sendMsgToSvr in MainThread msg : " + msg);
 
-            soc.sendMsgToSvr(jObj.toString());
+            soc_writer.sendMsgToSvr(jObj.toString());
 //            SocketManager.sendMsg(jObj.toString());
         } catch (Exception e)
         {
@@ -1063,83 +1069,52 @@ public class StudyRoomActivity extends Activity {
         }
     }
 
-    class SocketAsyncTask extends AsyncTask<Void, Void, Void> {
 
-    private Socket client = null;
-    private BufferedReader br = null;
-    private BufferedWriter bw = null;
+    Socket client = null;
+    class SocketAsyncTask_Reader extends AsyncTask<Void, Void, Void> {
+        private BufferedReader br = null;
 
         @Override
         protected void onPreExecute() {
         }
 
-        private void sendMsgToSvr(String msg)
-        {
-            try {
-                bw.write(msg);
-
-                Log.i(LOG_TAG, "client send message : " + msg);
-                bw.newLine();
-                bw.flush();
-            }catch (Exception e) {
-                if(KogPreference.DEBUG_MODE)
-                {
-//                    Toast.makeText(getBaseContext(), "Json Exception!\n" + e.toString() , Toast.LENGTH_SHORT).show();
-
-                }
-            }
-        }
-
         @Override
         protected Void doInBackground(Void... unused) {
             try {
-                client = new Socket(KogPreference.CHAT_IP, KogPreference.CHAT_PORT);
+                Log.i(LOG_TAG, "-----------------------------reader");
                 br = new BufferedReader(new InputStreamReader(client.getInputStream()));
-                bw = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
-                Log.i(LOG_TAG, "id : " + getInitialMsg());
 
-                bw.write(getInitialMsg());
-                bw.newLine();
-                bw.flush();
                 String read;
                 JSONObject rMsg;
                 while (true) {
-
                     if(isCancelled())
                         break;
 
                     read = br.readLine();
-                    Log.i("R: Received:", "R: Received: " + read);
-
-
 
                     if (read != null) {
                         Log.i("R: Received:", "R: Received:" + read);
+                        rMsg = new JSONObject(read);
+
+                        Message ms = handler.obtainMessage();
+                        Bundle b = new Bundle();
+                        b.putString("nickname", rMsg.getString("nickname"));
+                        b.putString("rid", rMsg.getString("rid"));
+                        b.putString("message", rMsg.getString("message"));
+                        ms.setData(b);
+                        handler.sendMessage(ms);
+                        //Log.i(LOG_TAG, "this is it~! : " + messageList.getItemAtPosition(0).toString());
                     }
-
-                    rMsg = new JSONObject(read);
-
-                    Message ms = handler.obtainMessage();
-                    Bundle b = new Bundle();
-                    b.putString("nickname", rMsg.getString("nickname"));
-                    b.putString("rid", rMsg.getString("rid"));
-                    b.putString("message", rMsg.getString("message"));
-                    ms.setData(b);
-                    handler.sendMessage(ms);
                 }
-
-                return null;
-            } catch (Exception e) {
-
+            }
+            catch (Exception e) {
                 e.printStackTrace();
 
                 if(KogPreference.DEBUG_MODE)
                 {
                     Log.i(LOG_TAG,  "소켓 에러!\n" + e.toString() );
-
-//                    Toast.makeText(getBaseContext(), "소켓에러!\n" + e.toString() , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), "소켓에러!\n" + e.toString() , Toast.LENGTH_SHORT).show();
                 }
-
             }
 
             return(null);
@@ -1149,22 +1124,100 @@ public class StudyRoomActivity extends Activity {
         protected void onPostExecute(Void unused) {
             try
             {
-                client.close();
-                client = null;
-
-            }catch (Exception e)
+                br.close();
+                br = null;
+                soc_writer.executeClose();
+            }
+            catch (Exception e)
             {
                 Log.i(LOG_TAG,  "소켓 에러!\n" + e.toString() );
                 if(KogPreference.DEBUG_MODE)
                 {
-//
-//                    Toast.makeText(getBaseContext(), "소켓에러!\n" + e.toString() , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), "소켓에러!\n" + e.toString() , Toast.LENGTH_SHORT).show();
                 }
-
             }
-
         }
     }
+
+    class SocketAsyncTask_Writer extends AsyncTask<Void, Void, Void> {
+
+        private BufferedWriter bw = null;
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected Void doInBackground(Void... unused) {
+            try {
+                Log.i(LOG_TAG, "-----------------------------writer");
+                client = new Socket(KogPreference.CHAT_IP, KogPreference.CHAT_PORT);
+                bw = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
+
+                bw.write(getInitialMsg());
+                bw.newLine();
+                bw.flush();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+
+                if(KogPreference.DEBUG_MODE)
+                {
+                    Log.i(LOG_TAG,  "소켓 에러!\n" + e.toString() );
+                    Toast.makeText(getBaseContext(), "소켓에러!\n" + e.toString() , Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            if(soc_reader==null)
+            {
+                soc_reader = new SocketAsyncTask_Reader();
+                Log.i(LOG_TAG, "Socket Reader execute");
+                soc_reader.execute();
+            }
+
+            return(null);
+        }
+
+        private void sendMsgToSvr(String msg)
+        {
+            try {
+                bw.write(msg);
+                bw.newLine();
+                bw.flush();
+                Log.i(LOG_TAG, "client sent msg. now flushed");
+            }
+            catch (Exception e) {
+                Log.i(LOG_TAG, "client send message??????? " + e.toString());
+                if(KogPreference.DEBUG_MODE)
+                {
+                    Toast.makeText(getBaseContext(), "Json Exception!\n" + e.toString() , Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Void unused) {
+        }
+
+        public void executeClose() {
+            try
+            {
+                bw.close();
+                bw = null;
+                client.close();
+                client = null;
+            }
+            catch (Exception e)
+            {
+                Log.i(LOG_TAG,  "소켓 에러!\n" + e.toString() );
+                if(KogPreference.DEBUG_MODE)
+                {
+                    Toast.makeText(getBaseContext(), "소켓에러!\n" + e.toString() , Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
 
 
     ////////////////////////////////////

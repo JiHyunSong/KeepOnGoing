@@ -73,7 +73,7 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
 
         Msg m = items.get(position);
         if (m != null) {
-            if(m.getMessageType().equals("plaintext")) {
+            if (m.getMessageType().equals("plaintext")) {
                 viewHolder.wv.setVisibility(View.GONE);
                 viewHolder.p_iv.setVisibility(View.GONE);
                 viewHolder.wv.setVisibility(View.VISIBLE);
@@ -136,6 +136,9 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
                         //                        htmlFormText = htmlFormText.replaceAll(repEmoArr[i], htmlEmoArr[i]);
                         //                    }
                         //                    wv.loadDataWithBaseURL("file:///android_asset/", htmlForm1 + htmlFormText + htmlForm2 , "text/html", "utf-8", "file:///android_assest/");
+                        viewHolder.wv.loadUrl("about:blank");
+                        viewHolder.wv.invalidate();
+                        viewHolder.wv.loadDataWithBaseURL("file:///android_asset/", htmlForm1 + htmlFormText + htmlForm2, "text/html", "utf-8", "file:///android_assest/");
 
                         viewHolder.time.setText(m.getTime());
 
@@ -167,7 +170,7 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
 
                     }
                 }
-            }else // if m.getMessageType().equals("image")
+            } else // if m.getMessageType().equals("image")
             {
                 viewHolder.wv.setVisibility(View.GONE);
                 viewHolder.p_iv.setVisibility(View.GONE);

@@ -73,9 +73,6 @@ public class GcmIntentService extends IntentService {
                         Log.e(LOG_TAG, "GCM message type error");
                         break;
                 }
-
-
-
             }
         }
         // Release the wake lock provided by the WakefulBroadcastReceiver.
