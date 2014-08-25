@@ -142,7 +142,7 @@
             android:label="@string/title_activity_tab" >
         </activity>
         <activity
-            android:name=".Shared.RoomFriendsActivity"
+            android:name=".StudyRoomFriendListActivity"
             android:label="@string/title_activity_tab" >
         </activity>
         <activity

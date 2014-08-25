@@ -16,15 +16,22 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -35,8 +42,10 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.secsm.keepongoing.Adapters.FriendNameAndIcon;
+import com.secsm.keepongoing.Adapters.FriendsArrayAdapters;
 import com.secsm.keepongoing.Adapters.MessageAdapter;
 import com.secsm.keepongoing.Adapters.Msg;
+import com.secsm.keepongoing.Alarm.alram_list;
 import com.secsm.keepongoing.DB.DBHelper;
 import com.secsm.keepongoing.Quiz.Quiz_Main;
 import com.secsm.keepongoing.Quiz.Solve_Main;
@@ -90,7 +99,7 @@ public class StudyRoomActivity extends Activity {
     private MenuItem actionBarFirstBtn, actionBarSecondBtn;
     private MenuItem actionBarThirdBtn, actionBarFourthBtn;
     private MenuItem actionBarFifthBtn;
-    ArrayList<FriendNameAndIcon> mFriends;
+    private ArrayList<FriendNameAndIcon> mFriends;
 
     private RequestQueue vQueue;
 
@@ -98,10 +107,17 @@ public class StudyRoomActivity extends Activity {
 //    private BufferedReader br = null;
 //    private BufferedWriter bw = null;
 
+    private Animation translateLeftAnim;
+    private Animation translateRightAnim;
+    private LinearLayout slidingPage01;
+    private boolean isPageOpen = false;
+    private ListView friendList;
+    private TextView room_role_tv;
     private Handler mainHandler;
     private SocketListener sl;
     SocketAsyncTask soc=null;
     String type;
+    String rule;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,14 +126,17 @@ public class StudyRoomActivity extends Activity {
         bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.NAVIGATION_MODE_STANDARD);
 
 
-        MyVolley.init(StudyRoomActivity.this);
-        vQueue = Volley.newRequestQueue(this);
-
+//        MyVolley.init(StudyRoomActivity.this);
+//        vQueue = Volley.newRequestQueue(this);
+        vQueue = MyVolley.getRequestQueue();
 
         mDBHelper = new DBHelper(this);
         intent = getIntent();
         rID = (int) intent.getIntExtra("roomID", -1);
         type = (String) intent.getStringExtra("type");
+        rule = (String) intent.getStringExtra("rule");
+
+
         rID = Integer.parseInt(KogPreference.getRid(StudyRoomActivity.this));
         if (rID == -1) {
             // TODO : 잘못된 접근, 되돌아가기
@@ -136,6 +155,14 @@ public class StudyRoomActivity extends Activity {
         messageList = (ListView) findViewById(R.id.study_room_message_list);
         messageList.setAdapter(messageHistoryMAdaptor);
 
+        room_role_tv = (TextView) findViewById(R.id.room_role_tv);
+        room_role_tv.setMovementMethod(new ScrollingMovementMethod());
+
+        friendList = (ListView) findViewById(R.id.roomFriendList);
+        friendList.setOnItemClickListener(itemClickListener);
+
+
+        room_role_tv.setText(rule);
 		/* IF there is and exists room, load the stored message */
         loadText();
 
@@ -143,11 +170,22 @@ public class StudyRoomActivity extends Activity {
         *
         * send my nickname! as a type json
         * */
+        // 슬라이딩으로 보여질 레이아웃 객체 참조
+        slidingPage01 = (LinearLayout) findViewById(R.id.slidingPage01);
+
+        // 애니메이션 객체 로딩
+        translateLeftAnim = AnimationUtils.loadAnimation(this, R.anim.translate_left);
+        translateRightAnim = AnimationUtils.loadAnimation(this, R.anim.translate_right);
+
+        // 애니메이션 객체에 리스너 설정
+        SlidingPageAnimationListener animListener = new SlidingPageAnimationListener();
+        translateLeftAnim.setAnimationListener(animListener);
+        translateRightAnim.setAnimationListener(animListener);
 
 
         init();
         /* at First, holding the focus */
-        messageTxt.requestFocus();
+//        messageTxt.requestFocus();
 
         /* when you click "send" */
         sendMsgBtn.setOnClickListener(new View.OnClickListener() {
@@ -651,11 +689,67 @@ public class StudyRoomActivity extends Activity {
     ////////////////////
     // Action bar     //
     ////////////////////
+    /**
+     * 애니메이션 리스너 정의
+     */
+    private class SlidingPageAnimationListener implements Animation.AnimationListener {
+        /**
+         * 애니메이션이 끝날 때 호출되는 메소드
+         */
+        public void onAnimationEnd(Animation animation) {
+            if (isPageOpen) {
+                slidingPage01.setVisibility(View.INVISIBLE);
+                isPageOpen = false;
+            } else {
+                slidingPage01.setVisibility(View.VISIBLE);
+                isPageOpen = true;
+            }
+        }
+
+        public void onAnimationRepeat(Animation animation) {
+
+        }
+
+        public void onAnimationStart(Animation animation) {
+
+        }
+
+    }
+
+    ListView.OnItemClickListener itemClickListener = new ListView.OnItemClickListener() {
+
+        public void onItemClick(AdapterView<?> adapterView, View arg1, int position, long arg3) {
+            // TODO Auto-generated method stub
+            if (adapterView.getId() == R.id.friend_list) {
+                Log.i(LOG_TAG, "friends Clicked");
+
+            }
+        }
+    };
+
 
     MenuItem.OnMenuItemClickListener ab_friend_list_listener = new MenuItem.OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(MenuItem mi) {
-            Log.i(LOG_TAG, "onMenuItemClicked ab_stopwatchTab_settings_listener");
+            Log.i(LOG_TAG, "onMenuItemClicked ab_friend_list_listener");
+
+            // 애니메이션 적용
+            if (isPageOpen) {
+                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+                slidingPage01.startAnimation(translateLeftAnim);
+                Log.e(LOG_TAG,"left");
+                slidingPage01.setVisibility(View.VISIBLE);
+
+
+            } else {
+                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+                slidingPage01.startAnimation(translateRightAnim);
+                Log.e(LOG_TAG,"right");
+            }
+
+
+
+
             return true;
         }
     };
@@ -676,7 +770,7 @@ public class StudyRoomActivity extends Activity {
     MenuItem.OnMenuItemClickListener ab_add_quiz_listener = new MenuItem.OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(MenuItem mi) {
-            Log.i(LOG_TAG, "onMenuItemClicked ab_rooms_notify_listener");
+            Log.i(LOG_TAG, "onMenuItemClicked ab_add_quiz_listener");
 
             Intent intent = new Intent(StudyRoomActivity.this, Quiz_Main.class);
             startActivity(intent);
@@ -689,14 +783,14 @@ public class StudyRoomActivity extends Activity {
     MenuItem.OnMenuItemClickListener ab_invite_friend_listener = new MenuItem.OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(MenuItem mi) {
-            Log.i(LOG_TAG, "onMenuItemClicked ab_rooms_add_listener");
+            Log.i(LOG_TAG, "onMenuItemClicked ab_invite_friend_listener");
             return true;
         }
     };
     MenuItem.OnMenuItemClickListener ab_kick_off_friend_listener = new MenuItem.OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(MenuItem mi) {
-            Log.i(LOG_TAG, "onMenuItemClicked ab_rooms_add_listener");
+            Log.i(LOG_TAG, "onMenuItemClicked ab_kick_off_friend_listener");
             return true;
         }
     };
@@ -743,14 +837,28 @@ public class StudyRoomActivity extends Activity {
 
     void init()
     {
-        getFriendsRequest();
-        soc = new SocketAsyncTask();
-        soc.execute();
+        if(!KogPreference.NO_AUTH){
+            getFriendsRequest();
+            soc = new SocketAsyncTask();
+            soc.execute();
+        }else
+        {
+            mFriends = new ArrayList<FriendNameAndIcon>();
+            for(int i=0; i < 3; i++)
+            {
+                mFriends.add(new FriendNameAndIcon( "default.png", "nickname" + i , null));
+            }
+            FriendsArrayAdapters mockFriendArrayAdapter;
+            mockFriendArrayAdapter = new FriendsArrayAdapters(StudyRoomActivity.this, R.layout.friend_list_item, mFriends);
+            friendList.setAdapter(mockFriendArrayAdapter);
+        }
     }
     void close()
     {
-        soc.sendMsgToSvr("exit");
-        soc.cancel(true);
+        if(!KogPreference.NO_AUTH){
+            soc.sendMsgToSvr("exit");
+            soc.cancel(true);
+        }
     }
 
     //////////////////////////////////////////////////

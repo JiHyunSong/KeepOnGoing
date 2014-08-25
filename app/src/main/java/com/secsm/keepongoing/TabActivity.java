@@ -539,6 +539,7 @@ public class TabActivity extends Activity {
                 Log.i(LOG_TAG, "position : " + position);
                 Intent intent = new Intent(TabActivity.this, StudyRoomActivity.class);
                 intent.putExtra("type", mRooms.get(position).getType());
+                intent.putExtra("rule", mRooms.get(position).getRule());
                 KogPreference.setRid(TabActivity.this, mRooms.get(position).getRid());
                 KogPreference.setQuizNum(TabActivity.this, mRooms.get(position).getQuiz_num());
                 Log.i(LOG_TAG, "RID (mRooms.get(position).getRid()): " + mRooms.get(position).getRid());
