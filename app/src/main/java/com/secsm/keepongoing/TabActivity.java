@@ -103,6 +103,7 @@ public class TabActivity extends Activity {
         ActionBar bar = getActionBar();
         bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.NAVIGATION_MODE_STANDARD);
 
+
 //        getFriendsRequest();
 //
 //        getStudyRoomsRequest();
@@ -189,11 +190,6 @@ public class TabActivity extends Activity {
 
 
         //@민수 테스트
-
-
-
-
-
         final ToggleButton test=(ToggleButton) findViewById(R.id.sliding);
         test.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View arg0) {
@@ -212,15 +208,6 @@ public class TabActivity extends Activity {
 
             }
         });
-
-
-
-
-
-
-
-
-
 
         //@민수 타이머 선언
         TimerTask adTast2 = new TimerTask() {
@@ -295,6 +282,30 @@ public class TabActivity extends Activity {
 
             }
         });
+
+        if(KogPreference.DEBUG_MODE && KogPreference.NO_AUTH)
+        {
+            mFriends = new ArrayList<FriendNameAndIcon>();
+            for(int i=0; i < 3; i++)
+            {
+                mFriends.add(new FriendNameAndIcon( "default.png", "nickname" + i , null));
+            }
+
+            FriendsArrayAdapters mockFriendArrayAdapter;
+            mockFriendArrayAdapter = new FriendsArrayAdapters(TabActivity.this, R.layout.friend_list_item, mFriends);
+            friendList.setAdapter(mockFriendArrayAdapter);
+
+            mRooms = new ArrayList<RoomNaming>();
+            for(int i=0; i< 3; i++) {
+                mRooms.add(new RoomNaming("subjectroom", "2" + i, "meet 6days", "KOG STUDY", "2", null, null, null, null, null));
+            }
+
+            RoomsArrayAdapters roomsArrayAdapter;
+            roomsArrayAdapter = new RoomsArrayAdapters(TabActivity.this, R.layout.room_list_item, mRooms);
+            roomList.setAdapter(roomsArrayAdapter);
+
+        }
+
     }
 
 
@@ -638,10 +649,11 @@ public class TabActivity extends Activity {
             ahcieve.setText(Preference.getString(TabActivity.this, "Resumetimer"));
 
 
-        getFriendsRequest();
+        if(!KogPreference.NO_AUTH) {
+            getFriendsRequest();
 
-        getStudyRoomsRequest();
-
+            getStudyRoomsRequest();
+        }
 
         DBContactHelper helper = new DBContactHelper(this);
         Contact contact3 = helper.getContact(2);
