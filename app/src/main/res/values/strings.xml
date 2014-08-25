@@ -47,5 +47,6 @@
     <string name="shimmer">Shimmer</string>
     <string name="toggle_animation">Toggle animation</string>
     <string name="title_activity_add_more_friend">AddMoreFriendActivity</string>
+    <string name="title_activity_my_profile">MyProfileActivity</string>
 
 </resources>

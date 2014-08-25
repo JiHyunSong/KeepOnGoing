@@ -155,6 +155,10 @@
             android:name=".AddMoreFriendActivity"
             android:label="@string/title_activity_add_more_friend" >
         </activity>
+        <activity
+            android:name=".MyProfileActivity"
+            android:label="@string/title_activity_my_profile" >
+        </activity>
     </application>
 
 </manifest>

@@ -132,6 +132,7 @@ public class TabActivity extends Activity {
 
         // setup tab_settings
         arGeneral3 = new ArrayList<String>();
+        arGeneral3.add("내 프로필");
         arGeneral3.add("알람 / 목표시간 설정");
         arGeneral3.add("퀴즈 모음");
         if (!KogPreference.isLogin(TabActivity.this)) {
@@ -546,13 +547,16 @@ public class TabActivity extends Activity {
                 Log.i(LOG_TAG, "tab4, settings Clicked");
                 Log.i(LOG_TAG, "position : " + position);
                 switch (position) {
-                    case 0: // 알람 설정
+                    case 0: // 내 프로필
+                        Log.i(LOG_TAG, "tab4, settings Clicked");
+                        Intent intent_my_profile = new Intent(TabActivity.this, MyProfileActivity.class);
+                        startActivity(intent_my_profile);
+
+                        break;
+                    case 1: // 알람 / 목표시간 설정
                         Log.i(LOG_TAG, "tab4, settings Clicked");
                         Intent intent_alarm = new Intent(TabActivity.this, alram_list.class);
                         startActivity(intent_alarm);
-                        break;
-                    case 1: //
-                        Log.i(LOG_TAG, "tab4, settings Clicked");
 //                        Intent intent_alarm = new Intent(TabActivity.this, NoticeActivity.class);
 //                        startActivity(intent_notice);
                         break;
@@ -560,7 +564,10 @@ public class TabActivity extends Activity {
 //                        Log.i(LOG_TAG, "tab4, settings Clicked");
 //
 //                        break;
-                    case 2:
+                    case 2: // 퀴즈 모음
+                        break;
+
+                    case 3:
                         if(arGeneral3.get(position).toString().equals("로그아웃"))
                         {
                             Log.i(LOG_TAG, "tab4, 로그아웃");
@@ -570,8 +577,6 @@ public class TabActivity extends Activity {
                             startActivity(intent);
                             TabActivity.this.finish();
                         }
-                        break;
-                    case 4: // 로그인
                         break;
                 }
             }
