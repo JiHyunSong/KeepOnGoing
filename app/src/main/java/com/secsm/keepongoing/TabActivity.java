@@ -448,13 +448,6 @@ public class TabActivity extends Activity {
 //        actionBarRoomTabAddBtn.setVisibility(View.INVISIBLE);
     }
 
-    View.OnClickListener roomCreateListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            Intent intent = new Intent(TabActivity.this, CreateRoomActivity.class);
-            startActivity(intent);
-        }
-    };
-
     // tab setOnClickListener
     View.OnClickListener tabListener = new View.OnClickListener() {
         public void onClick(View v) {

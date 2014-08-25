@@ -3,6 +3,7 @@ package com.secsm.keepongoing;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
@@ -25,6 +26,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -726,7 +728,20 @@ public class StudyRoomActivity extends Activity {
             }
         }
     };
+    protected void showSoftKeyboard() {
 
+        InputMethodManager mgr = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        mgr.showSoftInput(StudyRoomActivity.this.getCurrentFocus(), InputMethodManager.SHOW_FORCED);
+
+    }
+    protected void hideSoftKeyboard(View view) {
+
+        InputMethodManager mgr = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        mgr.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
+    }
 
     MenuItem.OnMenuItemClickListener ab_friend_list_listener = new MenuItem.OnMenuItemClickListener() {
         @Override
@@ -735,14 +750,13 @@ public class StudyRoomActivity extends Activity {
 
             // 애니메이션 적용
             if (isPageOpen) {
-                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+                showSoftKeyboard();
                 slidingPage01.startAnimation(translateLeftAnim);
                 Log.e(LOG_TAG,"left");
                 slidingPage01.setVisibility(View.VISIBLE);
-
-
             } else {
-                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+                hideSoftKeyboard(slidingPage01);
+                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
                 slidingPage01.startAnimation(translateRightAnim);
                 Log.e(LOG_TAG,"right");
             }

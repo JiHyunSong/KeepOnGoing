@@ -34,11 +34,28 @@ public class RegisterActivity extends Activity {
     private int status_code;
     private Intent intent;
     private String phoneNo;
-    String rNickName;
-    String rPassWord1;
-    String rPassWord2;
-    TextView alertPwd;
-    TextView alertNick;
+    private String rNickName;
+    private String rPassWord1;
+    private String rPassWord2;
+    private TextView alertPwd;
+    private TextView alertNick;
+
+    private void setAllEnable(){
+        btnRegister.setEnabled(true);
+        nickName.setEnabled(true);
+        password1.setEnabled(true);
+        password2.setEnabled(true);
+        phoneNum.setEnabled(false);
+    }
+
+    private void setAllDisable(){
+        btnRegister.setEnabled(false);
+        nickName.setEnabled(false);
+        password1.setEnabled(false);
+        password2.setEnabled(false);
+        phoneNum.setEnabled(false);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,11 +65,16 @@ public class RegisterActivity extends Activity {
         phoneNo = intent.getStringExtra("phoneNo");
         btnRegister = (Button) findViewById(R.id.btnRegister);
         nickName = (EditText) findViewById(R.id.txtNickName);
+        nickName.setNextFocusDownId(R.id.tvPassword1);
         password1 = (EditText) findViewById(R.id.txtPassword1);
+        password1.setNextFocusDownId(R.id.txtPassword2);
         password2 = (EditText) findViewById(R.id.txtPassword2);
         phoneNum = (EditText) findViewById(R.id.txtPhoneNum);
         alertPwd = (TextView) findViewById(R.id.tvPwdAlert);
         alertNick = (TextView) findViewById(R.id.tvNickAlert);
+
+
+
         phoneNum.setText(phoneNo);
         phoneNum.setFocusable(false);
         vQueue = Volley.newRequestQueue(this);
@@ -63,6 +85,7 @@ public class RegisterActivity extends Activity {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (isValidProfile()) {
+                    setAllDisable();
                     register(nickName.getText().toString(), password1.getText().toString(), null, phoneNum.getText().toString());
                 } else {
                 }
@@ -141,20 +164,24 @@ public class RegisterActivity extends Activity {
                                 // real action
                                 GoNextPage();
                             } else if (status_code == 9001) {
+                                setAllEnable();
                                 Toast.makeText(getBaseContext(), "회원가입이 불가능합니다.", Toast.LENGTH_SHORT).show();
                             } else {
+                                setAllEnable();
                                 Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
                                 if (KogPreference.DEBUG_MODE) {
                                     Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         } catch (Exception e) {
+                            setAllEnable();
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.i(LOG_TAG, "Response Error");
+                setAllEnable();
                 Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
                 if (KogPreference.DEBUG_MODE) {
                     Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
