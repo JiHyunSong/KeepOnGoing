@@ -1,5 +1,7 @@
 package com.secsm.keepongoing.Shared;
 
+import android.util.Log;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -99,6 +101,9 @@ public class MultipartRequest extends Request<Map> {
         try
         {
             String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+//            Log.i("MultipartRequest", "response.data : " + new String(response.data, "UTF-8"));
+//            Log.i("MultipartRequest", "response.headers : " + response.headers);
+
             return Response.success(g_gson.fromJson(json, Map.class), HttpHeaderParser.parseCacheHeaders(response));
         }
         catch (UnsupportedEncodingException e)

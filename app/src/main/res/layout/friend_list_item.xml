@@ -6,8 +6,9 @@
 
     <ImageView
         android:id="@+id/iconFriend"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="50dip"
+        android:layout_height="50dip"
+        android:background="@drawable/friend_img_qr_viewfinder"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true" />
 

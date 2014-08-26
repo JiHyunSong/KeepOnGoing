@@ -20,12 +20,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.secsm.keepongoing.Adapters.FriendNameAndIcon;
 import com.secsm.keepongoing.Adapters.FriendsArrayAdapters;
 import com.secsm.keepongoing.R;
@@ -38,6 +43,7 @@ import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -46,10 +52,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class MyProfileActivity extends Activity {
     private AlertDialog mDialog;
@@ -277,7 +285,7 @@ public class MyProfileActivity extends Activity {
             e.printStackTrace();
         }
 
-        MultipartRequest req = new MultipartRequest(Request.Method.POST, URL, entity, errListener);
+        ProfileMultipartRequest req = new ProfileMultipartRequest(Request.Method.POST, URL, entity, errListener);
         vQueue.add(req);
         Log.i("MULTIPART-ENTITY", "add queue");
 
@@ -400,6 +408,24 @@ public class MyProfileActivity extends Activity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.my_profile, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     private void getMyInfoRequest() {
 
@@ -456,24 +482,110 @@ public class MyProfileActivity extends Activity {
         }
         );
         vQueue.add(jsObjRequest);
+        vQueue.start();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.my_profile, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+    private void updateMyInfoRequest(String _image) {
+
+        //TODO : check POST/GET METHOD and get_URL
+        String get_url = KogPreference.REST_URL +
+                "User" +
+                "?nickname=" + KogPreference.getNickName(MyProfileActivity.this) +
+                "&password=" + Encrypt.encodingMsg(KogPreference.getPassword(MyProfileActivity.this))+
+                "&image=" + _image;
+
+        Log.i(LOG_TAG, "URL : " + get_url);
+
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.PUT, Encrypt.encodeIfNeed(get_url), null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(LOG_TAG, "get JSONObject");
+                        Log.i(LOG_TAG, response.toString());
+
+                        try {
+
+                            int status_code = response.getInt("status");
+                            if (status_code == 200) {
+                                /////////////////////////////
+                                Toast.makeText(getBaseContext(), "사진 업로드 완료!", Toast.LENGTH_SHORT).show();
+                                /////////////////////////////
+                            } else {
+                                Toast.makeText(getBaseContext(), "통신 에러 : \n상태를 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+                                if (KogPreference.DEBUG_MODE) {
+//                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        } catch (Exception e) {
+                            Log.e(LOG_TAG, "get User error : " + e.toString());
+                            Toast.makeText(getBaseContext(), "통신 에러 : \n상태를 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+                            MyProfileActivity.this.finish();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getBaseContext(), "통신 에러 : \n상태를 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+                Log.i(LOG_TAG, "Response Error");
+                if (KogPreference.DEBUG_MODE) {
+                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
+                }
+
+            }
         }
-        return super.onOptionsItemSelected(item);
+        );
+        vQueue.add(jsObjRequest);
+        vQueue.start();
+    }
+
+
+    private class ProfileMultipartRequest extends MultipartRequest
+    {
+        private final Gson g_gson = new Gson();
+        public ProfileMultipartRequest(int method, String url, MultipartEntity params, Response.ErrorListener errorListener) {
+            super(method, url, params, errorListener);
+        }
+        @SuppressWarnings("rawtypes")
+        @Override
+        protected Response<Map> parseNetworkResponse(NetworkResponse response)
+        {
+            try
+            {
+                String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                Log.i("ProfileMultipartRequest", "response.data : " + new String(response.data, "UTF-8"));
+                Log.i("ProfileMultipartRequest", "response.headers : " + response.headers);
+                try {
+                    JSONObject _response = new JSONObject(new String(response.data, "UTF-8"));
+                    int status_code = _response.getInt("status");
+                    Log.i(LOG_TAG, "profile status code : " + status_code);
+                    if (status_code == 200) {
+                        /////////////////////////////
+                        String uploadedProfileName = _response.getString("message");
+                        Log.i(LOG_TAG, "profile rMessage : " + uploadedProfileName);
+
+                        updateMyInfoRequest(uploadedProfileName);
+                        setAllDisable();
+                        getMyInfoRequest();
+
+                        /////////////////////////////
+                    }
+                } catch (JSONException e) {
+
+                }
+
+
+                return Response.success(g_gson.fromJson(json, Map.class), HttpHeaderParser.parseCacheHeaders(response));
+            }
+            catch (UnsupportedEncodingException e)
+            {
+                return Response.error(new ParseError(e));
+            }
+            catch (JsonSyntaxException e)
+            {
+                return Response.error(new ParseError(e));
+            }
+        }
+
     }
 }
