@@ -1143,6 +1143,11 @@ public class StudyRoomActivity extends Activity {
         private void sendMsgToSvr(String msg)
         {
             try {
+                if(bw==null)
+                {
+                    bw = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
+                }
+
                 bw.write(msg);
                 bw.newLine();
                 bw.flush();
