@@ -62,6 +62,9 @@ public class PushWakeKogDialog extends Activity {
 
 //    private void insertIntoMsgInSQLite(String _senderID, String _senderText, String _time, String _me, String _messageType) {
         insertIntoMsgInSQLite(senderNickname, message, getRealTime(), "false", messageType);
+        if(messageType.equals(KogPreference.MESSAGE_TYPE_IMAGE))
+            message = "(사진)";
+
         if (message.length() > 15)
             message = message.substring(0, 15);
 

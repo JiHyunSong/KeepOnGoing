@@ -123,8 +123,6 @@ public class GcmIntentService extends IntentService {
         {
             Log.e(LOG_TAG, "push Chat Message Json Exception : " + e.toString());
         }
-
-
     }
 
     // Put the message into a notification and post it.
