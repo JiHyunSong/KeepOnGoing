@@ -36,12 +36,17 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.secsm.keepongoing.Adapters.FriendNameAndIcon;
 import com.secsm.keepongoing.Adapters.FriendsArrayAdapters;
 import com.secsm.keepongoing.Adapters.MessageAdapter;
@@ -72,12 +77,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class StudyRoomActivity extends Activity {
 
@@ -270,6 +277,10 @@ public class StudyRoomActivity extends Activity {
     public String getProfileImageName(String f_nick)
     {
         Log.i(LOG_TAG, " mFriends.size() " + mFriends.size());
+        Log.i(LOG_TAG, " f_nick : " + f_nick);
+        if(f_nick.equals("나"))
+            f_nick = KogPreference.getNickName(StudyRoomActivity.this);
+
         for(int i=0 ; i<mFriends.size(); i++)
         {
             if(f_nick.equals(mFriends.get(i).getName()))
@@ -459,7 +470,7 @@ public class StudyRoomActivity extends Activity {
         imageUploadFlag = true;
 
         asyncFilePath = filePath;
-
+        init();
         VolleyUploadImage();
 
     }
@@ -481,12 +492,60 @@ public class StudyRoomActivity extends Activity {
             e.printStackTrace();
         }
 
-        MultipartRequest req = new MultipartRequest(Request.Method.POST, URL, entity, errListener);
+        ChatImageMultipartRequest req = new ChatImageMultipartRequest(Request.Method.POST, URL, entity, errListener);
         vQueue.add(req);
         Log.i("MULTIPART-ENTITY", "add queue");
 
         vQueue.start();
     }
+
+
+    private class ChatImageMultipartRequest extends MultipartRequest
+    {
+        private final Gson g_gson = new Gson();
+        public ChatImageMultipartRequest(int method, String url, MultipartEntity params, Response.ErrorListener errorListener) {
+            super(method, url, params, errorListener);
+        }
+        @SuppressWarnings("rawtypes")
+        @Override
+        protected Response<Map> parseNetworkResponse(NetworkResponse response)
+        {
+            try
+            {
+                String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                Log.i("ChatImageMultipartRequest", "response.data : " + new String(response.data, "UTF-8"));
+                Log.i("ChatImageMultipartRequest", "response.headers : " + response.headers);
+                try {
+                    JSONObject _response = new JSONObject(new String(response.data, "UTF-8"));
+                    int status_code = _response.getInt("status");
+                    Log.i(LOG_TAG, "profile status code : " + status_code);
+                    if (status_code == 200) {
+                        /////////////////////////////
+                        String uploadedChatImgName = _response.getString("message");
+                        Log.i(LOG_TAG, "chat image rMessage : " + uploadedChatImgName);
+                        sendMsgToSvr(uploadedChatImgName, KogPreference.MESSAGE_TYPE_IMAGE);
+                        /////////////////////////////
+                    }
+                } catch (JSONException e) {
+
+                }
+
+
+                return Response.success(g_gson.fromJson(json, Map.class), HttpHeaderParser.parseCacheHeaders(response));
+            }
+            catch (UnsupportedEncodingException e)
+            {
+                return Response.error(new ParseError(e));
+            }
+            catch (JsonSyntaxException e)
+            {
+                return Response.error(new ParseError(e));
+            }
+        }
+
+    }
+
+
 
     Response.ErrorListener errListener = new Response.ErrorListener() {
         @Override
@@ -671,7 +730,7 @@ public class StudyRoomActivity extends Activity {
                 Log.e(LOG_TAG,"left");
                 slidingPage01.setVisibility(View.VISIBLE);
             } else {
-                hideSoftKeyboard(slidingPage01);
+//                hideSoftKeyboard(slidingPage01);
                 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
                 slidingPage01.startAnimation(translateRightAnim);
                 Log.e(LOG_TAG,"right");
@@ -1023,7 +1082,7 @@ public class StudyRoomActivity extends Activity {
                 if(KogPreference.DEBUG_MODE)
                 {
                     Log.i(LOG_TAG,  "소켓 에러!\n" + e.toString() );
-                    Toast.makeText(getBaseContext(), "소켓에러!\n" + e.toString() , Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getBaseContext(), "소켓에러!\n" + e.toString() , Toast.LENGTH_SHORT).show();
                 }
             }
 

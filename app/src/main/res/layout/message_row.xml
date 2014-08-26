@@ -51,7 +51,7 @@
         <ImageView
             android:id="@+id/msg_bottomTextImageView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center_vertical|center_horizontal"
             android:layout_margin="5dp"
             android:layout_toRightOf="@id/msg_person_photo"
