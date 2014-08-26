@@ -355,7 +355,7 @@ public class AddStudyRoomActivity extends Activity {
 //            Intent intent = new Intent(AddStudyRoomActivity.this, TabActivity.class);
 ////            intent.putExtra("phoneNo", phoneNo);
 //            //intent.putExtra("roomName", roomNameArray.get(position));
-//            //intent.putExtra("roomID", roomIDArrayFromSQLite.get(position));
+//            //intent.putExtra("rid", roomIDArrayFromSQLite.get(position));
 //            //startActivityForResult(intent, CHATROOM_REQUEST_CODE);
 //            startActivity(intent);
         }
