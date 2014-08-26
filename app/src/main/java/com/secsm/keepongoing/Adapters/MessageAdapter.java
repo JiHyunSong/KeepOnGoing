@@ -301,8 +301,8 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
         int width = imgView.getWidth();
         params.height = width;
         imgView.setLayoutParams(params);
-
-        Log.i(LOG_TAG, "img view width : " + width);
+        // S3 358
+//        Log.i(LOG_TAG, "img view width : " + width);
          ImageLoader imageLoader = MyVolley.getImageLoader();
         imageLoader.get(ImgURL,
                 ImageLoader.getImageListener(imgView,
@@ -313,7 +313,7 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
 
     void getProfileFromURL(String ImgURL, ImageView imgView) {
         ImgURL = KogPreference.DOWNLOAD_PROFILE_URL + ImgURL;
-        Log.i(LOG_TAG, "getProfileFromURL img URL : " + ImgURL);
+//        Log.i(LOG_TAG, "getProfileFromURL img URL : " + ImgURL);
 
         int width = imgView.getWidth();
         imgView.setMaxHeight(width);

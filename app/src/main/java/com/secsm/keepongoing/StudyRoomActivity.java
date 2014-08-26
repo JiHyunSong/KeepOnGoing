@@ -195,6 +195,7 @@ public class StudyRoomActivity extends Activity {
         sendMsgBtn.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
+                messageList.smoothScrollToPosition(0);
                 sendMessage();
             }
 
@@ -276,8 +277,8 @@ public class StudyRoomActivity extends Activity {
 
     public String getProfileImageName(String f_nick)
     {
-        Log.i(LOG_TAG, " mFriends.size() " + mFriends.size());
-        Log.i(LOG_TAG, " f_nick : " + f_nick);
+//        Log.i(LOG_TAG, " mFriends.size() " + mFriends.size());
+//        Log.i(LOG_TAG, " f_nick : " + f_nick);
         if(f_nick.equals("나"))
             f_nick = KogPreference.getNickName(StudyRoomActivity.this);
 
@@ -735,10 +736,6 @@ public class StudyRoomActivity extends Activity {
                 slidingPage01.startAnimation(translateRightAnim);
                 Log.e(LOG_TAG,"right");
             }
-
-
-
-
             return true;
         }
     };
@@ -773,6 +770,15 @@ public class StudyRoomActivity extends Activity {
         @Override
         public boolean onMenuItemClick(MenuItem mi) {
             Log.i(LOG_TAG, "onMenuItemClicked ab_invite_friend_listener");
+            Intent intent = new Intent(StudyRoomActivity.this, AddMoreFriendActivity.class);
+            String[] FriendNicks = new String[mFriends.size()];
+            for(int i=0; i<mFriends.size(); i++)
+            {
+                FriendNicks[i] = mFriends.get(i).getName();
+            }
+            intent.putExtra("Friends", FriendNicks);
+            startActivity(intent);
+
             return true;
         }
     };
@@ -832,19 +838,6 @@ public class StudyRoomActivity extends Activity {
             getFriendsRequest();
             soc_writer = new SocketAsyncTask_Writer();
             soc_writer.execute();
-        }
-
-        if(!KogPreference.NO_AUTH){
-        }else
-        {
-            mFriends = new ArrayList<FriendNameAndIcon>();
-            for(int i=0; i < 3; i++)
-            {
-                mFriends.add(new FriendNameAndIcon( "default.png", "nickname" + i , null));
-            }
-            FriendsArrayAdapters mockFriendArrayAdapter;
-            mockFriendArrayAdapter = new FriendsArrayAdapters(StudyRoomActivity.this, R.layout.friend_list_item, mFriends);
-            friendList.setAdapter(mockFriendArrayAdapter);
         }
     }
     void close()
