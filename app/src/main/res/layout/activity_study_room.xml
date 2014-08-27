@@ -62,40 +62,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/slidingPage01"
-        android:layout_width="270dp"
-        android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
-        android:layout_gravity="right"
-        android:background="#ffffffff"
-        android:orientation="vertical"
-        android:visibility="invisible">
-
-        <TextView
-            android:id="@+id/room_tv1"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="공지사항 :"
-            android:textColor="#ff000000" />
-
-        <TextView
-            android:id="@+id/room_role_tv"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/room_tv1"
-            android:layout_margin="5dp"
-            android:maxLines="5"
-            android:scrollbars="vertical"
-            android:textColor="#ff000000" />
-
-        <ListView
-            android:id="@+id/roomFriendList"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_below="@id/room_role_tv" />
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/study_room_additional_page"
         android:layout_width="fill_parent"
         android:layout_height="250dp"
@@ -110,8 +76,8 @@
             android:id="@+id/study_room_additional_ll1_camera"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_weight="1"
+            android:gravity="center"
             android:orientation="vertical">
 
             <ImageView
@@ -157,8 +123,8 @@
             android:id="@+id/study_room_additional_ll3_my_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_toRightOf="@id/study_room_additional_ll2_album"
+            android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -179,13 +145,48 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/slidingPage01"
+        android:layout_width="270dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="right"
+        android:background="#ffffffff"
+        android:orientation="vertical"
+        android:visibility="invisible">
+
+        <TextView
+            android:id="@+id/room_tv1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="공지사항 :"
+            android:textColor="#ff000000" />
+
+        <TextView
+            android:id="@+id/room_role_tv"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/room_tv1"
+            android:layout_margin="5dp"
+            android:maxLines="5"
+            android:scrollbars="vertical"
+            android:textColor="#ff000000" />
+
+        <ListView
+            android:id="@+id/roomFriendList"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@id/room_role_tv" />
+    </LinearLayout>
+
+
     <ProgressBar
         android:id="@+id/study_room_progress"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:visibility="gone" />
 

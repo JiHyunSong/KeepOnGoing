@@ -321,15 +321,15 @@ public class StudyRoomActivity extends Activity {
     }
 
     private void setInvisibleAddtionalPage() {
-        isAdditionalPageOpen = false;
         study_room_additional_page.setVisibility(View.INVISIBLE);
         showSoftKeyboard();
+        isAdditionalPageOpen = false;
     }
 
     private void setVisibleAdditionalPage() {
-        isAdditionalPageOpen = true;
         hideSoftKeyboard(study_room_additional_page);
         study_room_additional_page.setVisibility(View.VISIBLE);
+        isAdditionalPageOpen = true;
     }
 
     public int getStatusBarHeight() {
@@ -791,25 +791,30 @@ public class StudyRoomActivity extends Activity {
     ////////////////////
     // send my time   //
     ////////////////////
+    int availableHeight;
     private ViewTreeObserver.OnGlobalLayoutListener mGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
         public void onGlobalLayout() {
             int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
             rootHeight = activityRootView.getRootView().getHeight();
+            if(activityRootView.getHeight() < rootHeight/2)
+                availableHeight = activityRootView.getHeight();
 
             if (isAdditionalPageOpen) { // VISIBLE
-//                Log.e(LOG_TAG, "isAdditionalPageOpen (VISIBLE): " + isAdditionalPageOpen);
-////                Log.e(LOG_TAG, "study_room_below_layout_lp.height : " + actionBarHeight);
-////                Log.e(LOG_TAG, "activityRootView.getHeight()  : " + activityRootView.getHeight());
-//                Log.e(LOG_TAG, "study_room_fl1_lp.height  : " + (activityRootView.getHeight() - actionBarHeight - keyBoardHeight));
+//                Log.e(LOG_TAG, "study_room_below_layout_lp.height : " + actionBarHeight);
+//                Log.e(LOG_TAG, "activityRootView.getHeight()  : " + activityRootView.getHeight());
+                Log.e(LOG_TAG, "isAdditionalPageOpen (VISIBLE): " + isAdditionalPageOpen);
+                Log.e(LOG_TAG, "study_room_fl1_lp.height  : " + (activityRootView.getHeight() - actionBarHeight - keyBoardHeight));
                 study_room_fl1_lp.height = activityRootView.getHeight() - actionBarHeight - keyBoardHeight;
+//                study_room_fl1_lp.height = availableHeight - actionBarHeight - keyBoardHeight;
                 study_room_below_layout_lp.height = actionBarHeight;
                 study_room_additional_page_lp.height = keyBoardHeight;
             } else {
-//                Log.e(LOG_TAG, "isAdditionalPageOpen : " + isAdditionalPageOpen);
-////                Log.e(LOG_TAG, "activityRootView.getHeight()  : " + activityRootView.getHeight());
-//                Log.e(LOG_TAG, "study_room_fl1_lp.height  : " + study_room_fl1_lp.height);
-////                Log.e(LOG_TAG, "study_room_below_layout_lp.height : " + study_room_below_layout_lp.height);
+//                Log.e(LOG_TAG, "activityRootView.getHeight()  : " + activityRootView.getHeight());
+//                Log.e(LOG_TAG, "study_room_below_layout_lp.height : " + study_room_below_layout_lp.height);
+                Log.e(LOG_TAG, "isAdditionalPageOpen : " + isAdditionalPageOpen);
+                Log.e(LOG_TAG, "study_room_fl1_lp.height  : " + study_room_fl1_lp.height);
                 study_room_fl1_lp.height = activityRootView.getHeight() - actionBarHeight;
+                study_room_fl1_lp.height = availableHeight - actionBarHeight;
                 study_room_below_layout_lp.height = actionBarHeight;
                 study_room_additional_page_lp.height = 0;
             }
@@ -1039,10 +1044,10 @@ S3
                 Log.e(LOG_TAG, "left");
                 slidingPage01.setVisibility(View.VISIBLE);
             } else {
-                if(isAdditionalPageOpen) {
-                    additionalBtn.setEnabled(false);
-                    setInvisibleAddtionalPage();
-                }
+//                if(isAdditionalPageOpen) {
+//                    setInvisibleAddtionalPage();
+//                }
+                additionalBtn.setEnabled(false);
                 hideSoftKeyboard(slidingPage01);
                 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
                 slidingPage01.startAnimation(translateRightAnim);
@@ -1210,12 +1215,13 @@ S3
 
         } else if (keyCode == KeyEvent.KEYCODE_BACK) {
 
-            if(!isAdditionalPageOpen && !isPageOpen) {
-//                setResult(RESULT_OK);
-                StudyRoomActivity.this.finish();
-            }
             if (isAdditionalPageOpen) {
                 setInvisibleAddtionalPage();
+            }
+            if(!isAdditionalPageOpen && !isPageOpen) {
+//                setResult(RESULT_OK);
+//                setInvisibleAddtionalPage();
+                StudyRoomActivity.this.finish();
             }
             if (isPageOpen){
                 additionalBtn.setEnabled(true);
