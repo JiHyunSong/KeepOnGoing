@@ -23,8 +23,6 @@ public class Quiz_Result_Adapter extends BaseAdapter {
             this.mContext = c;
             this.inflater = LayoutInflater.from(c);
             this.infoList = arrays;
-
-
             this.listener=listener;
         }
 

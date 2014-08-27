@@ -163,6 +163,11 @@
             android:name=".Quiz.Quiz_Set_Search"
             android:label="@string/title_activity_quiz__set__subject" >
         </activity>
+        <activity
+            android:name="com.fourmob.datetimepicker.sample.date_pick"
+            android:label="@string/title_activity_quiz__set__subject" >
+        </activity>
+
     </application>
 
 </manifest>

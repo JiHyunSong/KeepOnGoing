@@ -72,12 +72,38 @@
     </LinearLayout>
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/subject"
+        android:id="@+id/datezz">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="날짜 : "
+            android:textSize="20dp"/>
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/date_pick"
+            android:focusable="false"/>
+        </LinearLayout>
+
+
+
+
+
+
+
+
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_below="@id/subject">
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/datezz">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -91,6 +117,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true" />
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="fill_parent"
@@ -99,7 +126,13 @@
         android:layout_alignParentRight="true"
         android:orientation="vertical">
         </LinearLayout>
+    <Button
+        android:layout_alignBottom="@id/linearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
 
+        android:text="date"
+        android:id="@+id/date"/>
     <Button
         android:layout_alignBottom="@id/linearLayout"
         android:layout_width="wrap_content"
@@ -107,6 +140,50 @@
         android:layout_alignParentRight="true"
         android:text="Search"
         android:id="@+id/Search"/>
+
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:visibility="gone">
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="vibrate"
+        android:layout_marginBottom="30dp"
+        android:id="@+id/checkBoxVibrate"
+        android:checked="true"/>
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="close on single tap day"
+        android:layout_marginBottom="30dp"
+        android:id="@+id/checkBoxCloseOnSingleTapDay"
+        android:checked="true"/>
+
+    <Button
+        android:id="@+id/dateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:text="Select Date" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="close on single tap minute"
+        android:layout_marginBottom="30dp"
+        android:id="@+id/checkBoxCloseOnSingleTapMinute"
+        android:checked="true"/>
+
+    <Button
+        android:id="@+id/timeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Time" />
+    </LinearLayout>
+
+
 
 
 

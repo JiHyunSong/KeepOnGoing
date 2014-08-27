@@ -22,11 +22,14 @@ public class AlramAdapter extends BaseAdapter {
     private ArrayList<AlramData> infoList = null;
     private ViewHolder viewHolder = null;
     public Context mContext = null;
+    private time_picker listener;
 
-    public AlramAdapter(Context c, ArrayList<AlramData> arrays) {
+    public AlramAdapter(Context c, ArrayList<AlramData> arrays,time_picker listener) {
         this.mContext = c;
         this.inflater = LayoutInflater.from(c);
         this.infoList = arrays;
+
+        this.listener=listener;
     }
 
     // Adapter가 관리할 Data의 개수를 설정 합니다.
@@ -91,9 +94,10 @@ public class AlramAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View v) {
                     if (position == 0) {
+                        listener.time_pick();/*
                         Intent intent = new Intent(v.getContext(), Alarm_main.class);
                         intent.putExtra("position", position);
-                        v.getContext().startActivity(intent);
+                        v.getContext().startActivity(intent);*/
                         //   Toast.makeText(v.getContext(), "선택된자의 이름은 기상시간", 2).show();
                     }
                     if (position == 1) {
