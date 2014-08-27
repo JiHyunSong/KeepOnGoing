@@ -68,6 +68,16 @@ public class GcmIntentService extends IntentService {
                 }
                 else if(m_type.equals(KogPreference.MESSAGE_TYPE_IMAGE)){
                     Log.i(LOG_TAG, "GCM get image type message");
+                }else if(m_type.equals(KogPreference.MESSAGE_TYPE_LOGOUT))
+                {
+                    Log.i(LOG_TAG, "GCM get logout message");
+                    KogPreference.setLogin(GcmIntentService.this, false);
+                    KogPreference.setNickName(GcmIntentService.this, "");
+                    KogPreference.setPassword(GcmIntentService.this, "");
+                    KogPreference.setRid(GcmIntentService.this, "");
+//                    KogPreference.setRegId(GcmIntentService.this, "");
+                    KogPreference.setQuizNum(GcmIntentService.this, "");
+                    KogPreference.setAutoLogin(GcmIntentService.this, false);
                 }
                 Log.i("GcmIntentService.java | onHandleIntent", "Received: " + extras.toString());
 

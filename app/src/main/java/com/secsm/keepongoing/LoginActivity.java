@@ -211,6 +211,11 @@ public class LoginActivity extends Activity {
                                 rMessage = response.getString("message");
                                 GoNextPage(nickName, password);
 //                                loginHandler.sendEmptyMessage(1);
+                            } else if (status_code == 1001)
+                            {
+                                setAllEnable();
+                                GoNextPage(nickName, password);
+                                Toast.makeText(getBaseContext(), "다른기기에서 로그아웃 됩니다", Toast.LENGTH_SHORT).show();
                             } else if (status_code == 9001) {
                                 setAllEnable();
                                 Toast.makeText(getBaseContext(), "아이디와 패스워드를 확인해주세요", Toast.LENGTH_SHORT).show();

@@ -124,7 +124,7 @@ public class StudyRoomActivity extends Activity {
     private Animation translateLeftAnim;
     private Animation translateRightAnim;
     private LinearLayout slidingPage01;
-    private RelativeLayout study_room_additional_page;
+    private LinearLayout study_room_additional_page;
     private LinearLayout study_room_additional_ll1_camera;
     private LinearLayout study_room_additional_ll2_album;
     private LinearLayout study_room_additional_ll3_my_time;
@@ -207,6 +207,9 @@ public class StudyRoomActivity extends Activity {
         type = (String) intent.getStringExtra("type");
         rule = (String) intent.getStringExtra("rule");
 
+        Log.i(LOG_TAG, "onCreate nickname : " + KogPreference.getNickName(StudyRoomActivity.this));
+        Log.i(LOG_TAG, "onCreate rid : " + KogPreference.getRid(StudyRoomActivity.this));
+        Log.i(LOG_TAG, "onCreate regid : " + KogPreference.getRegId(StudyRoomActivity.this));
 
         rID = Integer.parseInt(KogPreference.getRid(StudyRoomActivity.this));
         if (rID == -1) {
@@ -241,7 +244,7 @@ public class StudyRoomActivity extends Activity {
 
         // 슬라이딩으로 보여질 레이아웃 객체 참조
         slidingPage01 = (LinearLayout) findViewById(R.id.slidingPage01);
-        study_room_additional_page = (RelativeLayout) findViewById(R.id.study_room_additional_page);
+        study_room_additional_page = (LinearLayout) findViewById(R.id.study_room_additional_page);
 
         study_room_additional_ll1_camera = (LinearLayout) findViewById(R.id.study_room_additional_ll1_camera);
         study_room_additional_ll2_album = (LinearLayout) findViewById(R.id.study_room_additional_ll2_album);
@@ -307,18 +310,26 @@ public class StudyRoomActivity extends Activity {
 
             public void onClick(View v) {
                 if (!isAdditionalPageOpen) {
-                    isAdditionalPageOpen = true;
-                    hideSoftKeyboard(study_room_additional_page);
-                    study_room_additional_page.setVisibility(View.VISIBLE);
+                    setVisibleAdditionalPage();
 //                getImage();
                 } else {
-                    isAdditionalPageOpen = false;
-                    study_room_additional_page.setVisibility(View.INVISIBLE);
-                    showSoftKeyboard();
+                    setInvisibleAddtionalPage();
                 }
             }
 
         });
+    }
+
+    private void setInvisibleAddtionalPage() {
+        isAdditionalPageOpen = false;
+        study_room_additional_page.setVisibility(View.INVISIBLE);
+        showSoftKeyboard();
+    }
+
+    private void setVisibleAdditionalPage() {
+        isAdditionalPageOpen = true;
+        hideSoftKeyboard(study_room_additional_page);
+        study_room_additional_page.setVisibility(View.VISIBLE);
     }
 
     public int getStatusBarHeight() {
@@ -1018,12 +1029,20 @@ S3
 
             // 애니메이션 적용
             if (isPageOpen) {
-//                showSoftKeyboard();
-//                getSoftKeyboardHeight();
+//                if(!isAdditionalPageOpen) {
+//                    additionalBtn.setEnabled(true);
+//                    setVisibleAdditionalPage();
+//                }
+                additionalBtn.setEnabled(true);
+                showSoftKeyboard();
                 slidingPage01.startAnimation(translateLeftAnim);
                 Log.e(LOG_TAG, "left");
                 slidingPage01.setVisibility(View.VISIBLE);
             } else {
+                if(isAdditionalPageOpen) {
+                    additionalBtn.setEnabled(false);
+                    setInvisibleAddtionalPage();
+                }
                 hideSoftKeyboard(slidingPage01);
                 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
                 slidingPage01.startAnimation(translateRightAnim);
@@ -1152,6 +1171,9 @@ S3
     protected void onPause() {
         super.onPause();
         Log.i(LOG_TAG, "onPause");
+        Log.i(LOG_TAG, "onPause nickname : " + KogPreference.getNickName(StudyRoomActivity.this));
+        Log.i(LOG_TAG, "onPause rid : " + KogPreference.getRid(StudyRoomActivity.this));
+        Log.i(LOG_TAG, "onPause regid : " + KogPreference.getRegId(StudyRoomActivity.this));
         close();
     }
 
@@ -1187,19 +1209,19 @@ S3
             sendMessage();
 
         } else if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (isAdditionalPageOpen) {
-                isAdditionalPageOpen = false;
-                study_room_additional_page.setVisibility(View.GONE);
-            }
-            if (isPageOpen){
-                hideSoftKeyboard(slidingPage01);
-                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-                slidingPage01.startAnimation(translateRightAnim);
-            }
 
             if(!isAdditionalPageOpen && !isPageOpen) {
-                setResult(RESULT_OK);
+//                setResult(RESULT_OK);
                 StudyRoomActivity.this.finish();
+            }
+            if (isAdditionalPageOpen) {
+                setInvisibleAddtionalPage();
+            }
+            if (isPageOpen){
+                additionalBtn.setEnabled(true);
+//                showSoftKeyboard();
+                slidingPage01.startAnimation(translateLeftAnim);
+//                slidingPage01.setVisibility(View.VISIBLE);
             }
 //            Intent intent = new Intent(StudyRoomActivity.this, TabActivity.class);
 //            startActivity(intent);

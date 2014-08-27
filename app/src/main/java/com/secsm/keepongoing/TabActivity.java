@@ -49,6 +49,7 @@ import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MyVolley;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URLDecoder;
@@ -56,6 +57,8 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -159,6 +162,10 @@ public class TabActivity extends Activity {
         tabSettings = (ImageButton) findViewById(R.id.imgBtn_tab_settings);
 
         Log.i(LOG_TAG, "onCreate");
+        Log.i(LOG_TAG, "onCreate nickname : " + KogPreference.getNickName(TabActivity.this));
+        Log.i(LOG_TAG, "onCreate rid : " + KogPreference.getRid(TabActivity.this));
+        Log.i(LOG_TAG, "onCreate regid : " + KogPreference.getRegId(TabActivity.this));
+
         mDBHelper = new DBHelper(this);
 
         roomList = (ListView) findViewById(R.id.room_list);
@@ -650,17 +657,28 @@ public class TabActivity extends Activity {
                         if(arGeneral3.get(position).toString().equals("로그아웃"))
                         {
                             Log.i(LOG_TAG, "tab4, 로그아웃");
-                            KogPreference.setLogin(TabActivity.this, false);
-                            KogPreference.setAutoLogin(TabActivity.this, false);
-                            Intent intent = new Intent(TabActivity.this, LoginActivity.class);
-                            startActivity(intent);
-                            TabActivity.this.finish();
+                            logout();
                         }
                         break;
                 }
             }
         }
     };
+
+    private void logout() {
+        logoutRequest(KogPreference.getNickName(this));
+        KogPreference.setLogin(this, false);
+        KogPreference.setNickName(this, "");
+        KogPreference.setPassword(this, "");
+        KogPreference.setRid(this, "");
+//        KogPreference.setRegId(this, "");
+        KogPreference.setQuizNum(this, "");
+        KogPreference.setAutoLogin(this, false);
+
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        this.finish();
+    }
 
     /**
      * Infalter 다이얼로그
@@ -729,7 +747,6 @@ public class TabActivity extends Activity {
 
         if(!KogPreference.NO_AUTH) {
             getFriendsRequest();
-
             getStudyRoomsRequest();
         }
 
@@ -1080,7 +1097,6 @@ public class TabActivity extends Activity {
     }
 
 
-
     private void outRoomRequest(String room_id) {
 
         //TODO : check POST/GET METHOD and get_URL
@@ -1127,7 +1143,73 @@ public class TabActivity extends Activity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 setAllEnable();
-                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), "통신 에러 : \n방을 나올 수 없습니다", Toast.LENGTH_SHORT).show();
+                Log.i(LOG_TAG, "Response Error");
+                if (KogPreference.DEBUG_MODE) {
+                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        }
+        );
+        vQueue.add(jsObjRequest);
+        vQueue.start();
+    }
+
+    private void logoutRequest(String nickname) {
+
+        //TODO : check POST/GET METHOD and get_URL
+        String get_url = KogPreference.REST_URL +
+                "LoginSession";
+        Log.i(LOG_TAG, "URL : " + get_url);
+
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("nickname", nickname);
+            Log.i(LOG_TAG, "nickname : " + nickname);
+
+        JSONObject sendBody = new JSONObject(map);
+
+//        JSONObject sendBody = new JSONObject();
+//        try {
+//            sendBody.put("nickname", nickname);
+//            Log.i(LOG_TAG, "nickname : " + nickname);
+//        }catch (JSONException e)
+//        {
+//            Log.e(LOG_TAG, "logout request exception : " + e.toString());
+//        }
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.DELETE, Encrypt.encodeIfNeed(get_url), sendBody,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(LOG_TAG, " kickOffMemberRequest get JSONObject");
+                        Log.i(LOG_TAG, response.toString());
+
+                        try {
+                            int status_code = response.getInt("status");
+                            if (status_code == 200) {
+//                                JSONArray rMessage;
+//                                rMessage = response.getJSONArray("message");
+                                //////// real action ////////
+
+                                Toast.makeText(getBaseContext(), "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
+
+                                //////// real action ////////
+                            } else {
+                                Toast.makeText(getBaseContext(), "통신 에러", Toast.LENGTH_SHORT).show();
+                                setAllEnable();
+                                if (KogPreference.DEBUG_MODE) {
+                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        } catch (Exception e) {
+                            Toast.makeText(getBaseContext(), "통신 에러", Toast.LENGTH_SHORT).show();
+                            setAllEnable();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                setAllEnable();
                 Log.i(LOG_TAG, "Response Error");
                 if (KogPreference.DEBUG_MODE) {
                     Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();

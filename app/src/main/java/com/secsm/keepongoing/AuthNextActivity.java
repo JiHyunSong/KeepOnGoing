@@ -45,7 +45,9 @@ public class AuthNextActivity extends Activity {
 
         intent = getIntent();
         phoneNo = intent.getStringExtra("phoneNo");
-        sendSMS(phoneNo);
+
+        certiNo = setRandomNumber();
+        //sendSMS(phoneNo);
 
         btnOk = (Button) findViewById(R.id.btnOk);
         btnGoBack = (Button) findViewById(R.id.btnGoBackToAuth);
@@ -89,7 +91,7 @@ public class AuthNextActivity extends Activity {
 
     /* sending SMS by self phone number */
     private void sendSMS(String phoneNumber) {
-        certiNo = setRandomNumber();
+//        certiNo = setRandomNumber();
         // TODO : REST apply
         // AuthRegister(phoneNo, certiNo);
         Log.i(LOG_TAG, Integer.toString(certiNo));
@@ -122,6 +124,7 @@ public class AuthNextActivity extends Activity {
                                 rMessage = response.getString("message");
                                 // real action
                                 Log.i(LOG_TAG, "receive 200 OK");
+                                sendSMS(phoneNo);
                                 // nothing to do
                             } else if (status_code == 1001) {
                                 Toast.makeText(getBaseContext(), "이미 가입된 번호입니다.\n중복가입 하실 수 없습니다.", Toast.LENGTH_SHORT).show();
