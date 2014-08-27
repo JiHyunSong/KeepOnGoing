@@ -7,7 +7,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity"
-    android:background="@color/wallet_holo_blue_light">
+    android:background="#44a0ff">
 
 
 <LinearLayout
@@ -16,17 +16,29 @@
     android:orientation="vertical"
     android:gravity="center">
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/keep_on_going_splash"
+        android:id="@+id/splash_image"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/splash_image"
+        >
     <com.romainpiel.shimmer.ShimmerTextView
         android:id="@+id/shimmer_tv"
         android:text="Keep On Going"
-        android:layout_width="345dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#444"
-        android:textSize="50dp"
+        android:textSize="30dp"
         android:layout_gravity="center"
         android:gravity="center_horizontal"
-        style="@style/MyTextView"/>
-
+        style="@style/MyTextView"
+        android:layout_marginBottom="10dp"
+        />
+    </LinearLayout>
     <Button
         android:text="toggle_animation"
         android:onClick="toggleAnimation"

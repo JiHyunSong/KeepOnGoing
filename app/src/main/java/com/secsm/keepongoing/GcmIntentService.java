@@ -50,13 +50,13 @@ public class GcmIntentService extends IntentService {
                 // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                 String msg = intent.getStringExtra("message");
-                int messageType = intent.getIntExtra("messageType", -1);
+                int _messageType = intent.getIntExtra("messageType", -1);
                 // room invite
                 // friend invite
                 // chat message - message
                 // chat message - image
                 Log.i("GcmIntentService.java | onHandleIntent", "Received: " + extras.toString());
-                switch(messageType)
+                switch(_messageType)
                 {
                     case ROOM_INVITE:
                         pushRoomInvite(GcmIntentService.this, intent);

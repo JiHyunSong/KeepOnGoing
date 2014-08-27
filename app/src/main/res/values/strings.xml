@@ -46,5 +46,7 @@
     <string name="title_activity_achieve_time_show">achieve_time_show</string>
     <string name="shimmer">Shimmer</string>
     <string name="toggle_animation">Toggle animation</string>
+    <string name="title_activity_quiz_set">Quiz_set</string>
+    <string name="title_activity_quiz__set__subject">Quiz_Set_Subject</string>
 
 </resources>
