@@ -39,6 +39,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -104,7 +105,7 @@ public class StudyRoomActivity extends Activity {
     private String message;
     private DBHelper mDBHelper;
     private int rID;
-//    private int myID;
+    //    private int myID;
     private ArrayList<Msg> mTexts = new ArrayList<Msg>();
     private ListView messageList;
     private MenuItem actionBarFirstBtn, actionBarSecondBtn;
@@ -135,17 +136,58 @@ public class StudyRoomActivity extends Activity {
     private TextView room_rule_tv;
     private Handler mainHandler;
     private SocketListener sl;
-    SocketAsyncTask_Reader soc_reader=null;
-    SocketAsyncTask_Writer soc_writer=null;
+    SocketAsyncTask_Reader soc_reader = null;
+    SocketAsyncTask_Writer soc_writer = null;
     String type;
     String rule;
 
     int rootHeight = 0;
     int actionBarHeight = 0;
     int statusBarHeight = 0;
-    public RelativeLayout.LayoutParams study_room_fl1_lp = null;
-    public RelativeLayout.LayoutParams study_room_below_layout_lp = null;
-    public RelativeLayout.LayoutParams study_room_additional_page_lp = null;
+    private RelativeLayout.LayoutParams study_room_fl1_lp = null;
+    private RelativeLayout.LayoutParams study_room_below_layout_lp = null;
+    private RelativeLayout.LayoutParams study_room_additional_page_lp = null;
+
+    private void setAllEnable() {
+        study_room_progress.setVisibility(View.GONE);
+        sendMsgBtn.setEnabled(true);
+        additionalBtn.setEnabled(true);
+        messageTxt.setEnabled(true);
+        messageList.setEnabled(true);
+        actionBarFirstBtn.setEnabled(true);
+        actionBarSecondBtn.setEnabled(true);
+        actionBarThirdBtn.setEnabled(true);
+        actionBarFourthBtn.setEnabled(true);
+        actionBarFifthBtn.setEnabled(true);
+        study_room_additional_page.setEnabled(true);
+        study_room_additional_ll1_camera.setEnabled(true);
+        study_room_additional_ll2_album.setEnabled(true);
+        study_room_additional_ll3_my_time.setEnabled(true);
+        study_room_below_layout.setEnabled(true);
+        friendList.setEnabled(true);
+    }
+
+    private void setAllDisable() {
+        study_room_progress.setVisibility(View.VISIBLE);
+        sendMsgBtn.setEnabled(false);
+        additionalBtn.setEnabled(false);
+        messageTxt.setEnabled(false);
+        messageList.setEnabled(false);
+        actionBarFirstBtn.setEnabled(false);
+        actionBarSecondBtn.setEnabled(false);
+        actionBarThirdBtn.setEnabled(false);
+        actionBarFourthBtn.setEnabled(false);
+        actionBarFifthBtn.setEnabled(false);
+        study_room_additional_page.setEnabled(false);
+        study_room_additional_ll1_camera.setEnabled(false);
+        study_room_additional_ll2_album.setEnabled(false);
+        study_room_additional_ll3_my_time.setEnabled(false);
+        study_room_below_layout.setEnabled(false);
+        friendList.setEnabled(false);
+    }
+
+
+    private ProgressBar study_room_progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,7 +196,7 @@ public class StudyRoomActivity extends Activity {
         ActionBar bar = getActionBar();
         bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.NAVIGATION_MODE_STANDARD);
 
-
+        study_room_progress = (ProgressBar) findViewById(R.id.study_room_progress);
 //        MyVolley.init(StudyRoomActivity.this);
 //        vQueue = Volley.newRequestQueue(this);
         vQueue = MyVolley.getRequestQueue(StudyRoomActivity.this);
@@ -176,11 +218,11 @@ public class StudyRoomActivity extends Activity {
 //        myID = KogPreference.getInt(StudyRoomActivity.this, "uid");
 
         /* initial UI */
-        activityRootView = (RelativeLayout)findViewById(R.id.activityRoot);
+        activityRootView = (RelativeLayout) findViewById(R.id.activityRoot);
         activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(mGlobalLayoutListener);
 
-        study_room_below_layout = (LinearLayout)findViewById(R.id.study_room_below_layout);
-        study_room_fl1 = (FrameLayout)findViewById(R.id.study_room_fl1);
+        study_room_below_layout = (LinearLayout) findViewById(R.id.study_room_below_layout);
+        study_room_fl1 = (FrameLayout) findViewById(R.id.study_room_fl1);
 
         sendMsgBtn = (Button) findViewById(R.id.study_room_sendMsgBtn);
         messageTxt = (EditText) findViewById(R.id.study_room_messageTxtView);
@@ -201,8 +243,8 @@ public class StudyRoomActivity extends Activity {
         slidingPage01 = (LinearLayout) findViewById(R.id.slidingPage01);
         study_room_additional_page = (RelativeLayout) findViewById(R.id.study_room_additional_page);
 
-        study_room_additional_ll1_camera = (LinearLayout)findViewById(R.id.study_room_additional_ll1_camera);
-        study_room_additional_ll2_album = (LinearLayout)findViewById(R.id.study_room_additional_ll2_album);
+        study_room_additional_ll1_camera = (LinearLayout) findViewById(R.id.study_room_additional_ll1_camera);
+        study_room_additional_ll2_album = (LinearLayout) findViewById(R.id.study_room_additional_ll2_album);
         study_room_additional_ll3_my_time = (LinearLayout) findViewById(R.id.study_room_additional_ll3_my_time);
 
         // 애니메이션 객체 로딩
@@ -216,7 +258,7 @@ public class StudyRoomActivity extends Activity {
         study_room_below_layout_lp = (RelativeLayout.LayoutParams) study_room_below_layout.getLayoutParams();
         study_room_fl1_lp = (RelativeLayout.LayoutParams) study_room_fl1.getLayoutParams();
         study_room_additional_page_lp = (RelativeLayout.LayoutParams) study_room_additional_page.getLayoutParams();
-		/* IF there is and exists room, load the stored message */
+        /* IF there is and exists room, load the stored message */
 
         /* Init connection w/ server
         *
@@ -227,7 +269,6 @@ public class StudyRoomActivity extends Activity {
         SlidingPageAnimationListener animListener = new SlidingPageAnimationListener();
         translateLeftAnim.setAnimationListener(animListener);
         translateRightAnim.setAnimationListener(animListener);
-
 
 
 //        init();
@@ -243,19 +284,19 @@ public class StudyRoomActivity extends Activity {
             }
         });
 
-        study_room_additional_ll1_camera.setOnClickListener(new View.OnClickListener(){
+        study_room_additional_ll1_camera.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 doTakePhotoAction();
             }
         });
 
-        study_room_additional_ll2_album.setOnClickListener(new View.OnClickListener(){
+        study_room_additional_ll2_album.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 doTakeAlbumAction();
             }
         });
 
-        study_room_additional_ll3_my_time.setOnClickListener(new View.OnClickListener(){
+        study_room_additional_ll3_my_time.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 sendMyAcommplishedTime();
             }
@@ -265,13 +306,12 @@ public class StudyRoomActivity extends Activity {
         additionalBtn.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-                if(!isAdditionalPageOpen) {
+                if (!isAdditionalPageOpen) {
                     isAdditionalPageOpen = true;
                     hideSoftKeyboard(study_room_additional_page);
                     study_room_additional_page.setVisibility(View.VISIBLE);
 //                getImage();
-                }else
-                {
+                } else {
                     isAdditionalPageOpen = false;
                     study_room_additional_page.setVisibility(View.INVISIBLE);
                     showSoftKeyboard();
@@ -290,11 +330,10 @@ public class StudyRoomActivity extends Activity {
         return result;
     }
 
-    public int getActionBarHeight(){
+    public int getActionBarHeight() {
         TypedValue tv = new TypedValue();
-        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
-        {
-            return TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            return TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
         }
         return -1;
     }
@@ -304,28 +343,25 @@ public class StudyRoomActivity extends Activity {
 // rid
 // message
 
-    public String getInitialMsg(){
+    public String getInitialMsg() {
         try {
             JSONObject jObj = new JSONObject();
-            Log.i(LOG_TAG,  "jObj.toString()");
+            Log.i(LOG_TAG, "jObj.toString()");
             jObj.put("nickname", KogPreference.getNickName(StudyRoomActivity.this));
-            Log.i(LOG_TAG,  "jObj.toString() " + jObj.toString() + "\n");
+            Log.i(LOG_TAG, "jObj.toString() " + jObj.toString() + "\n");
 
-            Log.i(LOG_TAG,  "Log.i(LOG_TAG,  \"jObj.toString() \" + jObj.toString() + \"\\n\");");
+            Log.i(LOG_TAG, "Log.i(LOG_TAG,  \"jObj.toString() \" + jObj.toString() + \"\\n\");");
 
             return jObj.toString();
-        }
-        catch (JSONException e) {
-            Log.i(LOG_TAG,  "Json Exception!\n" + e.toString() );
-            if(KogPreference.DEBUG_MODE)
-            {
-                Toast.makeText(getBaseContext(), "Json Exception!\n" + e.toString() , Toast.LENGTH_SHORT).show();
+        } catch (JSONException e) {
+            Log.i(LOG_TAG, "Json Exception!\n" + e.toString());
+            if (KogPreference.DEBUG_MODE) {
+                Toast.makeText(getBaseContext(), "Json Exception!\n" + e.toString(), Toast.LENGTH_SHORT).show();
 
             }
         }
         return "";
     }
-
 
 
     private void sendMyAcommplishedTime() {
@@ -374,17 +410,14 @@ public class StudyRoomActivity extends Activity {
         return currentTimestamp.toString().substring(0, 19);
     }
 
-    public String getProfileImageName(String f_nick)
-    {
+    public String getProfileImageName(String f_nick) {
 //        Log.i(LOG_TAG, " mFriends.size() " + mFriends.size());
 //        Log.i(LOG_TAG, " f_nick : " + f_nick);
-        if(f_nick.equals("나"))
+        if (f_nick.equals("나"))
             f_nick = KogPreference.getNickName(StudyRoomActivity.this);
 
-        for(int i=0 ; i<mFriends.size(); i++)
-        {
-            if(f_nick.equals(mFriends.get(i).getName()))
-            {
+        for (int i = 0; i < mFriends.size(); i++) {
+            if (f_nick.equals(mFriends.get(i).getName())) {
                 return mFriends.get(i).getProfile_path();
             }
         }
@@ -400,15 +433,13 @@ public class StudyRoomActivity extends Activity {
         String _profileImageName = getProfileImageName(_senderNickname);
         String Name;
         time = getRealTime();
-        if(_senderNickname.equals(KogPreference.getNickName(StudyRoomActivity.this))){
+        if (_senderNickname.equals(KogPreference.getNickName(StudyRoomActivity.this))) {
             m = new Msg(StudyRoomActivity.this, "나", _text, time, "true", _messageType, _profileImageName);
             insertIntoMsgInSQLite("나", _text, time, "true", _messageType);
             messageHistoryMAdaptor.add(m);
-        }
-        else if("".equals(_text)){
+        } else if ("".equals(_text)) {
 
-        }
-        else{
+        } else {
             m = new Msg(StudyRoomActivity.this, _senderNickname, _text, time, "false", _messageType, _profileImageName);
             Log.i("MSG", "Name : " + _senderNickname + "Text : " + _text + "Time : " + time);
             insertIntoMsgInSQLite(_senderNickname, _text, time, "false", _messageType);
@@ -459,8 +490,7 @@ public class StudyRoomActivity extends Activity {
     String boundary = "*****";
 
 
-    void getImage()
-    {
+    void getImage() {
         mDialog = createDialog();
         mDialog.show();
     }
@@ -469,9 +499,9 @@ public class StudyRoomActivity extends Activity {
     private AlertDialog createDialog() {
         final View innerView = getLayoutInflater().inflate(R.layout.image_crop_row, null);
 
-        Button camera = (Button)innerView.findViewById(R.id.btn_camera_crop);
-        Button gellary = (Button)innerView.findViewById(R.id.btn_gellary_crop);
-        Button cancel = (Button)innerView.findViewById(R.id.btn_cancel_crop);
+        Button camera = (Button) innerView.findViewById(R.id.btn_camera_crop);
+        Button gellary = (Button) innerView.findViewById(R.id.btn_gellary_crop);
+        Button cancel = (Button) innerView.findViewById(R.id.btn_cancel_crop);
 
         camera.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -497,12 +527,11 @@ public class StudyRoomActivity extends Activity {
         ab.setTitle("이미지 설정");
         ab.setView(innerView);
 
-        return  ab.create();
+        return ab.create();
     }
 
     /* using camera */
-    private void doTakePhotoAction()
-    {
+    private void doTakePhotoAction() {
         Log.i(LOG_TAG, "doTakePhotoAction()");
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		/* making the own path for cropped image */
@@ -512,8 +541,7 @@ public class StudyRoomActivity extends Activity {
     }
 
     /* open the gallery */
-    private void doTakeAlbumAction()
-    {
+    private void doTakeAlbumAction() {
         Log.i(LOG_TAG, "doTakeAlbumAction()");
         // 앨범 호출
         Intent intent = new Intent(Intent.ACTION_PICK);
@@ -522,14 +550,14 @@ public class StudyRoomActivity extends Activity {
     }
 
     /* dialog exit */
-    private void setDismiss(AlertDialog dialog){
-        if(dialog!=null&&dialog.isShowing()){
+    private void setDismiss(AlertDialog dialog) {
+        if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
         }
     }
 
     /* crop image makes the saved image */
-    private Uri createSaveCropFile(){
+    private Uri createSaveCropFile() {
         Uri uri;
         String url = "tmp_" + String.valueOf(System.currentTimeMillis()) + ".jpg";
 //        uri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), url));
@@ -542,14 +570,14 @@ public class StudyRoomActivity extends Activity {
     /* getting the image path by uri.
      * if uri is null, getting the last path */
     private File getImageFile(Uri uri) {
-        String[] projection = { MediaStore.Images.Media.DATA };
+        String[] projection = {MediaStore.Images.Media.DATA};
         if (uri == null) {
             uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
         }
 
         Cursor mCursor = getContentResolver().query(uri, projection, null, null,
                 MediaStore.Images.Media.DATE_MODIFIED + " desc");
-        if(mCursor == null || mCursor.getCount() < 1) {
+        if (mCursor == null || mCursor.getCount() < 1) {
             return null; // no cursor or no record
         }
         int column_index = mCursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
@@ -557,7 +585,7 @@ public class StudyRoomActivity extends Activity {
 
         String path = mCursor.getString(column_index);
 
-        if (mCursor !=null ) {
+        if (mCursor != null) {
             mCursor.close();
             mCursor = null;
         }
@@ -566,7 +594,7 @@ public class StudyRoomActivity extends Activity {
     }
 
     private void DoFileUpload(String filePath) throws IOException {
-        Log.d("Test" , "file path = " + filePath);
+        Log.d("Test", "file path = " + filePath);
         imageUploadFlag = true;
 
         asyncFilePath = filePath;
@@ -574,21 +602,19 @@ public class StudyRoomActivity extends Activity {
         VolleyUploadImage();
 
     }
+
     String asyncFilePath;
     boolean imageUploadFlag = false;
 
-    void VolleyUploadImage()
-    {
+    void VolleyUploadImage() {
         Charset c = Charset.forName("utf-8");
         String URL = KogPreference.UPLOAD_CHAT_IMAGE_URL + "?rid=" + KogPreference.getRid(StudyRoomActivity.this) + "&nickname=" + KogPreference.getNickName(StudyRoomActivity.this);
         MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, Charset.forName("UTF-8"));
-        try
-        {
+        try {
             entity.addPart("file", new FileBody(new File(asyncFilePath)));
             // add addPART, asyncFilePath : /storage/sdcard0/Pictures/tmp_1408977926598.jpg
             Log.i("MULTIPART-ENTITY", "add addPART, asyncFilePath : " + asyncFilePath);
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -600,18 +626,17 @@ public class StudyRoomActivity extends Activity {
     }
 
 
-    private class ChatImageMultipartRequest extends MultipartRequest
-    {
+    private class ChatImageMultipartRequest extends MultipartRequest {
         private final Gson g_gson = new Gson();
+
         public ChatImageMultipartRequest(int method, String url, MultipartEntity params, Response.ErrorListener errorListener) {
             super(method, url, params, errorListener);
         }
+
         @SuppressWarnings("rawtypes")
         @Override
-        protected Response<Map> parseNetworkResponse(NetworkResponse response)
-        {
-            try
-            {
+        protected Response<Map> parseNetworkResponse(NetworkResponse response) {
+            try {
                 String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
                 Log.i("ChatImageMultipartRequest", "response.data : " + new String(response.data, "UTF-8"));
                 Log.i("ChatImageMultipartRequest", "response.headers : " + response.headers);
@@ -632,19 +657,14 @@ public class StudyRoomActivity extends Activity {
 
 
                 return Response.success(g_gson.fromJson(json, Map.class), HttpHeaderParser.parseCacheHeaders(response));
-            }
-            catch (UnsupportedEncodingException e)
-            {
+            } catch (UnsupportedEncodingException e) {
                 return Response.error(new ParseError(e));
-            }
-            catch (JsonSyntaxException e)
-            {
+            } catch (JsonSyntaxException e) {
                 return Response.error(new ParseError(e));
             }
         }
 
     }
-
 
 
     Response.ErrorListener errListener = new Response.ErrorListener() {
@@ -662,7 +682,7 @@ public class StudyRoomActivity extends Activity {
             InputStream in = new FileInputStream(srcFile);
             try {
                 result = copyToFile(in, destFile);
-            } finally  {
+            } finally {
                 in.close();
             }
         } catch (IOException e) {
@@ -692,18 +712,14 @@ public class StudyRoomActivity extends Activity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(LOG_TAG, "onActivityResultX");
-        if(resultCode != RESULT_OK)
-        {
+        if (resultCode != RESULT_OK) {
             return;
         }
 
-        switch(requestCode)
-        {
-            case PICK_FROM_ALBUM:
-            {
+        switch (requestCode) {
+            case PICK_FROM_ALBUM: {
                 Log.d(LOG_TAG, "onActivityResult PICK_FROM_ALBUM");
                 mImageCaptureUri = data.getData();
                 File original_file = getImageFile(mImageCaptureUri);
@@ -711,12 +727,11 @@ public class StudyRoomActivity extends Activity {
                 mImageCaptureUri = createSaveCropFile();
                 File copy_file = new File(mImageCaptureUri.getPath());
 			/* copy the image for crop to SD card */
-                copyFile(original_file , copy_file);
+                copyFile(original_file, copy_file);
 //                break;
             }
 
-            case PICK_FROM_CAMERA:
-            {
+            case PICK_FROM_CAMERA: {
                 Log.d(LOG_TAG, "onActivityResult PICK_FROM_CAMERA");
 
 			/* setup the image resize after taking the image */
@@ -731,8 +746,7 @@ public class StudyRoomActivity extends Activity {
                 break;
             }
 
-            case CROP_FROM_CAMERA:
-            {
+            case CROP_FROM_CAMERA: {
                 Log.w(LOG_TAG, "onActivityResult CROP_FROM_CAMERA");
                 //mImageCaptureUri = file:///storage/sdcard0/Pictures/tmp_1408977926598.jpg
                 Log.w(LOG_TAG, "mImageCaptureUri = " + mImageCaptureUri);
@@ -740,15 +754,15 @@ public class StudyRoomActivity extends Activity {
 //                String photo_path = full_path.substring(4, full_path.length());
                 String photo_path = full_path;
                 //비트맵 Image path = /storage/sdcard0/Pictures/tmp_1408977926598.jpg
-                Log.w(LOG_TAG, "비트맵 Image path = "+photo_path);
+                Log.w(LOG_TAG, "비트맵 Image path = " + photo_path);
 
                 Bitmap photo = BitmapFactory.decodeFile(photo_path);
 //                mPhotoImageView.setImageBitmap(photo);
 //
 //                insertImgInfoToSQLite(photo_path);
-                try{
+                try {
                     DoFileUpload(photo_path);
-                }catch(Exception e){
+                } catch (Exception e) {
                     Log.i("img", e.toString());
                 }
                 MediaStore.Images.Media.insertImage(getContentResolver(), photo, "title", "descripton");
@@ -771,7 +785,7 @@ public class StudyRoomActivity extends Activity {
             int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
             rootHeight = activityRootView.getRootView().getHeight();
 
-            if(isAdditionalPageOpen) { // VISIBLE
+            if (isAdditionalPageOpen) { // VISIBLE
 //                Log.e(LOG_TAG, "isAdditionalPageOpen (VISIBLE): " + isAdditionalPageOpen);
 ////                Log.e(LOG_TAG, "study_room_below_layout_lp.height : " + actionBarHeight);
 ////                Log.e(LOG_TAG, "activityRootView.getHeight()  : " + activityRootView.getHeight());
@@ -779,7 +793,7 @@ public class StudyRoomActivity extends Activity {
                 study_room_fl1_lp.height = activityRootView.getHeight() - actionBarHeight - keyBoardHeight;
                 study_room_below_layout_lp.height = actionBarHeight;
                 study_room_additional_page_lp.height = keyBoardHeight;
-            }else {
+            } else {
 //                Log.e(LOG_TAG, "isAdditionalPageOpen : " + isAdditionalPageOpen);
 ////                Log.e(LOG_TAG, "activityRootView.getHeight()  : " + activityRootView.getHeight());
 //                Log.e(LOG_TAG, "study_room_fl1_lp.height  : " + study_room_fl1_lp.height);
@@ -847,7 +861,8 @@ S3
     int keyBoardHeight = 0;
     int screenHeight = 0;
     int editBoxHeight = 0;
-    void getSoftKeyboardHeight(){
+
+    void getSoftKeyboardHeight() {
         if (keyBoardHeight <= 100) {
             Rect r = new Rect();
             View rootview = this.getWindow().getDecorView(); // this = activity
@@ -859,8 +874,7 @@ S3
                     "dimen", "android");
 
             Log.i("Keyboard Size", "heightDifference : " + heightDifference);
-            if( heightDifference < 100 && heightDifference > 10)
-            {
+            if (heightDifference < 100 && heightDifference > 10) {
                 editBoxHeight = heightDifference;
                 Log.i("Keyboard Size", "editBoxHeight : " + editBoxHeight);
             }
@@ -875,10 +889,10 @@ S3
     }
 
 
-
     ////////////////////
     // Action bar     //
     ////////////////////
+
     /**
      * 애니메이션 리스너 정의
      */
@@ -945,6 +959,7 @@ S3
         ab.setPositiveButton("확인", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface arg0, int arg1) {
+                setAllDisable();
                 kickOffMemberRequest(f_nickname);
             }
         });
@@ -962,14 +977,15 @@ S3
 
     protected void showSoftKeyboard() {
 
-        InputMethodManager mgr = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         mgr.showSoftInput(StudyRoomActivity.this.getCurrentFocus(), InputMethodManager.SHOW_FORCED);
 
     }
+
     protected void hideSoftKeyboard(View view) {
 
-        InputMethodManager mgr = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         mgr.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
@@ -985,13 +1001,13 @@ S3
 //                showSoftKeyboard();
 //                getSoftKeyboardHeight();
                 slidingPage01.startAnimation(translateLeftAnim);
-                Log.e(LOG_TAG,"left");
+                Log.e(LOG_TAG, "left");
                 slidingPage01.setVisibility(View.VISIBLE);
             } else {
                 hideSoftKeyboard(slidingPage01);
                 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
                 slidingPage01.startAnimation(translateRightAnim);
-                Log.e(LOG_TAG,"right");
+                Log.e(LOG_TAG, "right");
             }
             return true;
         }
@@ -1029,8 +1045,7 @@ S3
             Log.i(LOG_TAG, "onMenuItemClicked ab_invite_friend_listener");
             Intent intent = new Intent(StudyRoomActivity.this, AddMoreFriendActivity.class);
             String[] FriendNicks = new String[mFriends.size()];
-            for(int i=0; i<mFriends.size(); i++)
-            {
+            for (int i = 0; i < mFriends.size(); i++) {
                 FriendNicks[i] = mFriends.get(i).getName();
             }
             intent.putExtra("Friends", FriendNicks);
@@ -1067,7 +1082,7 @@ S3
         actionBarFifthBtn = menu.findItem(R.id.actionBarFifthBtn);
         actionBarFifthBtn.setOnMenuItemClickListener(ab_kick_off_friend_listener);
 
-        if("liferoom".equals(type)) {
+        if ("liferoom".equals(type)) {
             actionBarThirdBtn.setVisible(false);
             actionBarSecondBtn.setVisible(false);
         }
@@ -1087,23 +1102,21 @@ S3
         return super.onOptionsItemSelected(item);
     }
 
-    void init()
-    {
-        if(soc_writer==null)
-        {
-            Log.i(LOG_TAG,"soc=null");
+    void init() {
+        if (soc_writer == null) {
+            Log.i(LOG_TAG, "soc=null");
             getFriendsRequest();
             soc_writer = new SocketAsyncTask_Writer();
             soc_writer.execute();
         }
     }
-    void close()
-    {
-        if(soc_reader != null){
+
+    void close() {
+        if (soc_reader != null) {
             soc_reader.cancel(true);
             soc_reader = null;
         }
-        if(soc_writer != null ){
+        if (soc_writer != null) {
             soc_writer.sendMsgToSvr("exit");
             soc_writer.cancel(true);
             soc_writer = null;
@@ -1154,15 +1167,20 @@ S3
             sendMessage();
 
         } else if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if(isAdditionalPageOpen)
-            {
+            if (isAdditionalPageOpen) {
                 isAdditionalPageOpen = false;
                 study_room_additional_page.setVisibility(View.GONE);
             }
+            if (isPageOpen){
+                hideSoftKeyboard(slidingPage01);
+                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                slidingPage01.startAnimation(translateRightAnim);
+            }
 
-            setResult(RESULT_OK);
-            StudyRoomActivity.this.finish();
-
+            if(!isAdditionalPageOpen && !isPageOpen) {
+                setResult(RESULT_OK);
+                StudyRoomActivity.this.finish();
+            }
 //            Intent intent = new Intent(StudyRoomActivity.this, TabActivity.class);
 //            startActivity(intent);
         }
@@ -1257,7 +1275,7 @@ S3
     //////////////////////////////////////////////////
     Handler handler = new Handler() {
         public void handleMessage(Message msg) {
-            String f_nickname = null, rid= null, text = null, messageType;
+            String f_nickname = null, rid = null, text = null, messageType;
             Bundle b = msg.getData();
 
             f_nickname = b.getString("nickname");
@@ -1273,8 +1291,7 @@ S3
         }
     };
 
-    public void sendMsgToSvr(String msg, String messageType)
-    {
+    public void sendMsgToSvr(String msg, String messageType) {
         try {
             JSONObject jObj = new JSONObject();
             jObj.put("nickname", KogPreference.getNickName(StudyRoomActivity.this));
@@ -1283,20 +1300,19 @@ S3
             jObj.put("messageType", messageType);
             Log.i(LOG_TAG, "send msg : " + jObj.toString());
             soc_writer.sendMsgToSvr(jObj.toString());
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             Toast.makeText(getBaseContext(), "메시지 전송 실패!", Toast.LENGTH_SHORT).show();
 
             Log.i(LOG_TAG, "Json Exception!\n" + e.toString());
-            if(KogPreference.DEBUG_MODE)
-            {
-                Toast.makeText(getBaseContext(), "Json Exception!\n" + e.toString() , Toast.LENGTH_SHORT).show();
+            if (KogPreference.DEBUG_MODE) {
+                Toast.makeText(getBaseContext(), "Json Exception!\n" + e.toString(), Toast.LENGTH_SHORT).show();
             }
         }
     }
 
 
     Socket client = null;
+
     class SocketAsyncTask_Reader extends AsyncTask<Void, Void, Void> {
         private BufferedReader br = null;
 
@@ -1313,7 +1329,7 @@ S3
                 String read;
                 JSONObject rMsg;
                 while (true) {
-                    if(isCancelled())
+                    if (isCancelled())
                         break;
 
                     read = br.readLine();
@@ -1333,34 +1349,28 @@ S3
                         //Log.i(LOG_TAG, "this is it~! : " + messageList.getItemAtPosition(0).toString());
                     }
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
 
-                if(KogPreference.DEBUG_MODE)
-                {
-                    Log.i(LOG_TAG,  "소켓 에러!\n" + e.toString() );
+                if (KogPreference.DEBUG_MODE) {
+                    Log.i(LOG_TAG, "소켓 에러!\n" + e.toString());
 //                    Toast.makeText(getBaseContext(), "소켓에러!\n" + e.toString() , Toast.LENGTH_SHORT).show();
                 }
             }
 
-            return(null);
+            return (null);
         }
 
         @Override
         protected void onPostExecute(Void unused) {
-            try
-            {
+            try {
                 br.close();
                 br = null;
                 soc_writer.executeClose();
-            }
-            catch (Exception e)
-            {
-                Log.i(LOG_TAG,  "소켓 에러!\n" + e.toString() );
-                if(KogPreference.DEBUG_MODE)
-                {
-                    Toast.makeText(getBaseContext(), "소켓에러!\n" + e.toString() , Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                Log.i(LOG_TAG, "소켓 에러!\n" + e.toString());
+                if (KogPreference.DEBUG_MODE) {
+                    Toast.makeText(getBaseContext(), "소켓에러!\n" + e.toString(), Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -1384,32 +1394,27 @@ S3
                 bw.write(getInitialMsg());
                 bw.newLine();
                 bw.flush();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
 
-                if(KogPreference.DEBUG_MODE)
-                {
-                    Log.i(LOG_TAG,  "소켓 에러!\n" + e.toString() );
-                    Toast.makeText(getBaseContext(), "소켓에러!\n" + e.toString() , Toast.LENGTH_SHORT).show();
+                if (KogPreference.DEBUG_MODE) {
+                    Log.i(LOG_TAG, "소켓 에러!\n" + e.toString());
+                    Toast.makeText(getBaseContext(), "소켓에러!\n" + e.toString(), Toast.LENGTH_SHORT).show();
                 }
             }
 
-            if(soc_reader==null)
-            {
+            if (soc_reader == null) {
                 soc_reader = new SocketAsyncTask_Reader();
                 Log.i(LOG_TAG, "Socket Reader execute");
                 soc_reader.execute();
             }
 
-            return(null);
+            return (null);
         }
 
-        private void sendMsgToSvr(String msg)
-        {
+        private void sendMsgToSvr(String msg) {
             try {
-                if(bw==null)
-                {
+                if (bw == null) {
                     bw = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
                 }
 
@@ -1417,12 +1422,10 @@ S3
                 bw.newLine();
                 bw.flush();
                 Log.i(LOG_TAG, "client sent msg. now flushed");
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Log.i(LOG_TAG, "client send message??????? " + e.toString());
-                if(KogPreference.DEBUG_MODE)
-                {
-                    Toast.makeText(getBaseContext(), "Json Exception!\n" + e.toString() , Toast.LENGTH_SHORT).show();
+                if (KogPreference.DEBUG_MODE) {
+                    Toast.makeText(getBaseContext(), "Json Exception!\n" + e.toString(), Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -1432,24 +1435,19 @@ S3
         }
 
         public void executeClose() {
-            try
-            {
+            try {
                 bw.close();
                 bw = null;
                 client.close();
                 client = null;
-            }
-            catch (Exception e)
-            {
-                Log.i(LOG_TAG,  "소켓 에러!\n" + e.toString() );
-                if(KogPreference.DEBUG_MODE)
-                {
-                    Toast.makeText(getBaseContext(), "소켓에러!\n" + e.toString() , Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                Log.i(LOG_TAG, "소켓 에러!\n" + e.toString());
+                if (KogPreference.DEBUG_MODE) {
+                    Toast.makeText(getBaseContext(), "소켓에러!\n" + e.toString(), Toast.LENGTH_SHORT).show();
                 }
             }
         }
     }
-
 
 
     ////////////////////////////////////
@@ -1489,8 +1487,7 @@ S3
                                 JSONObject rObj;
 
                                 //{"message":[{"targetTime":null,"image":"http:\/\/210.118.74.195:8080\/KOG_Server_Rest\/upload\/UserImage\/default.png","nickname":"jonghean"}],"status":"200"}
-                                for(int i=0; i< rMessage.length(); i++)
-                                {
+                                for (int i = 0; i < rMessage.length(); i++) {
                                     rObj = rMessage.getJSONObject(i);
                                     if (!"null".equals(rObj.getString("nickname"))) {
                                         Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" + rObj.getString("nickname") + "|" + rObj.getString("targetTime") + "|" + rObj.getString("isMaster"));
@@ -1527,13 +1524,12 @@ S3
             }
         }
         );
-        if(mFriends==null)
+        if (mFriends == null)
             vQueue.add(jsObjRequest);
     }
 
 
-
-    private void kickOffMemberRequest(String f_nickname) {
+    private void kickOffMemberRequest(final String f_nickname) {
 
         //TODO : check POST/GET METHOD and get_URL
         String get_url = KogPreference.REST_URL +
@@ -1557,22 +1553,35 @@ S3
 //                                rMessage = response.getJSONArray("message");
                                 //////// real action ////////
 
+                                Toast.makeText(getBaseContext(), f_nickname + "를 강퇴하였습니다.", Toast.LENGTH_SHORT).show();
+                                setAllEnable();
+
+                                Intent _intent = new Intent(StudyRoomActivity.this, StudyRoomActivity.class);
+                                _intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                _intent.putExtra("type", type);
+                                _intent.putExtra("rule", rule);
+                                startActivity(_intent);
 
                                 //////// real action ////////
-                            } else if(status_code == 9001) {
-                                Toast.makeText(getBaseContext(), "권한이 없습니다!", Toast.LENGTH_SHORT).show();
-                            } else{
-                                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+                            } else if (status_code == 1001) {
+                                Toast.makeText(getBaseContext(), "권한이 없습니다! \n방장만 가능합니다!", Toast.LENGTH_SHORT).show();
+                                setAllEnable();
+                            } else {
+                                Toast.makeText(getBaseContext(), "통신 에러", Toast.LENGTH_SHORT).show();
+                                setAllEnable();
                                 if (KogPreference.DEBUG_MODE) {
                                     Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         } catch (Exception e) {
+                            Toast.makeText(getBaseContext(), "통신 에러", Toast.LENGTH_SHORT).show();
+                            setAllEnable();
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                setAllEnable();
                 Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
                 Log.i(LOG_TAG, "Response Error");
                 if (KogPreference.DEBUG_MODE) {
@@ -1582,7 +1591,7 @@ S3
             }
         }
         );
-        if(mFriends==null)
-            vQueue.add(jsObjRequest);
+        vQueue.add(jsObjRequest);
+        vQueue.start();
     }
 }
