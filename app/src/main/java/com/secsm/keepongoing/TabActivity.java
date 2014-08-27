@@ -33,7 +33,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.fourmob.datetimepicker.sample.date_pick;
 import com.secsm.keepongoing.Adapters.FriendNameAndIcon;
 import com.secsm.keepongoing.Adapters.FriendsArrayAdapters;
 import com.secsm.keepongoing.Adapters.RoomNaming;
@@ -49,7 +48,6 @@ import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MyVolley;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URLDecoder;
@@ -268,6 +266,7 @@ public class TabActivity extends Activity {
                 (contact3.gethour() / 10 == 0 ? "0" + contact3.gethour() : contact3.gethour())
                         + ":" + (contact3.getminute() / 10 == 0 ? "0" + contact3.getminute() : contact3.getminute()) + ":" + "00"
         );
+        Preference.setString(TabActivity.this,"goal_time",_text2.getText().toString());
 
 
         final ToggleButton play_pause = (ToggleButton) findViewById(R.id.toggleButton2);
@@ -417,6 +416,7 @@ public class TabActivity extends Activity {
 
 
         vQueue.add(jsObjRequest);
+        vQueue.start();
 
 
 
@@ -864,6 +864,7 @@ public class TabActivity extends Activity {
         @Override
         public void handleMessage(Message msg) {
             ahcieve.setText(timediff(TabActivity.this));
+            Preference.setString(TabActivity.this, "achieve_time", ahcieve.getText().toString());
         }
     };
     Handler replace_current_time_Handler = new Handler() {

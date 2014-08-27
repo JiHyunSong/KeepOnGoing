@@ -3,8 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/libs/AndroidBootstrap/AndroidBootstrap.iml" filepath="$PROJECT_DIR$/libs/AndroidBootstrap/AndroidBootstrap.iml" />
-      <module fileurl="file://$PROJECT_DIR$/KeepOnGoing.iml" filepath="$PROJECT_DIR$/KeepOnGoing.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/keepongoing.iml" filepath="$PROJECT_DIR$/keepongoing.iml" />
       <module fileurl="file://$PROJECT_DIR$/libs/libs.iml" filepath="$PROJECT_DIR$/libs/libs.iml" />
     </modules>
   </component>
