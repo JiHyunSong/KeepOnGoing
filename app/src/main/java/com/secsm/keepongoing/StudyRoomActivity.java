@@ -937,12 +937,32 @@ S3
         public boolean onItemLongClick(AdapterView<?> adapterView, View v, int pos, long arg3) {
             if (adapterView.getId() == R.id.roomFriendList) {
                 Log.i(LOG_TAG, "friends long Clicked");
-                mDialog = createInflaterDialog(mFriends.get(pos).getName());
-                mDialog.show();
+
+                if(isMaster(KogPreference.getNickName(StudyRoomActivity.this)))
+                {
+                    mDialog = createInflaterDialog(mFriends.get(pos).getName());
+                    mDialog.show();
+                }
             }
             return false;
         }
     };
+
+    private Boolean isMaster(String f_nickname)
+    {
+        for(int i=0; i<mFriends.size(); i++)
+        {
+            if(mFriends.get(i).getIsMaster().equals("true"))
+            {
+                if(f_nickname.equals(mFriends.get(i).getName()))
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
+        return false;
+    }
 
     TextView simple_dialog_text;
 
@@ -1524,8 +1544,8 @@ S3
             }
         }
         );
-        if (mFriends == null)
-            vQueue.add(jsObjRequest);
+        vQueue.add(jsObjRequest);
+        vQueue.start();
     }
 
 
@@ -1556,11 +1576,7 @@ S3
                                 Toast.makeText(getBaseContext(), f_nickname + "를 강퇴하였습니다.", Toast.LENGTH_SHORT).show();
                                 setAllEnable();
 
-                                Intent _intent = new Intent(StudyRoomActivity.this, StudyRoomActivity.class);
-                                _intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                _intent.putExtra("type", type);
-                                _intent.putExtra("rule", rule);
-                                startActivity(_intent);
+                                refreshActivity();
 
                                 //////// real action ////////
                             } else if (status_code == 1001) {
@@ -1593,5 +1609,13 @@ S3
         );
         vQueue.add(jsObjRequest);
         vQueue.start();
+    }
+
+    private void refreshActivity() {
+        Intent _intent = new Intent(this, StudyRoomActivity.class);
+        _intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        _intent.putExtra("type", type);
+        _intent.putExtra("rule", rule);
+        startActivity(_intent);
     }
 }
