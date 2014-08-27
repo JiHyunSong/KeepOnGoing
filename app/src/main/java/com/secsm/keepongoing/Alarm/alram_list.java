@@ -153,18 +153,17 @@ public class alram_list extends FragmentActivity implements DatePickerDialog.OnD
         ab.setTitle("목표시간 정하기");
         ab.setView(innerView);
 
-        ab.setPositiveButton("리셋", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface arg0, int arg1) {
-                resetTimer();
-//                setDismiss(mDialog);
-            }
-        });
-
-        ab.setNegativeButton("등록", new DialogInterface.OnClickListener() {
+        ab.setPositiveButton("등록", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface arg0, int arg1) {
                 setTimer();
+                setDismiss(mDialog);
+            }
+        });
+
+        ab.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface arg0, int arg1) {
                 setDismiss(mDialog);
 
             }
@@ -195,7 +194,7 @@ public class alram_list extends FragmentActivity implements DatePickerDialog.OnD
     private void setTimer() {
         DBContactHelper helper = new DBContactHelper(alram_list.this);
         helper.updateContact(new Contact(2, mCalendar.getTime().getHours(), mCalendar.getTime().getMinutes()));
-        finish();
+//        finish();
     }
 
     private void resetTimer() {
