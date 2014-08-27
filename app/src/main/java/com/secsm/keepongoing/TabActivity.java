@@ -32,7 +32,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
+import com.fourmob.datetimepicker.sample.date_pick;
 import com.secsm.keepongoing.Adapters.FriendNameAndIcon;
 import com.secsm.keepongoing.Adapters.FriendsArrayAdapters;
 import com.secsm.keepongoing.Adapters.RoomNaming;
@@ -42,7 +42,7 @@ import com.secsm.keepongoing.Alarm.DBContactHelper;
 import com.secsm.keepongoing.Alarm.Preference;
 import com.secsm.keepongoing.Alarm.alram_list;
 import com.secsm.keepongoing.DB.DBHelper;
-import com.secsm.keepongoing.Life_Study.achieve_time_show;
+import com.secsm.keepongoing.Quiz.Quiz_Set_Search;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MyVolley;
@@ -199,15 +199,11 @@ public class TabActivity extends Activity {
             public void onClick(View arg0) {
                 if (test.isChecked()) {
 
-                    Intent intent = new Intent(TabActivity.this, achieve_time_show.class);
+                    Intent intent = new Intent(TabActivity.this, Quiz_Set_Search.class);
                     startActivity(intent);
-
 
                 }
                 else {
-
-
-
                 }
 
             }

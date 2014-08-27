@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#3E80B4"
+    android:background="#44a0ff"
     android:gravity="center_vertical"
     android:orientation="vertical">
 
@@ -57,7 +57,7 @@
             android:background="@android:color/white"
             android:clickable="true"
             android:text="Set"
-            android:textColor="#5DBCD2"
+            android:textColor="#44a0ff"
             android:textStyle="bold" />
 
         <Button
@@ -69,7 +69,7 @@
             android:background="@android:color/white"
             android:clickable="true"
             android:text="Reset"
-            android:textColor="#5DBCD2"
+            android:textColor="#44a0ff"
             android:textStyle="bold" />
 
     </LinearLayout>

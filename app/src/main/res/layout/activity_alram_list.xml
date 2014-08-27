@@ -14,7 +14,7 @@
     <ListView
         android:id="@+id/listView_test"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true" />
 
@@ -22,11 +22,39 @@
         android:id="@+id/linearLayout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_alignBottom="@+id/addAlram"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/addAlram"
-        android:orientation="vertical"></LinearLayout>
+        android:layout_below="@id/listView_test"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="close on single tap day"
+            android:layout_marginBottom="30dp"
+            android:id="@+id/checkBoxCloseOnSingleTapDay"
+            android:checked="true"/>
+
+        <Button
+            android:id="@+id/dateButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:text="Select Date" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="close on single tap minute"
+            android:layout_marginBottom="30dp"
+            android:id="@+id/checkBoxCloseOnSingleTapMinute"
+            android:checked="true"/>
+
+        <Button
+            android:id="@+id/timeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select Time" />
+        </LinearLayout>
+
 
 
 </RelativeLayout>

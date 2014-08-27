@@ -91,7 +91,6 @@ public class Alarm_main extends Activity implements DatePicker.OnDateChangedList
         mTime = (TimePicker) findViewById(R.id.time_picker);
         if (getIntent().getExtras().getInt("position") == 1) {
             mTime.setIs24HourView(true);
-            //Toast.makeText(this, "기상시간이다", Toast.LENGTH_SHORT).show();
             mTime.setCurrentHour(helper.getContact(2).gethour());
             mTime.setCurrentMinute(helper.getContact(2).getminute());
             mTime.setOnTimeChangedListener(this);

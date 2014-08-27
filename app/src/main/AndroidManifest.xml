@@ -29,13 +29,11 @@
     <uses-permission android:name="android.permission.SET_TIME_ZONE" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
-
     <permission
         android:name="com.secsm.keepongoing.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
     <uses-permission android:name="com.secsm.keepongoing.permission.C2D_MESSAGE" />
-
 
     <meta-data
         android:name="com.google.android.gms.version"
@@ -43,15 +41,15 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/kog_ico"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-
         <receiver
-            android:name="com.secsm.keepongoing.GcmBroadcastReceiver"
+            android:name=".GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
                 <category android:name="com.secsm.keepongoing" />
             </intent-filter>
         </receiver>
@@ -153,6 +151,23 @@
             android:name=".Life_Study.achieve_time_show"
             android:label="@string/title_activity_achieve_time_show" >
         </activity>
+        <activity
+            android:name=".Quiz.Quiz_set"
+            android:label="@string/title_activity_quiz_set" >
+        </activity>
+        <activity
+            android:name="com.fragmenttrasitionextendedexample.newnew"
+            android:label="@string/title_activity_quiz_set" >
+        </activity>
+        <activity
+            android:name=".Quiz.Quiz_Set_Search"
+            android:label="@string/title_activity_quiz__set__subject" >
+        </activity>
+        <activity
+            android:name="com.fourmob.datetimepicker.sample.date_pick"
+            android:label="@string/title_activity_quiz__set__subject" >
+        </activity>
+
     </application>
 
 </manifest>

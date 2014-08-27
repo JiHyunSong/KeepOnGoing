@@ -341,8 +341,8 @@ return total;
                                 Log.e("minsu) :","contents2 : "+question+" | "+questiontype+" | "+solution);
                                 settingTextView();
                                 //question = question.replace("\\\n", System.getProperty("line.separator"));
-
                                 addlist(solution,answer);
+
 
                                 // real action
                                 //          GoNextPage();

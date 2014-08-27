@@ -18,7 +18,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.romainpiel.shimmer.Shimmer;
 import com.romainpiel.shimmer.ShimmerTextView;
@@ -68,7 +67,7 @@ public class MainActivity extends Activity {
             registerInBackground();
 
         Handler handle = new Handler();
-        handle.postDelayed(new splashHandler(), 2000);
+        handle.postDelayed(new splashHandler(), 0);
 
 
 
