@@ -20,6 +20,7 @@ public class Quiz_Set_Search extends Activity implements View.OnClickListener {
     private ArrayAdapter<String> _arrAdapter;
     private ListView listView;
     private String subject="";
+    private String roomname="";
     String[] arr = null;
     ArrayList<QuizSetlistData> list;
     CheckBox chk1,chk2,chk3,chk4,chk5;
@@ -63,9 +64,20 @@ public class Quiz_Set_Search extends Activity implements View.OnClickListener {
                         subject+="|";
                     subject += "5";
                 }
-                Log.e("minsu:)","this is "+subject);
+
+
+                for(int i=0;i<list.size();i++) {
+                    if(list.get(i).chk) {
+                        if(!roomname.equals(""))
+                            roomname+="|";
+                        roomname += list.get(i).name;
+                    }
+                }
+                Log.e("minsu:)","this subject is "+subject);
+                Log.e("minsu:)","this roomname is "+roomname);
                 Intent intent = new Intent(Quiz_Set_Search.this, newnew.class);
                 intent.putExtra("position", subject);
+                intent.putExtra("position", roomname);
                 startActivity(intent);
             }
         });
@@ -86,6 +98,7 @@ public class Quiz_Set_Search extends Activity implements View.OnClickListener {
          chk5 = (CheckBox)findViewById(R.id.check5);
         chk5.setChecked(false);
         subject="";
+        roomname="";
         super.onResume();
         settingListView();
     }
@@ -94,9 +107,9 @@ public class Quiz_Set_Search extends Activity implements View.OnClickListener {
     private void settingListView() {
 
         list = new ArrayList<QuizSetlistData>();
-       String output = "방이름 : 장성택";
+       String output = "장성택";
        list.add(new QuizSetlistData(output));
-        output = "방이름 : 괴뢰군";
+        output = "괴뢰군";
         list.add(new QuizSetlistData(output));
         listView = (ListView) findViewById(R.id.listView_test);
         listView.setAdapter(new QuizSetAdapter(this, list));
