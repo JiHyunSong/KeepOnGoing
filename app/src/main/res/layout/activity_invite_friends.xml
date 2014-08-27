@@ -56,7 +56,6 @@
             android:layout_centerHorizontal="true"
             android:gravity="center"
             android:text="선택된 친구들 목록 ▼" />
-        ▼
 
         <ListView
             android:id="@+id/to_invite_friend_list"

@@ -37,7 +37,7 @@ public class MainActivity extends Activity {
     private int status_code;
     private String rMessage;
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    private static final String SENDER_ID = "291082441007";
+    private static final String SENDER_ID = "7537883841";
 
     private GoogleCloudMessaging _gcm;
     private String _regId;
@@ -51,7 +51,7 @@ public class MainActivity extends Activity {
         Encrypt.initKey();
 //        vQueue = Volley.newRequestQueue(this);
         MyVolley.init(MainActivity.this);
-        vQueue = MyVolley.getRequestQueue();
+        vQueue = MyVolley.getRequestQueue(MainActivity.this);
 
         _gcm = GoogleCloudMessaging.getInstance(this);
         _regId = getRegistrationId();

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.telephony.PhoneNumberUtils;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
@@ -97,7 +98,11 @@ public class AuthActivity extends Activity {
     // get phone number from activity
     public String getPhoneNumber() {
         TelephonyManager mgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        return mgr.getLine1Number();
+        String PhoneNumber = mgr.getLine1Number();
+        PhoneNumber = PhoneNumber.substring(PhoneNumber.length()-10, PhoneNumber.length());
+        PhoneNumber = "0" + PhoneNumber;
+        PhoneNumber = PhoneNumberUtils.formatNumber(PhoneNumber);
+        return PhoneNumber;
     }
 
     @Override

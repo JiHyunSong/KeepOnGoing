@@ -80,7 +80,7 @@ public class InviteFriendsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invite_friends);
 //        MyVolley.init(InviteFriendsActivity.this);
-        vQueue = MyVolley.getRequestQueue();
+        vQueue = MyVolley.getRequestQueue(InviteFriendsActivity.this);
         inviteProgressBar = (ProgressBar) findViewById(R.id.invite_progress);
 
         intent = getIntent();
@@ -525,12 +525,14 @@ public class InviteFriendsActivity extends Activity {
 
                                 /////////////////////////////
                             } else {
+                                setAllDisable();
                                 Toast.makeText(getBaseContext(), "통신 에러 : \n" + friendName + "친구를 초대할 수 없습니다", Toast.LENGTH_SHORT).show();
                                 if (KogPreference.DEBUG_MODE) {
                                     Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         } catch (Exception e) {
+                            setAllDisable();
                         }
                     }
                 }, new Response.ErrorListener() {

@@ -1,11 +1,7 @@
 package com.secsm.keepongoing;
 
-import java.net.URL;
 import java.sql.Timestamp;
 import java.util.Calendar;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -16,13 +12,10 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.secsm.keepongoing.DB.DBHelper;
 import com.secsm.keepongoing.Shared.KogPreference;
@@ -31,7 +24,7 @@ import com.secsm.keepongoing.Shared.KogPreference;
  * 메시지가 올 경우 보낸이와 해당 채팅방의 메시지를 띄워주는 푸시 메시지
  * */
 public class PushWakeKogDialog extends Activity {
-    private String senderName, roomName, roomID, message, phoneNo, myID, which, senderID;
+    private String senderNickname, roomID, message, messageType;
     private static final String LOG_TAG = "Push Dialog";
     private DBHelper mDBHelper;
     private NotificationManager notiManager;
@@ -50,25 +43,34 @@ public class PushWakeKogDialog extends Activity {
         dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
 
         Intent intent = getIntent();
-        senderName = intent.getStringExtra("senderName");
-        roomID = intent.getStringExtra("roomID");
+        senderNickname = intent.getStringExtra("senderNickname");
+        roomID = intent.getStringExtra("rid");
         message = intent.getStringExtra("message");
+        messageType = intent.getStringExtra("messageType");
+        Log.i(LOG_TAG, "senderNickname : " + senderNickname);
+        Log.i(LOG_TAG, "roomID : " + roomID);
+        Log.i(LOG_TAG, "message : " + message);
+        Log.i(LOG_TAG, "messageType : " + messageType);
         boolean isAfterNoti = intent.getBooleanExtra("afterNoti", false);
-
 //        if ("SERVER".equals(roomName)) {
-//            roomName = getRoomNameFromSQLite(roomID);
+//            roomName = getRoomNameFromSQLite(rid);
 //        }
 
 
         // TODO : insert Msg
-//        insertIntoMsgInSQLite(senderName, message, getRealTime());
+//        insertIntoMsgInSQLite(senderNickname, message, getRealTime());
+
+//    private void insertIntoMsgInSQLite(String _senderID, String _senderText, String _time, String _me, String _messageType) {
+        insertIntoMsgInSQLite(senderNickname, message, getRealTime(), "false", messageType);
+        if(messageType.equals(KogPreference.MESSAGE_TYPE_IMAGE))
+            message = "(사진)";
+
         if (message.length() > 15)
             message = message.substring(0, 15);
-        Log.i(LOG_TAG, "get intents(senderName, roomName, message) : (" + senderName + ", " + roomName + ", " + message + ")");
 
         new AlertDialog.Builder(this)
                 .setTitle("메시지가 도착했습니다.")
-                .setMessage(senderName + "(" + roomName + " ): " + "\n" + ": " + message + "...")
+                .setMessage(senderNickname + " : " + "\n" + ": " + message + "...")
                 .setPositiveButton("확인", dialogClickListener)
                 .setNegativeButton("닫기", dialogClickListener)
                 .setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -93,7 +95,7 @@ public class PushWakeKogDialog extends Activity {
         notiManager = (NotificationManager) getSystemService(ns);
 
         //2.Notification 객체 생성 (아이콘, 티커메시지, 발생시간)
-        CharSequence ticker = "초대요청이 왔습니다";
+        CharSequence ticker = "메시지가 도착했습니다";
 
 //        Notification notification = new Notification(R.drawable.push_icon1, ticker, System.currentTimeMillis());
         Notification notification;
@@ -109,12 +111,11 @@ public class PushWakeKogDialog extends Activity {
         // 또한, 해당 항목이 처리할 Intent를 추가한다.
         Context context = getApplicationContext();
         CharSequence contentTitle = "KicTalk";
-        CharSequence contentText = "초대요청이 들어왔습니다.";
+        CharSequence contentText = "메시지가 들어왔습니다.";
         Intent notificationIntent = new Intent(this, PushWakeKogDialog.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        notificationIntent.putExtra("senderName", senderName);
-        notificationIntent.putExtra("roomName", roomName);
-        notificationIntent.putExtra("roomID", roomID);
+        notificationIntent.putExtra("senderNickname", senderNickname);
+        notificationIntent.putExtra("rid", roomID);
         notificationIntent.putExtra("afterNoti", true);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
@@ -130,9 +131,9 @@ public class PushWakeKogDialog extends Activity {
     }
 
     private void cancelNotification() {
-        //	if(mActiveIdList.isEmpty())
-        //		return ;
-        //	int id = mActiveIdList.remove(0);
+//        	if(mActiveIdList.isEmpty())
+//        		return ;
+//        	int id = mActiveIdList.remove(0);
         notiManager.cancel(START_NOTI_ID);
     }
 
@@ -147,11 +148,11 @@ public class PushWakeKogDialog extends Activity {
                     KogPreference.setRid(PushWakeKogDialog.this, roomID);
                     Intent intent = new Intent(PushWakeKogDialog.this, StudyRoomActivity.class);
 //                    intent.putExtra("myID", myID);
-//                    intent.putExtra("roomID", roomID);
+//                    intent.putExtra("rid", rid);
 //                    intent.putExtra("roomName", roomName);
 //                    intent.putExtra("phoneNo", phoneNo);//민향추가
 //                    //if 방이 없다면
-//                    boolean roomExist = isRoomExist(roomID);
+//                    boolean roomExist = isRoomExist(rid);
 //                    if (roomExist == true)
 //                        intent.putExtra("which", "0");
 //                    else
@@ -168,6 +169,30 @@ public class PushWakeKogDialog extends Activity {
         }
 
     };
+
+
+    private void insertIntoMsgInSQLite(String _senderID, String _senderText, String _time, String _me, String _messageType) {
+        SQLiteDatabase db;
+        db = mDBHelper.getWritableDatabase();
+        Log.i(LOG_TAG, "insert msg");
+        Log.i("day", "nickname : " + _senderID);
+        String query = "INSERT INTO Chat " +
+                //"(room_id, senderID, senderText, year, month, day, time, me) " +
+                "(rid, senderID, senderText, time, me, messageType) " +
+                "VALUES (" +
+                "'" + roomID + "','"
+                + _senderID + "','"
+                + _senderText + "','"
+                + _time + "','"
+                + _me + "','"
+                + _messageType + "');";
+        // TODO : check _time
+        Log.i(LOG_TAG, "execSQL : " + query);
+        db.execSQL(query);
+        db.close();
+        mDBHelper.close();
+    }
+
 
     private void insertIntoMsgInSQLite(String senderID, String senderText, String time) {
         SQLiteDatabase db;

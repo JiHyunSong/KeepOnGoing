@@ -6,8 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -19,12 +17,12 @@ import com.secsm.keepongoing.R;
 import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MyVolley;
 
-import java.net.URL;
 import java.util.ArrayList;
 
 /* my customized adapter for listview */
 public class MessageAdapter extends ArrayAdapter<Msg> {
     private static String serverFilePath = "http://203.252.195.122/files/";
+    private static String LOG_TAG = "MESSAGE ADAPTER";
     private ViewHolder viewHolder = null;
     private ArrayList<Msg> items;
     Context mContext;
@@ -58,6 +56,7 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
             viewHolder.wv_rl.addRule(RelativeLayout.RIGHT_OF, R.id.msg_person_photo);
             viewHolder.wv_rl.width = RelativeLayout.LayoutParams.MATCH_PARENT;
             viewHolder.wv_rl.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+
             viewHolder.p_iv = (ImageView) v.findViewById(R.id.msg_bottomTextImageView);
 
             // set invisible
@@ -73,7 +72,7 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
 
         Msg m = items.get(position);
         if (m != null) {
-            if(m.getMessageType().equals("plaintext")) {
+            if (m.getMessageType().equals(KogPreference.MESSAGE_TYPE_TEXT)) {
                 viewHolder.wv.setVisibility(View.GONE);
                 viewHolder.p_iv.setVisibility(View.GONE);
                 viewHolder.wv.setVisibility(View.VISIBLE);
@@ -100,11 +99,11 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
 
                         // TODO : profile image path download from server
                         //                    String fileName = imgFromServ(myID);
-                        String fileName = null;
+                        String fileName = m.getFileName();
 
                         Log.i("filename", "id : " + m.getId() + " | me : " + fileName);
                         if (fileName != null) {
-                            if (fileName.matches(".*jpg.*")) {
+                            if (fileName.matches(".*jpg.*") || fileName.matches(".*png.*")) {
                                 getProfileFromURL(m.getFileName(), viewHolder.iv);
 
 //                                String mecodedURL = serverFilePath + fileName;
@@ -136,16 +135,19 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
                         //                        htmlFormText = htmlFormText.replaceAll(repEmoArr[i], htmlEmoArr[i]);
                         //                    }
                         //                    wv.loadDataWithBaseURL("file:///android_asset/", htmlForm1 + htmlFormText + htmlForm2 , "text/html", "utf-8", "file:///android_assest/");
+                        viewHolder.wv.loadUrl("about:blank");
+                        viewHolder.wv.invalidate();
+                        viewHolder.wv.loadDataWithBaseURL("file:///android_asset/", htmlForm1 + htmlFormText + htmlForm2, "text/html", "utf-8", "file:///android_assest/");
 
                         viewHolder.time.setText(m.getTime());
 
                         //        				String fileName = m.getFileName();
                         // TODO : profile image path download from server
                         //                    String fileName = imgFromServ(myID);
-                        String fileName = null;
+                        String fileName = m.getFileName();
                         Log.i("filename", "id : " + m.getId() + " | friend : " + fileName);
                         if (fileName != null) {
-                            if (fileName.matches(".*jpg.*")) {
+                            if (fileName.matches(".*jpg.*") || fileName.matches(".*png.*")) {
                                 getProfileFromURL(m.getFileName(), viewHolder.iv);
 
 //                                String mecodedURL = serverFilePath + fileName;
@@ -167,7 +169,7 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
 
                     }
                 }
-            }else // if m.getMessageType().equals("image")
+            } else if (m.getMessageType().equals(KogPreference.MESSAGE_TYPE_IMAGE))
             {
                 viewHolder.wv.setVisibility(View.GONE);
                 viewHolder.p_iv.setVisibility(View.GONE);
@@ -176,18 +178,33 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
                 if (viewHolder.tt != null && viewHolder.p_iv != null && viewHolder.time != null && viewHolder.iv != null) {
                     if ("나 : ".equals(m.getName())) {
                         viewHolder.tt.setText(m.getTime());
+                        viewHolder.wv.setBackgroundColor(0); // 투명처리
+                        String htmlForm1 = "<metahttp-equiv='Content-Type' content='text'/html; charset = utf-8 /> " +
+                                "<html>" + "<body bgcolor='#ffc0cb'> ";
+                        String htmlFormText = "";
+                        String htmlForm2 = "</body></html>";
+
+                        //                    for(int i = 0 ; i < emoArr.length; i++){
+                        //                        htmlFormText = htmlFormText.replaceAll(repEmoArr[i], htmlEmoArr[i]);
+                        //                    }
+                        viewHolder.wv.loadUrl("about:blank");
+                        viewHolder.wv.invalidate();
+                        // TODO : check scrolling
+
+                        viewHolder.wv.loadDataWithBaseURL("file:///android_asset/", htmlForm1 + htmlFormText + htmlForm2, "text/html", "utf-8", "file:///android_assest/");
+
 
                         // set p_iv
-                        getImageFromURL(m.getText(), viewHolder.p_iv);
+                        getChatImageFromURL(m.getText(), viewHolder.p_iv);
 
 
                         viewHolder.time.setText(m.getName());
 
                         // TODO : profile image path download from server
                         //                    String fileName = imgFromServ(myID);
-                        String fileName = null;
+                        String fileName = m.getFileName();
 
-                        Log.i("filename", "id : " + m.getId() + " | me : " + fileName);
+//                        Log.i("filename", "id : " + m.getId() + " | me : " + fileName);
                         if (fileName != null) {
                             if (fileName.matches(".*jpg.*")) {
                                 getProfileFromURL(m.getFileName(), viewHolder.iv);
@@ -214,7 +231,7 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
                         viewHolder.tt.setText(m.getName());
 
                         // set p_iv
-                        getImageFromURL(m.getText(), viewHolder.p_iv);
+                        getChatImageFromURL(m.getText(), viewHolder.p_iv);
 
 
                         viewHolder.time.setText(m.getTime());
@@ -222,8 +239,8 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
                         //        				String fileName = m.getFileName();
                         // TODO : profile image path download from server
                         //                    String fileName = imgFromServ(myID);
-                        String fileName = null;
-                        Log.i("filename", "id : " + m.getId() + " | friend : " + fileName);
+                        String fileName = m.getFileName();
+//                        Log.i("filename", "id : " + m.getId() + " | friend : " + fileName);
                         if (fileName != null) {
                             if (fileName.matches(".*jpg.*")) {
                                 getProfileFromURL(m.getFileName(), viewHolder.iv);
@@ -246,6 +263,9 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
 
                     }
                 }
+            }else
+            {
+
             }
             viewHolder.wv_rl.addRule(RelativeLayout.RIGHT_OF, R.id.msg_person_photo);
             viewHolder.wv_rl.width = RelativeLayout.LayoutParams.MATCH_PARENT;
@@ -274,8 +294,16 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
     }
 
 
-    void getImageFromURL(String ImgURL, ImageView imgView) {
-        ImageLoader imageLoader = MyVolley.getImageLoader();
+    void getChatImageFromURL(String ImgURL, ImageView imgView) {
+        ImgURL = KogPreference.DOWNLOAD_CHAT_IMAGE_URL + KogPreference.getRid(mContext) + "/" + ImgURL;
+        android.view.ViewGroup.LayoutParams params = imgView.getLayoutParams();
+        params.width = RelativeLayout.LayoutParams.MATCH_PARENT;;
+        int width = imgView.getWidth();
+        params.height = width;
+        imgView.setLayoutParams(params);
+        // S3 358
+//        Log.i(LOG_TAG, "img view width : " + width);
+         ImageLoader imageLoader = MyVolley.getImageLoader();
         imageLoader.get(ImgURL,
                 ImageLoader.getImageListener(imgView,
                         R.drawable.no_image,
@@ -284,6 +312,13 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
     }
 
     void getProfileFromURL(String ImgURL, ImageView imgView) {
+        ImgURL = KogPreference.DOWNLOAD_PROFILE_URL + ImgURL;
+//        Log.i(LOG_TAG, "getProfileFromURL img URL : " + ImgURL);
+
+        int width = imgView.getWidth();
+        imgView.setMaxHeight(width);
+
+
         ImageLoader imageLoader = MyVolley.getImageLoader();
         imageLoader.get(ImgURL,
                 ImageLoader.getImageListener(imgView,

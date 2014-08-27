@@ -78,5 +78,7 @@
     <string name="radial_numbers_typeface" translatable="false">sans-serif</string>
     <string name="select_hours">Select hours</string>
     <string name="select_minutes">Select minutes</string>
+    <string name="title_activity_add_more_friend">AddMoreFriendActivity</string>
+    <string name="title_activity_my_profile">MyProfileActivity</string>
 
 </resources>

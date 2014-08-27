@@ -59,6 +59,52 @@ public class AddStudyRoomActivity extends Activity {
     private Button add_study_room_invite_friend_btn_with_life_info;
     private Button add_study_room_invite_friend_btn_with_study_info;
 
+    private void setAllEnable(){
+        add_study_room_rg.setEnabled(true);
+        add_study_room_life_rb.setEnabled(true);
+        add_study_room_subject_rb.setEnabled(true);
+        add_study_room_name_et.setEnabled(true);
+        add_study_room_rules_et.setEnabled(true);
+        add_study_room_life_rl.setEnabled(true);
+        add_study_room_life_holiday_et.setEnabled(true);
+        add_study_room_subject_rl.setEnabled(true);
+        add_study_room_subject_mon_tg.setEnabled(true);
+        add_study_room_subject_tue_tg.setEnabled(true);
+        add_study_room_subject_wed_tg.setEnabled(true);
+        add_study_room_subject_thu_tg.setEnabled(true);
+        add_study_room_subject_fri_tg.setEnabled(true);
+        add_study_room_subject_sat_tg.setEnabled(true);
+        add_study_room_subject_sun_tg.setEnabled(true);
+        add_study_room_subject_tp.setEnabled(true);
+        add_study_room_subject_duration_time_et.setEnabled(true);
+        add_study_room_subject_show_up_time_et.setEnabled(true);
+        add_study_room_invite_friend_btn_with_life_info.setEnabled(true);
+        add_study_room_invite_friend_btn_with_study_info.setEnabled(true);
+    }
+
+    private void setAllDisable(){
+        add_study_room_rg.setEnabled(false);
+        add_study_room_life_rb.setEnabled(false);
+        add_study_room_subject_rb.setEnabled(false);
+        add_study_room_name_et.setEnabled(false);
+        add_study_room_rules_et.setEnabled(false);
+        add_study_room_life_rl.setEnabled(false);
+        add_study_room_life_holiday_et.setEnabled(false);
+        add_study_room_subject_rl.setEnabled(false);
+        add_study_room_subject_mon_tg.setEnabled(false);
+        add_study_room_subject_tue_tg.setEnabled(false);
+        add_study_room_subject_wed_tg.setEnabled(false);
+        add_study_room_subject_thu_tg.setEnabled(false);
+        add_study_room_subject_fri_tg.setEnabled(false);
+        add_study_room_subject_sat_tg.setEnabled(false);
+        add_study_room_subject_sun_tg.setEnabled(false);
+        add_study_room_subject_tp.setEnabled(false);
+        add_study_room_subject_duration_time_et.setEnabled(false);
+        add_study_room_subject_show_up_time_et.setEnabled(false);
+        add_study_room_invite_friend_btn_with_life_info.setEnabled(false);
+        add_study_room_invite_friend_btn_with_study_info.setEnabled(false);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +117,7 @@ public class AddStudyRoomActivity extends Activity {
         add_study_room_subject_rb = (RadioButton) findViewById(R.id.add_study_room_subject_rb);
 
         add_study_room_name_et = (BootstrapEditText) findViewById(R.id.add_study_room_name_et);
+        add_study_room_name_et.setNextFocusDownId(R.id.add_study_room_rules_et);
         add_study_room_rules_et = (BootstrapEditText) findViewById(R.id.add_study_room_rules_et);
 
         add_study_room_life_rl = (RelativeLayout) findViewById(R.id.add_study_room_life_rl);
@@ -102,11 +149,13 @@ public class AddStudyRoomActivity extends Activity {
         /* add button handler for inviting friends */
         add_study_room_invite_friend_btn_with_life_info.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                setAllDisable();
                 goNextFriendPage();
             }
         });
         add_study_room_invite_friend_btn_with_study_info.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                setAllDisable();
                 goNextFriendPage();
             }
         });
@@ -127,6 +176,7 @@ public class AddStudyRoomActivity extends Activity {
             intent.putExtra("roomname", add_study_room_name_et.getText().toString());
             intent.putExtra("max_holiday_count", add_study_room_life_holiday_et.getText().toString());
             startActivity(intent);
+            setAllEnable();
             this.finish();
 
         } else if (add_study_room_subject_rb.isChecked() && isSubjectRoomValid()) {
@@ -153,8 +203,10 @@ public class AddStudyRoomActivity extends Activity {
             intent.putExtra("showup_time", add_study_room_subject_show_up_time_et.getText().toString());
             intent.putExtra("meet_days", getMeetDays());
             startActivity(intent);
+            setAllEnable();
             this.finish();
         } else {
+            setAllEnable();
             Toast.makeText(getBaseContext(), "입력란을 알맞게 채워주세요!", Toast.LENGTH_SHORT).show();
             // error
         }
@@ -246,9 +298,12 @@ public class AddStudyRoomActivity extends Activity {
 
             if (add_study_room_rg.getCheckedRadioButtonId() == R.id.add_study_room_life_rb) {
                 setInvisibleLayout();
+                add_study_room_rules_et.setNextFocusDownId(R.id.add_study_room_life_holiday_et);
                 add_study_room_life_rl.setVisibility(View.VISIBLE);
             } else if (add_study_room_rg.getCheckedRadioButtonId() == R.id.add_study_room_subject_rb) {
                 setInvisibleLayout();
+                add_study_room_rules_et.setNextFocusDownId(R.id.add_study_room_subject_duration_time_et);
+                add_study_room_subject_duration_time_et.setNextFocusDownId(R.id.add_study_room_subject_show_up_time_et);
                 add_study_room_subject_rl.setVisibility(View.VISIBLE);
             }
         }
@@ -300,7 +355,7 @@ public class AddStudyRoomActivity extends Activity {
 //            Intent intent = new Intent(AddStudyRoomActivity.this, TabActivity.class);
 ////            intent.putExtra("phoneNo", phoneNo);
 //            //intent.putExtra("roomName", roomNameArray.get(position));
-//            //intent.putExtra("roomID", roomIDArrayFromSQLite.get(position));
+//            //intent.putExtra("rid", roomIDArrayFromSQLite.get(position));
 //            //startActivityForResult(intent, CHATROOM_REQUEST_CODE);
 //            startActivity(intent);
         }

@@ -22,6 +22,7 @@ import java.util.Set;
 public final class KogPreference {
     private static String LOG_TAG = "Preference LOG";
     public static Boolean DEBUG_MODE = true;
+    public static Boolean NO_AUTH = false;
     private static final String PREF_NAME = "KeepOnGoingPreference";
     private static String LOGIN_TAG = "LOGIN";
     private static String AUTOLOGIN_TAG = "AUTO_LOGIN";
@@ -32,8 +33,14 @@ public final class KogPreference {
     private static String QUIZ_NUM_TAG = "QUIZNUM";
     private static String INVITE_ROOM = "INVITE_ROOM";
     public static String REST_URL = "http://210.118.74.195:8080/KOG_Server_Rest/rest/";
-    public static String MEDIA_URL = "http://210.118.74.195:8080/KOG_Server_Rest/upload/UserImage/";
-    public static String UPLOAD_URL = "http://210.118.74.195:8080/KOG_Server_Rest/rest/UserImage";
+    public static String UPLOAD_PROFILE_URL = "http://210.118.74.195:8080/KOG_Server_Rest/rest/UserImage";
+    public static String DOWNLOAD_PROFILE_URL = "http://210.118.74.195:8080/KOG_Server_Rest/upload/UserImage/";
+    public static String UPLOAD_CHAT_IMAGE_URL = "http://210.118.74.195:8080/KOG_Server_Rest/rest/ChatImage";
+    public static String DOWNLOAD_CHAT_IMAGE_URL = "http://210.118.74.195:8080/KOG_Server_Rest/upload/ChatImage/";
+    public static String MESSAGE_TYPE_TEXT = "text";
+    public static String MESSAGE_TYPE_IMAGE = "image";
+    public static String MESSAGE_TYPE_QUIZ = "quiz";
+    public static String MESSAGE_TYPE_LOGOUT="logout";
     public static final String CHAT_IP = "210.118.74.195";
     public static final int CHAT_PORT = 9090;
 

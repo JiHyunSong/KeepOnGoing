@@ -17,12 +17,13 @@ public class MyVolley {
     private static MyVolley instance;
     private static RequestQueue mRequestQueue;
     private static ImageLoader mImageLoader;
-
+    private static Context mContext;
     private MyVolley() {
 // no instances
     }
 
     public static void init(Context context) {
+        mContext = context;
         mRequestQueue = Volley.newRequestQueue(context);
         int memClass = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE))
                 .getMemoryClass();
@@ -31,11 +32,13 @@ public class MyVolley {
         mImageLoader = new ImageLoader(mRequestQueue, new BitmapLruCache(cacheSize));
     }
 
-    public static RequestQueue getRequestQueue() {
+    public static RequestQueue getRequestQueue(Context context) {
         if (mRequestQueue != null) {
             return mRequestQueue;
         } else {
-            throw new IllegalStateException("RequestQueue not initialized");
+            mRequestQueue = Volley.newRequestQueue(context);
+            return mRequestQueue;
+//            throw new IllegalStateException("RequestQueue not initialized");
         }
     }
 

@@ -13,6 +13,9 @@ import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.secsm.keepongoing.Shared.KogPreference;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 
@@ -50,31 +53,33 @@ public class GcmIntentService extends IntentService {
                 // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                 String msg = intent.getStringExtra("message");
-                int _messageType = intent.getIntExtra("messageType", -1);
-                // room invite
-                // friend invite
-                // chat message - message
-                // chat message - image
-                Log.i("GcmIntentService.java | onHandleIntent", "Received: " + extras.toString());
-                switch(_messageType)
-                {
-                    case ROOM_INVITE:
-                        pushRoomInvite(GcmIntentService.this, intent);
-                        break;
-                    case FRIEND_INVITE:
-                        pushFriendInvite(GcmIntentService.this, intent);
-                        break;
-                    case CHAT_MESSAGE_CHAT:
-                        pushChatMessage(GcmIntentService.this, intent);
-                        break;
-                    case CHAT_MESSAGE_IMAGE:
-                        break;
-                    default:
-                        Log.e(LOG_TAG, "GCM message type error");
-                        break;
+                int _messageType = -1;
+                String m_type = intent.getExtras().getString("title");
+                Log.i(LOG_TAG, "m_type : " + m_type);
+
+                if(m_type=="room_invite"){
+
                 }
-
-
+                else if(m_type=="friend_invite"){
+                }
+                else if(m_type.equals(KogPreference.MESSAGE_TYPE_TEXT)) {
+                    Log.i(LOG_TAG, "GCM get text type message");
+                    pushChatMessage(GcmIntentService.this, intent);
+                }
+                else if(m_type.equals(KogPreference.MESSAGE_TYPE_IMAGE)){
+                    Log.i(LOG_TAG, "GCM get image type message");
+                }else if(m_type.equals(KogPreference.MESSAGE_TYPE_LOGOUT))
+                {
+                    Log.i(LOG_TAG, "GCM get logout message");
+                    KogPreference.setLogin(GcmIntentService.this, false);
+                    KogPreference.setNickName(GcmIntentService.this, "");
+                    KogPreference.setPassword(GcmIntentService.this, "");
+                    KogPreference.setRid(GcmIntentService.this, "");
+//                    KogPreference.setRegId(GcmIntentService.this, "");
+                    KogPreference.setQuizNum(GcmIntentService.this, "");
+                    KogPreference.setAutoLogin(GcmIntentService.this, false);
+                }
+                Log.i("GcmIntentService.java | onHandleIntent", "Received: " + extras.toString());
 
             }
         }
@@ -83,13 +88,9 @@ public class GcmIntentService extends IntentService {
     }
 
 
-    String senderName;
-    String message;
-    String roomID;
-
     private void pushRoomInvite(Context context, Intent intent) {
         ArrayList<String> roomInvites = KogPreference.getStringArrayPref(context, "ROOM_INVITES");
-        String inviteRoomID = intent.getExtras().getString("roomID");
+        String inviteRoomID = intent.getExtras().getString("rid");
         String inviteRoomName = intent.getExtras().getString("roomName");
         String inviteRoomMessage = intent.getExtras().getString("message");
 //        roomInvites.add();
@@ -100,27 +101,38 @@ public class GcmIntentService extends IntentService {
     }
 
     private void pushChatMessage(Context context, Intent intent) {
-
-        Log.e("C2DM", "handle");
+        String senderNickname;
+        JSONObject intentMessage;
+        String rid;
+        String message;
+        String messageType;
         PushWakeLock.acquireCpuWakeLock(context);
         Vibrator mVib = (Vibrator) context
                 .getSystemService(context.VIBRATOR_SERVICE);
         mVib.vibrate(500);
+        try {
+            intentMessage = new JSONObject(intent.getExtras().getString("message"));
+            senderNickname = intentMessage.getString("nickname");
+            rid = intentMessage.getString("rid");
+            message = intentMessage.getString("message");
+            messageType = intentMessage.getString("messageType");
 
-        senderName = intent.getExtras().getString("senderID");
-        roomID = intent.getExtras().getString("roomID");
 
-        message = intent.getExtras().getString("message");
-        Intent a = new Intent(context, PushWakeKogDialog.class);
-        Bundle b2 = new Bundle();
-        b2.putString("senderID", senderName);
-        b2.putString("roomID", roomID);
-        b2.putString("message", message);
-        a.putExtras(b2);
+            Intent a = new Intent(context, PushWakeKogDialog.class);
+            Bundle b2 = new Bundle();
+            b2.putString("senderNickname", senderNickname);
+            b2.putString("rid", rid);
+            b2.putString("message", message);
+            b2.putString("messageType", messageType);
+            a.putExtras(b2);
 
-        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        context.startActivity(a);
+            context.startActivity(a);
+        }catch (JSONException e)
+        {
+            Log.e(LOG_TAG, "push Chat Message Json Exception : " + e.toString());
+        }
     }
 
     // Put the message into a notification and post it.

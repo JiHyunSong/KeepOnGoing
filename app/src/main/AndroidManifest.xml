@@ -88,10 +88,6 @@
             android:label="@string/title_activity_tab" >
         </activity>
         <activity
-            android:name=".ProfileActivity"
-            android:label="@string/title_activity_tab" >
-        </activity>
-        <activity
             android:name=".StudyRoomActivity"
             android:label="@string/title_activity_tab" >
         </activity>
@@ -101,10 +97,6 @@
         </activity>
         <activity
             android:name=".TabActivity"
-            android:label="@string/title_activity_tab" >
-        </activity>
-        <activity
-            android:name=".CreateRoomActivity"
             android:label="@string/title_activity_tab" >
         </activity>
         <activity
@@ -140,10 +132,6 @@
             android:label="@string/title_activity_tab" >
         </activity>
         <activity
-            android:name=".Shared.RoomFriendsActivity"
-            android:label="@string/title_activity_tab" >
-        </activity>
-        <activity
             android:name=".PushWakeKogDialog"
             android:label="@string/title_activity_tab" >
         </activity>
@@ -167,7 +155,14 @@
             android:name="com.fourmob.datetimepicker.sample.date_pick"
             android:label="@string/title_activity_quiz__set__subject" >
         </activity>
-
+        <activity
+            android:name=".AddMoreFriendActivity"
+            android:label="@string/title_activity_add_more_friend" >
+        </activity>
+        <activity
+            android:name=".MyProfileActivity"
+            android:label="@string/title_activity_my_profile" >
+        </activity>
     </application>
 
 </manifest>
