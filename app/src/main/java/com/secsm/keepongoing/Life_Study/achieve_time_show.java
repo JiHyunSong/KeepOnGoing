@@ -13,9 +13,10 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.secsm.keepongoing.R;
+import com.secsm.keepongoing.Shared.BaseActionBarActivity;
 
 
-    public class achieve_time_show extends ActionBarActivity {
+public class achieve_time_show extends BaseActionBarActivity {
 
 
         boolean isPageOpen = false;

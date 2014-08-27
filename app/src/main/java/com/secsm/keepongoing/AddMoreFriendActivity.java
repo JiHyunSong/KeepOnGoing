@@ -24,6 +24,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.beardedhen.androidbootstrap.BootstrapEditText;
 import com.secsm.keepongoing.Adapters.FriendNameAndIcon;
 import com.secsm.keepongoing.Adapters.FriendsArrayAdapters;
+import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MyVolley;
@@ -35,7 +36,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class AddMoreFriendActivity extends Activity {
+public class AddMoreFriendActivity extends BaseActivity {
 
     private Intent intent;
     private Button add_more_friend_invite_room_btn;

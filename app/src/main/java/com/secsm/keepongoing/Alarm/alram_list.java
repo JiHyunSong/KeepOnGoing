@@ -23,6 +23,8 @@ import android.widget.Toast;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.secsm.keepongoing.R;
+import com.secsm.keepongoing.Shared.BaseActivity;
+import com.secsm.keepongoing.Shared.BaseFragmentActivity;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 
@@ -32,7 +34,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 
-public class alram_list extends FragmentActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,time_picker{
+public class alram_list extends BaseFragmentActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,time_picker{
     private ArrayAdapter<String> _arrAdapter;
     private ListView listView;
     public static final String DATEPICKER_TAG = "datepicker";

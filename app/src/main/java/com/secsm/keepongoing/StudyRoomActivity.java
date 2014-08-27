@@ -62,6 +62,7 @@ import com.secsm.keepongoing.Adapters.Msg;
 import com.secsm.keepongoing.DB.DBHelper;
 import com.secsm.keepongoing.Quiz.Quiz_Main;
 import com.secsm.keepongoing.Quiz.Solve_Main;
+import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MultipartRequest;
@@ -94,7 +95,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class StudyRoomActivity extends Activity {
+public class StudyRoomActivity extends BaseActivity {
 
     private Intent intent;
     private static String LOG_TAG = "StudyRoom Activity";

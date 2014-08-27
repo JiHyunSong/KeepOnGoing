@@ -20,10 +20,11 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.secsm.keepongoing.R;
+import com.secsm.keepongoing.Shared.BaseActivity;
 
 import java.util.Date;
 
-public class alert extends Activity {
+public class alert extends BaseActivity {
     private MediaPlayer mMediaPlayer;   // MediaPlayer 변수 선언
     private Vibrator mVibrator;
     private static final long[] sVibratePattern = new long[]{500, 500};   // 진동 패턴 정의(0.5초 진동, 0.5초 쉼)

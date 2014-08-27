@@ -13,13 +13,14 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.secsm.keepongoing.R;
+import com.secsm.keepongoing.Shared.BaseActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class AlarmMainActivity extends Activity {
+public class AlarmMainActivity extends BaseActivity {
 //    public static final int REQUEST_CODE_RINGTONE = 10005;
 
 

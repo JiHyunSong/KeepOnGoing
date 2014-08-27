@@ -22,6 +22,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.secsm.keepongoing.R;
+import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 
@@ -29,7 +30,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class Quiz_Main extends Activity {
+public class Quiz_Main extends BaseActivity {
     private ArrayAdapter<String> _arrAdapter;
     private ListView listView;
     private CustomScrollView mScrollView;

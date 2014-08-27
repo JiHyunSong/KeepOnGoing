@@ -19,6 +19,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 
@@ -26,7 +27,7 @@ import org.json.JSONObject;
 
 import java.sql.Timestamp;
 
-public class RegisterActivity extends Activity {
+public class RegisterActivity extends BaseActivity {
 
     private static String LOG_TAG = "Profile";
     private String rMessage;

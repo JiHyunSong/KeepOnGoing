@@ -23,13 +23,14 @@ import android.widget.ToggleButton;
 
 import com.secsm.keepongoing.R;
 import com.beardedhen.androidbootstrap.BootstrapEditText;
+import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.KogPreference;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-public class AddStudyRoomActivity extends Activity {
+public class AddStudyRoomActivity extends BaseActivity {
 
     private static final String LOG_TAG = "MainmenuActivity";
     // 설정 일시

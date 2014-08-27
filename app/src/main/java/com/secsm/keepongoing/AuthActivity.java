@@ -22,11 +22,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.secsm.keepongoing.R;
+import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.KogPreference;
 
 import org.json.JSONObject;
 
-public class AuthActivity extends Activity {
+public class AuthActivity extends BaseActivity {
     private Spinner nationalNo;
     private Button btnSendSMS;
     private EditText txtPhoneNo;

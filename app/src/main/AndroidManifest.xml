@@ -163,6 +163,10 @@
             android:name=".MyProfileActivity"
             android:label="@string/title_activity_my_profile" >
         </activity>
+        <activity
+            android:name=".Shared.BaseActivity"
+            android:label="@string/title_activity_base" >
+        </activity>
     </application>
 
 </manifest>

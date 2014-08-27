@@ -6,8 +6,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.secsm.keepongoing.R;
+import com.secsm.keepongoing.Shared.BaseActivity;
 
-public class NoticeActivity extends Activity {
+public class NoticeActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

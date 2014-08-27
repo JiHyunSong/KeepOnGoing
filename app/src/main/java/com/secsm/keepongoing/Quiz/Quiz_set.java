@@ -20,6 +20,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.secsm.keepongoing.R;
+import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 
@@ -29,7 +30,7 @@ import org.json.JSONObject;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 
-public class Quiz_set extends Activity {
+public class Quiz_set extends BaseActivity {
     private ArrayAdapter<String> _arrAdapter;
     private ListView listView;
     public String LOG_TAG = "Solve MAIN";

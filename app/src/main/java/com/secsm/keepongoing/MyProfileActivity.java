@@ -34,6 +34,7 @@ import com.google.gson.JsonSyntaxException;
 import com.secsm.keepongoing.Adapters.FriendNameAndIcon;
 import com.secsm.keepongoing.Adapters.FriendsArrayAdapters;
 import com.secsm.keepongoing.R;
+import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MultipartRequest;
@@ -59,7 +60,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class MyProfileActivity extends Activity {
+public class MyProfileActivity extends BaseActivity {
     private AlertDialog mDialog;
     private static final int PICK_FROM_CAMERA = 0;
     private static final int PICK_FROM_ALBUM = 1;

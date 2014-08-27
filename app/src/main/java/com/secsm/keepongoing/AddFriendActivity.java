@@ -19,12 +19,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.secsm.keepongoing.R;
+import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 
 import org.json.JSONObject;
 
-public class AddFriendActivity extends Activity {
+public class AddFriendActivity extends BaseActivity {
 
     private Button add_friend_add_btn;
     private Button add_friend_go_back_btn;

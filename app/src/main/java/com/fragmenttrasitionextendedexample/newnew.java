@@ -13,10 +13,10 @@ import android.widget.Spinner;
 
 import com.desarrollodroide.libraryfragmenttransactionextended.FragmentTransactionExtended;
 import com.secsm.keepongoing.R;
+import com.secsm.keepongoing.Shared.BaseActivity;
 
 
-
-public class newnew extends Activity implements AdapterView.OnItemSelectedListener{
+public class newnew extends BaseActivity implements AdapterView.OnItemSelectedListener{
     private int optionSelected = 16;
     //private int optionSelected = 0;
     private SlidingListFragmentLeft mFirstFragment,newFragment;
