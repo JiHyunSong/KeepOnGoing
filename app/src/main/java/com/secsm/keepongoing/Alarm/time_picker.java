@@ -6,4 +6,5 @@ package com.secsm.keepongoing.Alarm;
 public interface time_picker {
     public void date_pick();
     public void time_pick();
+    public void setAccomplishedTime();
 }
