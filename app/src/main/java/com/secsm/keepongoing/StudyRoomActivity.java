@@ -257,6 +257,7 @@ public class StudyRoomActivity extends Activity {
 
         study_room_additional_ll3_my_time.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
+                sendMyAcommplishedTime();
             }
         });
 
@@ -327,7 +328,17 @@ public class StudyRoomActivity extends Activity {
 
 
 
+    private void sendMyAcommplishedTime() {
+        String msg1 = KogPreference.getNickName(StudyRoomActivity.this) + "의 현재 달성시간은 ";
+        String accomplishedTime = "";
+        String msg2 = " 입니다.";
+        try {
 
+            sendMsgToSvr(msg1 + accomplishedTime + msg2, KogPreference.MESSAGE_TYPE_TEXT);
+
+        } catch (Exception ex) {
+        }
+    }
 
 
     private void sendMessage() {
