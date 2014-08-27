@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
@@ -104,6 +105,7 @@ public class StudyRoomActivity extends Activity {
     private MenuItem actionBarThirdBtn, actionBarFourthBtn;
     private MenuItem actionBarFifthBtn;
     private ArrayList<FriendNameAndIcon> mFriends;
+    private FriendsArrayAdapters friendArrayAdapter;
 
     private RequestQueue vQueue;
 
@@ -165,6 +167,7 @@ public class StudyRoomActivity extends Activity {
 
         friendList = (ListView) findViewById(R.id.roomFriendList);
         friendList.setOnItemClickListener(itemClickListener);
+        friendList.setOnItemLongClickListener(itemLongClickListener);
 
 
         room_rule_tv.setText(rule);
@@ -195,7 +198,7 @@ public class StudyRoomActivity extends Activity {
         sendMsgBtn.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-                messageList.smoothScrollToPosition(0);
+//                messageList.smoothScrollToPosition(0);
                 sendMessage();
             }
 
@@ -698,12 +701,56 @@ public class StudyRoomActivity extends Activity {
 
         public void onItemClick(AdapterView<?> adapterView, View arg1, int position, long arg3) {
             // TODO Auto-generated method stub
-            if (adapterView.getId() == R.id.friend_list) {
+            if (adapterView.getId() == R.id.roomFriendList) {
                 Log.i(LOG_TAG, "friends Clicked");
-
             }
         }
     };
+
+
+    ListView.OnItemLongClickListener itemLongClickListener = new ListView.OnItemLongClickListener() {
+        int selectedPosition = 0;
+
+        public boolean onItemLongClick(AdapterView<?> adapterView, View v, int pos, long arg3) {
+            if (adapterView.getId() == R.id.roomFriendList) {
+                Log.i(LOG_TAG, "friends long Clicked");
+                mDialog = createInflaterDialog(mFriends.get(pos).getName());
+                mDialog.show();
+            }
+            return false;
+        }
+    };
+
+    TextView simple_dialog_text;
+
+    private AlertDialog createInflaterDialog(final String f_nickname) {
+        final View innerView = getLayoutInflater().inflate(R.layout.simple_dialog_layout, null);
+        AlertDialog.Builder ab = new AlertDialog.Builder(this);
+        simple_dialog_text = (TextView) innerView.findViewById(R.id.simple_dialog_text);
+
+//        info_iconFriend.setBackgroundResource(R.drawable.ic_action_add_group);
+        simple_dialog_text.setText(f_nickname + "를 강퇴시키시겠습니까?");
+        ab.setTitle("방장 권한");
+        ab.setView(innerView);
+
+        ab.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface arg0, int arg1) {
+                kickOffMemberRequest(f_nickname);
+            }
+        });
+
+        ab.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface arg0, int arg1) {
+                setDismiss(mDialog);
+            }
+        });
+
+        return ab.create();
+    }
+
+
     protected void showSoftKeyboard() {
 
         InputMethodManager mgr = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -1236,12 +1283,66 @@ public class StudyRoomActivity extends Activity {
                                     }
                                 }
                                 /////////////////////////////
-                                FriendsArrayAdapters mockFriendArrayAdapter;
-                                mockFriendArrayAdapter = new FriendsArrayAdapters(StudyRoomActivity.this, R.layout.friend_list_item, mFriends);
-                                friendList.setAdapter(mockFriendArrayAdapter);
+                                friendArrayAdapter = new FriendsArrayAdapters(StudyRoomActivity.this, R.layout.friend_list_item, mFriends);
+                                friendList.setAdapter(friendArrayAdapter);
 
                                 loadText();
                             } else {
+                                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+                                if (KogPreference.DEBUG_MODE) {
+                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        } catch (Exception e) {
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+                Log.i(LOG_TAG, "Response Error");
+                if (KogPreference.DEBUG_MODE) {
+                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        }
+        );
+        if(mFriends==null)
+            vQueue.add(jsObjRequest);
+    }
+
+
+
+    private void kickOffMemberRequest(String f_nickname) {
+
+        //TODO : check POST/GET METHOD and get_URL
+        String get_url = KogPreference.REST_URL +
+                "Room/User" +
+                "?rid=" + KogPreference.getRid(StudyRoomActivity.this) +
+                "&nickname=" + f_nickname;
+
+        Log.i(LOG_TAG, "URL : " + get_url);
+
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.DELETE, Encrypt.encodeIfNeed(get_url), null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(LOG_TAG, " kickOffMemberRequest get JSONObject");
+                        Log.i(LOG_TAG, response.toString());
+
+                        try {
+                            int status_code = response.getInt("status");
+                            if (status_code == 200) {
+//                                JSONArray rMessage;
+//                                rMessage = response.getJSONArray("message");
+                                //////// real action ////////
+
+
+                                //////// real action ////////
+                            } else if(status_code == 9001) {
+                                Toast.makeText(getBaseContext(), "권한이 없습니다!", Toast.LENGTH_SHORT).show();
+                            } else{
                                 Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
                                 if (KogPreference.DEBUG_MODE) {
                                     Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
