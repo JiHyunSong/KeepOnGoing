@@ -3,10 +3,32 @@ package com.secsm.keepongoing.Adapters;
 import com.secsm.keepongoing.R;
 
 public class FriendNameAndIcon {
-    int icon;
-    String profile_path;
-    String name;
-    String targetTime;
+    private int icon;
+    private String profile_path;
+    private String name;
+    private String targetTime;
+    private String isMaster;
+    private String score;
+
+    public FriendNameAndIcon(String profile_path, String name, String targetTime, String isMaster, String score) {
+        this.profile_path = profile_path;
+        // TODO : profile change
+        this.icon = R.drawable.profile_default;
+        this.name = name;
+        this.targetTime = targetTime;
+        this.isMaster = isMaster;
+        this.score = score;
+    }
+
+    public FriendNameAndIcon(String profile_path, String name, String targetTime, String isMaster) {
+        this.profile_path = profile_path;
+        // TODO : profile change
+        this.icon = R.drawable.profile_default;
+        this.name = name;
+        this.targetTime = targetTime;
+        this.isMaster = isMaster;
+        this.score = null;
+    }
 
     public FriendNameAndIcon(String profile_path, String name, String targetTime) {
         this.profile_path = profile_path;
@@ -14,6 +36,24 @@ public class FriendNameAndIcon {
         this.icon = R.drawable.profile_default;
         this.name = name;
         this.targetTime = targetTime;
+        this.isMaster = "false";
+        this.score = null;
+    }
+
+    public String getScore() {
+        return score;
+    }
+
+    public void setScore(String score) {
+        this.score = score;
+    }
+
+    public String getIsMaster() {
+        return isMaster;
+    }
+
+    public void setIsMaster(String isMaster) {
+        this.isMaster = isMaster;
     }
 
     public int getIcon() {

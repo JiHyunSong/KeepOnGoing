@@ -1493,11 +1493,12 @@ S3
                                 {
                                     rObj = rMessage.getJSONObject(i);
                                     if (!"null".equals(rObj.getString("nickname"))) {
-                                        Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" + rObj.getString("nickname") + "|" + rObj.getString("targetTime"));
+                                        Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" + rObj.getString("nickname") + "|" + rObj.getString("targetTime") + "|" + rObj.getString("isMaster"));
                                         mFriends.add(new FriendNameAndIcon(
                                                 URLDecoder.decode(rObj.getString("image"), "UTF-8"),
                                                 URLDecoder.decode(rObj.getString("nickname"), "UTF-8"),
-                                                URLDecoder.decode(rObj.getString("targetTime"), "UTF-8")));
+                                                URLDecoder.decode(rObj.getString("targetTime"), "UTF-8"),
+                                                URLDecoder.decode(rObj.getString("isMaster"), "UTF-8")));
                                     }
                                 }
                                 /////////////////////////////

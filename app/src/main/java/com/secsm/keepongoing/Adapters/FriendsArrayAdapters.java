@@ -2,6 +2,7 @@ package com.secsm.keepongoing.Adapters;
 
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import java.util.Locale;
  */
 public class FriendsArrayAdapters extends BaseAdapter {
 
+    private static String LOG_TAG = "FriendsArrayAdapter";
     private ViewHolder viewHolder = null;
     Context context;
     ArrayList<FriendNameAndIcon> friendArrayList;
@@ -43,7 +45,7 @@ public class FriendsArrayAdapters extends BaseAdapter {
     }
 
     public Object getItem(int position) {
-        return friendArrayList.get(position).name;
+        return friendArrayList.get(position).getName();
     }
 
     public long getItemId(int position) {
@@ -59,6 +61,9 @@ public class FriendsArrayAdapters extends BaseAdapter {
             viewHolder = new ViewHolder();
             viewHolder.icon = (ImageView) convertView.findViewById(R.id.iconFriend);
             viewHolder.name = (TextView) convertView.findViewById(R.id.txtFriendNickname);
+            viewHolder.isMaster = (TextView) convertView.findViewById(R.id.isMasterFriend);
+            viewHolder.isMaster.setVisibility(View.GONE);
+            viewHolder.score = (TextView) convertView.findViewById(R.id.txtFriendScore);
             convertView.setTag(viewHolder);
 
         } else {
@@ -71,17 +76,28 @@ public class FriendsArrayAdapters extends BaseAdapter {
 //        viewHolder.icon.setImageBitmap();
 //                                getProfileFromURL(m.getFileName(), viewHolder.iv);
 
-        getProfileFromURL(friendArrayList.get(position).getProfile_path(),viewHolder.icon);
+        getProfileFromURL(friendArrayList.get(position).getProfile_path(), viewHolder.icon);
 
 //        viewHolder.icon.setImageResource(friendArrayList.get(position).icon);
 
-        viewHolder.name.setText(friendArrayList.get(position).name);
+        viewHolder.name.setText(friendArrayList.get(position).getName());
+
+        if (friendArrayList.get(position).getScore() != null) {
+            viewHolder.score.setText(friendArrayList.get(position).getScore());
+        }
+
+        if (friendArrayList.get(position).getIsMaster().equals("true")) {
+            viewHolder.isMaster.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.isMaster.setVisibility(View.GONE);
+        }
+
 
         return convertView;
 
     }
 
-    public void filter(String charText){
+    public void filter(String charText) {
         charText = charText.toLowerCase(Locale.getDefault());
         friendArrayList.clear();
         if (charText.length() == 0) {
@@ -100,6 +116,8 @@ public class FriendsArrayAdapters extends BaseAdapter {
     class ViewHolder {
         public ImageView icon = null;
         public TextView name = null;
+        public TextView isMaster = null;
+        public TextView score = null;
 //        public String name = null;
     }
 
