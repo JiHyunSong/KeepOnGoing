@@ -9,55 +9,128 @@
         android:id="@+id/tab_name"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:padding="5dp"
+        android:background="@color/keep_on_going_np"
+        android:gravity="center"
         android:orientation="horizontal">
 
-        <ImageButton
-            android:id="@+id/imgBtn_tab_stopwatch"
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
+        <LinearLayout
+            android:id="@+id/tab_stopwatch_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="70dp"
             android:layout_weight="1"
-            android:background="@drawable/selector_tab_alarm_button"
+            android:background="@color/keep_on_going"
             android:gravity="center"
-            android:paddingLeft="2dp"
-            android:paddingRight="2dp"
-            android:text="@string/tab1" />
+            android:orientation="vertical">
 
-        <ImageButton
-            android:id="@+id/imgBtn_tab_friends"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
+            <ImageButton
+                android:id="@+id/imgBtn_tab_stopwatch"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/tab_stopwatch_icon_p"
+                android:gravity="center"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"
+                android:text="@string/tab1" />
+
+            <TextView
+                android:id="@+id/tab_stopwatch_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="스톱와치"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="10dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tab_friends_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="70dp"
             android:layout_weight="1"
-            android:background="@drawable/selector_tab_friend"
+            android:background="@color/keep_on_going_np"
             android:gravity="center"
-            android:text="@string/tab2" />
-        <ImageButton
-            android:id="@+id/imgBtn_tab_rooms"
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/imgBtn_tab_friends"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/tab_friends_icon"
+                android:gravity="center"
+                android:text="@string/tab2" />
+
+            <TextView
+                android:id="@+id/tab_friends_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="친구 목록"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="10dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tab_rooms_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="70dp"
             android:layout_weight="1"
-            android:background="@drawable/selector_tab_chatroom_button"
+            android:background="@color/keep_on_going_np"
             android:gravity="center"
-            android:text="@string/tab3" />
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/imgBtn_tab_rooms"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/tab_chatroom_icon"
+                android:gravity="center"
+                android:text="@string/tab3" />
+
+            <TextView
+                android:id="@+id/tab_rooms_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="친구 목록"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="10dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tab_settings_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="70dp"
+            android:layout_weight="1"
+            android:background="@color/keep_on_going_np"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/imgBtn_tab_settings"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/tab_option_icon"
+                android:gravity="center"
+                android:text="@string/tab4" />
 
 
-        <ImageButton
-            android:id="@+id/imgBtn_tab_settings"
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/selector_tab_option_button"
-            android:gravity="center"
-            android:text="@string/tab4" />
+            <TextView
+                android:id="@+id/tab_settings_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="더보기"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="10dp" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
     <RelativeLayout
@@ -68,10 +141,10 @@
         android:visibility="visible">
 
         <RelativeLayout
-            android:layout_marginTop="20dp"
             android:id="@+id/linearLayout2"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:orientation="vertical">
 
             <TextView
@@ -82,10 +155,10 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
-                android:layout_marginTop="20dp"
                 android:id="@+id/currenttime2"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:gravity="center"
                 android:text="현재 시간"
                 android:textAppearance="?android:attr/textAppearanceMedium"
@@ -158,49 +231,48 @@
             android:layout_marginBottom="55dp"
             android:text="Alram"
             android:textSize="35dp"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
 
         <RelativeLayout
             android:id="@+id/RelativeLayout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentBottom="true"
-            android:gravity="right"
-            android:layout_marginRight="30dp"
+            android:layout_alignParentLeft="true"
             android:layout_marginBottom="30dp"
+            android:layout_marginRight="30dp"
+            android:gravity="right"
             android:orientation="horizontal">
-
 
 
             <ToggleButton
 
                 android:id="@+id/toggleButton2"
-                android:layout_toRightOf="@+id/finish"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/finish"
                 android:background="@drawable/selector_tab_play_button"
-                android:textSize="30dp"
                 android:textOff=""
                 android:textOn=""
-                />
+                android:textSize="30dp" />
+
             <Button
                 android:id="@+id/finish"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/selector_tab_stop_button"
                 android:textSize="30dp" />
+
             <ToggleButton
                 android:id="@+id/sliding"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="30dp"
+                android:layout_toRightOf="@id/toggleButton2"
                 android:textOff="open"
                 android:textOn="close"
-                android:layout_toRightOf="@id/toggleButton2"
-                />
-          </RelativeLayout>
+                android:textSize="30dp" />
+        </RelativeLayout>
 
 
     </RelativeLayout>
@@ -253,9 +325,9 @@
         android:id="@+id/tab_progress"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:visibility="gone" />
 

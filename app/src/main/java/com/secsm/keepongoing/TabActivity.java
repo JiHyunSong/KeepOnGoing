@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -89,6 +90,7 @@ public class TabActivity extends Activity {
 
     private ImageButton tabStopwatch, tabFriends, tabRooms, tabSettings;
     private RelativeLayout layoutStopwatch, layoutFriends, layoutRooms, layoutSettings;
+    private LinearLayout llStopwatch, llFriends, llRooms, llSettings;
     private MenuItem actionBarFirstBtn, actionBarSecondBtn;
 
     private ProgressBar tab_progress;
@@ -154,6 +156,12 @@ public class TabActivity extends Activity {
         layoutFriends = (RelativeLayout) findViewById(R.id.tab_friends_layout);
         layoutRooms = (RelativeLayout) findViewById(R.id.tab_rooms_layout);
         layoutSettings = (RelativeLayout) findViewById(R.id.tab_settings_layout);
+
+        // tab layouts
+        llStopwatch = (LinearLayout) findViewById(R.id.tab_stopwatch_ll);
+        llFriends = (LinearLayout) findViewById(R.id.tab_friends_ll);
+        llRooms = (LinearLayout) findViewById(R.id.tab_rooms_ll);
+        llSettings = (LinearLayout) findViewById(R.id.tab_settings_ll);
 
         // tab image button
         tabStopwatch = (ImageButton) findViewById(R.id.imgBtn_tab_stopwatch);
@@ -488,6 +496,14 @@ public class TabActivity extends Activity {
         layoutSettings.setVisibility(View.INVISIBLE);
         actionBarFirstBtn.setVisible(false);
         actionBarSecondBtn.setVisible(false);
+        llStopwatch.setBackgroundColor(getResources().getColor(R.color.keep_on_going_np));
+        llFriends.setBackgroundColor(getResources().getColor(R.color.keep_on_going_np));
+        llRooms.setBackgroundColor(getResources().getColor(R.color.keep_on_going_np));
+        llSettings.setBackgroundColor(getResources().getColor(R.color.keep_on_going_np));
+        tabStopwatch.setBackgroundResource(R.drawable.tab_stopwatch_icon);
+        tabFriends.setBackgroundResource(R.drawable.tab_friends_icon);
+        tabRooms.setBackgroundResource(R.drawable.tab_chatroom_icon);
+        tabSettings.setBackgroundResource(R.drawable.tab_option_icon);
 //        actionBarRoomTabNotifyBtn.setVisibility(View.INVISIBLE);
 //        actionBarRoomTabAddBtn.setVisibility(View.INVISIBLE);
     }
@@ -503,6 +519,8 @@ public class TabActivity extends Activity {
                     actionBarSecondBtn.setIcon(R.drawable.ic_action_new);
                     actionBarSecondBtn.setVisible(true);
                     actionBarSecondBtn.setOnMenuItemClickListener(ab_stopwatchTab_settings_listener);
+                    llStopwatch.setBackgroundColor(getResources().getColor(R.color.keep_on_going));
+                    tabStopwatch.setBackgroundResource(R.drawable.tab_stopwatch_icon_p);
                     break;
 
                 case R.id.imgBtn_tab_friends:
@@ -512,6 +530,10 @@ public class TabActivity extends Activity {
                     actionBarSecondBtn.setIcon(R.drawable.ic_action_add_person);
                     actionBarSecondBtn.setVisible(true);
                     actionBarSecondBtn.setOnMenuItemClickListener(ab_friends_add_listener);
+
+                    llFriends.setBackgroundColor(getResources().getColor(R.color.keep_on_going));
+                    tabFriends.setBackgroundResource(R.drawable.tab_friends_icon_p);
+
                     break;
 
                 case R.id.imgBtn_tab_rooms:
@@ -526,12 +548,16 @@ public class TabActivity extends Activity {
                     actionBarSecondBtn.setVisible(true);
 //                    actionBarFirstBtn.setOnMenuItemClickListener(ab_rooms_notify_listener);
                     actionBarSecondBtn.setOnMenuItemClickListener(ab_rooms_add_listener);
+                    llRooms.setBackgroundColor(getResources().getColor(R.color.keep_on_going));
+                    tabRooms.setBackgroundResource(R.drawable.tab_chatroom_icon_p);
                     break;
 
                 case R.id.imgBtn_tab_settings:
 //                    Log.i(LOG_TAG, "settings tab");
                     setInvisibleBody();
                     layoutSettings.setVisibility(View.VISIBLE);
+                    llSettings.setBackgroundColor(getResources().getColor(R.color.keep_on_going));
+                    tabSettings.setBackgroundResource(R.drawable.tab_option_icon_p);
                     break;
             }
         }

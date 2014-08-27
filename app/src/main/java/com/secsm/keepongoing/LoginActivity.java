@@ -117,17 +117,6 @@ public class LoginActivity extends Activity {
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
-        if (KogPreference.isAutoLogin(LoginActivity.this)) {
-            mNicknameView.setText(KogPreference.getNickName(LoginActivity.this));
-            mPasswordView.setText(KogPreference.getPassword(LoginActivity.this));
-
-            UserLogin(KogPreference.getNickName(LoginActivity.this), KogPreference.getPassword(LoginActivity.this));
-        } else if (!TextUtils.isEmpty(savedNick)) {
-            mNicknameView.setText(savedNick);
-        } else {
-            savedNick = KogPreference.getNickName(LoginActivity.this);
-            mNicknameView.setText(savedNick);
-        }
 
      //   if (KogPreference.DEBUG_MODE) {
             easterEggButton = (BootstrapButton) findViewById(R.id.easter_egg_button);
@@ -144,6 +133,18 @@ public class LoginActivity extends Activity {
             });
 
         //}
+
+        if (KogPreference.isAutoLogin(LoginActivity.this)) {
+            mNicknameView.setText(KogPreference.getNickName(LoginActivity.this));
+            mPasswordView.setText(KogPreference.getPassword(LoginActivity.this));
+            setAllDisable();
+            UserLogin(KogPreference.getNickName(LoginActivity.this), KogPreference.getPassword(LoginActivity.this));
+        } else if (!TextUtils.isEmpty(savedNick)) {
+            mNicknameView.setText(savedNick);
+        } else {
+            savedNick = KogPreference.getNickName(LoginActivity.this);
+            mNicknameView.setText(savedNick);
+        }
 
     }
 

@@ -5,6 +5,9 @@ import android.app.ActivityManager;
 import android.content.Context;
 
 import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.BasicNetwork;
+import com.android.volley.toolbox.DiskBasedCache;
+import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
@@ -25,6 +28,9 @@ public class MyVolley {
     public static void init(Context context) {
         mContext = context;
         mRequestQueue = Volley.newRequestQueue(context);
+        DiskBasedCache cache = new DiskBasedCache(context.getCacheDir(), 16 * 1024 * 1024);
+        mRequestQueue = new RequestQueue(cache, new BasicNetwork(new HurlStack()));
+        mRequestQueue.start();
         int memClass = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE))
                 .getMemoryClass();
 // Use 1/8th of the available memory for this memory cache.
@@ -37,6 +43,9 @@ public class MyVolley {
             return mRequestQueue;
         } else {
             mRequestQueue = Volley.newRequestQueue(context);
+            DiskBasedCache cache = new DiskBasedCache(context.getCacheDir(), 16 * 1024 * 1024);
+            mRequestQueue = new RequestQueue(cache, new BasicNetwork(new HurlStack()));
+            mRequestQueue.start();
             return mRequestQueue;
 //            throw new IllegalStateException("RequestQueue not initialized");
         }
