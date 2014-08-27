@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -21,6 +22,7 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,6 +35,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -120,7 +123,14 @@ public class StudyRoomActivity extends Activity {
     private Animation translateLeftAnim;
     private Animation translateRightAnim;
     private LinearLayout slidingPage01;
+    private RelativeLayout study_room_additional_page;
+    private LinearLayout study_room_additional_ll1_camera;
+    private LinearLayout study_room_additional_ll2_album;
+    private LinearLayout study_room_additional_ll3_my_time;
+    private LinearLayout study_room_below_layout;
+    private FrameLayout study_room_fl1;
     private boolean isPageOpen = false;
+    private boolean isAdditionalPageOpen = false;
     private ListView friendList;
     private TextView room_rule_tv;
     private Handler mainHandler;
@@ -129,6 +139,14 @@ public class StudyRoomActivity extends Activity {
     SocketAsyncTask_Writer soc_writer=null;
     String type;
     String rule;
+
+    int rootHeight = 0;
+    int actionBarHeight = 0;
+    int statusBarHeight = 0;
+    public RelativeLayout.LayoutParams study_room_fl1_lp = null;
+    public RelativeLayout.LayoutParams study_room_below_layout_lp = null;
+    public RelativeLayout.LayoutParams study_room_additional_page_lp = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -161,6 +179,9 @@ public class StudyRoomActivity extends Activity {
         activityRootView = (RelativeLayout)findViewById(R.id.activityRoot);
         activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(mGlobalLayoutListener);
 
+        study_room_below_layout = (LinearLayout)findViewById(R.id.study_room_below_layout);
+        study_room_fl1 = (FrameLayout)findViewById(R.id.study_room_fl1);
+
         sendMsgBtn = (Button) findViewById(R.id.study_room_sendMsgBtn);
         messageTxt = (EditText) findViewById(R.id.study_room_messageTxtView);
         additionalBtn = (Button) findViewById(R.id.study_room_additional);
@@ -176,25 +197,38 @@ public class StudyRoomActivity extends Activity {
         friendList.setOnItemClickListener(itemClickListener);
         friendList.setOnItemLongClickListener(itemLongClickListener);
 
+        // 슬라이딩으로 보여질 레이아웃 객체 참조
+        slidingPage01 = (LinearLayout) findViewById(R.id.slidingPage01);
+        study_room_additional_page = (RelativeLayout) findViewById(R.id.study_room_additional_page);
+
+        study_room_additional_ll1_camera = (LinearLayout)findViewById(R.id.study_room_additional_ll1_camera);
+        study_room_additional_ll2_album = (LinearLayout)findViewById(R.id.study_room_additional_ll2_album);
+        study_room_additional_ll3_my_time = (LinearLayout) findViewById(R.id.study_room_additional_ll3_my_time);
+
+        // 애니메이션 객체 로딩
+        translateLeftAnim = AnimationUtils.loadAnimation(this, R.anim.translate_left);
+        translateRightAnim = AnimationUtils.loadAnimation(this, R.anim.translate_right);
+
 
         room_rule_tv.setText(rule);
+        statusBarHeight = getStatusBarHeight();
+        actionBarHeight = getActionBarHeight();
+        study_room_below_layout_lp = (RelativeLayout.LayoutParams) study_room_below_layout.getLayoutParams();
+        study_room_fl1_lp = (RelativeLayout.LayoutParams) study_room_fl1.getLayoutParams();
+        study_room_additional_page_lp = (RelativeLayout.LayoutParams) study_room_additional_page.getLayoutParams();
 		/* IF there is and exists room, load the stored message */
 
         /* Init connection w/ server
         *
         * send my nickname! as a type json
         * */
-        // 슬라이딩으로 보여질 레이아웃 객체 참조
-        slidingPage01 = (LinearLayout) findViewById(R.id.slidingPage01);
-
-        // 애니메이션 객체 로딩
-        translateLeftAnim = AnimationUtils.loadAnimation(this, R.anim.translate_left);
-        translateRightAnim = AnimationUtils.loadAnimation(this, R.anim.translate_right);
 
         // 애니메이션 객체에 리스너 설정
         SlidingPageAnimationListener animListener = new SlidingPageAnimationListener();
         translateLeftAnim.setAnimationListener(animListener);
         translateRightAnim.setAnimationListener(animListener);
+
+
 
 //        init();
         /* at First, holding the focus */
@@ -209,13 +243,59 @@ public class StudyRoomActivity extends Activity {
             }
         });
 
+        study_room_additional_ll1_camera.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
+                doTakePhotoAction();
+            }
+        });
+
+        study_room_additional_ll2_album.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
+                doTakeAlbumAction();
+            }
+        });
+
+        study_room_additional_ll3_my_time.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
+            }
+        });
+
+
         additionalBtn.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-                getImage();
+                if(!isAdditionalPageOpen) {
+                    isAdditionalPageOpen = true;
+                    hideSoftKeyboard(study_room_additional_page);
+                    study_room_additional_page.setVisibility(View.VISIBLE);
+//                getImage();
+                }else
+                {
+                    isAdditionalPageOpen = false;
+                    study_room_additional_page.setVisibility(View.INVISIBLE);
+                    showSoftKeyboard();
+                }
             }
 
         });
+    }
+
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
+    public int getActionBarHeight(){
+        TypedValue tv = new TypedValue();
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
+        {
+            return TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+        }
+        return -1;
     }
 
 // JSON
@@ -675,11 +755,77 @@ public class StudyRoomActivity extends Activity {
     ////////////////////
     // send my time   //
     ////////////////////
-
     private ViewTreeObserver.OnGlobalLayoutListener mGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
         public void onGlobalLayout() {
             int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
+            rootHeight = activityRootView.getRootView().getHeight();
+
+            if(isAdditionalPageOpen) { // VISIBLE
+//                Log.e(LOG_TAG, "isAdditionalPageOpen (VISIBLE): " + isAdditionalPageOpen);
+////                Log.e(LOG_TAG, "study_room_below_layout_lp.height : " + actionBarHeight);
+////                Log.e(LOG_TAG, "activityRootView.getHeight()  : " + activityRootView.getHeight());
+//                Log.e(LOG_TAG, "study_room_fl1_lp.height  : " + (activityRootView.getHeight() - actionBarHeight - keyBoardHeight));
+                study_room_fl1_lp.height = activityRootView.getHeight() - actionBarHeight - keyBoardHeight;
+                study_room_below_layout_lp.height = actionBarHeight;
+                study_room_additional_page_lp.height = keyBoardHeight;
+            }else {
+//                Log.e(LOG_TAG, "isAdditionalPageOpen : " + isAdditionalPageOpen);
+////                Log.e(LOG_TAG, "activityRootView.getHeight()  : " + activityRootView.getHeight());
+//                Log.e(LOG_TAG, "study_room_fl1_lp.height  : " + study_room_fl1_lp.height);
+////                Log.e(LOG_TAG, "study_room_below_layout_lp.height : " + study_room_below_layout_lp.height);
+                study_room_fl1_lp.height = activityRootView.getHeight() - actionBarHeight;
+                study_room_below_layout_lp.height = actionBarHeight;
+                study_room_additional_page_lp.height = 0;
+            }
+
 //            Log.i("Keyboard Size", "mGlobalLayoutListener");
+/*
+            Log.e(LOG_TAG, "getStatusBarHeight : " + getStatusBarHeight());
+            Log.e(LOG_TAG, "getActionBarHeight : " + getActionBarHeight());
+            Log.e(LOG_TAG, "activityRootView.getHeight() : " + activityRootView.getHeight());
+            Log.e(LOG_TAG, "activityRootView.getRootView().getHeight() : " + activityRootView.getRootView().getHeight());
+            Log.e(LOG_TAG, "getMessageListHeight: " + messageList.getHeight());
+            Log.e(LOG_TAG, "get study_room_below_layout Height: " + study_room_below_layout.getHeight());
+            Log.e(LOG_TAG, "get study_room_fl1 Height: " + study_room_fl1.getHeight());
+S2
+// without keyboard
+08-26 20:54:49.191  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ getStatusBarHeight : 38
+08-26 20:54:49.191  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ getActionBarHeight : 72
+08-26 20:54:49.191  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ activityRootView.getHeight() : 690
+08-26 20:54:49.191  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ activityRootView.getRootView().getHeight() : 800
+08-26 20:54:49.191  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ getMessageListHeight: 599
+08-26 20:54:49.191  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ get study_room_below_layout Height: 75
+08-26 20:54:49.191  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ get study_room_fl1 Height: 615
+// with keyboard
+08-26 20:54:32.831  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ getStatusBarHeight : 38
+08-26 20:54:32.831  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ getActionBarHeight : 72
+08-26 20:54:32.831  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ activityRootView.getHeight() : 392
+08-26 20:54:32.831  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ activityRootView.getRootView().getHeight() : 800
+08-26 20:54:32.831  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ getMessageListHeight: 301
+08-26 20:54:32.831  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ get study_room_below_layout Height: 75
+08-26 20:54:32.831  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ get study_room_fl1 Height: 317
+
+
+S3
+// no keyboard
+08-27 14:48:57.579    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ getStatusBarHeight : 50
+08-27 14:48:57.579    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ getActionBarHeight : 96
+08-27 14:48:57.579    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ activityRootView.getHeight() : 1134
+08-27 14:48:57.579    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ activityRootView.getRootView().getHeight() : 1280
+08-27 14:48:57.579    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ getMessageListHeight: 1014
+08-27 14:48:57.579    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ get study_room_below_layout Height: 100
+08-27 14:48:57.579    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ get study_room_fl1 Height: 1034
+// with keyboard
+08-27 14:48:49.224    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ getStatusBarHeight : 50
+08-27 14:48:49.224    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ getActionBarHeight : 96
+08-27 14:48:49.224    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ activityRootView.getHeight() : 690
+08-27 14:48:49.224    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ activityRootView.getRootView().getHeight() : 1280
+08-27 14:48:49.224    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ getMessageListHeight: 570
+08-27 14:48:49.224    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ get study_room_below_layout Height: 100
+08-27 14:48:49.224    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ get study_room_fl1 Height: 590
+
+ */
+
             getSoftKeyboardHeight();
             if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
                 //         ... do something here
@@ -688,26 +834,32 @@ public class StudyRoomActivity extends Activity {
     };
 
     int keyBoardHeight = 0;
+    int screenHeight = 0;
+    int editBoxHeight = 0;
     void getSoftKeyboardHeight(){
         if (keyBoardHeight <= 100) {
             Rect r = new Rect();
             View rootview = this.getWindow().getDecorView(); // this = activity
             rootview.getWindowVisibleDisplayFrame(r);
 
-            int screenHeight = rootview.getRootView().getHeight();
+            screenHeight = rootview.getRootView().getHeight();
             int heightDifference = screenHeight - (r.bottom - r.top);
             int resourceId = getResources().getIdentifier("status_bar_height",
                     "dimen", "android");
 
             Log.i("Keyboard Size", "heightDifference : " + heightDifference);
-
+            if( heightDifference < 100 && heightDifference > 10)
+            {
+                editBoxHeight = heightDifference;
+                Log.i("Keyboard Size", "editBoxHeight : " + editBoxHeight);
+            }
             if (resourceId > 0) {
                 heightDifference -= getResources().getDimensionPixelSize(resourceId);
             }
             if (heightDifference > 100) {
                 keyBoardHeight = heightDifference;
             }
-            Log.d("Keyboard Size", "Size: " + heightDifference);
+            Log.i("Keyboard Size", "Size: " + heightDifference);
         }
     }
 
@@ -964,6 +1116,7 @@ public class StudyRoomActivity extends Activity {
         super.onResume();
         init();
         Log.i(LOG_TAG, "onResume");
+
 //        if(savedInstanceState != null)
 //        {
 //
@@ -985,10 +1138,17 @@ public class StudyRoomActivity extends Activity {
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_ENTER) {
-            close();
-
+//            close();
+            messageList.smoothScrollToPosition(messageList.getCount() - 1);
+            sendMessage();
 
         } else if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if(isAdditionalPageOpen)
+            {
+                isAdditionalPageOpen = false;
+                study_room_additional_page.setVisibility(View.GONE);
+            }
+
             setResult(RESULT_OK);
             StudyRoomActivity.this.finish();
 
