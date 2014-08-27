@@ -80,7 +80,7 @@ public class LoginActivity extends Activity {
         intent = getIntent();
         savedNick = intent.getStringExtra("nickname");
 
-        vQueue = MyVolley.getRequestQueue();
+        vQueue = MyVolley.getRequestQueue(LoginActivity.this);
 
         // Set up the login form.
         mNicknameView = (EditText) findViewById(R.id.nickname);

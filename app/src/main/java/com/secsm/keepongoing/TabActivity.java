@@ -98,7 +98,7 @@ public class TabActivity extends Activity {
 
 //        MyVolley.init(TabActivity.this);
 //        vQueue = Volley.newRequestQueue(this);
-        vQueue = MyVolley.getRequestQueue();
+        vQueue = MyVolley.getRequestQueue(TabActivity.this);
 
         ActionBar bar = getActionBar();
         bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.NAVIGATION_MODE_STANDARD);

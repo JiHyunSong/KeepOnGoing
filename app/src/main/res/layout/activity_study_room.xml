@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/activityRoot"
     tools:context="com.secsm.keepongoing.StudyRoomActivity">
 
     <FrameLayout
@@ -16,8 +17,8 @@
             android:layout_margin="5dp"
             android:cacheColorHint="#00000000"
             android:stackFromBottom="true"
-            android:transcriptMode="normal" />
-
+            android:transcriptMode="normal">
+            </ListView>
     </FrameLayout>
 
     <LinearLayout
@@ -56,7 +57,9 @@
             android:layout_width="70sp"
             android:layout_height="fill_parent"
             android:layout_weight="0.0"
-            android:text="전송" />
+            android:text="전송" >
+            <requestFocus/>
+            </Button>
 
     </LinearLayout>
 

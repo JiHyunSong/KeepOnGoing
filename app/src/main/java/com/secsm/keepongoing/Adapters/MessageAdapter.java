@@ -204,7 +204,7 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
                         //                    String fileName = imgFromServ(myID);
                         String fileName = m.getFileName();
 
-                        Log.i("filename", "id : " + m.getId() + " | me : " + fileName);
+//                        Log.i("filename", "id : " + m.getId() + " | me : " + fileName);
                         if (fileName != null) {
                             if (fileName.matches(".*jpg.*")) {
                                 getProfileFromURL(m.getFileName(), viewHolder.iv);
@@ -240,7 +240,7 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
                         // TODO : profile image path download from server
                         //                    String fileName = imgFromServ(myID);
                         String fileName = m.getFileName();
-                        Log.i("filename", "id : " + m.getId() + " | friend : " + fileName);
+//                        Log.i("filename", "id : " + m.getId() + " | friend : " + fileName);
                         if (fileName != null) {
                             if (fileName.matches(".*jpg.*")) {
                                 getProfileFromURL(m.getFileName(), viewHolder.iv);

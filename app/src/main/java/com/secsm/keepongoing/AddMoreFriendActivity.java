@@ -73,7 +73,7 @@ public class AddMoreFriendActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_more_friend);
 //        MyVolley.init(InviteFriendsActivity.this);
-        vQueue = MyVolley.getRequestQueue();
+        vQueue = MyVolley.getRequestQueue(AddMoreFriendActivity.this);
         add_more_friendProgressBar = (ProgressBar) findViewById(R.id.add_more_progress);
 
         intent = getIntent();

@@ -52,7 +52,7 @@ public class MainActivity extends Activity {
         Encrypt.initKey();
 //        vQueue = Volley.newRequestQueue(this);
         MyVolley.init(MainActivity.this);
-        vQueue = MyVolley.getRequestQueue();
+        vQueue = MyVolley.getRequestQueue(MainActivity.this);
 
         _gcm = GoogleCloudMessaging.getInstance(this);
         _regId = getRegistrationId();

@@ -95,7 +95,7 @@ public class MyProfileActivity extends Activity {
                 getImage();
             }
         });
-        vQueue = MyVolley.getRequestQueue();
+        vQueue = MyVolley.getRequestQueue(MyProfileActivity.this);
 
     }
 

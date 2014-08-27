@@ -80,7 +80,7 @@ public class InviteFriendsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invite_friends);
 //        MyVolley.init(InviteFriendsActivity.this);
-        vQueue = MyVolley.getRequestQueue();
+        vQueue = MyVolley.getRequestQueue(InviteFriendsActivity.this);
         inviteProgressBar = (ProgressBar) findViewById(R.id.invite_progress);
 
         intent = getIntent();

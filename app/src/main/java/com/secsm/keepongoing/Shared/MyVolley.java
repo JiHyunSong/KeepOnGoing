@@ -32,11 +32,11 @@ public class MyVolley {
         mImageLoader = new ImageLoader(mRequestQueue, new BitmapLruCache(cacheSize));
     }
 
-    public static RequestQueue getRequestQueue() {
+    public static RequestQueue getRequestQueue(Context context) {
         if (mRequestQueue != null) {
             return mRequestQueue;
         } else {
-            mRequestQueue = Volley.newRequestQueue(mContext);
+            mRequestQueue = Volley.newRequestQueue(context);
             return mRequestQueue;
 //            throw new IllegalStateException("RequestQueue not initialized");
         }

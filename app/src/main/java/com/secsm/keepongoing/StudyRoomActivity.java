@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -34,6 +36,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -113,6 +116,7 @@ public class StudyRoomActivity extends Activity {
 //    private BufferedReader br = null;
 //    private BufferedWriter bw = null;
 
+    private View activityRootView;
     private Animation translateLeftAnim;
     private Animation translateRightAnim;
     private LinearLayout slidingPage01;
@@ -135,7 +139,7 @@ public class StudyRoomActivity extends Activity {
 
 //        MyVolley.init(StudyRoomActivity.this);
 //        vQueue = Volley.newRequestQueue(this);
-        vQueue = MyVolley.getRequestQueue();
+        vQueue = MyVolley.getRequestQueue(StudyRoomActivity.this);
 
         mDBHelper = new DBHelper(this);
         intent = getIntent();
@@ -154,6 +158,9 @@ public class StudyRoomActivity extends Activity {
 //        myID = KogPreference.getInt(StudyRoomActivity.this, "uid");
 
         /* initial UI */
+        activityRootView = (RelativeLayout)findViewById(R.id.activityRoot);
+        activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(mGlobalLayoutListener);
+
         sendMsgBtn = (Button) findViewById(R.id.study_room_sendMsgBtn);
         messageTxt = (EditText) findViewById(R.id.study_room_messageTxtView);
         additionalBtn = (Button) findViewById(R.id.study_room_additional);
@@ -189,7 +196,6 @@ public class StudyRoomActivity extends Activity {
         translateLeftAnim.setAnimationListener(animListener);
         translateRightAnim.setAnimationListener(animListener);
 
-
 //        init();
         /* at First, holding the focus */
 //        messageTxt.requestFocus();
@@ -198,10 +204,9 @@ public class StudyRoomActivity extends Activity {
         sendMsgBtn.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-//                messageList.smoothScrollToPosition(0);
+                messageList.smoothScrollToPosition(messageList.getCount() - 1);
                 sendMessage();
             }
-
         });
 
         additionalBtn.setOnClickListener(new View.OnClickListener() {
@@ -668,6 +673,47 @@ public class StudyRoomActivity extends Activity {
     }
 
     ////////////////////
+    // send my time   //
+    ////////////////////
+
+    private ViewTreeObserver.OnGlobalLayoutListener mGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+        public void onGlobalLayout() {
+            int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
+//            Log.i("Keyboard Size", "mGlobalLayoutListener");
+            getSoftKeyboardHeight();
+            if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
+                //         ... do something here
+            }
+        }
+    };
+
+    int keyBoardHeight = 0;
+    void getSoftKeyboardHeight(){
+        if (keyBoardHeight <= 100) {
+            Rect r = new Rect();
+            View rootview = this.getWindow().getDecorView(); // this = activity
+            rootview.getWindowVisibleDisplayFrame(r);
+
+            int screenHeight = rootview.getRootView().getHeight();
+            int heightDifference = screenHeight - (r.bottom - r.top);
+            int resourceId = getResources().getIdentifier("status_bar_height",
+                    "dimen", "android");
+
+            Log.i("Keyboard Size", "heightDifference : " + heightDifference);
+
+            if (resourceId > 0) {
+                heightDifference -= getResources().getDimensionPixelSize(resourceId);
+            }
+            if (heightDifference > 100) {
+                keyBoardHeight = heightDifference;
+            }
+            Log.d("Keyboard Size", "Size: " + heightDifference);
+        }
+    }
+
+
+
+    ////////////////////
     // Action bar     //
     ////////////////////
     /**
@@ -773,12 +819,13 @@ public class StudyRoomActivity extends Activity {
 
             // 애니메이션 적용
             if (isPageOpen) {
-                showSoftKeyboard();
+//                showSoftKeyboard();
+//                getSoftKeyboardHeight();
                 slidingPage01.startAnimation(translateLeftAnim);
                 Log.e(LOG_TAG,"left");
                 slidingPage01.setVisibility(View.VISIBLE);
             } else {
-//                hideSoftKeyboard(slidingPage01);
+                hideSoftKeyboard(slidingPage01);
                 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
                 slidingPage01.startAnimation(translateRightAnim);
                 Log.e(LOG_TAG,"right");
