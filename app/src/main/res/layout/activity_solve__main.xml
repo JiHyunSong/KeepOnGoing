@@ -115,7 +115,6 @@
                         android:text="출제일 : "
                         />
 
-
                     <Button
                         android:id="@+id/btnSubmit_solve"
                         android:layout_width="wrap_content"

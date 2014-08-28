@@ -1,7 +1,6 @@
 package com.secsm.keepongoing.Alarm;
 
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;

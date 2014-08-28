@@ -76,7 +76,7 @@ public class FriendsArrayAdapters extends BaseAdapter {
 
 //        viewHolder.icon.setImageBitmap();
 //                                getProfileFromURL(m.getFileName(), viewHolder.iv);
-
+            viewHolder.icon.setImageResource(R.drawable.profile_default);
             getProfileFromURL(friendArrayList.get(position).getProfile_path(), viewHolder.icon);
 
 //        viewHolder.icon.setImageResource(friendArrayList.get(position).icon);

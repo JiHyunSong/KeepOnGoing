@@ -1,6 +1,5 @@
 package com.secsm.keepongoing;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -31,9 +30,6 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.secsm.keepongoing.Adapters.FriendNameAndIcon;
-import com.secsm.keepongoing.Adapters.FriendsArrayAdapters;
-import com.secsm.keepongoing.R;
 import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
@@ -54,10 +50,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Map;
 
 public class MyProfileActivity extends BaseActivity {

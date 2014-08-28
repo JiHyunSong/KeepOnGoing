@@ -24,7 +24,7 @@
             android:layout_height="60dp"
             android:layout_margin="10dp"
             android:gravity="top|left"
-            android:hint="rounded"
+            android:hint="답안을 입력하세요"
             android:lines="1"
             android:maxLines="1"
             android:scrollbars="vertical"

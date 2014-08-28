@@ -2,7 +2,6 @@ package com.secsm.keepongoing.Quiz;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -61,6 +60,7 @@ public class Quiz_Set_Search extends BaseFragmentActivity implements DatePickerD
                 datePickerDialog.show(getSupportFragmentManager(), DATEPICKER_TAG);
             }
         });
+
 
         checkall = (CheckBox) findViewById(R.id.check_all);
         chk1 = (CheckBox)findViewById(R.id.check1);
@@ -156,19 +156,30 @@ public class Quiz_Set_Search extends BaseFragmentActivity implements DatePickerD
 
                 Log.e("minsu:)", "this subject is " + subject);
             //    Log.e("minsu:)","this roomname is "+roomname);
+
+
                 Intent intent = new Intent(Quiz_Set_Search.this, quiz_set_result.class);
-                intent.putExtra("subject", subject);
-                datestring=date_pick.getText().toString();
 
-                if(!datestring.equals("모든 날짜"))
-                   intent.putExtra("date", datestring);
-                title_edit=(EditText)findViewById(R.id.quiz_set_question_title);
-                title=title_edit.getText().toString();
+                if(!subject.equals("")) {
+                    intent.putExtra("subject", subject);
+                    datestring = date_pick.getText().toString();
+                    if (!datestring.equals(""))
+                        intent.putExtra("date", datestring);
+                    title_edit = (EditText) findViewById(R.id.quiz_set_question_title);
+                    title = title_edit.getText().toString();
 
-                if(!title.equals(""))
-                   intent.putExtra("title", title);
+                    if (title.equals(""))
+                        intent.putExtra("title", "");
+                    else if (!title.equals("모든 문제"))
+                        intent.putExtra("title", title);
+                    else
+                        intent.putExtra("title", "");
             /*    intent.putExtra("position", roomname);*/
-                startActivity(intent);
+                    startActivity(intent);
+                }
+                 else {
+                    Toast.makeText(Quiz_Set_Search.this, "과목을 선택하세요.", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -176,7 +187,8 @@ public class Quiz_Set_Search extends BaseFragmentActivity implements DatePickerD
 
     @Override
     protected void onResume() {
-
+        checkall = (CheckBox) findViewById(R.id.check_all);
+        checkall.setChecked(false);
          chk1 = (CheckBox)findViewById(R.id.check1);
         chk1.setChecked(false);
          chk2 = (CheckBox)findViewById(R.id.check2);
@@ -189,7 +201,7 @@ public class Quiz_Set_Search extends BaseFragmentActivity implements DatePickerD
         chk5.setChecked(false);
        subject="";
         date_pick=(EditText)findViewById(R.id.date_pick);
-        date_pick.setText("모든 날짜");
+        date_pick.setText("");
         title_edit=(EditText)findViewById(R.id.quiz_set_question_title);
         title_edit.clearComposingText();
         datestring="";

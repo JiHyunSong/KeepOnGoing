@@ -7,38 +7,25 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity"
-    android:background="#44a0ff">
+    android:background="@drawable/keep_on_going_splash">
 
 
-<LinearLayout
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:gravity="center">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/keep_on_going_splash"
-        android:id="@+id/splash_image"/>
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/splash_image"
-        >
+
+
     <com.romainpiel.shimmer.ShimmerTextView
         android:id="@+id/shimmer_tv"
         android:text="Keep On Going"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textColor="#444"
-        android:textSize="30dp"
-        android:layout_gravity="center"
+        android:textSize="40dp"
+        android:layout_alignParentBottom="true"
         android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal"
         style="@style/MyTextView"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="40dp"
         />
-    </LinearLayout>
     <Button
         android:text="toggle_animation"
         android:onClick="toggleAnimation"
@@ -47,7 +34,6 @@
         android:layout_gravity="bottom"
         android:visibility="gone"/>
 
-    </LinearLayout>
 
 
 </RelativeLayout>

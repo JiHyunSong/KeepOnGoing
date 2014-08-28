@@ -1,13 +1,13 @@
 package com.secsm.keepongoing.Alarm;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.secsm.keepongoing.R;
@@ -69,6 +69,7 @@ public class AlramAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             v = inflater.inflate(R.layout.list_row, null);
             CheckBox vibratemode = (CheckBox) v.findViewById(R.id.vibratemode);
+            ImageView image = (ImageView)v.findViewById(R.id.vibratemode_ico);
             vibratemode.setChecked(Preference.getBoolean(v.getContext(), "vibratemode"));
             if (position == 0) {
 
@@ -86,6 +87,8 @@ public class AlramAdapter extends BaseAdapter {
             if (position == 1) {
 
                 vibratemode.setVisibility(v.GONE);
+                image.setVisibility(v.GONE);
+
             }
 
 

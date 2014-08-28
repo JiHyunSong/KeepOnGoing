@@ -222,7 +222,7 @@
             android:layout_toRightOf="@id/kkk"
             android:background="#77ffffff"
             android:gravity="center"
-            android:padding="5dp" >
+            android:padding="10dp" >
 
             <TextView
                 android:id="@+id/achive_time"
@@ -230,15 +230,40 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="달성시간"
+                android:layout_marginLeft="5dp"
                 android:textSize="30dp" />
+            <ToggleButton
+                android:id="@+id/toggleButton2"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@id/achive_time"
+                android:background="@drawable/selector_tab_play_button"
+                android:textOff=""
+                android:layout_marginRight="10dp"
+                android:textOn=""/>
 
             <TextView
+                android:layout_marginLeft="5dp"
                 android:id="@+id/tvMsg"
+                android:layout_marginTop="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/achive_time"
                 android:text="00:00:00"
                 android:textSize="30dp" />
+            <Button
+                android:id="@+id/finish"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_below="@id/toggleButton2"
+
+                android:layout_alignParentRight="true"
+                android:text=""
+                android:background="@drawable/selector_tab_stop_button"
+                />
         </RelativeLayout>
 
         <Button
@@ -253,50 +278,8 @@
             android:textSize="35dp"
             android:visibility="gone" />
 
-        <RelativeLayout
-            android:id="@+id/RelativeLayout"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/kkk_2"
-            android:layout_alignParentBottom="true"
-            android:gravity="center_horizontal"
-            android:layout_margin="20dp"
-            android:background="#88ffffff" >
 
-            <ToggleButton
-                android:id="@+id/toggleButton2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:textOff="일시정지"
-                android:textOn="스타트"
-                android:textSize="30dp" />
-
-            <Button
-                android:id="@+id/finish"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:text=" 초기화 "
-                android:textSize="30dp" />
-
-            <ToggleButton
-                android:id="@+id/sliding"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/finish"
-                android:layout_margin="5dp"
-                android:textOff="open"
-                android:textOn="close"
-                android:textSize="30dp" />
-        </RelativeLayout>
     </RelativeLayout>
-
-
-
-
-
-
 
 
 

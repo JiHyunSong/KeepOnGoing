@@ -7,18 +7,20 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/backgroud_image"
     tools:context="com.secsm.keepongoing.AddFriendActivity">
 
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_paper">
 
 
         <com.beardedhen.androidbootstrap.BootstrapEditText
             android:id="@+id/add_friend_name_et"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_margin="30dp"
             android:gravity="top|left"
             android:hint="초대할 친구 이름"
             android:inputType="textVisiblePassword"
@@ -27,18 +29,31 @@
             bootstrapbutton:be_roundedCorners="true"
             bootstrapbutton:be_state="info" />
 
-        <Button
-            android:id="@+id/add_friend_add_btn"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/add_friend_name_et"
-            android:text="친구 추가" />
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:layout_centerHorizontal="true"
+    android:layout_below="@id/add_friend_name_et">
 
-        <Button
-            android:id="@+id/add_friend_go_back_btn"
-            android:layout_width="fill_parent"
+        <com.beardedhen.androidbootstrap.BootstrapButton
+            android:id="@+id/add_friend_add_btn"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/add_friend_add_btn"
+            android:text="친구 추가"
+            bootstrapbutton:bb_roundedCorners="true"
+            />
+
+        <com.beardedhen.androidbootstrap.BootstrapButton
+            android:id="@+id/add_friend_go_back_btn"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_toRightOf="@id/add_friend_add_btn"
+            android:layout_height="wrap_content"
             android:text="돌아가기" />
+
+
+</RelativeLayout>
+
     </RelativeLayout>
 </RelativeLayout>

@@ -1,7 +1,6 @@
 package com.secsm.keepongoing;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -245,20 +244,7 @@ public class TabActivity extends BaseActivity {
 
 
         //@민수 테스트
-        final ToggleButton test=(ToggleButton) findViewById(R.id.sliding);
-        test.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View arg0) {
-                if (test.isChecked()) {
 
-                    Intent intent = new Intent(TabActivity.this, Quiz_Set_Search.class);
-                    startActivity(intent);
-
-                }
-                else {
-                }
-
-            }
-        });
 
         //@민수 타이머 선언
         TimerTask adTast2 = new TimerTask() {
@@ -334,7 +320,7 @@ public class TabActivity extends BaseActivity {
                     Log.i(LOG_TAG, "타이머 완료");
                     timer = null;
                 }
-                ahcieve.setText("00:00:00");
+
 
 
                 Preference.setLong(TabActivity.this, "diff", 0);
@@ -344,13 +330,18 @@ public class TabActivity extends BaseActivity {
                     if (Preference.getBoolean(TabActivity.this, "first_start") == true) {
                         acheivetimeRegisterRequest(_goal_time.getText().toString(), ahcieve.getText().toString(), Preference.getString(TabActivity.this, "start_date"));
                         Preference.putBoolean(TabActivity.this, "first_start", false);
+                        ahcieve.setText("00:00:00");
+                        Preference.setLong(TabActivity.this, "diff",0);
                     }
+
                 }catch (Exception e)
                 {
 
                 }
 
             }
+
+
         });
 
         if(KogPreference.DEBUG_MODE && KogPreference.NO_AUTH)
@@ -451,6 +442,7 @@ public class TabActivity extends BaseActivity {
     }
     //@통신
     private void acheivetimeputRequest(String target_time,String accomplished_time,String date) {
+        final String temp_accomplished_time=accomplished_time;
         String get_url = KogPreference.REST_URL +
                 "Time" +
                 "?nickname=" + KogPreference.getNickName(TabActivity.this) +
@@ -475,7 +467,8 @@ public class TabActivity extends BaseActivity {
                                 rMessage = response.getString("message");
                                 // real action
                                 // GoNextPage();
-//                                Toast.makeText(getBaseContext(), LOG_TAG +rMessage, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getBaseContext(),"시간등록 완료"+temp_accomplished_time, Toast.LENGTH_SHORT).show();
+                            //    Toast.makeText(getBaseContext(), LOG_TAG +rMessage, Toast.LENGTH_SHORT).show();
                             } else if (status_code == 9001) {
                                 Toast.makeText(getBaseContext(), "시간등록이 불가능합니다. PUT", Toast.LENGTH_SHORT).show();
                             } else {
@@ -692,6 +685,9 @@ public class TabActivity extends BaseActivity {
 //
 //                        break;
                     case 2: // 퀴즈 모음
+                        Intent intent = new Intent(TabActivity.this, Quiz_Set_Search.class);
+                        startActivity(intent);
+                        //@민수 ㅋㅋ
                         break;
 
                     case 3:

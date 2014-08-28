@@ -1,14 +1,11 @@
 package com.secsm.keepongoing;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -17,10 +14,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-import com.secsm.keepongoing.R;
+import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.secsm.keepongoing.Shared.BaseActivity;
-import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MyVolley;
 
@@ -28,8 +23,8 @@ import org.json.JSONObject;
 
 public class AddFriendActivity extends BaseActivity {
 
-    private Button add_friend_add_btn;
-    private Button add_friend_go_back_btn;
+    private BootstrapButton add_friend_add_btn;
+    private BootstrapButton add_friend_go_back_btn;
     private EditText add_friend_name_et;
     String f_nickName;
 
@@ -46,8 +41,8 @@ public class AddFriendActivity extends BaseActivity {
 //        vQueue = Volley.newRequestQueue(this);
         vQueue = MyVolley.getRequestQueue(AddFriendActivity.this);
 
-        add_friend_add_btn = (Button) findViewById(R.id.add_friend_add_btn);
-        add_friend_go_back_btn = (Button) findViewById(R.id.add_friend_go_back_btn);
+        add_friend_add_btn = (BootstrapButton) findViewById(R.id.add_friend_add_btn);
+        add_friend_go_back_btn = (BootstrapButton) findViewById(R.id.add_friend_go_back_btn);
         add_friend_name_et = (EditText) findViewById(R.id.add_friend_name_et);
 
         add_friend_name_et.setPrivateImeOptions("defaultInputmode=english;");

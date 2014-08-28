@@ -15,24 +15,23 @@
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="10dp"
             android:textSize="35dp" />
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_centerVertical="true"
-            android:background="@drawable/vibrate_ico"
-            android:layout_alignParentRight="true"
 
-            android:layout_marginRight="20dp"
-            android:id="@+id/vibratemode_ico"
-           />
 
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/vibratemode_ico"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
             android:id="@+id/vibratemode"/>
-
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/vibrate_ico"
+          android:layout_toLeftOf="@id/vibratemode"
+            android:id="@+id/vibratemode_ico"
+            />
 
     </RelativeLayout>
 </RelativeLayout>
