@@ -54,47 +54,52 @@ public class FriendsArrayAdapters extends BaseAdapter {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            MyVolley.init(context);
+        View v = convertView;
+        if (friendArrayList != null) {
+            if (v == null) {
+                MyVolley.init(context);
 
-            convertView = inflater.inflate(layout, parent, false);
-            viewHolder = new ViewHolder();
-            viewHolder.icon = (ImageView) convertView.findViewById(R.id.iconFriend);
-            viewHolder.name = (TextView) convertView.findViewById(R.id.txtFriendNickname);
-            viewHolder.isMaster = (TextView) convertView.findViewById(R.id.isMasterFriend);
-            viewHolder.isMaster.setVisibility(View.GONE);
-            viewHolder.score = (TextView) convertView.findViewById(R.id.txtFriendScore);
-            convertView.setTag(viewHolder);
+                v = inflater.inflate(layout, parent, false);
+                viewHolder = new ViewHolder();
+                viewHolder.icon = (ImageView) v.findViewById(R.id.iconFriend);
+                viewHolder.name = (TextView) v.findViewById(R.id.txtFriendNickname);
+                viewHolder.isMaster = (TextView) v.findViewById(R.id.isMasterFriend);
+                viewHolder.isMaster.setVisibility(View.GONE);
+                viewHolder.score = (TextView) v.findViewById(R.id.txtFriendScore);
+                v.setTag(viewHolder);
 
-        } else {
-            // reuse
-            viewHolder = (ViewHolder) convertView.getTag();
+            } else {
+                // reuse
+                viewHolder = (ViewHolder) v.getTag();
 
-        }
+            }
 
 
 //        viewHolder.icon.setImageBitmap();
 //                                getProfileFromURL(m.getFileName(), viewHolder.iv);
 
-        getProfileFromURL(friendArrayList.get(position).getProfile_path(), viewHolder.icon);
+            getProfileFromURL(friendArrayList.get(position).getProfile_path(), viewHolder.icon);
 
 //        viewHolder.icon.setImageResource(friendArrayList.get(position).icon);
 
-        viewHolder.name.setText(friendArrayList.get(position).getName());
+            viewHolder.name.setText(friendArrayList.get(position).getName());
 
-        if (friendArrayList.get(position).getScore() != null) {
-            viewHolder.score.setText(friendArrayList.get(position).getScore());
-        }
 
-        if (friendArrayList.get(position).getIsMaster().equals("true")) {
-            viewHolder.isMaster.setVisibility(View.VISIBLE);
-        } else {
+            viewHolder.score.setText("");
+            if (friendArrayList.get(position).getScore() != null) {
+                viewHolder.score.setText(friendArrayList.get(position).getScore());
+            }
+
             viewHolder.isMaster.setVisibility(View.GONE);
+            if(friendArrayList.get(position).getIsMaster() != null) {
+                if (friendArrayList.get(position).getIsMaster().equals("true")) {
+                    viewHolder.isMaster.setVisibility(View.VISIBLE);
+                } else {
+                    viewHolder.isMaster.setVisibility(View.GONE);
+                }
+            }
         }
-
-
-        return convertView;
-
+        return v;
     }
 
     public void filter(String charText) {

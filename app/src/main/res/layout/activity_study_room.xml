@@ -70,7 +70,7 @@
         android:background="#ffffffff"
         android:gravity="center"
         android:orientation="horizontal"
-        android:visibility="visible">
+        android:visibility="invisible">
 
         <LinearLayout
             android:id="@+id/study_room_additional_ll1_camera"

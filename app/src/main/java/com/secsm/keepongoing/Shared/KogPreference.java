@@ -41,6 +41,7 @@ public final class KogPreference {
     public static String MESSAGE_TYPE_IMAGE = "image";
     public static String MESSAGE_TYPE_QUIZ = "quiz";
     public static String MESSAGE_TYPE_LOGOUT="logout";
+    public static String ROOM_TYPE_LIFE="liferoom";
     public static final String CHAT_IP = "210.118.74.195";
     public static final int CHAT_PORT = 9090;
 

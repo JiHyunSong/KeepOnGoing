@@ -92,7 +92,10 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 
 public class StudyRoomActivity extends BaseActivity {
@@ -277,8 +280,8 @@ public class StudyRoomActivity extends BaseActivity {
         translateLeftAnim.setAnimationListener(animListener);
         translateRightAnim.setAnimationListener(animListener);
 
-        mFriendsFristToAdd = new FriendNameAndIcon("friend_btn_mypp_plus_press.png","친구 초대하기", null);
-        mFriendsLastToShowScoreDetail = new FriendNameAndIcon("talk_ico_menu_vote.png","스코어 상세보기", null);
+        mFriendsFristToAdd = new FriendNameAndIcon("friend_btn_mypp_plus_press.png","친구 초대하기", null, null);
+        mFriendsLastToShowScoreDetail = new FriendNameAndIcon("talk_ico_menu_vote.png","스코어 상세보기", null, null);
 
 //        init();
         /* at First, holding the focus */
@@ -365,6 +368,7 @@ public class StudyRoomActivity extends BaseActivity {
             JSONObject jObj = new JSONObject();
             Log.i(LOG_TAG, "jObj.toString()");
             jObj.put("nickname", KogPreference.getNickName(StudyRoomActivity.this));
+            jObj.put("rid", KogPreference.getRid(StudyRoomActivity.this));
             Log.i(LOG_TAG, "jObj.toString() " + jObj.toString() + "\n");
 
             Log.i(LOG_TAG, "Log.i(LOG_TAG,  \"jObj.toString() \" + jObj.toString() + \"\\n\");");
@@ -915,6 +919,38 @@ S3
     // Action bar     //
     ////////////////////
 
+
+    private String getThisMonday() {
+        Calendar now = Calendar.getInstance();
+        int weekday = now.get(Calendar.DAY_OF_WEEK);
+        Log.i("getMonday1", "now.toString : " + now.toString());
+        Log.i("getMonday1", "weekday : " + weekday);
+        if (weekday != Calendar.MONDAY) {
+            int days = (Calendar.SUNDAY - weekday + 1) % 7;
+            now.add(Calendar.DAY_OF_YEAR, days);
+        }
+        Date date = now.getTime();
+
+        String format = new SimpleDateFormat("yyyy-MM-dd").format(date);
+        return format;
+    }
+
+    private String getPrevMonday() {
+        Calendar now = Calendar.getInstance();
+        int weekday = now.get(Calendar.DAY_OF_WEEK);
+        Log.i("getMonday1", "now.toString : " + now.toString());
+        Log.i("getMonday1", "weekday : " + weekday);
+        if (weekday != Calendar.MONDAY) {
+            int days = (Calendar.SUNDAY - weekday + 1) % 7;
+            now.add(Calendar.DAY_OF_YEAR, days);
+            now.add(Calendar.DAY_OF_YEAR, -7);
+        }
+        Date date = now.getTime();
+
+        String format = new SimpleDateFormat("yyyy-MM-dd").format(date);
+        return format;
+    }
+
     /**
      * 애니메이션 리스너 정의
      */
@@ -953,17 +989,28 @@ S3
                     // 친구 초대하기
                     if(mFriends != null) {
                         Intent intent = new Intent(StudyRoomActivity.this, AddMoreFriendActivity.class);
-                        String[] FriendNicks = new String[mFriends.size() - 2];
-                        for (int i = 1; i < mFriends.size() - 1; i++) {
-                            FriendNicks[i-1] = mFriends.get(i).getName();
-                        }
-                        intent.putExtra("Friends", FriendNicks);
-                        startActivity(intent);
-                    }
 
+                        if(KogPreference.ROOM_TYPE_LIFE.equals(type)) {
+                            String[] FriendNicks = new String[mFriends.size() - 2];
+                            for (int i = 1; i < mFriends.size() - 1; i++) {
+                                FriendNicks[i - 1] = mFriends.get(i).getName();
+                            }
+                            intent.putExtra("Friends", FriendNicks);
+                            startActivity(intent);
+                        }else{
+                            String[] FriendNicks = new String[mFriends.size() - 1];
+                            for (int i = 1; i < mFriends.size(); i++) {
+                                FriendNicks[i - 1] = mFriends.get(i).getName();
+                            }
+                            intent.putExtra("Friends", FriendNicks);
+                            startActivity(intent);
+                        }
+                    }
                 }else if(position == mFriends.size()-1)
                 {
                     // 스코어 상세보기
+                    if(KogPreference.ROOM_TYPE_LIFE.equals(type)) {
+                    }
                 }
 
             }
@@ -978,10 +1025,19 @@ S3
 
             if (adapterView.getId() == R.id.roomFriendList) {
                 Log.i(LOG_TAG, "friends long Clicked");
-                if(pos != 0 && pos != mFriends.size()-1) {
-                    if (isMaster(KogPreference.getNickName(StudyRoomActivity.this))) {
-                        mDialog = createInflaterDialog(mFriends.get(pos).getName());
-                        mDialog.show();
+                if(KogPreference.ROOM_TYPE_LIFE.equals(type)) {
+                    if (pos != 0 && pos != mFriends.size() - 1) {
+                        if (isMaster(KogPreference.getNickName(StudyRoomActivity.this))) {
+                            mDialog = createInflaterDialog(mFriends.get(pos).getName());
+                            mDialog.show();
+                        }
+                    }
+                }else{
+                    if (pos != 0 && pos != mFriends.size()) {
+                        if (isMaster(KogPreference.getNickName(StudyRoomActivity.this))) {
+                            mDialog = createInflaterDialog(mFriends.get(pos).getName());
+                            mDialog.show();
+                        }
                     }
                 }
             }
@@ -1120,15 +1176,28 @@ S3
         @Override
         public boolean onMenuItemClick(MenuItem mi) {
             Log.i(LOG_TAG, "onMenuItemClicked ab_invite_friend_listener");
+
+            // 친구 초대하기
             if(mFriends != null) {
                 Intent intent = new Intent(StudyRoomActivity.this, AddMoreFriendActivity.class);
-                String[] FriendNicks = new String[mFriends.size() - 2];
-                for (int i = 1; i < mFriends.size() - 1; i++) {
-                    FriendNicks[i-1] = mFriends.get(i).getName();
+
+                if(KogPreference.ROOM_TYPE_LIFE.equals(type)) {
+                    String[] FriendNicks = new String[mFriends.size() - 2];
+                    for (int i = 1; i < mFriends.size() - 1; i++) {
+                        FriendNicks[i - 1] = mFriends.get(i).getName();
+                    }
+                    intent.putExtra("Friends", FriendNicks);
+                    startActivity(intent);
+                }else{
+                    String[] FriendNicks = new String[mFriends.size() - 1];
+                    for (int i = 1; i < mFriends.size(); i++) {
+                        FriendNicks[i - 1] = mFriends.get(i).getName();
+                    }
+                    intent.putExtra("Friends", FriendNicks);
+                    startActivity(intent);
                 }
-                intent.putExtra("Friends", FriendNicks);
-                startActivity(intent);
             }
+
             return true;
         }
     };
@@ -1320,6 +1389,7 @@ S3
 
         Log.i(LOG_TAG, "loadText");
 
+        messageHistoryMAdaptor.clear();
         try {
             SQLiteDatabase db;
             Cursor cursor = null;
@@ -1550,7 +1620,8 @@ S3
         String get_url = KogPreference.REST_URL +
                 "Room/User" +
                 "?rid=" + KogPreference.getRid(StudyRoomActivity.this) +
-                "&date=" + getRealDate();
+                "&fromdate=" + getThisMonday() +
+                "&todate=" + getRealDate();
 
         Log.i(LOG_TAG, "URL : " + get_url);
 
@@ -1571,18 +1642,38 @@ S3
                                 JSONObject rObj;
                                 mFriends.add(mFriendsFristToAdd);
                                 //{"message":[{"targetTime":null,"image":"http:\/\/210.118.74.195:8080\/KOG_Server_Rest\/upload\/UserImage\/default.png","nickname":"jonghean"}],"status":"200"}
-                                for (int i = 0; i < rMessage.length(); i++) {
-                                    rObj = rMessage.getJSONObject(i);
-                                    if (!"null".equals(rObj.getString("nickname"))) {
-                                        Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" + rObj.getString("nickname") + "|" + rObj.getString("targetTime") + "|" + rObj.getString("isMaster"));
-                                        mFriends.add(new FriendNameAndIcon(
-                                                URLDecoder.decode(rObj.getString("image"), "UTF-8"),
-                                                URLDecoder.decode(rObj.getString("nickname"), "UTF-8"),
-                                                URLDecoder.decode(rObj.getString("targetTime"), "UTF-8"),
-                                                URLDecoder.decode(rObj.getString("isMaster"), "UTF-8")));
+
+
+                                if(KogPreference.ROOM_TYPE_LIFE.equals(type)) {
+
+                                    for (int i = 0; i < rMessage.length(); i++) {
+                                        rObj = rMessage.getJSONObject(i);
+                                        if (!"null".equals(rObj.getString("nickname"))) {
+                                            Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" + rObj.getString("nickname") + "|" + rObj.getString("targetTime") + "|" + rObj.getString("isMaster"));
+                                            mFriends.add(new FriendNameAndIcon(
+                                                    URLDecoder.decode(rObj.getString("image"), "UTF-8"),
+                                                    URLDecoder.decode(rObj.getString("nickname"), "UTF-8"),
+                                                    URLDecoder.decode(rObj.getString("targetTime"), "UTF-8"),
+                                                    URLDecoder.decode(rObj.getString("isMaster"), "UTF-8"),
+                                                    URLDecoder.decode(rObj.getString("score"), "UTF-8")));
+                                        }
                                     }
+                                    mFriends.add(mFriendsLastToShowScoreDetail);
+                                }else
+                                {
+                                    for (int i = 0; i < rMessage.length(); i++) {
+                                        rObj = rMessage.getJSONObject(i);
+                                        if (!"null".equals(rObj.getString("nickname"))) {
+                                            Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" + rObj.getString("nickname") + "|" + rObj.getString("targetTime") + "|" + rObj.getString("isMaster"));
+                                            mFriends.add(new FriendNameAndIcon(
+                                                    URLDecoder.decode(rObj.getString("image"), "UTF-8"),
+                                                    URLDecoder.decode(rObj.getString("nickname"), "UTF-8"),
+                                                    URLDecoder.decode(rObj.getString("targetTime"), "UTF-8"),
+                                                    URLDecoder.decode(rObj.getString("isMaster"), "UTF-8")));
+                                        }
+                                    }
+
                                 }
-                                mFriends.add(mFriendsLastToShowScoreDetail);
                                 /////////////////////////////
                                 friendArrayAdapter = new FriendsArrayAdapters(StudyRoomActivity.this, R.layout.friend_list_item, mFriends);
                                 friendList.setAdapter(friendArrayAdapter);
