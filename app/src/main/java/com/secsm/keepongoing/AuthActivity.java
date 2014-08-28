@@ -100,9 +100,11 @@ public class AuthActivity extends BaseActivity {
     public String getPhoneNumber() {
         TelephonyManager mgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         String PhoneNumber = mgr.getLine1Number();
-        PhoneNumber = PhoneNumber.substring(PhoneNumber.length()-10, PhoneNumber.length());
-        PhoneNumber = "0" + PhoneNumber;
-        PhoneNumber = PhoneNumberUtils.formatNumber(PhoneNumber);
+        if(PhoneNumber != null) {
+            PhoneNumber = PhoneNumber.substring(PhoneNumber.length() - 10, PhoneNumber.length());
+            PhoneNumber = "0" + PhoneNumber;
+            PhoneNumber = PhoneNumberUtils.formatNumber(PhoneNumber);
+        }
         return PhoneNumber;
     }
 

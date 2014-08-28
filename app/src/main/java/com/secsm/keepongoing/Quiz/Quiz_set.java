@@ -23,6 +23,7 @@ import com.secsm.keepongoing.R;
 import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
+import com.secsm.keepongoing.Shared.MyVolley;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -51,7 +52,8 @@ public class Quiz_set extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        vQueue = Volley.newRequestQueue(this);
+//        vQueue = Volley.newRequestQueue(this);
+        vQueue = MyVolley.getRequestQueue(Quiz_set.this);
         setContentView(R.layout.activity_solve__main);
         list = new ArrayList<Quiz_data>();
 

@@ -84,6 +84,8 @@ public class AddMoreFriendActivity extends BaseActivity {
         add_more_friend_list = (ListView) findViewById(R.id.add_more_friend_list);
         to_add_more_friend_list = (ListView) findViewById(R.id.to_add_more_friend_list);
 
+        add_more_friend_search_et.setPrivateImeOptions("defaultInputmode=english;");
+
         selected_Friends = new ArrayList<FriendNameAndIcon>();
         selected_friendsArrayAdapters = new FriendsArrayAdapters(AddMoreFriendActivity.this, R.layout.friend_list_item, selected_Friends);
         to_add_more_friend_list.setAdapter(selected_friendsArrayAdapters);

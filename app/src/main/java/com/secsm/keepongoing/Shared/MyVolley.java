@@ -3,6 +3,7 @@ package com.secsm.keepongoing.Shared;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.util.Log;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.BasicNetwork;
@@ -35,6 +36,7 @@ public class MyVolley {
                 .getMemoryClass();
 // Use 1/8th of the available memory for this memory cache.
         int cacheSize = 1024 * 1024 * memClass / 8;
+        Log.e("MyVolley", "cacheSize size : " + cacheSize);
         mImageLoader = new ImageLoader(mRequestQueue, new BitmapLruCache(cacheSize));
     }
 

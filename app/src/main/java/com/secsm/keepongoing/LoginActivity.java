@@ -87,6 +87,9 @@ public class LoginActivity extends BaseActivity {
         mNicknameView = (EditText) findViewById(R.id.nickname);
         mPasswordView = (EditText) findViewById(R.id.password);
 
+        mNicknameView.setPrivateImeOptions("defaultInputmode=english;");
+        mPasswordView.setPrivateImeOptions("defaultInputmode=english;");
+
         login_auto_login_cb = (CheckBox) findViewById(R.id.login_auto_login_cb);
 
         loginProgressBar = (ProgressBar) findViewById(R.id.login_progress);
@@ -239,7 +242,7 @@ public class LoginActivity extends BaseActivity {
             public void onErrorResponse(VolleyError error) {
                 setAllEnable();
                 Log.i(LOG_TAG, "Response Error");
-                Toast.makeText(getBaseContext(), "통 에러!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), "통신 에러!", Toast.LENGTH_SHORT).show();
                 if (KogPreference.DEBUG_MODE) {
                     Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
                 }

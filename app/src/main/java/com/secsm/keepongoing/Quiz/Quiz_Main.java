@@ -25,6 +25,7 @@ import com.secsm.keepongoing.R;
 import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
+import com.secsm.keepongoing.Shared.MyVolley;
 
 import org.json.JSONObject;
 
@@ -50,7 +51,8 @@ public class Quiz_Main extends BaseActivity {
         //settingListView();
         addListenerOnButton();
         addListenerOnSpinnerItemSelection();
-        vQueue = Volley.newRequestQueue(this);
+//        vQueue = Volley.newRequestQueue(this);
+        vQueue = MyVolley.getRequestQueue(Quiz_Main.this);
         mScrollView=(CustomScrollView) findViewById(R.id.quizmain_scroll);
         listView = (ListView) findViewById(R.id.listView_Quiz);
 

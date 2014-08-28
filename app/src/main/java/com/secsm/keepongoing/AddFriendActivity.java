@@ -22,6 +22,7 @@ import com.secsm.keepongoing.R;
 import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
+import com.secsm.keepongoing.Shared.MyVolley;
 
 import org.json.JSONObject;
 
@@ -42,11 +43,14 @@ public class AddFriendActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_friend);
 
-        vQueue = Volley.newRequestQueue(this);
+//        vQueue = Volley.newRequestQueue(this);
+        vQueue = MyVolley.getRequestQueue(AddFriendActivity.this);
 
         add_friend_add_btn = (Button) findViewById(R.id.add_friend_add_btn);
         add_friend_go_back_btn = (Button) findViewById(R.id.add_friend_go_back_btn);
         add_friend_name_et = (EditText) findViewById(R.id.add_friend_name_et);
+
+        add_friend_name_et.setPrivateImeOptions("defaultInputmode=english;");
 
         add_friend_add_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
