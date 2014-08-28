@@ -24,6 +24,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.beardedhen.androidbootstrap.BootstrapEditText;
 import com.secsm.keepongoing.Adapters.FriendNameAndIcon;
 import com.secsm.keepongoing.Adapters.FriendsArrayAdapters;
+import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MyVolley;
@@ -35,7 +36,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class AddMoreFriendActivity extends Activity {
+public class AddMoreFriendActivity extends BaseActivity {
 
     private Intent intent;
     private Button add_more_friend_invite_room_btn;
@@ -79,9 +80,19 @@ public class AddMoreFriendActivity extends Activity {
         intent = getIntent();
         FriendNicks = intent.getStringArrayExtra("Friends");
 
+        if(KogPreference.DEBUG_MODE)
+        {
+            for(int i=0; i<FriendNicks.length; i++)
+            {
+                Log.i(LOG_TAG, "get Friends nickname " + i +" : " + FriendNicks[i]);
+            }
+        }
+
         add_more_friend_search_et = (BootstrapEditText) findViewById(R.id.add_more_friend_search_et);
         add_more_friend_list = (ListView) findViewById(R.id.add_more_friend_list);
         to_add_more_friend_list = (ListView) findViewById(R.id.to_add_more_friend_list);
+
+        add_more_friend_search_et.setPrivateImeOptions("defaultInputmode=english;");
 
         selected_Friends = new ArrayList<FriendNameAndIcon>();
         selected_friendsArrayAdapters = new FriendsArrayAdapters(AddMoreFriendActivity.this, R.layout.friend_list_item, selected_Friends);
@@ -93,8 +104,12 @@ public class AddMoreFriendActivity extends Activity {
             @Override
             public void afterTextChanged(Editable arg0) {
                 // TODO Auto-generated method stub
-                String text = add_more_friend_search_et.getText().toString().toLowerCase(Locale.getDefault());
-                friendsArrayAdapters.filter(text);
+                if(add_more_friend_search_et.getText().toString() != null) {
+                    String text = add_more_friend_search_et.getText().toString().toLowerCase(Locale.getDefault());
+                    if (friendsArrayAdapters != null) {
+                        friendsArrayAdapters.filter(text);
+                    }
+                }
             }
 
             @Override
@@ -264,6 +279,7 @@ public class AddMoreFriendActivity extends Activity {
 
     private boolean isInRoom(String f_nickName)
     {
+        Log.i(LOG_TAG, "isInRoom, Friends length" + FriendNicks.length);
         for(int j=0; j<FriendNicks.length; j++)
         {
             if(FriendNicks[j].equals(f_nickName))
@@ -301,6 +317,8 @@ public class AddMoreFriendActivity extends Activity {
                                 mFriends = new ArrayList<FriendNameAndIcon>();
                                 JSONObject rObj;
 
+                                Log.i(LOG_TAG, "rMessage  : " + rMessage);
+                                Log.i(LOG_TAG, "rMessage.length() : " + rMessage.length());
                                 //{"message":[{"targetTime":null,"image":"http:\/\/210.118.74.195:8080\/KOG_Server_Rest\/upload\/UserImage\/default.png","nickname":"jonghean"}],"status":"200"}
                                 for(int i=0; i< rMessage.length(); i++)
                                 {

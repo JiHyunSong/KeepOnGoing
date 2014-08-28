@@ -22,6 +22,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.beardedhen.androidbootstrap.BootstrapButton;
+import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MyVolley;
@@ -31,7 +32,7 @@ import org.json.JSONObject;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends Activity {
+public class LoginActivity extends BaseActivity {
 
     private static String LOG_TAG = "Login Activity";
     // UI references.
@@ -86,6 +87,9 @@ public class LoginActivity extends Activity {
         mNicknameView = (EditText) findViewById(R.id.nickname);
         mPasswordView = (EditText) findViewById(R.id.password);
 
+        mNicknameView.setPrivateImeOptions("defaultInputmode=english;");
+        mPasswordView.setPrivateImeOptions("defaultInputmode=english;");
+
         login_auto_login_cb = (CheckBox) findViewById(R.id.login_auto_login_cb);
 
         loginProgressBar = (ProgressBar) findViewById(R.id.login_progress);
@@ -117,17 +121,6 @@ public class LoginActivity extends Activity {
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
-        if (KogPreference.isAutoLogin(LoginActivity.this)) {
-            mNicknameView.setText(KogPreference.getNickName(LoginActivity.this));
-            mPasswordView.setText(KogPreference.getPassword(LoginActivity.this));
-
-            UserLogin(KogPreference.getNickName(LoginActivity.this), KogPreference.getPassword(LoginActivity.this));
-        } else if (!TextUtils.isEmpty(savedNick)) {
-            mNicknameView.setText(savedNick);
-        } else {
-            savedNick = KogPreference.getNickName(LoginActivity.this);
-            mNicknameView.setText(savedNick);
-        }
 
      //   if (KogPreference.DEBUG_MODE) {
             easterEggButton = (BootstrapButton) findViewById(R.id.easter_egg_button);
@@ -144,6 +137,18 @@ public class LoginActivity extends Activity {
             });
 
         //}
+
+        if (KogPreference.isAutoLogin(LoginActivity.this)) {
+            mNicknameView.setText(KogPreference.getNickName(LoginActivity.this));
+            mPasswordView.setText(KogPreference.getPassword(LoginActivity.this));
+            setAllDisable();
+            UserLogin(KogPreference.getNickName(LoginActivity.this), KogPreference.getPassword(LoginActivity.this));
+        } else if (!TextUtils.isEmpty(savedNick)) {
+            mNicknameView.setText(savedNick);
+        } else {
+            savedNick = KogPreference.getNickName(LoginActivity.this);
+            mNicknameView.setText(savedNick);
+        }
 
     }
 
@@ -237,7 +242,7 @@ public class LoginActivity extends Activity {
             public void onErrorResponse(VolleyError error) {
                 setAllEnable();
                 Log.i(LOG_TAG, "Response Error");
-                Toast.makeText(getBaseContext(), "통 에러!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), "통신 에러!", Toast.LENGTH_SHORT).show();
                 if (KogPreference.DEBUG_MODE) {
                     Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
                 }

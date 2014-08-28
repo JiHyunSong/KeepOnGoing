@@ -21,6 +21,7 @@
             android:layout_margin="10dp"
             android:gravity="top|left"
             android:hint="초대할 친구 이름"
+            android:inputType="textVisiblePassword"
             android:lines="1"
             android:maxLines="1"
             bootstrapbutton:be_roundedCorners="true"

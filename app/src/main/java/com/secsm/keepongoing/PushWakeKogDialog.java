@@ -18,12 +18,13 @@ import android.util.Log;
 import android.view.WindowManager;
 
 import com.secsm.keepongoing.DB.DBHelper;
+import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.KogPreference;
 
 /*
  * 메시지가 올 경우 보낸이와 해당 채팅방의 메시지를 띄워주는 푸시 메시지
  * */
-public class PushWakeKogDialog extends Activity {
+public class PushWakeKogDialog extends BaseActivity {
     private String senderNickname, roomID, message, messageType;
     private static final String LOG_TAG = "Push Dialog";
     private DBHelper mDBHelper;

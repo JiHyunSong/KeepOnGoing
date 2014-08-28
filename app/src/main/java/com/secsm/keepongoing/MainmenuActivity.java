@@ -1,6 +1,7 @@
 package com.secsm.keepongoing;
 
 import com.secsm.keepongoing.DB.DBHelper;
+import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.KogPreference;
 
 import android.app.Activity;
@@ -20,7 +21,7 @@ import android.widget.TabHost;
 
 import java.util.ArrayList;
 
-public class MainmenuActivity extends Activity {
+public class MainmenuActivity extends BaseActivity {
 
     public static final int ROOMNAME_REQUEST_CODE = 1;
     public static final int FRIENDNAME_REQUEST_CODE = 2;

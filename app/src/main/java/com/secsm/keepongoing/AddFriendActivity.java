@@ -19,12 +19,14 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.secsm.keepongoing.R;
+import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
+import com.secsm.keepongoing.Shared.MyVolley;
 
 import org.json.JSONObject;
 
-public class AddFriendActivity extends Activity {
+public class AddFriendActivity extends BaseActivity {
 
     private Button add_friend_add_btn;
     private Button add_friend_go_back_btn;
@@ -41,11 +43,14 @@ public class AddFriendActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_friend);
 
-        vQueue = Volley.newRequestQueue(this);
+//        vQueue = Volley.newRequestQueue(this);
+        vQueue = MyVolley.getRequestQueue(AddFriendActivity.this);
 
         add_friend_add_btn = (Button) findViewById(R.id.add_friend_add_btn);
         add_friend_go_back_btn = (Button) findViewById(R.id.add_friend_go_back_btn);
         add_friend_name_et = (EditText) findViewById(R.id.add_friend_name_et);
+
+        add_friend_name_et.setPrivateImeOptions("defaultInputmode=english;");
 
         add_friend_add_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

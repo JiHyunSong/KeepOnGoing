@@ -5,17 +5,32 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.secsm.keepongoing.Adapters.RoomNaming;
+import com.secsm.keepongoing.Adapters.RoomsArrayAdapters;
+import com.secsm.keepongoing.DB.DBHelper;
+import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
+import com.secsm.keepongoing.Shared.MyVolley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URLDecoder;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 
@@ -26,6 +41,9 @@ public class GcmIntentService extends IntentService {
     private static final int FRIEND_INVITE = 1;
     private static final int CHAT_MESSAGE_CHAT = 2;
     private static final int CHAT_MESSAGE_IMAGE = 3;
+    private RequestQueue vQueue;
+    private DBHelper mDBHelper;
+
     public GcmIntentService() {
         super("GcmIntentService");
     }
@@ -37,7 +55,8 @@ public class GcmIntentService extends IntentService {
         // The getMessageType() intent parameter must be the intent you received
         // in your BroadcastReceiver.
         String messageType = gcm.getMessageType(intent);
-
+        mDBHelper = new DBHelper(this);
+        vQueue = MyVolley.getRequestQueue(this);
         if (!extras.isEmpty()) { // has effect of unparcelling Bundle
 
 //          * Filter messages based on message type. Since it is likely that GCM
@@ -100,6 +119,8 @@ public class GcmIntentService extends IntentService {
     private void pushFriendInvite(Context context, Intent intent) {
     }
 
+
+
     private void pushChatMessage(Context context, Intent intent) {
         String senderNickname;
         JSONObject intentMessage;
@@ -135,6 +156,116 @@ public class GcmIntentService extends IntentService {
         }
     }
 
+
+    private void pushChatMessageOnlyNotificationBar(Context context, Intent intent)
+    {
+        String senderNickname;
+        JSONObject intentMessage;
+        String rid;
+        String message;
+        String messageType;
+        PushWakeLock.acquireCpuWakeLock(context);
+        Vibrator mVib = (Vibrator) context
+                .getSystemService(context.VIBRATOR_SERVICE);
+        mVib.vibrate(500);
+        try {
+            intentMessage = new JSONObject(intent.getExtras().getString("message"));
+            senderNickname = intentMessage.getString("nickname");
+            rid = intentMessage.getString("rid");
+            message = intentMessage.getString("message");
+            messageType = intentMessage.getString("messageType");
+
+
+
+            thisRoom = findRoomById(rid);
+
+            if(thisRoom != null) {
+                insertIntoMsgInSQLite(rid, senderNickname, message, getRealTime(), "false", messageType);
+                if(messageType.equals(KogPreference.MESSAGE_TYPE_IMAGE))
+                    message = "(사진)";
+
+                if (message.length() > 15)
+                    message = message.substring(0, 15);
+
+                NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+                Intent _intent = new Intent(getApplicationContext(), TabActivity.class);
+                _intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                _intent.putExtra("msg", msg);
+                _intent.putExtra("type", thisRoom.getType());
+                _intent.putExtra("rule", thisRoom.getRule());
+                KogPreference.setRid(context, rid);
+                KogPreference.setQuizNum(context, thisRoom.getQuiz_num());
+
+                PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_launcher)
+                        .setContentTitle(senderNickname)
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
+                        .setContentText(message)
+                        .setAutoCancel(true)
+                        .setVibrate(new long[]{0, 500});
+
+                mBuilder.setContentIntent(contentIntent);
+                mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+            }
+
+        }catch (JSONException e)
+        {
+            Log.e(LOG_TAG, "push Chat Message Json Exception : " + e.toString());
+        }
+    }
+
+    private RoomNaming findRoomById(String rid)
+    {
+        for(int i=0; i<mRooms.size(); i++)
+        {
+            if(mRooms.get(i).getRid().equals(rid))
+            {
+                return mRooms.get(i);
+            }
+        }
+        return null;
+    }
+
+
+    private void insertIntoMsgInSQLite(String roomID, String _senderID, String _senderText, String _time, String _me, String _messageType) {
+        SQLiteDatabase db;
+        db = mDBHelper.getWritableDatabase();
+        Log.i(LOG_TAG, "insert msg");
+        Log.i("day", "nickname : " + _senderID);
+        String query = "INSERT INTO Chat " +
+                //"(room_id, senderID, senderText, year, month, day, time, me) " +
+                "(rid, senderID, senderText, time, me, messageType) " +
+                "VALUES (" +
+                "'" + roomID + "','"
+                + _senderID + "','"
+                + _senderText + "','"
+                + _time + "','"
+                + _me + "','"
+                + _messageType + "');";
+        // TODO : check _time
+        Log.i(LOG_TAG, "execSQL : " + query);
+        db.execSQL(query);
+        db.close();
+        mDBHelper.close();
+    }
+
+    /* message info must need the time */
+    public String getRealTime() {
+        long time = System.currentTimeMillis();
+        Timestamp currentTimestamp = new Timestamp(time);
+        // I/StudyRoom Activity﹕ long : 1408229086924
+        // Log.i(LOG_TAG, "long : " + time);
+        // I/StudyRoom Activity﹕ Timestamp : 2014-08-17 07:44:46.924
+        // Log.i(LOG_TAG, "Timestamp : " + currentTimestamp);
+        // I/StudyRoom Activity﹕ Timestamp.toString().substring(0, 10) : 2014-08-17
+        // Log.i(LOG_TAG, "Timestamp.toString().substring(0, 19) : " + currentTimestamp.toString().substring(0, 19));
+        // I/StudyRoom Activity﹕ Timestamp.getTime() : 1408229086924
+        // Log.i(LOG_TAG, "Timestamp.getTime() : " + currentTimestamp.getTime());
+        return currentTimestamp.toString().substring(0, 19);
+    }
+
     // Put the message into a notification and post it.
     // This is just one simple example of what you might choose to do with
     // a GCM message.
@@ -159,4 +290,81 @@ public class GcmIntentService extends IntentService {
         mBuilder.setContentIntent(contentIntent);
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
     }
+
+
+    private ArrayList<RoomNaming> mRooms;
+    private RoomNaming thisRoom;
+
+    private void getStudyRoomsRequest(Context context) {
+        String get_url = KogPreference.REST_URL +
+                "Rooms" +
+                "?nickname=" + KogPreference.getNickName(context);
+
+        Log.i(LOG_TAG, "URL : " + get_url);
+
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, Encrypt.encodeIfNeed(get_url), null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(LOG_TAG, "get JSONObject");
+                        Log.i(LOG_TAG, response.toString());
+                        try {
+                            int status_code = response.getInt("status");
+                            if (status_code == 200) {
+                                JSONArray rMessage;
+                                rMessage = response.getJSONArray("message");
+                                //////// real action ////////
+                                mRooms = new ArrayList<RoomNaming>();
+                                JSONObject rObj;
+
+                                //{"message":[{"targetTime":null,"image":"http:\/\/210.118.74.195:8080\/KOG_Server_Rest\/upload\/UserImage\/default.png","nickname":"jonghean"}],"status":"200"}
+                                Log.i(LOG_TAG, "room size : " + rMessage.length());
+                                for(int i=0; i< rMessage.length(); i++) {
+                                    rObj = rMessage.getJSONObject(i);
+                                    if (!"null".equals(rObj.getString("rid"))){
+                                        mRooms.add(new RoomNaming(
+                                                URLDecoder.decode(rObj.getString("type"), "UTF-8"),
+                                                URLDecoder.decode(rObj.getString("rid"),"UTF-8"),
+                                                URLDecoder.decode(rObj.getString("rule"),"UTF-8"),
+                                                URLDecoder.decode(rObj.getString("roomname"), "UTF-8"),
+                                                URLDecoder.decode(rObj.getString("maxHolidayCount"),"UTF-8"),
+                                                URLDecoder.decode(rObj.getString("startTime"),"UTF-8"),
+                                                URLDecoder.decode(rObj.getString("durationTime"),"UTF-8"),
+                                                URLDecoder.decode(rObj.getString("showupTime"),"UTF-8"),
+                                                URLDecoder.decode(rObj.getString("meetDays"),"UTF-8"),
+                                                URLDecoder.decode(rObj.getString("num"),"UTF-8")
+                                        ));
+                                        Log.i(LOG_TAG, "num"+ URLDecoder.decode(rObj.getString("num"),"UTF-8"));
+                                    }
+                                }
+
+//                                RoomsArrayAdapters roomsArrayAdapter;
+//                                roomsArrayAdapter = new RoomsArrayAdapters(TabActivity.this, R.layout.room_list_item, mRooms);
+//                                roomList.setAdapter(roomsArrayAdapter);
+                                /////////////////////////////
+                            } else {
+//                                Toast.makeText(getBaseContext(), "통신 에러 : \n스터디 방 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+                                if (KogPreference.DEBUG_MODE) {
+                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        } catch (Exception e) {
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+//                Toast.makeText(getBaseContext(), "통신 에러 : \n스터디 방 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+                Log.i(LOG_TAG, "Response Error");
+                if (KogPreference.DEBUG_MODE) {
+                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        }
+        );
+        vQueue.add(jsObjRequest);
+        vQueue.start();
+    }
+
 }

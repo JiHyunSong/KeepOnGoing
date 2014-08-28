@@ -16,6 +16,7 @@ import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.fourmob.datetimepicker.sample.date_pick;
 import com.fragmenttrasitionextendedexample.quiz_set_result;
 import com.secsm.keepongoing.R;
+import com.secsm.keepongoing.Shared.BaseFragmentActivity;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 
-public class Quiz_Set_Search extends FragmentActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener  {
+public class Quiz_Set_Search extends BaseFragmentActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener  {
 
     public static final String DATEPICKER_TAG = "datepicker";
     public static final String TIMEPICKER_TAG = "timepicker";

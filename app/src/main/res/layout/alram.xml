@@ -40,11 +40,13 @@
         android:text="기상 시간을 설정해 주세요."
         android:textColor="@android:color/white"
         android:textSize="15dp"
+        android:visibility="gone"
         android:textStyle="bold"></TextView>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:gravity="center_horizontal"
         android:orientation="horizontal">
 

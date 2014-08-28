@@ -19,12 +19,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
+import com.secsm.keepongoing.Shared.MyVolley;
 
 import org.json.JSONObject;
 
-public class AuthNextActivity extends Activity {
+public class AuthNextActivity extends BaseActivity {
     Intent intent;
     Button btnOk;
     Button btnGoBack;
@@ -41,7 +43,8 @@ public class AuthNextActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth_next);
 
-        vQueue = Volley.newRequestQueue(this);
+//        vQueue = Volley.newRequestQueue(this);
+        vQueue = MyVolley.getRequestQueue(AuthNextActivity.this);
 
         intent = getIntent();
         phoneNo = intent.getStringExtra("phoneNo");

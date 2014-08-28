@@ -48,7 +48,6 @@
     <string name="toggle_animation">Toggle animation</string>
     <string name="title_activity_quiz_set">Quiz_set</string>
     <string name="title_activity_quiz__set__subject">Quiz_Set_Subject</string>
-
     <string name="done_label">Done</string>
     <string name="day_picker_description">Month grid of days</string>
     <string name="year_picker_description">Year list</string>
@@ -57,7 +56,6 @@
     <string name="item_is_selected">%1$s selected</string>
     <string name="sans_serif" translatable="false">sans-serif</string>
     <string name="day_of_week_label_typeface" translatable="false">sans-serif</string>
-
     <string name="time_placeholder" translatable="false">--</string>
     <string name="time_separator" translatable="false">:</string>
 
@@ -80,5 +78,6 @@
     <string name="select_minutes">Select minutes</string>
     <string name="title_activity_add_more_friend">AddMoreFriendActivity</string>
     <string name="title_activity_my_profile">MyProfileActivity</string>
+    <string name="title_activity_base">BaseActivity</string>
 
 </resources>

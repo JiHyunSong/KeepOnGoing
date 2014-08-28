@@ -9,11 +9,12 @@ import android.widget.ListView;
 import com.secsm.keepongoing.Alarm.Contact;
 import com.secsm.keepongoing.Alarm.DBContactHelper;
 import com.secsm.keepongoing.R;
+import com.secsm.keepongoing.Shared.BaseActivity;
 
 import java.util.ArrayList;
 
 
-public class room_friends_list extends Activity implements View.OnClickListener {
+public class room_friends_list extends BaseActivity implements View.OnClickListener {
     private ArrayAdapter<String> _arrAdapter;
     private ListView listView;
 

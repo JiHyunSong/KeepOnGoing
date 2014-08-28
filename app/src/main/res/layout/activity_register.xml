@@ -27,7 +27,7 @@
                 android:layout_margin="5dp"
                 android:text="사용자 닉네임 :"
                 android:textColor="#0000cd"
-                android:textSize="20dp" />
+                android:textSize="20sp" />
 
             <EditText
                 android:id="@+id/txtNickName"
@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tvNickname"
                 android:layout_gravity="left"
-                android:inputType="textPersonName" />
+                android:inputType="textVisiblePassword" />
 
             <TextView
                 android:id="@+id/tvNickAlert"
@@ -46,7 +46,7 @@
                 android:layout_toRightOf="@id/tvNickname"
                 android:text="* 4자리 이상 10자리 이하"
                 android:textColor="#cd0000"
-                android:textSize="10dp"
+                android:textSize="10sp"
                 android:visibility="invisible" />
 
             <TextView
@@ -57,7 +57,7 @@
                 android:layout_margin="5dp"
                 android:text="비밀번호 :"
                 android:textColor="#0000cd"
-                android:textSize="20dp" />
+                android:textSize="20sp" />
 
             <EditText
                 android:id="@+id/txtPassword1"
@@ -75,7 +75,7 @@
                 android:layout_margin="5dp"
                 android:text="비밀번호 확인:"
                 android:textColor="#0000cd"
-                android:textSize="20dp" />
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/tvPwdAlert"
@@ -87,7 +87,7 @@
                 android:layout_toRightOf="@id/tvPassword2"
                 android:text="* 4자리 이상 12자리 이하"
                 android:textColor="#cd0000"
-                android:textSize="10dp"
+                android:textSize="10sp"
                 android:visibility="invisible" />
 
             <EditText
@@ -106,7 +106,7 @@
                 android:layout_margin="5dp"
                 android:text="전화번호 :"
                 android:textColor="#0000cd"
-                android:textSize="20dp" />
+                android:textSize="20sp" />
 
             <EditText
                 android:id="@+id/txtPhoneNum"

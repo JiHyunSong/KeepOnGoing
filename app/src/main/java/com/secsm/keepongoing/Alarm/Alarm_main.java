@@ -17,11 +17,12 @@ import android.widget.TimePicker.OnTimeChangedListener;
 import android.widget.Toast;
 
 import com.secsm.keepongoing.R;
+import com.secsm.keepongoing.Shared.BaseActivity;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class Alarm_main extends Activity implements DatePicker.OnDateChangedListener, OnTimeChangedListener {
+public class Alarm_main extends BaseActivity implements DatePicker.OnDateChangedListener, OnTimeChangedListener {
 
     // 알람 메니저
     private AlarmManager mManager;

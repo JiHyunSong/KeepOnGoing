@@ -101,9 +101,10 @@ public class AlramAdapter extends BaseAdapter {
                         //   Toast.makeText(v.getContext(), "선택된자의 이름은 기상시간", 2).show();
                     }
                     if (position == 1) {
-                        Intent intent = new Intent(v.getContext(), Alarm_main.class);
-                        intent.putExtra("position", position);
-                        v.getContext().startActivity(intent);
+//                        Intent intent = new Intent(v.getContext(), Alarm_main.class);
+//                        intent.putExtra("position", position);
+//                        v.getContext().startActivity(intent);
+                        listener.setAccomplishedTime();
                         //     Toast.makeText(v.getContext(), "선택된자의 이름은 목표시간", 2).show();
                     }
 

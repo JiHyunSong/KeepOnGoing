@@ -20,8 +20,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.secsm.keepongoing.R;
+import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
+import com.secsm.keepongoing.Shared.MyVolley;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -29,7 +31,7 @@ import org.json.JSONObject;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 
-public class Solve_Main extends Activity {
+public class Solve_Main extends BaseActivity {
     private ArrayAdapter<String> _arrAdapter;
     private ListView listView;
     public String LOG_TAG = "Solve MAIN";
@@ -52,7 +54,8 @@ public class Solve_Main extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        vQueue = Volley.newRequestQueue(this);
+//        vQueue = Volley.newRequestQueue(this);
+        vQueue = MyVolley.getRequestQueue(Solve_Main.this);
         setContentView(R.layout.activity_solve__main);
         list = new ArrayList<Quiz_data>();
 
