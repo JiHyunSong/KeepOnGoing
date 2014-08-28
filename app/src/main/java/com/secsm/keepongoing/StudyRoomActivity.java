@@ -989,8 +989,9 @@ public class StudyRoomActivity extends BaseActivity {
 //                Log.e(LOG_TAG, "study_room_below_layout_lp.height : " + study_room_below_layout_lp.height);
 //                Log.e(LOG_TAG, "isAdditionalPageOpen : " + isAdditionalPageOpen);
 //                Log.e(LOG_TAG, "study_room_fl1_lp.height  : " + study_room_fl1_lp.height);
+//                study_room_fl1_lp.height = (activityRootView.getHeight() - actionBarHeight < 0 ? 100 : activityRootView.getHeight() - actionBarHeight);
+//                study_room_fl1_lp.height = (availableHeight - actionBarHeight < 0 ? 100 : availableHeight - actionBarHeight);
                 study_room_fl1_lp.height = (activityRootView.getHeight() - actionBarHeight < 0 ? 100 : activityRootView.getHeight() - actionBarHeight);
-                study_room_fl1_lp.height = (availableHeight - actionBarHeight < 0 ? 100 : availableHeight - actionBarHeight);
                 study_room_below_layout_lp.height = actionBarHeight;
                 study_room_additional_page_lp.height = 0;
             }
@@ -1488,8 +1489,7 @@ S3
 
             if (isAdditionalPageOpen) {
                 setInvisibleAddtionalPage();
-            }
-            if(!isAdditionalPageOpen && !isPageOpen) {
+            }else if(!isAdditionalPageOpen && !isPageOpen) {
 //                setResult(RESULT_OK);
 //                setInvisibleAddtionalPage();
                 StudyRoomActivity.this.finish();
