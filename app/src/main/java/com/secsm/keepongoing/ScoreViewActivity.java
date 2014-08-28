@@ -179,14 +179,14 @@ public class ScoreViewActivity extends Activity {
         // 나머지 계산
 
         for (int i = 0; i < mI; i++) {
-            for (int j = 12; j < (maxIndex % 7) -1 + 12 ; j++) {
+            for (int j = 11; j < (maxIndex % 7) + 11 ; j++) {
                 if(i == 0){
                     // 요일
                     Log.i(LOG_TAG, " i : " + i + " j : " + j);
-                    Log.i(LOG_TAG, "index : " + ((j * mI) + i) + " | value : " + tag[((j - 12) % 7)]);
+                    Log.i(LOG_TAG, "index : " + ((j * mI) + i) + " | value : " + tag[((j - 11) % 7)]);
 
 //                    arrList[j][i] = tag[((j-1) % 7)];
-                    printResult[(j * mI) + i] = tag[((j - 12) % 7)];
+                    printResult[(j * mI) + i] = tag[((j - 11) % 7)];
                 }
                 else{
                     // 데이터 삽입
@@ -203,7 +203,7 @@ public class ScoreViewActivity extends Activity {
 //                    Log.i(LOG_TAG, "index : " + ((j * mI) + i) + " | value : " + tag2[j % 7]);
 //
 ////                    arrList[j][i] = tag[((j-1) % 7)];
-//                    printResult[(j * mI) + i] = tag2[j % 7];
+//                    printResult[(j * mI) + i] = tag2[j % ((maxIndex % 7) -1 + 12) ];
 //                } else {
 //                    // 데이터 삽입
 ////                    arrList[j][i] = mFriendsScore.get(FriendNicks[i-1]).get(j-1).getGoalTime();
