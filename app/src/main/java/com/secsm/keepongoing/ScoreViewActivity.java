@@ -87,8 +87,7 @@ public class ScoreViewActivity extends Activity {
             for (int j = 0; j < 7 + 1; j++) {
                 if (i == 0 && j == 0) {
 //                    arrList[j][i] = "";
-                    printResult[(j + mI) + i] = "";
-                    continue;
+                    printResult[(j * mI) + i] = "일\\유저";
                 } else if (j == 0) {
                     Log.i(LOG_TAG, " i : " + i + " j : " + j);
                     Log.i(LOG_TAG, "index : " + ((j * mI) + i) + " | value : " + FriendNicks[i - 1]);
@@ -110,14 +109,14 @@ public class ScoreViewActivity extends Activity {
                     printResult[(j * mI) + i] = mFriendsScore.get(FriendNicks[i - 1]).get(j - 1).getGoalTime();
                 }
             }
-            for (int j = 7; j < 7 + 3; j++) {
+            for (int j = 8; j < 8 + 3; j++) {
                 if (i == 0) {
                     // 요일
                     Log.i(LOG_TAG, " i : " + i + " j : " + j);
-                    Log.i(LOG_TAG, "index : " + ((j * mI) + i) + " | value : " + tag2[j % 7]);
+                    Log.i(LOG_TAG, "index : " + ((j * mI) + i) + " | value : " + tag2[(j - 8) % 3]);
 
 //                    arrList[j][i] = tag[((j-1) % 7)];
-                    printResult[(j * mI) + i] = tag2[j % 7];
+                    printResult[(j * mI) + i] = tag2[ (j - 8) % 3];
                 } else {
                     // 데이터 삽입
 //                    arrList[j][i] = mFriendsScore.get(FriendNicks[i-1]).get(j-1).getGoalTime();
@@ -127,7 +126,7 @@ public class ScoreViewActivity extends Activity {
                     int hour = 0;
                     int min = 0;
                     switch (j) {
-                        case 7:
+                        case 8:
                             // 목표합계
                             for (int n = 0; n < 7; n++) {
                                 count += mI;// 00:00 / 00:00
@@ -141,7 +140,7 @@ public class ScoreViewActivity extends Activity {
                             count += mI * 1;
                             printResult[count] = "" + (hour < 10 ? "0" + hour : hour) + ":" + (min < 10 ? "0" + min : min);
                             break;
-                        case 8:
+                        case 9:
                             // 달성합계
                             for (int n = 0; n < 7; n++) {
                                 count += mI;
@@ -156,13 +155,13 @@ public class ScoreViewActivity extends Activity {
                             printResult[count] = "" + (hour < 10 ? "0" + hour : hour) + ":" + (min < 10 ? "0" + min : min);
 
                             break;
-                        case 9:
+                        case 10:
                             // sum
 //                            int count = i;
 //                            int sum = 0;
                             for (int n = 0; n < 7; n++) {
                                 count += mI;
-                                sum += mFriendsScore.get(FriendNicks[i-1]).get(i-1).getIntScore();
+                                sum += mFriendsScore.get(FriendNicks[i-1]).get(n).getIntScore();
                             }
 
                             count += mI * 3;
@@ -179,7 +178,8 @@ public class ScoreViewActivity extends Activity {
         // 나머지 계산
 
         for (int i = 0; i < mI; i++) {
-            for (int j = 11; j < (maxIndex % 7) + 11 ; j++) {
+            int j = 11;
+            for (j = 11; j < (maxIndex % 7) + 11 ; j++) {
                 if(i == 0){
                     // 요일
                     Log.i(LOG_TAG, " i : " + i + " j : " + j);
@@ -196,70 +196,76 @@ public class ScoreViewActivity extends Activity {
                     printResult[(j * mI) + i] = mFriendsScore.get(FriendNicks[i - 1]).get(j - 1 - 3).getGoalTime();
                 }
             }
-//            for (int j = (maxIndex % 7) -1 + 12 ; j < (maxIndex % 7) -1 + 12 + 3; j++) {
-//                if (i == 0) {
-//                    // 요일
-//                    Log.i(LOG_TAG, " i : " + i + " j : " + j);
-//                    Log.i(LOG_TAG, "index : " + ((j * mI) + i) + " | value : " + tag2[j % 7]);
-//
-////                    arrList[j][i] = tag[((j-1) % 7)];
-//                    printResult[(j * mI) + i] = tag2[j % ((maxIndex % 7) -1 + 12) ];
-//                } else {
-//                    // 데이터 삽입
-////                    arrList[j][i] = mFriendsScore.get(FriendNicks[i-1]).get(j-1).getGoalTime();
-//
-//                    int count = i;
-//                    int sum = 0;
-//                    int hour = 0;
-//                    int min = 0;
-//                    switch (j) {
-//                        case 7:
-//                            // 목표합계
-//                            for (int n = 0; n < 7; n++) {
-//                                count += mI;// 00:00 / 00:00
-//                                hour += Integer.parseInt(printResult[count].substring(8, 10));
-//                                min += Integer.parseInt(printResult[count].substring(11, 13));
-//                            }
-//
-//                            hour += min/60;
-//                            min %= 60;
-//
-//                            count += mI * 1;
-//                            printResult[count] = "" + (hour < 10 ? "0" + hour : hour) + ":" + (min < 10 ? "0" + min : min);
-//                            break;
-//                        case 8:
-//                            // 달성합계
-//                            for (int n = 0; n < 7; n++) {
-//                                count += mI;
-//                                hour += Integer.parseInt(printResult[count].substring(0, 2));
-//                                min += Integer.parseInt(printResult[count].substring(3, 5));
-//                            }
-//
-//                            hour += min/60;
-//                            min %= 60;
-//
-//                            count += mI * 2;
-//                            printResult[count] = "" + (hour < 10 ? "0" + hour : hour) + ":" + (min < 10 ? "0" + min : min);
-//
-//                            break;
-//                        case 9:
-//                            // sum
-////                            int count = i;
-////                            int sum = 0;
-//                            for (int n = 0; n < 7; n++) {
-//                                count += mI;
-//                                sum += mFriendsScore.get(FriendNicks[i-1]).get(i-1).getIntScore();
-//                            }
-//
-//                            count += mI * 3;
-//                            printResult[count] = "" + sum;
-//
-//                            break;
-//                    }
-//                    Log.i(LOG_TAG, " i : " + i + " j : " + j);
-//                    Log.i(LOG_TAG, "index : " + count + " | value : " + printResult[count]);
-//                }
-//            }
+
+            int temp_j = j;
+            for (; j < temp_j + 3; j++) {
+                if (i == 0) {
+                    // 요일
+                    Log.i(LOG_TAG, " i : " + i + " j : " + j);
+                    Log.i(LOG_TAG, "index : " + ((j * mI) + i) + " | value : " + tag2[(j-temp_j) % 3]);
+
+//                    arrList[j][i] = tag[((j-1) % 7)];
+                    printResult[(j * mI) + i] = tag2[(j-temp_j) % 3];
+                } else {
+                    // 데이터 삽입
+//                    arrList[j][i] = mFriendsScore.get(FriendNicks[i-1]).get(j-1).getGoalTime();
+
+                    int count = i + (mI * 10);
+                    int sum = 0;
+                    int hour = 0;
+                    int min = 0;
+
+                    switch (j - temp_j) {
+                        case 0:
+                            // 목표합계
+                            for (int n = 0; n < (maxIndex % 7); n++) {
+                                count += mI;// 00:00 / 00:00
+                                hour += Integer.parseInt(printResult[count].substring(8, 10));
+                                min += Integer.parseInt(printResult[count].substring(11, 13));
+                            }
+
+                            hour += min/60;
+                            min %= 60;
+
+                            count += mI * 1;
+                            printResult[count] = "" + (hour < 10 ? "0" + hour : hour) + ":" + (min < 10 ? "0" + min : min);
+                            break;
+                        case 1:
+                            // 달성합계
+                            for (int n = 0; n < (maxIndex % 7); n++) {
+                                count += mI;
+                                hour += Integer.parseInt(printResult[count].substring(0, 2));
+                                min += Integer.parseInt(printResult[count].substring(3, 5));
+                            }
+
+                            hour += min/60;
+                            min %= 60;
+
+                            count += mI * 2;
+                            printResult[count] = "" + (hour < 10 ? "0" + hour : hour) + ":" + (min < 10 ? "0" + min : min);
+
+                            break;
+                        case 2:
+                            // sum
+//                            int count = i;
+//                            int sum = 0;
+                            for (int n = 7; n < maxIndex; n++) {
+                                count += mI;
+                                sum += mFriendsScore.get(FriendNicks[i - 1]).get(n).getIntScore();
+                            }
+
+                            count += mI * 3;
+                            printResult[count] = "" + sum;
+
+                            break;
+                    }
+                    Log.i(LOG_TAG, " i : " + i + " j : " + j);
+                    Log.i(LOG_TAG, "index : " + count + " | value : " + printResult[count]);
+                }
+            }
+
+
+
         }
         // 합산2
 
@@ -285,15 +291,21 @@ public class ScoreViewActivity extends Activity {
 
 
          */
+        Log.i(LOG_TAG, "test Message1");
         appendRow(printResult, mI);
     }
 
     public void appendRow(String[] strarray, int width) {
+
+        Log.i(LOG_TAG, "test Message2, width : " + width);
         TableLayout tb = (TableLayout) findViewById(R.id.score_view_info_table);
         tb.removeAllViewsInLayout();
         TextView[] tv = new TextView[strarray.length];
         for (int i = 1; i < strarray.length + 1; i++) {
+            Log.i(LOG_TAG, "i-1 in appendRow :" + (i-1));
             tv[i - 1] = new TextView(this);
+            Log.i(LOG_TAG, "strarray[i - 1] : " + strarray[i - 1]);
+            Log.i(LOG_TAG, "strarray[i - 1].toString()" + strarray[i - 1].toString());
             tv[i - 1].setText(strarray[i - 1].toString());
             tv[i - 1].setTextColor(Color.parseColor("#7F7F7F"));
             tv[i - 1].setBackgroundResource(R.drawable.cell_shape);
@@ -301,6 +313,7 @@ public class ScoreViewActivity extends Activity {
             tv[i - 1].setGravity(Gravity.CENTER);
             tv[i - 1].setShadowLayer(1.0f, 1, 1, Color.parseColor("#AFFFFFFF"));
 
+            Log.i(LOG_TAG, "i-1 in appendRow :" + (i-1));
             if ((i != 0 && i % width == 0)) {
                 TableRow tr = new TableRow(this);
 
