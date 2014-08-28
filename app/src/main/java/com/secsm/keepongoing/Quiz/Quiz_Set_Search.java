@@ -66,7 +66,7 @@ public class Quiz_Set_Search extends FragmentActivity implements DatePickerDialo
         chk2 = (CheckBox)findViewById(R.id.check2);
         chk3 = (CheckBox)findViewById(R.id.check3);
         chk4 = (CheckBox)findViewById(R.id.check4);
-        chk5 = (CheckBox)findViewById(R.id.check5);
+    //    chk5 = (CheckBox)findViewById(R.id.check5);
 
        checkall.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -76,14 +76,14 @@ public class Quiz_Set_Search extends FragmentActivity implements DatePickerDialo
                     chk2.setChecked(true);
                     chk3.setChecked(true);
                     chk4.setChecked(true);
-                    chk5.setChecked(true);
+                   // chk5.setChecked(true);
                 }
                 else{
                     chk1.setChecked(false);
                     chk2.setChecked(false);
                     chk3.setChecked(false);
                     chk4.setChecked(false);
-                    chk5.setChecked(false);
+                   // chk5.setChecked(false);
                 }
             }
         });

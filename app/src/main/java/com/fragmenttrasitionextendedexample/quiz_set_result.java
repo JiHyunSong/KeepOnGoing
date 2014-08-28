@@ -19,19 +19,23 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.desarrollodroide.libraryfragmenttransactionextended.FragmentTransactionExtended;
+import com.secsm.keepongoing.Quiz.QuizSetlistData;
 import com.secsm.keepongoing.R;
 import com.secsm.keepongoing.Shared.KogPreference;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.URLDecoder;
+import java.util.ArrayList;
 
 
 public class quiz_set_result extends Activity implements AdapterView.OnItemSelectedListener{
     private int optionSelected = 16;
     //private int optionSelected = 0;
     private SlidingListFragmentLeft mFirstFragment,newFragment;
-    private int index=0;
+   // private int index=0;
+   ArrayList<QuizSetlistData> list;
     private String subject;
     private String datestring;
     private String title;
@@ -57,16 +61,17 @@ public class quiz_set_result extends Activity implements AdapterView.OnItemSelec
 //@민수 수신
 
     Log.e("minsu:)","this is data : "+subject+" / "+datestring+" / "+title);
+
+
         questionSetRequest();
-
-
         //Add first fragment
-        mFirstFragment = new SlidingListFragmentLeft();
+    /*    mFirstFragment = new SlidingListFragmentLeft();
         FragmentManager fm = getFragmentManager();
-        mFirstFragment.setSubject("1");
+
+        questionSetRequest();
         FragmentTransaction fragmentTransaction = fm.beginTransaction();
         fragmentTransaction.add(R.id.fragment_place, mFirstFragment);
-        fragmentTransaction.commit();
+        fragmentTransaction.commit();*/
     }
 
     public void addTransition(View view) {
@@ -147,10 +152,11 @@ public class quiz_set_result extends Activity implements AdapterView.OnItemSelec
         JSONObject sendBody = new JSONObject();
         try{
      //       sendBody.put("srid", KogPreference.getRid(newnew.this));
-            sendBody.put("date", datestring);
-            sendBody.put("title", title);
-            sendBody.put("types", subject);
             sendBody.put("nickname", KogPreference.getNickName(quiz_set_result.this));
+            sendBody.put("date", datestring);
+            sendBody.put("types", subject);
+            sendBody.put("title", title);
+
             Log.i(LOG_TAG, "sendbody in questionSetRequest : " + sendBody.toString());
         }catch (Exception e)
 
@@ -173,15 +179,30 @@ public class quiz_set_result extends Activity implements AdapterView.OnItemSelec
                                 JSONArray rMessageget;
                                 rMessageget = response.getJSONArray("message");
                                 JSONObject rObj;
-                                Log.i(LOG_TAG, "111111111111111111111111111111111111111111");
-                                rObj=rMessageget.getJSONObject(0);
-                               // questiontype= URLDecoder.decode(rObj.getString("type").toString(), "UTF-8");
-                             //   question=URLDecoder.decode(rObj.getString("question").toString(), "UTF-8");
-                            //    solution=URLDecoder.decode(rObj.getString("solution").toString(), "UTF-8");
-                            //    Log.e("minsu) :","contents2 : "+question+" | "+questiontype+" | "+solution);
-                           //     settingTextView();
-                                //question = question.replace("\\\n", System.getProperty("line.separator"));
-                           //     addlist(solution,answer);
+                                Log.i(LOG_TAG, "rMessage"+rMessageget);
+
+
+                                //list에 넣기
+                                list = new ArrayList<QuizSetlistData>();
+                                for(int i=0;i<rMessageget.length();i++){
+                                    rObj=rMessageget.getJSONObject(i);
+                                    list.add(
+                                            new QuizSetlistData(
+                                                URLDecoder.decode(rObj.getString("title").toString(), "UTF-8"),
+                                                URLDecoder.decode(rObj.getString("date").toString(), "UTF-8"),
+                                                URLDecoder.decode(rObj.getString("subject").toString(), "UTF-8"),
+                                                URLDecoder.decode(rObj.getString("solution").toString(), "UTF-8")
+                                            )
+                                    );
+                                }
+                                mFirstFragment = new SlidingListFragmentLeft();
+                                FragmentManager fm = getFragmentManager();
+                                mFirstFragment.setList(list);
+                                FragmentTransaction fragmentTransaction = fm.beginTransaction();
+                                fragmentTransaction.add(R.id.fragment_place, mFirstFragment);
+                                fragmentTransaction.commit();
+                             //
+
 
 
                                 // real action
@@ -210,6 +231,7 @@ public class quiz_set_result extends Activity implements AdapterView.OnItemSelec
         );
         vQueue.add(jsObjRequest);
         vQueue.start();
+
     }
 
 }

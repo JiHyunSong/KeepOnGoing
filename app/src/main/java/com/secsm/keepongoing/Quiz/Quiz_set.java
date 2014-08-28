@@ -99,28 +99,42 @@ public class Quiz_set extends Activity {
         String[] anstype;
 
         for(int i=0;i<listnum.length;i++) {
+
             if(ansnum[i].split("\\$")!=null&&listnum[i].split("\\$")!=null) {
                 listtype = listnum[i].split("\\$");
                 anstype = ansnum[i].split("\\$");
                 if (listtype[1].toString().equals("multi")) {
 
                     if (listtype[2].toString().equals(anstype[2].toString())) {
-                        list.get(i).correct=true;
+                        list.get(i).correct=1;
                         total++;
                     }
+                    else if(anstype[2].toString().equals("error"))
+                        list.get(i).correct=0;
                     else
-                        list.get(i).correct=false;
+                        list.get(i).correct=-1;
 
                 }
-                if (listtype[1].toString().equals("essay")) ;
-
-                if (listtype[1].toString().equals("tf")) {
+                if (listtype[1].toString().equals("essay")) {
                     if (listtype[2].toString().equals(anstype[2].toString())) {
-                        list.get(i).correct=true;
+                        list.get(i).correct=1;
                         total++;
                     }
+                    else if(anstype[2].toString().equals("error"))
+                        list.get(i).correct=0;
                     else
-                        list.get(i).correct=false;
+                        list.get(i).correct=-1;
+
+                }
+                if (listtype[1].toString().equals("tf")) {
+                    if (listtype[2].toString().equals(anstype[2].toString())) {
+                        list.get(i).correct=1;
+                        total++;
+                    }
+                    else if(anstype[2].toString().equals("error"))
+                        list.get(i).correct=0;
+                    else
+                        list.get(i).correct=-1;
                 }
             }
         }

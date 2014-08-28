@@ -17,10 +17,6 @@ import java.util.ArrayList;
 public class SlidingListFragmentLeft extends Fragment implements MyInterface{
     private int index = 0;
     private String subject;
-
-
-
-
     private ArrayAdapter<String> _arrAdapter;
     private ListView listView;
     String[] arr = null;
@@ -40,15 +36,19 @@ public class SlidingListFragmentLeft extends Fragment implements MyInterface{
 
     private void settingListView(View view) {
 
-        list = new ArrayList<QuizSetlistData>();
-        String output = "와우 : 문제";
-        list.add(new QuizSetlistData(output));
-        output = "씐나 : 문제";
-        list.add(new QuizSetlistData(output));
+        //list = new ArrayList<QuizSetlistData>();
+
+
+        //String output = "와우 : 문제";
+        //list.add(new QuizSetlistData(output));
+        //output = "씐나 : 문제";
+        //list.add(new QuizSetlistData(output));
         listView = (ListView) view.findViewById(R.id.listView_test2);
         listView.setAdapter(new Quiz_Result_Adapter(view.getContext(), list,this));
 
     }
+
+
     public void foo(){
         ((quiz_set_result)getActivity()).addTransition(getView());
     }
@@ -67,8 +67,9 @@ public class SlidingListFragmentLeft extends Fragment implements MyInterface{
         this.index = index;
     }
 
-    public void setSubject(String subject) {
-        this.subject = subject;
+    public void setList(ArrayList<QuizSetlistData> list) {
+        this.list = new ArrayList<QuizSetlistData>();
+        this.list.addAll(list);
     }
 
     public void loadDatabase() {

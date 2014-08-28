@@ -247,11 +247,14 @@ public class listAdapter_Solve extends BaseAdapter {
                 infoList.get(position).chk4+
                 infoList.get(position).chk5
         );*/
+//채점 색
 
-        if((infoList.get(position).correct)==false)
-            v.setBackgroundColor(Color.rgb(255, 0,0));
-        else
-            v.setBackgroundColor(Color.rgb(255, 255, 255));
+        if((infoList.get(position).correct)==1)
+            v.setBackgroundColor(0xFF75FFAF);
+        else if((infoList.get(position).correct)==-1)
+            v.setBackgroundColor(0xFFf94a57);
+        else if((infoList.get(position).correct)==0)
+            v.setBackgroundColor(Color.rgb(255,255,255));
 
         return v;
     }

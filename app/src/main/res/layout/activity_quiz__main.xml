@@ -7,12 +7,16 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/backgroud_image"
     tools:context="com.secsm.keepongoing.AddStudyRoomActivity">
 
     <com.secsm.keepongoing.Quiz.CustomScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:background="@drawable/background_paper"
         android:scrollbars="none"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:id="@+id/quizmain_scroll"
         android:fillViewport="true">
     <RelativeLayout
@@ -25,6 +29,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="horizontal"
+            android:layout_marginTop="10dp"
             >
 
             <com.beardedhen.androidbootstrap.BootstrapButton

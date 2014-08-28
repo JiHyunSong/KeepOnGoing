@@ -182,6 +182,8 @@ public class Quiz_Main extends Activity {
                 if(request_check(list).equals("error"))
                     Toast.makeText(Quiz_Main.this,"모든 답안을 입력하세요",Toast.LENGTH_SHORT).show();
                 else if(request_check(list).equals(""))
+                    Toast.makeText(Quiz_Main.this,"답안을 추가하세요",Toast.LENGTH_SHORT).show();
+                else if(input_problem.getText().toString().equals(""))
                     Toast.makeText(Quiz_Main.this,"문제를 입력하세요",Toast.LENGTH_SHORT).show();
                 else {
                 //    MultipartEntity(input_problem.getText().toString(), String.valueOf(spinner1.getSelectedItem()), request_check(list));
@@ -254,7 +256,7 @@ public class Quiz_Main extends Activity {
                          //       Log.e("minsu ):","minsu:) receive : "+ URLDecoder.decode(rObj.getString("num").toString(), "UTF-8"));
                             //   Log.e("minsu ):","minsue:) send solution : "+ temp);
                                 KogPreference.setQuizNum(Quiz_Main.this,  URLDecoder.decode(rObj.getString("num").toString(), "UTF-8"));
-
+                                Toast.makeText(getBaseContext(), "제출완료", Toast.LENGTH_SHORT).show();
                             } else if (status_code == 9001) {
                                 Toast.makeText(getBaseContext(), "퀴즈 등록이 불가능합니다.", Toast.LENGTH_SHORT).show();
                             } else {

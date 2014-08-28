@@ -3,15 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.secsm.keepongoing.TabActivity">
+    tools:context="com.secsm.keepongoing.TabActivity"
+    android:background="@drawable/backgroud_image">
 
     <LinearLayout
         android:id="@+id/tab_name"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
         android:padding="5dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="#4c382a">
 
         <ImageButton
             android:id="@+id/imgBtn_tab_stopwatch"
@@ -89,7 +90,7 @@
                 android:gravity="center"
                 android:text="현재 시간"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textSize="40dp" />
+                android:textSize="80dp" />
 
 
         </RelativeLayout>

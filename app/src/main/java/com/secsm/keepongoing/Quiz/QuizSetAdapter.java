@@ -5,8 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.secsm.keepongoing.R;
@@ -61,32 +59,9 @@ import java.util.ArrayList;
                   v.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-  /*                     if (position == 0) {
-                            Intent intent = new Intent(v.getContext(), newnew.class);
-                            intent.putExtra("position", infoList.get(position).name);
-                            v.getContext().startActivity(intent);
-                        }
-                        if (position == 1) {
-                            Intent intent = new Intent(v.getContext(), newnew.class);
-                            intent.putExtra("position", infoList.get(position).name);
-                            v.getContext().startActivity(intent);
-                        }
-*/
+
                     }
                 });
-
-                CheckBox roomchk=(CheckBox)v.findViewById(R.id.roomchk);
-                roomchk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked)
-                    infoList.get(position).chk=true;
-                else
-                    infoList.get(position).chk=false;
-                    }
-                });
-
-
 
                 viewHolder.tv_title = (TextView) v.findViewById(R.id.child_textview);
                 viewHolder.tv_title.setText(infoList.get(position).name);
