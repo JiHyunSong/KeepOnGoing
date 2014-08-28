@@ -395,7 +395,5 @@ return total;
         );
         vQueue.add(jsObjRequest);
     }
-
-
 }
 

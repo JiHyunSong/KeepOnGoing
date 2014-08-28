@@ -5,7 +5,6 @@ package com.secsm.keepongoing.Quiz;
  */
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -254,7 +253,7 @@ public class listAdapter_Solve extends BaseAdapter {
         else if((infoList.get(position).correct)==-1)
             v.setBackgroundColor(0xFFf94a57);
         else if((infoList.get(position).correct)==0)
-            v.setBackgroundColor(Color.rgb(255,255,255));
+            v.setBackgroundColor(0x00000000);
 
         return v;
     }

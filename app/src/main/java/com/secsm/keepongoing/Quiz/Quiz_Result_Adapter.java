@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.fragmenttrasitionextendedexample.MyInterface;
 import com.secsm.keepongoing.R;
@@ -56,18 +55,18 @@ public class Quiz_Result_Adapter extends BaseAdapter {
                 v.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        listener.foo();
-                        if (position == 0) {
-                            Toast.makeText(v.getContext(), "선택된자의 이름은 기상시간", 2).show();
-                        }
-                        if (position == 1) {
-                             Toast.makeText(v.getContext(), "선택된자의 이름은 목표시간", 2).show();
-                        }
+                        listener.foo(position);
+
                     }
                 });
 
-                viewHolder.tv_title = (TextView) v.findViewById(R.id.child_textview);
+
+                viewHolder.tv_title = (TextView) v.findViewById(R.id.result_title);
                 viewHolder.tv_title.setText(infoList.get(position).name);
+                viewHolder.date=(TextView) v.findViewById(R.id.result_date);
+                viewHolder.date.setText(infoList.get(position).date);
+                viewHolder.subject=(TextView) v.findViewById(R.id.result_subject);
+                viewHolder.subject.setText(infoList.get(position).subject);
                 v.setTag(viewHolder);
 
             } else {
@@ -100,6 +99,8 @@ public class Quiz_Result_Adapter extends BaseAdapter {
          */
         class ViewHolder {
             public TextView tv_title = null;
+            public TextView subject = null;
+            public TextView date = null;
         }
 
         @Override

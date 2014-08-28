@@ -15,26 +15,32 @@ import com.secsm.keepongoing.R;
 import java.util.ArrayList;
 
 public class SlidingListFragmentLeft extends Fragment implements MyInterface{
-    private int index = 0;
-    private String subject;
+    private int position=0;
+
     private ArrayAdapter<String> _arrAdapter;
     private ListView listView;
-    String[] arr = null;
+    private View view;
     ArrayList<QuizSetlistData> list;
     //int[] imageLocations = {R.drawable.dream01, R.drawable.dream02, R.drawable.dream03};
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.sliding_fragment_layout_left, container, false);
+
+        view = inflater.inflate(R.layout.sliding_fragment_layout_left, container, false);
+        listView = (ListView) view.findViewById(R.id.listView_test2);
+        listView.setAdapter(new Quiz_Result_Adapter(view.getContext(), list,this));
+        return view;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        this.view=view;
         settingListView(view);
     }
 
     private void settingListView(View view) {
+
 
         //list = new ArrayList<QuizSetlistData>();
 
@@ -43,19 +49,23 @@ public class SlidingListFragmentLeft extends Fragment implements MyInterface{
         //list.add(new QuizSetlistData(output));
         //output = "씐나 : 문제";
         //list.add(new QuizSetlistData(output));
-        listView = (ListView) view.findViewById(R.id.listView_test2);
-        listView.setAdapter(new Quiz_Result_Adapter(view.getContext(), list,this));
-
+//        listView = (ListView) view.findViewById(R.id.listView_test2);
+//        listView.setAdapter(new Quiz_Result_Adapter(view.getContext(), list,this));
     }
 
 
-    public void foo(){
-        ((quiz_set_result)getActivity()).addTransition(getView());
+    public void foo(int position){
+        this.position=position;
+        ((quiz_set_result)getActivity()).addTransition(getView(),list.get(position).name,list.get(position).subject,
+                list.get(position).question,list.get(position).solution,list.get(position).date);
     }
 
     public void animate(){
-        ((quiz_set_result)getActivity()).addTransition(getView());
+        ((quiz_set_result)getActivity()).addTransition(getView(),list.get(position).name,list.get(position).subject,
+                list.get(position).question,list.get(position).solution,list.get(position).date);
     }
+
+
 
 
       private void refresh(String $inputValue) {
@@ -63,13 +73,10 @@ public class SlidingListFragmentLeft extends Fragment implements MyInterface{
         _arrAdapter.notifyDataSetChanged();
     }
 
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
     public void setList(ArrayList<QuizSetlistData> list) {
         this.list = new ArrayList<QuizSetlistData>();
         this.list.addAll(list);
+        settingListView(this.view);
     }
 
     public void loadDatabase() {

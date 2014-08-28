@@ -9,7 +9,7 @@
         android:layout_width="fill_parent"
         android:layout_height="60dp"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/background_paper_list_row"
+        android:background="#00000000"
         >
         <TextView
             android:layout_width="wrap_content"

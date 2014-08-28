@@ -134,25 +134,39 @@
 
     </LinearLayout>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <RelativeLayout
         android:id="@+id/tab_stopwatch_layout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@id/tab_name"
-        android:visibility="visible">
+        android:visibility="visible" >
 
         <RelativeLayout
             android:id="@+id/linearLayout2"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:orientation="vertical">
+            android:orientation="vertical" >
 
             <TextView
                 android:id="@+id/currenttime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="현재 시간"
+                android:text="날짜"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
@@ -161,63 +175,68 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:gravity="center"
-                android:text="현재 시간"
+                android:text="메인시간"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textSize="80dp" />
-
-
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/kkk"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
             android:layout_below="@id/linearLayout2"
-            android:layout_marginTop="100dp">
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="50dp"
+            android:background="#77ffffff"
+            android:gravity="center"
+            android:padding="5dp" >
 
             <TextView
                 android:id="@+id/goal_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginLeft="20dp"
-                android:gravity="center"
-                android:text="목표 시간"
+                android:text="목표시간"
                 android:textSize="30dp" />
 
             <TextView
                 android:id="@+id/goal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
                 android:layout_below="@+id/goal_time"
-                android:layout_marginLeft="20dp"
                 android:text="00:00:00"
                 android:textSize="30dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/kkk_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/kkk"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/linearLayout2"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="50dp"
+            android:layout_toRightOf="@id/kkk"
+            android:background="#77ffffff"
+            android:gravity="center"
+            android:padding="5dp" >
 
             <TextView
                 android:id="@+id/achive_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginRight="30dp"
                 android:gravity="center"
-                android:text="달성 시간"
+                android:text="달성시간"
                 android:textSize="30dp" />
 
             <TextView
                 android:id="@+id/tvMsg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_below="@+id/achive_time"
-                android:layout_marginRight="30dp"
                 android:text="00:00:00"
                 android:textSize="30dp" />
         </RelativeLayout>
@@ -234,49 +253,65 @@
             android:textSize="35dp"
             android:visibility="gone" />
 
-
         <RelativeLayout
             android:id="@+id/RelativeLayout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/kkk_2"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_marginBottom="30dp"
-            android:layout_marginRight="30dp"
-            android:gravity="right"
-            android:orientation="horizontal">
-
+            android:gravity="center_horizontal"
+            android:layout_margin="20dp"
+            android:background="#88ffffff" >
 
             <ToggleButton
-
                 android:id="@+id/toggleButton2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/finish"
-                android:background="@drawable/selector_tab_play_button"
-                android:textOff=""
-                android:textOn=""
+                android:layout_alignParentRight="true"
+                android:textOff="일시정지"
+                android:textOn="스타트"
                 android:textSize="30dp" />
 
             <Button
                 android:id="@+id/finish"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/selector_tab_stop_button"
+                android:layout_alignParentLeft="true"
+                android:text=" 초기화 "
                 android:textSize="30dp" />
 
             <ToggleButton
                 android:id="@+id/sliding"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/toggleButton2"
+                android:layout_below="@id/finish"
+                android:layout_margin="5dp"
                 android:textOff="open"
                 android:textOn="close"
                 android:textSize="30dp" />
         </RelativeLayout>
-
-
     </RelativeLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     <RelativeLayout
         android:id="@+id/tab_friends_layout"

@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white" >
-
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+ <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:bootstrapbutton="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -12,17 +12,21 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
+        android:background="@drawable/backgroud_image"
         tools:context="com.secsm.keepongoing.AddStudyRoomActivity">
 
 
         <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_height="fill_parent"
+            android:background="@drawable/background_paper">
 
             <ScrollView
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/buttongroup"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp">
 
                 <RelativeLayout
@@ -41,8 +45,17 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentBottom="true"
-                            android:text="문제"
+                            android:text="제목 : "
                             android:textSize="20dp" />
+                        <TextView
+                            android:id="@+id/question_title_content"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_toRightOf="@id/question_title"
+                            android:text=""
+                            android:textSize="20dp" />
+
 
                         <TextView
                             android:id="@+id/solve_subject_solve"
@@ -72,7 +85,7 @@
                         android:layout_below="@+id/problemandsubject_solve">
 
                         <TextView
-                            android:id="@+id/testtextview2"
+                            android:id="@+id/textview_solve"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/problemandsubject_solve"
@@ -97,31 +110,40 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/listView_Quiz_solve"
-                        android:gravity="right">
-
+                        android:orientation="horizontal"
+                        >
                         <TextView
-                            android:layout_marginTop="15dp"
-                            android:layout_marginBottom="15dp"
-                            android:layout_marginRight="15dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/solve_main_tv"
-                            android:text="total score : "/>
-                        <Button
-                            android:id="@+id/btnSubmit_solve"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_toRightOf="@id/solve_main_tv"
-                            android:layout_alignBaseline="@id/solve_main_tv"
-                            android:text="제출" />
+                            android:id="@+id/date_view"
+                            android:layout_alignParentLeft="true"
+                            android:text="출제일 : "
+                            />
 
+
+                        <Button
+                        android:id="@+id/btnSubmit_solve"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="제출"
+                        android:layout_alignParentRight="true"
+                        />
                         <Button
                             android:id="@+id/back"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
+                            android:layout_toLeftOf="@id/btnSubmit_solve"
+                            android:text="back"
+                            />
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toLeftOf="@id/btnSubmit_solve"
                             android:layout_alignBaseline="@id/solve_main_tv"
-                            android:text="back" />
+                            android:id="@+id/solve_main_tv"
+                            android:text="점수 : " />
 
                     </RelativeLayout>
                 </RelativeLayout>
@@ -130,6 +152,14 @@
         </RelativeLayout>
 
     </RelativeLayout>
+
+
+
+
+
+
+
+
 
 
 

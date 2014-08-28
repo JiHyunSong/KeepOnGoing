@@ -74,11 +74,16 @@ public class quiz_set_result extends Activity implements AdapterView.OnItemSelec
         fragmentTransaction.commit();*/
     }
 
-    public void addTransition(View view) {
+    public void addTransition(View view,String title,String subject,String question,String solution,String date) {
         if (getFragmentManager().getBackStackEntryCount()==0) {
             Fragment secondFragment = new SlidingListFragmentRight();
-      //      ((SlidingListFragmentRight) secondFragment).setIndex(++index);
-     //       ((SlidingListFragmentRight) secondFragment).setSubject("1");
+
+            ((SlidingListFragmentRight) secondFragment).setTitle(title);
+           ((SlidingListFragmentRight) secondFragment).setSubject(subject);
+            ((SlidingListFragmentRight) secondFragment).setQuestion(question);
+            ((SlidingListFragmentRight) secondFragment).setSolution(solution);
+            ((SlidingListFragmentRight) secondFragment).setDate(date);
+
             FragmentManager fm = getFragmentManager();
             FragmentTransaction fragmentTransaction = fm.beginTransaction();
             FragmentTransactionExtended fragmentTransactionExtended = new FragmentTransactionExtended(this, fragmentTransaction, mFirstFragment, secondFragment, R.id.fragment_place);
@@ -190,8 +195,9 @@ public class quiz_set_result extends Activity implements AdapterView.OnItemSelec
                                             new QuizSetlistData(
                                                 URLDecoder.decode(rObj.getString("title").toString(), "UTF-8"),
                                                 URLDecoder.decode(rObj.getString("date").toString(), "UTF-8"),
-                                                URLDecoder.decode(rObj.getString("subject").toString(), "UTF-8"),
-                                                URLDecoder.decode(rObj.getString("solution").toString(), "UTF-8")
+                                                URLDecoder.decode(rObj.getString("type").toString(), "UTF-8"),
+                                                URLDecoder.decode(rObj.getString("solution").toString(), "UTF-8"),
+                                                URLDecoder.decode(rObj.getString("question").toString(), "UTF-8")
                                             )
                                     );
                                 }
