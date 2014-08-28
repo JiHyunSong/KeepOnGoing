@@ -1102,22 +1102,6 @@ S3
         return format;
     }
 
-    private String getPrevMonday() {
-        Calendar now = Calendar.getInstance();
-        int weekday = now.get(Calendar.DAY_OF_WEEK);
-        Log.i("getMonday1", "now.toString : " + now.toString());
-        Log.i("getMonday1", "weekday : " + weekday);
-        if (weekday != Calendar.MONDAY) {
-            int days = (Calendar.SUNDAY - weekday + 1) % 7;
-            now.add(Calendar.DAY_OF_YEAR, days);
-            now.add(Calendar.DAY_OF_YEAR, -7);
-        }
-        Date date = now.getTime();
-
-        String format = new SimpleDateFormat("yyyy-MM-dd").format(date);
-        return format;
-    }
-
     /**
      * 애니메이션 리스너 정의
      */
@@ -1177,6 +1161,24 @@ S3
                 {
                     // 스코어 상세보기
                     if(KogPreference.ROOM_TYPE_LIFE.equals(type)) {
+                        if(mFriends != null) {
+                            Intent intent = new Intent(StudyRoomActivity.this, ScoreViewActivity.class);
+                            if(KogPreference.ROOM_TYPE_LIFE.equals(type)) {
+                                String[] FriendNicks = new String[mFriends.size() - 2];
+                                for (int i = 1; i < mFriends.size() - 1; i++) {
+                                    FriendNicks[i - 1] = mFriends.get(i).getName();
+                                }
+                                intent.putExtra("Friends", FriendNicks);
+                                startActivity(intent);
+                            }else{
+                                String[] FriendNicks = new String[mFriends.size() - 1];
+                                for (int i = 1; i < mFriends.size(); i++) {
+                                    FriendNicks[i - 1] = mFriends.get(i).getName();
+                                }
+                                intent.putExtra("Friends", FriendNicks);
+                                startActivity(intent);
+                            }
+                        }
                     }
                 }
 

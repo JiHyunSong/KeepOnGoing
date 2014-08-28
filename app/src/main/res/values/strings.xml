@@ -79,5 +79,6 @@
     <string name="title_activity_add_more_friend">AddMoreFriendActivity</string>
     <string name="title_activity_my_profile">MyProfileActivity</string>
     <string name="title_activity_base">BaseActivity</string>
+    <string name="title_activity_score_view">ScoreViewActivity</string>
 
 </resources>
