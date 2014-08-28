@@ -7,7 +7,7 @@ public class FriendScore {
     String date;
     String targetTime;
     String nickname;
-
+    String goalTime;
     @Override
     public String toString() {
 //        return super.toString();
@@ -17,12 +17,29 @@ public class FriendScore {
 
     public FriendScore(String score, String index, String accomplishedTime, String date, String targetTime, String nickname) {
 
+        this.goalTime = "";
         this.score = score;
         this.index = index;
-        this.accomplishedTime = accomplishedTime;
+        if(!accomplishedTime.equals("null")) {
+            this.accomplishedTime = accomplishedTime.substring(0, accomplishedTime.length() - 3);
+        }else{
+            this.accomplishedTime="00:00";
+        }
+        this.goalTime += this.accomplishedTime;
+        this.goalTime += " / ";
         this.date = date;
-        this.targetTime = targetTime;
+        if(!accomplishedTime.equals("null")) {
+            this.targetTime = targetTime.substring(0, accomplishedTime.length()-3);
+        }else{
+            this.targetTime = "00:00";
+        }
+        this.goalTime += this.targetTime;
         this.nickname = nickname;
+    }
+
+    public String getGoalTime(){
+
+        return goalTime;
     }
 
     public String getIndex() {
@@ -68,6 +85,18 @@ public class FriendScore {
     public String getScore() {
 
         return score;
+    }
+
+    public int getIntScore(){
+        return Integer.parseInt(this.score);
+    }
+
+    public int getIntAccomplishedTime(){
+        return Integer.parseInt(accomplishedTime.substring(0, 2) + accomplishedTime.substring(3,5));
+    }
+
+    public int getIntTargetTime(){
+        return Integer.parseInt(targetTime.substring(0, 2) + targetTime.substring(3,5));
     }
 
     public void setScore(String score) {

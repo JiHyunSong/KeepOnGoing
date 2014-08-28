@@ -2,8 +2,14 @@ package com.secsm.keepongoing;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.widget.RelativeLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -39,6 +45,7 @@ public class ScoreViewActivity extends Activity {
     private HashMap<String, ArrayList<FriendScore>> mFriendsScore;
     private FriendScore[] Scores;
     private int maxIndex = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,20 +56,11 @@ public class ScoreViewActivity extends Activity {
         intent = getIntent();
         FriendNicks = intent.getStringArrayExtra("Friends");
 
-        if(KogPreference.DEBUG_MODE)
-        {
-            for(int i=0; i<FriendNicks.length; i++)
-            {
+        if (KogPreference.DEBUG_MODE) {
+            for (int i = 0; i < FriendNicks.length; i++) {
                 Log.i(LOG_TAG, "get Friends nickname " + i + " : " + FriendNicks[i]);
             }
         }
-
-//        for(int i=0; i<FriendNicks.length; i++)
-//        {
-//            Scores = new FriendScore[14];
-//            ArrayList<FriendScore> t = new ArrayList<FriendScore>();
-//            mFriendsScore.put(FriendNicks[i], t);
-//        }
     }
 
     @Override
@@ -71,6 +69,189 @@ public class ScoreViewActivity extends Activity {
         mFriendsScore = new HashMap<String, ArrayList<FriendScore>>();
         getFriendsScoreRequest();
 
+    }
+
+
+    private void setView() {
+
+        String[] printResult = new String[(FriendNicks.length + 1) * (maxIndex + 3 + 3 + 1)];
+        String[] tag = {"월", "화", "수", "목", "금", "토", "일"};//,
+        String[] tag2 = {"목표합계", "달성합계", "도합점수"};
+
+        int mI = FriendNicks.length + 1;
+        int mJ = (maxIndex + 3 + 3 + 1);
+
+        Log.i(LOG_TAG, " mI : " + mI + " mJ : " + mJ);
+
+        for (int i = 0; i < mI; i++) {
+            for (int j = 0; j < 7 + 1; j++) {
+                if (i == 0 && j == 0) {
+//                    arrList[j][i] = "";
+                    printResult[(j + mI) + i] = "";
+                    continue;
+                } else if (j == 0) {
+                    Log.i(LOG_TAG, " i : " + i + " j : " + j);
+                    Log.i(LOG_TAG, "index : " + ((j * mI) + i) + " | value : " + FriendNicks[i - 1]);
+
+//                    arrList[j][i] = FriendNicks[i-1];
+                    printResult[(j * mI) + i] = FriendNicks[i - 1];
+                } else if (i == 0) {
+                    // 요일
+                    Log.i(LOG_TAG, " i : " + i + " j : " + j);
+                    Log.i(LOG_TAG, "index : " + ((j * mI) + i) + " | value : " + tag[((j - 1) % 7)]);
+
+//                    arrList[j][i] = tag[((j-1) % 7)];
+                    printResult[(j * mI) + i] = tag[((j - 1) % 7)];
+                } else {
+                    // 데이터 삽입
+//                    arrList[j][i] = mFriendsScore.get(FriendNicks[i-1]).get(j-1).getGoalTime();
+                    Log.i(LOG_TAG, " i : " + i + " j : " + j);
+                    Log.i(LOG_TAG, "index : " + ((j * mI) + i) + " | value : " + mFriendsScore.get(FriendNicks[i - 1]).get(j - 1).getGoalTime());
+                    printResult[(j * mI) + i] = mFriendsScore.get(FriendNicks[i - 1]).get(j - 1).getGoalTime();
+                }
+            }
+            for (int j = 7; j < 7 + 3; j++) {
+                if (i == 0) {
+                    // 요일
+                    Log.i(LOG_TAG, " i : " + i + " j : " + j);
+                    Log.i(LOG_TAG, "index : " + ((j * mI) + i) + " | value : " + tag2[j % 7]);
+
+//                    arrList[j][i] = tag[((j-1) % 7)];
+                    printResult[(j * mI) + i] = tag2[j % 7];
+                } else {
+                    // 데이터 삽입
+//                    arrList[j][i] = mFriendsScore.get(FriendNicks[i-1]).get(j-1).getGoalTime();
+
+                    int count = i;
+                    int sum = 0;
+                    int hour = 0;
+                    int min = 0;
+                    switch (j) {
+                        case 7:
+                            // 목표합계
+                            for (int n = 0; n < 7; n++) {
+                                count += mI;// 00:00 / 00:00
+                                hour += Integer.parseInt(printResult[count].substring(8, 10));
+                                min += Integer.parseInt(printResult[count].substring(11, 13));
+                            }
+
+                            hour += min/60;
+                            min %= 60;
+
+                            count += mI * 1;
+                            printResult[count] = "" + (hour < 10 ? "0" + hour : hour) + ":" + (min < 10 ? "0" + min : min);
+                            break;
+                        case 8:
+                            // 달성합계
+                            for (int n = 0; n < 7; n++) {
+                                count += mI;
+                                hour += Integer.parseInt(printResult[count].substring(0, 2));
+                                min += Integer.parseInt(printResult[count].substring(3, 5));
+                            }
+
+                            hour += min/60;
+                            min %= 60;
+
+                            count += mI * 2;
+                            printResult[count] = "" + (hour < 10 ? "0" + hour : hour) + ":" + (min < 10 ? "0" + min : min);
+
+                            break;
+                        case 9:
+                            // sum
+//                            int count = i;
+//                            int sum = 0;
+                            for (int n = 0; n < 7; n++) {
+                                count += mI;
+                                sum += mFriendsScore.get(FriendNicks[i-1]).get(i-1).getIntScore();
+                            }
+
+                            count += mI * 3;
+                            printResult[count] = "" + sum;
+
+                            break;
+                    }
+                    Log.i(LOG_TAG, " i : " + i + " j : " + j);
+                    Log.i(LOG_TAG, "index : " + count + " | value : " + printResult[count]);
+
+                }
+            }
+        }
+
+        // 합산
+
+
+        // 나머지 계산
+
+        // 합산2
+
+        /*
+        for(int i = 0; i < mI ; i++)
+        {
+            for (int j = 0 ; j < mJ; j++)
+            {
+                if(i == 0 && j == 0)
+                {
+                    continue;
+                }else if(i==0 && j < mI)
+                {
+                    Log.i(LOG_TAG, " i : " + i + " j : " + j );
+                    Log.i(LOG_TAG, "index : " + i + (j * mJ) + " | value : " + FriendNicks[j-1]);
+                    printResult[i + (j * mJ)] = FriendNicks[j-1];
+                }else if(j==0)
+                {
+                    printResult[i + (j*mJ)] = tag[((i+1) % 10)];
+                }
+            }
+        }
+
+
+         */
+        appendRow(printResult, mI);
+    }
+
+    public void appendRow(String[] strarray, int width) {
+        TableLayout tb = (TableLayout) findViewById(R.id.score_view_info_table);
+        tb.removeAllViewsInLayout();
+        TextView[] tv = new TextView[strarray.length];
+        for (int i = 1; i < strarray.length + 1; i++) {
+            tv[i - 1] = new TextView(this);
+            tv[i - 1].setText(strarray[i - 1].toString());
+            tv[i - 1].setTextColor(Color.parseColor("#7F7F7F"));
+            tv[i - 1].setBackgroundResource(R.drawable.cell_shape);
+            tv[i - 1].setPadding(5, 5, 5, 5);
+            tv[i - 1].setGravity(Gravity.CENTER);
+            tv[i - 1].setShadowLayer(1.0f, 1, 1, Color.parseColor("#AFFFFFFF"));
+
+            if ((i != 0 && i % width == 0)) {
+                TableRow tr = new TableRow(this);
+
+                tr.setLayoutParams(new TableRow.LayoutParams(
+                        RelativeLayout.LayoutParams.WRAP_CONTENT,
+                        RelativeLayout.LayoutParams.WRAP_CONTENT
+                ));
+                tr.setBackgroundColor(Color.parseColor("#DFDFDF"));
+                Log.i("log", "i : " + i);
+
+                for (int j = width; j > 0; j--) {
+                    tr.addView(tv[i - j], new TableRow.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                            RelativeLayout.LayoutParams.WRAP_CONTENT, 1));
+                }
+//
+//                tr.addView(tv[i - 3], new TableRow.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+//                        RelativeLayout.LayoutParams.WRAP_CONTENT, 1));
+//
+//                tr.addView(tv[i - 2], new TableRow.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+//                        RelativeLayout.LayoutParams.WRAP_CONTENT, 1));
+//
+//                tr.addView(tv[i - 1], new TableRow.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+//                        RelativeLayout.LayoutParams.WRAP_CONTENT, 1));
+
+
+                tb.addView(tr, new TableLayout.LayoutParams(
+                        RelativeLayout.LayoutParams.MATCH_PARENT,
+                        RelativeLayout.LayoutParams.FILL_PARENT));
+            }
+        }
     }
 
 
@@ -106,13 +287,12 @@ public class ScoreViewActivity extends Activity {
 //                "&todate=" + getRealDate();
 
         JSONObject sendBody = new JSONObject();
-        try{
+        try {
             sendBody.put("rid", KogPreference.getRid(ScoreViewActivity.this));
             sendBody.put("fromdate", getPrevMonday());
             sendBody.put("todate", getRealDate());
             Log.i(LOG_TAG, "sendbody : " + sendBody.toString());
-        }catch (JSONException e)
-        {
+        } catch (JSONException e) {
             Log.e(LOG_TAG, "getFriendsScoreRequest error : " + e.toString());
         }
 
@@ -136,12 +316,11 @@ public class ScoreViewActivity extends Activity {
 
                                 //////// real action ////////
                                 JSONObject rObj;
-                                for(int i=0; i<rMessage.length(); i++)
-                                {
+                                for (int i = 0; i < rMessage.length(); i++) {
                                     rObj = rMessage.getJSONObject(i);
 //                                    Log.i(LOG_TAG, "2 rObj : " + rObj.toString());
 
-                                    if(maxIndex < Integer.parseInt(rObj.getString("index"))) {
+                                    if (maxIndex < Integer.parseInt(rObj.getString("index"))) {
                                         maxIndex = Integer.parseInt(rObj.getString("index"));
                                     }
 //                                    Log.i(LOG_TAG, "3 maxIndex : " + maxIndex);
@@ -173,14 +352,11 @@ public class ScoreViewActivity extends Activity {
                                 }
                                 Log.i(LOG_TAG, "temp filled");
 //                                Log.i(LOG_TAG, "FriendNicks.length : " + FriendNicks.length);
-                                for(int i = 0; i<FriendNicks.length; i++)
-                                {
+                                for (int i = 0; i < FriendNicks.length; i++) {
                                     ArrayList<FriendScore> tempFs = new ArrayList<FriendScore>();
                                     tempFs.clear();
-                                    for(int j = 0; j < temp.size(); j++)
-                                    {
-                                        if(temp.get(j).getNickname().equals(FriendNicks[i]))
-                                        {
+                                    for (int j = 0; j < temp.size(); j++) {
+                                        if (temp.get(j).getNickname().equals(FriendNicks[i])) {
                                             tempFs.add(Integer.parseInt(temp.get(j).getIndex()), temp.get(j));
 //                                            Log.i(LOG_TAG, "add TempFS : " + temp.get(j));
                                         }
@@ -193,27 +369,21 @@ public class ScoreViewActivity extends Activity {
                                 maxIndex++;// if index 0 ~ 11, maxIndex will be 12
 
                                 Log.i(LOG_TAG, "check log ");
-                                if(KogPreference.DEBUG_MODE)
-                                {
-                                    Iterator<String> iterator = mFriendsScore.keySet().iterator();
-                                    while(iterator.hasNext())
-                                    {
-                                        String Key = (String) iterator.next();
+//                                if(KogPreference.DEBUG_MODE)
+//                                {
+//                                    Iterator<String> iterator = mFriendsScore.keySet().iterator();
+//                                    while(iterator.hasNext())
+//                                    {
+//                                        String Key = (String) iterator.next();
 //                                        Log.i(LOG_TAG, "KEY : " + Key + " VALUE : " +mFriendsScore.get(Key));
-                                        for(int i=0; i<maxIndex; i++)
-                                            Log.i(LOG_TAG, "KEY : " + Key + " VALUE : " +mFriendsScore.get(Key).get(i));
-
-
-                                    }
-
-
-//                                    for(int i=0; i<FriendNicks.length; i++) {
-//                                        for (int j = 0; j < maxIndex; j++) {
-//                                            Log.i(LOG_TAG, "key (FriendNicks["+ i +"]) volue : " + mFriendsScore.get(FriendNicks[i]).toString());
-//                                        }
+//                                        for(int i=0; i<maxIndex; i++)
+//                                            Log.i(LOG_TAG, "KEY : " + Key + " VALUE : " +mFriendsScore.get(Key).get(i));
+//
+//
 //                                    }
-                                }
+//                                }
 
+                                setView();
 
                             } else {
                                 Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
@@ -240,7 +410,6 @@ public class ScoreViewActivity extends Activity {
         vQueue.add(jsObjRequest);
         vQueue.start();
     }
-
 
 
 }

@@ -14,25 +14,25 @@
         android:layout_height="wrap_content"
         android:text="@string/score_view_info" />
 
-    <ScrollView
-        android:id="@+id/score_view_scrollbar"
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
+
         android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:id="@+id/score_view_info_table"
-            android:layout_width="fill_parent"
-            android:layout_height="?android:attr/actionBarSize"
-            android:layout_below="@id/score_view_info_tv"
-            android:orientation="vertical">
+        <HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-        </LinearLayout>
+            <TableLayout
+                android:id="@+id/score_view_info_table"
+                android:layout_below="@id/score_view_info_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            </TableLayout>
+        </HorizontalScrollView>
     </ScrollView>
 
-    <ListView
-        android:id="@+id/score_view_friends"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/score_view_scrollbar"></ListView>
+
 
 </RelativeLayout>
