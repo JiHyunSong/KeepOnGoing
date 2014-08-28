@@ -96,8 +96,12 @@ public class AddMoreFriendActivity extends BaseActivity {
             @Override
             public void afterTextChanged(Editable arg0) {
                 // TODO Auto-generated method stub
-                String text = add_more_friend_search_et.getText().toString().toLowerCase(Locale.getDefault());
-                friendsArrayAdapters.filter(text);
+                if(add_more_friend_search_et.getText().toString() != null) {
+                    String text = add_more_friend_search_et.getText().toString().toLowerCase(Locale.getDefault());
+                    if (friendsArrayAdapters != null) {
+                        friendsArrayAdapters.filter(text);
+                    }
+                }
             }
 
             @Override

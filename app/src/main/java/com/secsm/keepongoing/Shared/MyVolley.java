@@ -29,7 +29,7 @@ public class MyVolley {
     public static void init(Context context) {
         mContext = context;
         mRequestQueue = Volley.newRequestQueue(context);
-        DiskBasedCache cache = new DiskBasedCache(context.getCacheDir(), 16 * 1024 * 1024);
+        ImprovedDiskBasedCache cache = new ImprovedDiskBasedCache(context.getCacheDir(), 16 * 1024 * 1024);
         mRequestQueue = new RequestQueue(cache, new BasicNetwork(new HurlStack()));
         mRequestQueue.start();
         int memClass = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE))
@@ -45,7 +45,7 @@ public class MyVolley {
             return mRequestQueue;
         } else {
             mRequestQueue = Volley.newRequestQueue(context);
-            DiskBasedCache cache = new DiskBasedCache(context.getCacheDir(), 16 * 1024 * 1024);
+            ImprovedDiskBasedCache cache = new ImprovedDiskBasedCache(context.getCacheDir(), 16 * 1024 * 1024);
             mRequestQueue = new RequestQueue(cache, new BasicNetwork(new HurlStack()));
             mRequestQueue.start();
             return mRequestQueue;
