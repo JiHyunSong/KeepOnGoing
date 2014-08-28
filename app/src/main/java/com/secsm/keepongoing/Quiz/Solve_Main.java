@@ -41,9 +41,11 @@ public class Solve_Main extends Activity {
     private String question;
     private String questiontype;
     private String solution;
+    private String title;
+    private String date;
     private String answer;
     private String num;
-    TextView subject,textview;
+    TextView subject,textview,question_title_content,date_view;
     String[] arr = null;
     ArrayList<Quiz_data> list;
 
@@ -56,7 +58,8 @@ public class Solve_Main extends Activity {
 
         subject =  (TextView) findViewById(R.id. solve_subject_solve);
         textview = (TextView) findViewById(R.id.textview_solve);
-
+        question_title_content = (TextView) findViewById(R.id.question_title_content);
+        date_view=(TextView) findViewById(R.id.date_view);
 
 
         mAdapter = new listAdapter_Solve(this, list);
@@ -136,6 +139,8 @@ return total;
 
         subject.setText(questiontype);
         textview.setText(question);
+        question_title_content.setText(title);
+        date_view.setText(date);
 
         /*subject.setText("수학");
         textview.setText("다음중 가장 안정적인 숫자는?\n1.1024\n2. 3\n" +"3. 5\n" + "4. 6"
@@ -192,7 +197,7 @@ return total;
 
                 int total=checkanswer(solution,request_check(list).toString());
                 TextView solve_main_tv=(TextView)findViewById(R.id.solve_main_tv);
-                solve_main_tv.setText("total score without essay : +"+ total);
+                solve_main_tv.setText("점수 : +"+ total);
 
                 answerRegisterRequest(subject.getText().toString(), request_check(list).toString());
             }
@@ -317,6 +322,7 @@ return total;
                 "&num="+KogPreference.getQuizNum(Solve_Main.this) +//num 받아와야됨
                 "&nickname=" + KogPreference.getNickName(Solve_Main.this);
 
+
         Log.i(LOG_TAG, "get_url : " + get_url);
 
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, get_url, null,
@@ -338,7 +344,9 @@ return total;
                                 questiontype= URLDecoder.decode(rObj.getString("type").toString(), "UTF-8");
                                 question=URLDecoder.decode(rObj.getString("question").toString(), "UTF-8");
                                 solution=URLDecoder.decode(rObj.getString("solution").toString(), "UTF-8");
-                                Log.e("minsu) :","contents2 : "+question+" | "+questiontype+" | "+solution);
+                                title=URLDecoder.decode(rObj.getString("title").toString(), "UTF-8");
+                                date="출제일 : "+URLDecoder.decode(rObj.getString("date").toString(), "UTF-8");
+                                Log.e("minsu) :","contents2 : "+question+" | "+questiontype+" | "+solution+" | "+title+"|"+date);
                                 settingTextView();
                                 //question = question.replace("\\\n", System.getProperty("line.separator"));
                                 addlist(solution,answer);

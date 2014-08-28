@@ -23,7 +23,7 @@ public class SlidingListFragmentRight extends Fragment implements MyInterface {
 
     }
     public void foo(){
-        ((newnew)getActivity()).addTransition(getView());
+        ((quiz_set_result)getActivity()).addTransition(getView());
     }
 
 

@@ -224,7 +224,7 @@ public class TabActivity extends Activity {
         }
         ahcieve = (TextView) findViewById(R.id.tvMsg);
         _text2 = (TextView) findViewById(R.id.goal);
-
+        ahcieve.setText("00:00:00");
 
        //@민수 삽입
 
@@ -266,7 +266,7 @@ public class TabActivity extends Activity {
                 (contact3.gethour() / 10 == 0 ? "0" + contact3.gethour() : contact3.gethour())
                         + ":" + (contact3.getminute() / 10 == 0 ? "0" + contact3.getminute() : contact3.getminute()) + ":" + "00"
         );
-        Preference.setString(TabActivity.this,"goal_time",_text2.getText().toString());
+        Preference.setString(TabActivity.this, "goal_time", _text2.getText().toString());
 
 
         final ToggleButton play_pause = (ToggleButton) findViewById(R.id.toggleButton2);
@@ -274,11 +274,17 @@ public class TabActivity extends Activity {
             public void onClick(View arg0) {
 
                 if (play_pause.isChecked()) {
+
                     Preference.putBoolean(TabActivity.this, "toggle", true);
+
                     play_pause.setBackgroundResource(R.drawable.selector_tab_pause_button);
                     if (timer == null) {
 
                         Date start = new Date();
+                        if(Preference.getBoolean(TabActivity.this, "first_start")==false) {
+                            Preference.putBoolean(TabActivity.this, "first_start", true);
+                            Preference.setString(TabActivity.this, "start_date",(start.getYear() + 1900) + "/" + (start.getMonth() + 1) + "/" + start.getDate());
+                        }
                         Preference.setLong(TabActivity.this, "start", start.getTime() - Preference.getLong(TabActivity.this, "diff"));
                         TimerTask adTast = new TimerTask() {
                             public void run() {
@@ -288,6 +294,8 @@ public class TabActivity extends Activity {
                         timer = new Timer();
                         timer.schedule(adTast, 0, 1000); // 0초후 첫실행, 20초마다 계속실행
                         Log.i(LOG_TAG, "타이머 시작");
+
+
                     }
                 } else {
 
@@ -310,6 +318,7 @@ public class TabActivity extends Activity {
             public void onClick(View v) {
                 play_pause.setChecked(false);
                 play_pause.setBackgroundResource(R.drawable.selector_tab_play_button);
+               Preference.setString(TabActivity.this, "Resumetimer", "");
                 Preference.putBoolean(TabActivity.this, "toggle", false);
                 if (timer != null) {
                     timer.cancel();
@@ -317,11 +326,20 @@ public class TabActivity extends Activity {
                     timer = null;
                 }
                 ahcieve.setText("00:00:00");
+
+
                 Preference.setLong(TabActivity.this, "diff", 0);
        /*         Toast.makeText(TabActivity.this,
                         "@SERVER : \n"+start.toString()+"|달성시간"+_text.getText(),2).show();*/
-                acheivetimeRegisterRequest(_goal_time.getText().toString(), ahcieve.getText().toString(), _current_time_text.getText().toString());
+                try {
+                    if (Preference.getBoolean(TabActivity.this, "first_start") == true) {
+                        acheivetimeRegisterRequest(_goal_time.getText().toString(), ahcieve.getText().toString(), Preference.getString(TabActivity.this, "start_date"));
+                        Preference.putBoolean(TabActivity.this, "first_start", false);
+                    }
+                }catch (Exception e)
+                {
 
+                }
 
             }
         });

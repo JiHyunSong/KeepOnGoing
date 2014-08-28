@@ -7,17 +7,18 @@ public class FriendNameAndIcon {
     private String profile_path;
     private String name;
     private String targetTime;
+    private String accomplishedTime;
     private String isMaster;
     private String score;
 
-    public FriendNameAndIcon(String profile_path, String name, String targetTime, String isMaster, String score) {
+    public FriendNameAndIcon(String profile_path, String name, String targetTime, String isMaster, String accomplishedTime) {
         this.profile_path = profile_path;
         // TODO : profile change
         this.icon = R.drawable.profile_default;
         this.name = name;
         this.targetTime = targetTime;
         this.isMaster = isMaster;
-        this.score = score;
+        this.accomplishedTime = accomplishedTime;
     }
 
     public FriendNameAndIcon(String profile_path, String name, String targetTime, String isMaster) {
@@ -38,6 +39,14 @@ public class FriendNameAndIcon {
         this.targetTime = targetTime;
         this.isMaster = "false";
         this.score = null;
+    }
+
+    public String getAccomplishedTime() {
+        return accomplishedTime;
+    }
+
+    public void setAccomplishedTime(String accomplishedTime) {
+        this.accomplishedTime = accomplishedTime;
     }
 
     public String getScore() {

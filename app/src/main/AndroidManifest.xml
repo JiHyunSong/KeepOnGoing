@@ -144,7 +144,7 @@
             android:label="@string/title_activity_quiz_set" >
         </activity>
         <activity
-            android:name="com.fragmenttrasitionextendedexample.newnew"
+            android:name="com.fragmenttrasitionextendedexample.quiz_set_result"
             android:label="@string/title_activity_quiz_set" >
         </activity>
         <activity

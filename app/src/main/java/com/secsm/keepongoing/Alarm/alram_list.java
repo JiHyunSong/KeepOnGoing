@@ -21,7 +21,6 @@ import com.sleepbot.datetimepicker.time.TimePickerDialog;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 
 public class alram_list extends FragmentActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,time_picker{
@@ -108,7 +107,7 @@ public class alram_list extends FragmentActivity implements DatePickerDialog.OnD
     @Override
     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
         Date mTime=new Date();
-        GregorianCalendar   mCalendar = new GregorianCalendar();
+        Date today=new Date();
         AlarmManager mManager;
 
         mManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
@@ -119,7 +118,11 @@ public class alram_list extends FragmentActivity implements DatePickerDialog.OnD
         DBContactHelper helper = new DBContactHelper(alram_list.this);
           helper.updateContact(new Contact(1, hourOfDay,minute));
         Log.e("minsu:)", "Alram time : " + mTime.toString());
-        mManager.set(AlarmManager.RTC_WAKEUP, mTime.getTime(), pendingIntent());
+        if(today.getTime()<=mTime.getTime())
+            mManager.set(AlarmManager.RTC_WAKEUP, mTime.getTime(), pendingIntent());
+        else
+            mManager.set(AlarmManager.RTC_WAKEUP, mTime.getTime()+24*60*60*1000, pendingIntent());
+
         settingListView();
     }
     private PendingIntent pendingIntent() {

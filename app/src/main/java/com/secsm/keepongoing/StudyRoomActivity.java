@@ -386,10 +386,11 @@ public class StudyRoomActivity extends Activity {
 
         try {
             accomplishedTime = Preference.getString(StudyRoomActivity.this, "achieve_time");
-            acheivetimeRegisterRequest(target_time, accomplishedTime, (today.getYear() + 1900) + "/" + (today.getMonth() + 1) + "/" + today.getDate());
+            acheivetimeRegisterRequest(target_time, accomplishedTime, Preference.getString(StudyRoomActivity.this, "start_date"));
                 sendMsgToSvr(msg1 + accomplishedTime + msg2, KogPreference.MESSAGE_TYPE_TEXT);
 
         } catch (Exception ex) {
+            Log.e(LOG_TAG, "sendAccomplishedTime error : " + ex.toString());
         }
     }
 
@@ -1709,7 +1710,8 @@ S3
                                                 URLDecoder.decode(rObj.getString("image"), "UTF-8"),
                                                 URLDecoder.decode(rObj.getString("nickname"), "UTF-8"),
                                                 URLDecoder.decode(rObj.getString("targetTime"), "UTF-8"),
-                                                URLDecoder.decode(rObj.getString("isMaster"), "UTF-8")));
+                                                URLDecoder.decode(rObj.getString("isMaster"), "UTF-8"),
+                                                URLDecoder.decode(rObj.getString("accomplishedTime"), "UTF-8")));
                                     }
                                 }
                                 /////////////////////////////

@@ -8,7 +8,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -25,9 +24,12 @@ import com.secsm.keepongoing.R;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Quiz_Main extends Activity {
     private ArrayAdapter<String> _arrAdapter;
@@ -35,12 +37,12 @@ public class Quiz_Main extends Activity {
     private CustomScrollView mScrollView;
     listAdapter mAdapter = null;
     private Spinner spinner1, spinner2;
-    private Button btnSubmit;
+    private BootstrapButton btnSubmit;
     private static String LOG_TAG = "Quiz_submit";
     private String rMessage;
     private RequestQueue vQueue;
     private int status_code;
-    private EditText input_problem;
+    private EditText input_problem,question_title;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,15 +76,6 @@ public class Quiz_Main extends Activity {
 
        input_problem = (EditText) findViewById(R.id.txtOne);
 
-
-
-
-
-
-
-
-
-
         BootstrapButton multiplechoice = (BootstrapButton) findViewById(R.id.multiplechoice);
         multiplechoice.setOnClickListener(new BootstrapButton.OnClickListener() {
 
@@ -92,7 +85,7 @@ public class Quiz_Main extends Activity {
                 settingListView();
             }
         });
-        BootstrapButton essay = (BootstrapButton) findViewById(R.id.essay);
+        BootstrapButton essay = (BootstrapButton) findViewById(R.id.essaybutton);
         essay.setOnClickListener(new BootstrapButton.OnClickListener() {
             public void onClick(View v) {
                 list.add(new Quiz_data("essay"));
@@ -175,13 +168,16 @@ public class Quiz_Main extends Activity {
     public void addListenerOnButton() {
 
         spinner1 = (Spinner) findViewById(R.id.spinner1);
-        btnSubmit = (Button) findViewById(R.id.btnSubmit);
+        btnSubmit = (BootstrapButton) findViewById(R.id.btnSubmit);
+        question_title = (EditText) findViewById(R.id.question_title);
+
 
         btnSubmit.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 listView.clearFocus();
-                //@통신
+                Date today = new Date();
+
 
                 if(request_check(list).equals("error"))
                     Toast.makeText(Quiz_Main.this,"모든 답안을 입력하세요",Toast.LENGTH_SHORT).show();
@@ -189,7 +185,8 @@ public class Quiz_Main extends Activity {
                     Toast.makeText(Quiz_Main.this,"문제를 입력하세요",Toast.LENGTH_SHORT).show();
                 else {
                 //    MultipartEntity(input_problem.getText().toString(), String.valueOf(spinner1.getSelectedItem()), request_check(list));
-                 quizRegisterRequest(input_problem.getText().toString(), String.valueOf(spinner1.getSelectedItem()), request_check(list));
+                 quizRegisterRequest(input_problem.getText().toString(), String.valueOf(spinner1.getSelectedItem()), request_check(list),question_title.getText().toString(),
+                         (today.getYear() + 1900) + "/" + (today.getMonth() + 1) + "/" + today.getDate());
                 }
             }
 
@@ -201,7 +198,7 @@ public class Quiz_Main extends Activity {
     }
 
     //@통신
-    private void quizRegisterRequest(String question, String type, String solution) {
+    private void quizRegisterRequest(String question, String type, String solution,String title,String date) {
         question = question.trim().replace(" ", "%20");
         solution = solution.trim().replace(" ", "%20");
         question = question.trim().replace("\n", "%0A");
@@ -215,7 +212,10 @@ public class Quiz_Main extends Activity {
                 "&type=" + type +
                 "&question=" + question +
                 "&solution=" + solution +
-                "&nickname=" + KogPreference.getNickName(Quiz_Main.this);
+                "&nickname=" + KogPreference.getNickName(Quiz_Main.this)+
+                "&title="+ title+
+                "&date="+ date;
+
 
 //        JSONObject jsonObj = new JSONObject();
 //        try {
@@ -241,9 +241,19 @@ public class Quiz_Main extends Activity {
                         try {
                             status_code = response.getInt("status");
                             if (status_code == 200) {
-                                rMessage = response.getString("message");
-                                Toast.makeText(getBaseContext(), LOG_TAG +rMessage, Toast.LENGTH_SHORT).show();
-                                Log.e("minsu ):","minsue:) send solution : "+ temp);
+                               // rMessage = response.getString("message");
+                                JSONArray rMessageget;
+
+                                rMessageget = response.getJSONArray("message");
+                                JSONObject rObj;
+                                rObj=rMessageget.getJSONObject(0);
+
+
+
+                           //     Toast.makeText(getBaseContext(), LOG_TAG + URLDecoder.decode(rObj.getString("num").toString(), "UTF-8"), Toast.LENGTH_SHORT).show();
+                         //       Log.e("minsu ):","minsu:) receive : "+ URLDecoder.decode(rObj.getString("num").toString(), "UTF-8"));
+                            //   Log.e("minsu ):","minsue:) send solution : "+ temp);
+                                KogPreference.setQuizNum(Quiz_Main.this,  URLDecoder.decode(rObj.getString("num").toString(), "UTF-8"));
 
                             } else if (status_code == 9001) {
                                 Toast.makeText(getBaseContext(), "퀴즈 등록이 불가능합니다.", Toast.LENGTH_SHORT).show();

@@ -32,12 +32,21 @@
                     android:gravity="bottom">
 
                     <TextView
-                        android:id="@+id/문제"
+                        android:id="@+id/question_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"
-                        android:text="문제"
+                        android:text="제목 : "
                         android:textSize="20dp" />
+                    <TextView
+                        android:id="@+id/question_title_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_toRightOf="@id/question_title"
+                        android:text=""
+                        android:textSize="20dp" />
+
 
                     <TextView
                         android:id="@+id/solve_subject_solve"
@@ -92,23 +101,34 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/listView_Quiz_solve"
-                    android:gravity="right">
-
+                    android:orientation="horizontal"
+                    >
                     <TextView
-                        android:layout_marginTop="15dp"
-                        android:layout_marginBottom="15dp"
-                        android:layout_marginRight="15dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/solve_main_tv"
-                        android:text="total score : "/>
+                        android:id="@+id/date_view"
+                        android:layout_alignParentLeft="true"
+                        android:text="출제일 : "
+                        />
+
+
                     <Button
                         android:id="@+id/btnSubmit_solve"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_toRightOf="@id/solve_main_tv"
+                        android:text="제출"
+                        android:layout_alignParentRight="true"
+                        />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@id/btnSubmit_solve"
                         android:layout_alignBaseline="@id/solve_main_tv"
-                        android:text="제출" />
+                        android:id="@+id/solve_main_tv"
+                        android:text="점수 : " />
+
                 </RelativeLayout>
             </RelativeLayout>
 

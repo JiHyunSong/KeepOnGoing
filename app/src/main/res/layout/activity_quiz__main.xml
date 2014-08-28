@@ -9,31 +9,37 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.secsm.keepongoing.AddStudyRoomActivity">
 
-
+    <com.secsm.keepongoing.Quiz.CustomScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scrollbars="none"
+        android:id="@+id/quizmain_scroll"
+        android:fillViewport="true">
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/buttongroup"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal">
-
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            >
 
             <com.beardedhen.androidbootstrap.BootstrapButton
                 android:id="@+id/multiplechoice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="30dp"
                 android:text="객관식"
                 bootstrapbutton:bb_roundedCorners="true" />
 
-
             <com.beardedhen.androidbootstrap.BootstrapButton
-                android:id="@+id/essay"
+                android:id="@+id/essaybutton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="40dp"
+
                 android:layout_toRightOf="@+id/multiplechoice"
                 android:text="주관식"
                 bootstrapbutton:bb_roundedCorners="true" />
@@ -42,22 +48,18 @@
                 android:id="@+id/tf"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="40dp"
                 android:layout_toRightOf="@+id/essay"
+                android:layout_marginLeft="30dp"
                 android:text="T/F"
                 bootstrapbutton:bb_roundedCorners="true" />
 
+        </LinearLayout>
 
-
-        </RelativeLayout>
-
-        <com.secsm.keepongoing.Quiz.CustomScrollView
+        <LinearLayout
+            android:id="@+id/question_sheet"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/buttongroup"
-            android:scrollbars="none"
-            android:id="@+id/quizmain_scroll"
-            android:fillViewport="true">
+            android:layout_below="@id/buttongroup">
 
             <RelativeLayout
                 android:id="@+id/quiz_rl"
@@ -71,12 +73,16 @@
                     android:gravity="bottom">
 
                     <TextView
-                        android:id="@+id/문제"
+                        android:id="@+id/ques"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"
-                        android:text="문제"
+                        android:text="제목"
                         android:textSize="20dp" />
+
+
+
+
 
                     <Spinner
                         android:id="@+id/spinner1"
@@ -97,6 +103,13 @@
                         android:layout_toLeftOf="@id/spinner1"
                         android:text="과목"
                         android:textSize="20dp" />
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/question_title"
+                        android:layout_toRightOf="@id/ques"
+                        android:layout_toLeftOf="@id/subject"/>
 
                 </RelativeLayout>
 
@@ -129,24 +142,26 @@
                     android:layout_below="@id/listView_Quiz"
                     >
 
-                    <com.beardedhen.androidbootstrap.BootstrapButton
-                        android:id="@+id/delete"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="40dp"
-                        android:text="문제 삭제"
-                        bootstrapbutton:bb_roundedCorners="true" />
 
-                    <Button
+
+                    <com.beardedhen.androidbootstrap.BootstrapButton
                         android:id="@+id/btnSubmit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="제출"
                         android:layout_alignParentRight="true"/>
+                    <com.beardedhen.androidbootstrap.BootstrapButton
+                        android:id="@+id/delete"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="20dp"
+                        android:layout_toLeftOf="@id/btnSubmit"
+                        android:text="삭제"
+                        bootstrapbutton:bb_roundedCorners="true" />
                 </RelativeLayout>
             </RelativeLayout>
 
-        </com.secsm.keepongoing.Quiz.CustomScrollView>
+</LinearLayout>
     </RelativeLayout>
-
+    </com.secsm.keepongoing.Quiz.CustomScrollView>
 </RelativeLayout>

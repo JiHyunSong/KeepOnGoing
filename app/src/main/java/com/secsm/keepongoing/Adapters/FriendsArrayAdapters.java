@@ -2,7 +2,6 @@ package com.secsm.keepongoing.Adapters;
 
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,6 +83,10 @@ public class FriendsArrayAdapters extends BaseAdapter {
 
         if (friendArrayList.get(position).getScore() != null) {
             viewHolder.score.setText(friendArrayList.get(position).getScore());
+            viewHolder.score.setVisibility(View.VISIBLE);
+        }else
+        {
+            viewHolder.score.setVisibility(View.GONE);
         }
 
         if (friendArrayList.get(position).getIsMaster().equals("true")) {
