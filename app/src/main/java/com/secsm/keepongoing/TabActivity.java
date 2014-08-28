@@ -145,7 +145,7 @@ public class TabActivity extends BaseActivity {
         tab_progress = (ProgressBar)findViewById(R.id.tab_progress);
 
         ActionBar bar = getActionBar();
-        bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.NAVIGATION_MODE_STANDARD);
+        bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_USE_LOGO | ActionBar.NAVIGATION_MODE_STANDARD);
 
 
 //        getFriendsRequest();
