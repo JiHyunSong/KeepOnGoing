@@ -172,16 +172,95 @@ public class ScoreViewActivity extends Activity {
                     }
                     Log.i(LOG_TAG, " i : " + i + " j : " + j);
                     Log.i(LOG_TAG, "index : " + count + " | value : " + printResult[count]);
-
                 }
             }
         }
 
-        // 합산
-
-
         // 나머지 계산
 
+        for (int i = 0; i < mI; i++) {
+            for (int j = 12; j < (maxIndex % 7) -1 + 12 ; j++) {
+                if(i == 0){
+                    // 요일
+                    Log.i(LOG_TAG, " i : " + i + " j : " + j);
+                    Log.i(LOG_TAG, "index : " + ((j * mI) + i) + " | value : " + tag[((j - 12) % 7)]);
+
+//                    arrList[j][i] = tag[((j-1) % 7)];
+                    printResult[(j * mI) + i] = tag[((j - 12) % 7)];
+                }
+                else{
+                    // 데이터 삽입
+//                    arrList[j][i] = mFriendsScore.get(FriendNicks[i-1]).get(j-1).getGoalTime();
+                    Log.i(LOG_TAG, " i : " + i + " j : " + j);
+                    Log.i(LOG_TAG, "index : " + ((j * mI) + i) + " | value : " + mFriendsScore.get(FriendNicks[i - 1]).get(j - 1 - 3).getGoalTime());
+                    printResult[(j * mI) + i] = mFriendsScore.get(FriendNicks[i - 1]).get(j - 1 - 3).getGoalTime();
+                }
+            }
+//            for (int j = (maxIndex % 7) -1 + 12 ; j < (maxIndex % 7) -1 + 12 + 3; j++) {
+//                if (i == 0) {
+//                    // 요일
+//                    Log.i(LOG_TAG, " i : " + i + " j : " + j);
+//                    Log.i(LOG_TAG, "index : " + ((j * mI) + i) + " | value : " + tag2[j % 7]);
+//
+////                    arrList[j][i] = tag[((j-1) % 7)];
+//                    printResult[(j * mI) + i] = tag2[j % 7];
+//                } else {
+//                    // 데이터 삽입
+////                    arrList[j][i] = mFriendsScore.get(FriendNicks[i-1]).get(j-1).getGoalTime();
+//
+//                    int count = i;
+//                    int sum = 0;
+//                    int hour = 0;
+//                    int min = 0;
+//                    switch (j) {
+//                        case 7:
+//                            // 목표합계
+//                            for (int n = 0; n < 7; n++) {
+//                                count += mI;// 00:00 / 00:00
+//                                hour += Integer.parseInt(printResult[count].substring(8, 10));
+//                                min += Integer.parseInt(printResult[count].substring(11, 13));
+//                            }
+//
+//                            hour += min/60;
+//                            min %= 60;
+//
+//                            count += mI * 1;
+//                            printResult[count] = "" + (hour < 10 ? "0" + hour : hour) + ":" + (min < 10 ? "0" + min : min);
+//                            break;
+//                        case 8:
+//                            // 달성합계
+//                            for (int n = 0; n < 7; n++) {
+//                                count += mI;
+//                                hour += Integer.parseInt(printResult[count].substring(0, 2));
+//                                min += Integer.parseInt(printResult[count].substring(3, 5));
+//                            }
+//
+//                            hour += min/60;
+//                            min %= 60;
+//
+//                            count += mI * 2;
+//                            printResult[count] = "" + (hour < 10 ? "0" + hour : hour) + ":" + (min < 10 ? "0" + min : min);
+//
+//                            break;
+//                        case 9:
+//                            // sum
+////                            int count = i;
+////                            int sum = 0;
+//                            for (int n = 0; n < 7; n++) {
+//                                count += mI;
+//                                sum += mFriendsScore.get(FriendNicks[i-1]).get(i-1).getIntScore();
+//                            }
+//
+//                            count += mI * 3;
+//                            printResult[count] = "" + sum;
+//
+//                            break;
+//                    }
+//                    Log.i(LOG_TAG, " i : " + i + " j : " + j);
+//                    Log.i(LOG_TAG, "index : " + count + " | value : " + printResult[count]);
+//                }
+//            }
+        }
         // 합산2
 
         /*
