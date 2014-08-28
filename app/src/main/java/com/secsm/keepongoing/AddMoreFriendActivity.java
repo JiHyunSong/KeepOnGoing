@@ -80,6 +80,14 @@ public class AddMoreFriendActivity extends BaseActivity {
         intent = getIntent();
         FriendNicks = intent.getStringArrayExtra("Friends");
 
+        if(KogPreference.DEBUG_MODE)
+        {
+            for(int i=0; i<FriendNicks.length; i++)
+            {
+                Log.i(LOG_TAG, "get Friends nickname " + i +" : " + FriendNicks[i]);
+            }
+        }
+
         add_more_friend_search_et = (BootstrapEditText) findViewById(R.id.add_more_friend_search_et);
         add_more_friend_list = (ListView) findViewById(R.id.add_more_friend_list);
         to_add_more_friend_list = (ListView) findViewById(R.id.to_add_more_friend_list);
@@ -271,6 +279,7 @@ public class AddMoreFriendActivity extends BaseActivity {
 
     private boolean isInRoom(String f_nickName)
     {
+        Log.i(LOG_TAG, "isInRoom, Friends length" + FriendNicks.length);
         for(int j=0; j<FriendNicks.length; j++)
         {
             if(FriendNicks[j].equals(f_nickName))
@@ -308,6 +317,8 @@ public class AddMoreFriendActivity extends BaseActivity {
                                 mFriends = new ArrayList<FriendNameAndIcon>();
                                 JSONObject rObj;
 
+                                Log.i(LOG_TAG, "rMessage  : " + rMessage);
+                                Log.i(LOG_TAG, "rMessage.length() : " + rMessage.length());
                                 //{"message":[{"targetTime":null,"image":"http:\/\/210.118.74.195:8080\/KOG_Server_Rest\/upload\/UserImage\/default.png","nickname":"jonghean"}],"status":"200"}
                                 for(int i=0; i< rMessage.length(); i++)
                                 {

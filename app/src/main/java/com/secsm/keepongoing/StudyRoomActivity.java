@@ -808,8 +808,8 @@ public class StudyRoomActivity extends BaseActivity {
             if (isAdditionalPageOpen) { // VISIBLE
 //                Log.e(LOG_TAG, "study_room_below_layout_lp.height : " + actionBarHeight);
 //                Log.e(LOG_TAG, "activityRootView.getHeight()  : " + activityRootView.getHeight());
-                Log.e(LOG_TAG, "isAdditionalPageOpen (VISIBLE): " + isAdditionalPageOpen);
-                Log.e(LOG_TAG, "study_room_fl1_lp.height  : " + (activityRootView.getHeight() - actionBarHeight - keyBoardHeight));
+//                Log.e(LOG_TAG, "isAdditionalPageOpen (VISIBLE): " + isAdditionalPageOpen);
+//                Log.e(LOG_TAG, "study_room_fl1_lp.height  : " + (activityRootView.getHeight() - actionBarHeight - keyBoardHeight));
                 study_room_fl1_lp.height = (activityRootView.getHeight() - actionBarHeight - keyBoardHeight < 0 ? 100 : activityRootView.getHeight() - actionBarHeight - keyBoardHeight) ;
 //                study_room_fl1_lp.height = availableHeight - actionBarHeight - keyBoardHeight;
                 study_room_below_layout_lp.height = actionBarHeight;
@@ -817,8 +817,8 @@ public class StudyRoomActivity extends BaseActivity {
             } else {
 //                Log.e(LOG_TAG, "activityRootView.getHeight()  : " + activityRootView.getHeight());
 //                Log.e(LOG_TAG, "study_room_below_layout_lp.height : " + study_room_below_layout_lp.height);
-                Log.e(LOG_TAG, "isAdditionalPageOpen : " + isAdditionalPageOpen);
-                Log.e(LOG_TAG, "study_room_fl1_lp.height  : " + study_room_fl1_lp.height);
+//                Log.e(LOG_TAG, "isAdditionalPageOpen : " + isAdditionalPageOpen);
+//                Log.e(LOG_TAG, "study_room_fl1_lp.height  : " + study_room_fl1_lp.height);
                 study_room_fl1_lp.height = (activityRootView.getHeight() - actionBarHeight < 0 ? 100 : activityRootView.getHeight() - actionBarHeight);
                 study_room_fl1_lp.height = (availableHeight - actionBarHeight < 0 ? 100 : availableHeight - actionBarHeight);
                 study_room_below_layout_lp.height = actionBarHeight;
@@ -951,13 +951,15 @@ S3
                 if(position == 0)
                 {
                     // 친구 초대하기
-                    Intent intent = new Intent(StudyRoomActivity.this, AddMoreFriendActivity.class);
-                    String[] FriendNicks = new String[mFriends.size()];
-                    for (int i = 1; i < mFriends.size() - 1 ; i++) {
-                        FriendNicks[i] = mFriends.get(i).getName();
+                    if(mFriends != null) {
+                        Intent intent = new Intent(StudyRoomActivity.this, AddMoreFriendActivity.class);
+                        String[] FriendNicks = new String[mFriends.size() - 2];
+                        for (int i = 1; i < mFriends.size() - 1; i++) {
+                            FriendNicks[i-1] = mFriends.get(i).getName();
+                        }
+                        intent.putExtra("Friends", FriendNicks);
+                        startActivity(intent);
                     }
-                    intent.putExtra("Friends", FriendNicks);
-                    startActivity(intent);
 
                 }else if(position == mFriends.size()-1)
                 {
@@ -1118,14 +1120,15 @@ S3
         @Override
         public boolean onMenuItemClick(MenuItem mi) {
             Log.i(LOG_TAG, "onMenuItemClicked ab_invite_friend_listener");
-            Intent intent = new Intent(StudyRoomActivity.this, AddMoreFriendActivity.class);
-            String[] FriendNicks = new String[mFriends.size()];
-            for (int i = 1; i < mFriends.size() - 1 ; i++) {
-                FriendNicks[i] = mFriends.get(i).getName();
+            if(mFriends != null) {
+                Intent intent = new Intent(StudyRoomActivity.this, AddMoreFriendActivity.class);
+                String[] FriendNicks = new String[mFriends.size() - 2];
+                for (int i = 1; i < mFriends.size() - 1; i++) {
+                    FriendNicks[i-1] = mFriends.get(i).getName();
+                }
+                intent.putExtra("Friends", FriendNicks);
+                startActivity(intent);
             }
-            intent.putExtra("Friends", FriendNicks);
-            startActivity(intent);
-
             return true;
         }
     };
