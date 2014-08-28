@@ -20,18 +20,22 @@ public class FriendScore {
         this.goalTime = "";
         this.score = score;
         this.index = index;
-        if(!accomplishedTime.equals("null")) {
-            this.accomplishedTime = accomplishedTime.substring(0, accomplishedTime.length() - 3);
-        }else{
-            this.accomplishedTime="00:00";
+        if(accomplishedTime != null) {
+            if (!accomplishedTime.equals("null")) {
+                this.accomplishedTime = accomplishedTime.substring(0, accomplishedTime.length() - 3);
+            } else {
+                this.accomplishedTime = "00:00";
+            }
         }
         this.goalTime += this.accomplishedTime;
         this.goalTime += " / ";
         this.date = date;
-        if(!accomplishedTime.equals("null")) {
-            this.targetTime = targetTime.substring(0, accomplishedTime.length()-3);
-        }else{
-            this.targetTime = "00:00";
+        if(targetTime != null) {
+            if (!targetTime.equals("null")) {
+                this.targetTime = targetTime.substring(0, targetTime.length() - 3);
+            } else {
+                this.targetTime = "00:00";
+            }
         }
         this.goalTime += this.targetTime;
         this.nickname = nickname;
@@ -92,11 +96,16 @@ public class FriendScore {
     }
 
     public int getIntAccomplishedTime(){
-        return Integer.parseInt(accomplishedTime.substring(0, 2) + accomplishedTime.substring(3,5));
+        if(accomplishedTime != null)
+            return Integer.parseInt(accomplishedTime.substring(0, 2) + accomplishedTime.substring(3,5));
+
+        return 0;
     }
 
     public int getIntTargetTime(){
-        return Integer.parseInt(targetTime.substring(0, 2) + targetTime.substring(3,5));
+        if(targetTime != null)
+            return Integer.parseInt(targetTime.substring(0, 2) + targetTime.substring(3,5));
+        return 0;
     }
 
     public void setScore(String score) {

@@ -128,6 +128,12 @@ public class MyProfileActivity extends BaseActivity {
     private void setInit()
     {
         my_profile_my_nickname.setText(KogPreference.getNickName(MyProfileActivity.this));
+        if(!my_target_time.equals("null")) {
+            my_target_time = my_target_time.substring(0, my_target_time.length()-3);
+        }else{
+            my_target_time = "00:00";
+        }
+
         my_profile_my_target_time.setText(my_target_time);
         getImageFromURL(my_profile, my_profile_image_iv);
     }

@@ -21,7 +21,11 @@ public class RoomNaming {
         this.rule = rule;
         this.roomname = roomname;
         this.max_holiday_count = max_holiday_count;
-        this.start_time = start_time;
+        if(start_time != null) {
+            if (start_time.length() > 4) {
+                this.start_time = start_time.substring(0, 5);
+            }
+        }
         this.duration_time = duration_time;
         this.showup_time = showup_time;
         this.meet_days = meet_days;
