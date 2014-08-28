@@ -182,8 +182,8 @@ public class ScoreViewActivity extends Activity {
             for (j = 11; j < (maxIndex % 7) + 11 ; j++) {
                 if(i == 0){
                     // 요일
-                    Log.i(LOG_TAG, " i : " + i + " j : " + j);
-                    Log.i(LOG_TAG, "index : " + ((j * mI) + i) + " | value : " + tag[((j - 11) % 7)]);
+//                    Log.i(LOG_TAG, " i : " + i + " j : " + j);
+//                    Log.i(LOG_TAG, "index : " + ((j * mI) + i) + " | value : " + tag[((j - 11) % 7)]);
 
 //                    arrList[j][i] = tag[((j-1) % 7)];
                     printResult[(j * mI) + i] = tag[((j - 11) % 7)];
@@ -191,8 +191,8 @@ public class ScoreViewActivity extends Activity {
                 else{
                     // 데이터 삽입
 //                    arrList[j][i] = mFriendsScore.get(FriendNicks[i-1]).get(j-1).getGoalTime();
-                    Log.i(LOG_TAG, " i : " + i + " j : " + j);
-                    Log.i(LOG_TAG, "index : " + ((j * mI) + i) + " | value : " + mFriendsScore.get(FriendNicks[i - 1]).get(j - 1 - 3).getGoalTime());
+//                    Log.i(LOG_TAG, " i : " + i + " j : " + j);
+//                    Log.i(LOG_TAG, "index : " + ((j * mI) + i) + " | value : " + mFriendsScore.get(FriendNicks[i - 1]).get(j - 1 - 3).getGoalTime());
                     printResult[(j * mI) + i] = mFriendsScore.get(FriendNicks[i - 1]).get(j - 1 - 3).getGoalTime();
                 }
             }
@@ -201,8 +201,8 @@ public class ScoreViewActivity extends Activity {
             for (; j < temp_j + 3; j++) {
                 if (i == 0) {
                     // 요일
-                    Log.i(LOG_TAG, " i : " + i + " j : " + j);
-                    Log.i(LOG_TAG, "index : " + ((j * mI) + i) + " | value : " + tag2[(j-temp_j) % 3]);
+//                    Log.i(LOG_TAG, " i : " + i + " j : " + j);
+//                    Log.i(LOG_TAG, "index : " + ((j * mI) + i) + " | value : " + tag2[(j-temp_j) % 3]);
 
 //                    arrList[j][i] = tag[((j-1) % 7)];
                     printResult[(j * mI) + i] = tag2[(j-temp_j) % 3];
@@ -259,8 +259,8 @@ public class ScoreViewActivity extends Activity {
 
                             break;
                     }
-                    Log.i(LOG_TAG, " i : " + i + " j : " + j);
-                    Log.i(LOG_TAG, "index : " + count + " | value : " + printResult[count]);
+//                    Log.i(LOG_TAG, " i : " + i + " j : " + j);
+//                    Log.i(LOG_TAG, "index : " + count + " | value : " + printResult[count]);
                 }
             }
 
@@ -297,15 +297,12 @@ public class ScoreViewActivity extends Activity {
 
     public void appendRow(String[] strarray, int width) {
 
-        Log.i(LOG_TAG, "test Message2, width : " + width);
+//        Log.i(LOG_TAG, "test Message2, width : " + width);
         TableLayout tb = (TableLayout) findViewById(R.id.score_view_info_table);
         tb.removeAllViewsInLayout();
         TextView[] tv = new TextView[strarray.length];
         for (int i = 1; i < strarray.length + 1; i++) {
-            Log.i(LOG_TAG, "i-1 in appendRow :" + (i-1));
             tv[i - 1] = new TextView(this);
-            Log.i(LOG_TAG, "strarray[i - 1] : " + strarray[i - 1]);
-            Log.i(LOG_TAG, "strarray[i - 1].toString()" + strarray[i - 1].toString());
             tv[i - 1].setText(strarray[i - 1].toString());
             tv[i - 1].setTextColor(Color.parseColor("#7F7F7F"));
             tv[i - 1].setBackgroundResource(R.drawable.cell_shape);
@@ -313,7 +310,6 @@ public class ScoreViewActivity extends Activity {
             tv[i - 1].setGravity(Gravity.CENTER);
             tv[i - 1].setShadowLayer(1.0f, 1, 1, Color.parseColor("#AFFFFFFF"));
 
-            Log.i(LOG_TAG, "i-1 in appendRow :" + (i-1));
             if ((i != 0 && i % width == 0)) {
                 TableRow tr = new TableRow(this);
 

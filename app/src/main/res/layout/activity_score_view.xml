@@ -16,7 +16,7 @@
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
-
+        android:layout_below="@id/score_view_info_tv"
         android:layout_height="wrap_content">
 
         <HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -25,7 +25,6 @@
 
             <TableLayout
                 android:id="@+id/score_view_info_table"
-                android:layout_below="@id/score_view_info_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
