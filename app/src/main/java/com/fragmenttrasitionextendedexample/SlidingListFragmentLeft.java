@@ -2,6 +2,7 @@ package com.fragmenttrasitionextendedexample;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,7 +77,12 @@ public class SlidingListFragmentLeft extends Fragment implements MyInterface{
     public void setList(ArrayList<QuizSetlistData> list) {
         this.list = new ArrayList<QuizSetlistData>();
         this.list.addAll(list);
-        settingListView(this.view);
+    settingListView(this.view);
+        if(list.size()==1&&list.get(0).date==null) {
+            listView.setVisibility(View.GONE);
+            Log.e("minsu:)", "listview list size : " + list.size() + "list contents : " + list.get(0).date);
+
+        }
     }
 
     public void loadDatabase() {

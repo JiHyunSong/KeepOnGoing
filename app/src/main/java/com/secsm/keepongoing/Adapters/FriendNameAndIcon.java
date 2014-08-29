@@ -16,9 +16,22 @@ public class FriendNameAndIcon {
         // TODO : profile change
         this.icon = R.drawable.profile_default;
         this.name = name;
-        this.targetTime = targetTime;
+        if(targetTime!=null) {
+
+            if (!targetTime.equals("null")) {
+                this.targetTime = targetTime.substring(0, targetTime.length() - 3);
+            } else {
+                this.targetTime = "00:00";
+            }
+        }
         this.isMaster = isMaster;
-        this.accomplishedTime = accomplishedTime;
+        if(accomplishedTime !=null) {
+            if (!accomplishedTime.equals("null")) {
+                this.accomplishedTime = accomplishedTime.substring(0, accomplishedTime.length() - 3);
+            } else {
+                this.accomplishedTime = "00:00";
+            }
+        }
     }
 
     public FriendNameAndIcon(String profile_path, String name, String targetTime, String isMaster) {
@@ -26,7 +39,13 @@ public class FriendNameAndIcon {
         // TODO : profile change
         this.icon = R.drawable.profile_default;
         this.name = name;
-        this.targetTime = targetTime;
+        if(targetTime!=null) {
+            if (!targetTime.equals("null")) {
+                this.targetTime = targetTime.substring(0, targetTime.length() - 3);
+            } else {
+                this.targetTime = "00:00";
+            }
+        }
         this.isMaster = isMaster;
         this.score = null;
     }
@@ -36,7 +55,13 @@ public class FriendNameAndIcon {
         // TODO : profile change
         this.icon = R.drawable.profile_default;
         this.name = name;
-        this.targetTime = targetTime;
+        if(targetTime!=null) {
+            if (!targetTime.equals("null")) {
+                this.targetTime = targetTime.substring(0, targetTime.length() - 3);
+            } else {
+                this.targetTime = "00:00";
+            }
+        }
         this.isMaster = "false";
         this.score = null;
     }

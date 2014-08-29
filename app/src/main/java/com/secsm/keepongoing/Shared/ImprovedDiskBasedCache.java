@@ -1,6 +1,7 @@
 package com.secsm.keepongoing.Shared;
 
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.android.volley.Cache;
 import com.android.volley.VolleyLog;
@@ -98,6 +99,7 @@ public class ImprovedDiskBasedCache implements Cache {
         }
         mEntries.clear();
         mTotalSize.set(0);
+        Log.i("VOLLEY LOG", "Cache cleared.");
         VolleyLog.d("Cache cleared.");
     }
 
@@ -115,6 +117,11 @@ public class ImprovedDiskBasedCache implements Cache {
             CacheHeader hdr = CacheHeader.readHeader(cis);
             if (entry == null)
                 entry = hdr;
+            int i = 0;
+            while((int) (file.length() - cis.bytesRead) < 0 && i != 5) {
+                clear();
+                i++;
+            }
             byte[] data = streamToBytes(cis, (int) (file.length() - cis.bytesRead));
             return entry.toCacheEntry(data);
         } catch (IOException e) {
@@ -130,6 +137,33 @@ public class ImprovedDiskBasedCache implements Cache {
                 }
             }
         }
+
+
+//        CacheHeader entry = mEntries.get(key);
+//
+//        File file = getFileForKey(key);
+//        CountingInputStream cis = null;
+//        try {
+//            cis = new CountingInputStream(new FileInputStream(file));
+//            CacheHeader hdr = CacheHeader.readHeader(cis);
+//            if (entry == null)
+//                entry = hdr;
+//            byte[] data = streamToBytes(cis, (int) (file.length() - cis.bytesRead));
+//            return entry.toCacheEntry(data);
+//        } catch (IOException e) {
+//            VolleyLog.d("%s: %s", file.getAbsolutePath(), e.toString());
+//            remove(key);
+//            return null;
+//        } finally {
+//            if (cis != null) {
+//                try {
+//                    cis.close();
+//                } catch (IOException ioe) {
+//                    return null;
+//                }
+//            }
+//        }
+
     }
 
     /**

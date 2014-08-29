@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.secsm.keepongoing" >
-
+    <protected-broadcast android:name="android.intent.action.MEDIA_MOUNTED" />
     <!-- 자신의 핸드폰 번호 알아내기 위한 permission -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -70,133 +70,137 @@
         </activity>
         <activity
             android:name=".MainmenuActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_tab" >
+            android:label="@string/title_activity_tab"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:screenOrientation="portrait"
             android:label="@string/title_activity_tab"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateVisible" >
         </activity>
         <activity
             android:name=".RegisterActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_tab" >
+            android:label="@string/title_activity_tab"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".AuthActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_tab" >
+            android:label="@string/title_activity_tab"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".AuthNextActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_tab" >
+            android:label="@string/title_activity_tab"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".StudyRoomActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_tab" >
+            android:label="@string/title_activity_tab"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".NoticeActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_tab" >
+            android:label="@string/title_activity_tab"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".TabActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_tab" >
+            android:label="@string/title_activity_tab"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".Alarm.Alarm_main"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_tab" >
+            android:label="@string/title_activity_tab"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".Alarm.alert"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_tab" >
+            android:label="@string/title_activity_tab"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".Alarm.alram_list"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_tab" >
+            android:label="@string/title_activity_tab"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".AddStudyRoomActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_tab" >
+            android:label="@string/title_activity_tab"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".AddFriendActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_tab" >
+            android:label="@string/title_activity_tab"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".InviteFriendsActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_tab" >
+            android:label="@string/title_activity_tab"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".Quiz.Quiz_Main"
-            android:screenOrientation="portrait"
             android:label="@string/title_activity_tab"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".Quiz.Solve_Main"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_tab" >
+            android:label="@string/title_activity_tab"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".PushWakeKogDialog"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_tab" >
+            android:label="@string/title_activity_tab"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".Life_Study.achieve_time_show"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_tab" >
+            android:label="@string/title_activity_tab"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".Quiz.Quiz_set"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_tab" >
+            android:label="@string/title_activity_tab"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="com.fragmenttrasitionextendedexample.quiz_set_result"
             android:label="@string/title_activity_quiz_set" >
-	</activity>
-	<activity
+        </activity>
+        <activity
             android:name="com.fragmenttrasitionextendedexample.newnew"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_tab" >
+            android:label="@string/title_activity_tab"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".Quiz.Quiz_Set_Search"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_tab" >
+            android:label="@string/title_activity_tab"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="com.fourmob.datetimepicker.sample.date_pick"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_tab" >
+            android:label="@string/title_activity_tab"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".AddMoreFriendActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_tab" >
+            android:label="@string/title_activity_tab"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".MyProfileActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_tab" >
+            android:label="@string/title_activity_tab"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".Shared.BaseActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_tab" >
+            android:label="@string/title_activity_tab"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".ScoreViewActivity"
+            android:label="@string/title_activity_score_view" >
         </activity>
     </application>
 
