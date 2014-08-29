@@ -138,8 +138,8 @@ public class quiz_set_result extends Activity implements AdapterView.OnItemSelec
     {
       //  Button button = (Button) findViewById(R.id.button);
      //   button.setText("Push");
-       // super.onBackPressed();
-        finish();
+        super.onBackPressed();
+       // finish();
 
     }
 

@@ -134,6 +134,7 @@
                             android:layout_height="wrap_content"
                             android:layout_toLeftOf="@id/btnSubmit_solve"
                             android:text="back"
+                            android:visibility="gone"
                             />
 
 

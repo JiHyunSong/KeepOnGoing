@@ -67,7 +67,7 @@ public class MainActivity extends Activity {
             registerInBackground();
 
         Handler handle = new Handler();
-        handle.postDelayed(new splashHandler(), 1000);
+        handle.postDelayed(new splashHandler(), 2500);
 
 
     }

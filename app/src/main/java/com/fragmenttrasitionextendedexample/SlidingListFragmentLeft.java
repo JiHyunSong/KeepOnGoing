@@ -43,6 +43,13 @@ public class SlidingListFragmentLeft extends Fragment implements MyInterface{
         super.onViewCreated(view, savedInstanceState);
         this.view=view;
         settingListView(view);
+        if(list.size()==1&&list.get(0).subject=="null") {
+                 error_msg = (TextView)view.findViewById(R.id.error_msg);
+            listView = (ListView) view.findViewById(R.id.listView_test2);
+             error_msg.setVisibility(this.view.VISIBLE);
+            listView.setVisibility(this.view.GONE);
+            Log.e("minsu:)", "listview list size : " + list.size() + "list contents : " + list.get(0).date);
+        }
     }
 
     private void settingListView(View view) {
@@ -83,12 +90,7 @@ public class SlidingListFragmentLeft extends Fragment implements MyInterface{
         this.list = new ArrayList<QuizSetlistData>();
         this.list.addAll(list);
     settingListView(this.view);
-        if(list.size()==1&&list.get(0).date=="null") {
-            listView.setVisibility(View.GONE);
-            error_msg.setVisibility(View.VISIBLE);
-            Log.e("minsu:)", "listview list size : " + list.size() + "list contents : " + list.get(0).date);
 
-        }
     }
 
     public void loadDatabase() {

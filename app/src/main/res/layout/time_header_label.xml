@@ -43,8 +43,6 @@
             android:layout_height="match_parent"
             android:layout_alignRight="@+id/hour_space"
             android:layout_alignLeft="@+id/hour_space"
-            android:layout_marginLeft="@dimen/extra_time_label_margin"
-            android:layout_marginRight="@dimen/extra_time_label_margin"
             android:layout_centerVertical="true" >
             <com.sleepbot.datetimepicker.AccessibleTextView
                 android:id="@+id/hours"
@@ -87,8 +85,7 @@
             android:layout_height="match_parent"
             android:layout_alignRight="@+id/minutes_space"
             android:layout_alignLeft="@+id/minutes_space"
-            android:layout_marginLeft="@dimen/extra_time_label_margin"
-            android:layout_marginRight="@dimen/extra_time_label_margin"
+
             android:layout_centerVertical="true" >
             <com.sleepbot.datetimepicker.AccessibleTextView
                 android:id="@+id/minutes"

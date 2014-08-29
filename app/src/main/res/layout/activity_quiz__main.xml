@@ -121,7 +121,7 @@
                     android:layout_below="@id/problemandsubject"
                     android:layout_margin="10dp"
                     android:gravity="top|left"
-                    android:hint="rounded"
+                    android:hint="문제를 입력하세요."
                     android:lines="10"
                     android:maxLines="10"
                     android:scrollbars="vertical"

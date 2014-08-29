@@ -1,7 +1,6 @@
 package com.secsm.keepongoing;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -376,12 +375,13 @@ public class StudyRoomActivity extends BaseActivity {
                     Log.i(LOG_TAG, "[WifiMonitor] NETWORK_STATE_CONNECTED");
                     if(previous_state==-5)
                         previous_state = SnowWiFiMonitor.NETWORK_STATE_CONNECTED;
-                    /*else {
+                    else {
                         if(previous_state!=SnowWiFiMonitor.NETWORK_STATE_CONNECTED) {
                             previous_state = SnowWiFiMonitor.NETWORK_STATE_CONNECTED;
-                        //    disconnectConnection();
+                            disconnectConnection();
+                            finish();
                         }
-                    }*/
+                    }
                     break;
 
                 case SnowWiFiMonitor.NETWORK_STATE_CONNECTING:
@@ -389,8 +389,8 @@ public class StudyRoomActivity extends BaseActivity {
                     if(previous_state==-5) {
                         previous_state = SnowWiFiMonitor.NETWORK_STATE_CONNECTING;
                         //    disconnectConnection();
-                        close();
-                        finish();
+                       // close();
+                       // finish();
                     }
                     else {
                         if(previous_state!=SnowWiFiMonitor.NETWORK_STATE_CONNECTING) {
@@ -409,8 +409,8 @@ public class StudyRoomActivity extends BaseActivity {
                     else {
                         if(previous_state!=SnowWiFiMonitor.NETWORK_STATE_DISCONNECTED) {
                             previous_state = SnowWiFiMonitor.NETWORK_STATE_DISCONNECTED;
-                            //disconnectConnection();
-                            close();
+                            disconnectConnection();
+                            //close();
                             finish();
                         }
                     }
@@ -420,8 +420,8 @@ public class StudyRoomActivity extends BaseActivity {
                     Log.i(LOG_TAG, "[WifiMonitor] NETWORK_STATE_DISCONNECTING");
                     if(previous_state==-5) {
                         previous_state = SnowWiFiMonitor.NETWORK_STATE_DISCONNECTING;
-                        close();
-                        finish();
+                        //close();
+                        //finish();
                         //disconnectConnection();
                     }
                     else {
@@ -1055,8 +1055,8 @@ public class StudyRoomActivity extends BaseActivity {
                 IntentFilter intentFilter = new IntentFilter(Intent.ACTION_MEDIA_SCANNER_STARTED);
                 intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
                 intentFilter.addDataScheme("file");
-                sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"
-                        + Environment.getExternalStorageDirectory())));
+          /*      sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"
+                        + Environment.getExternalStorageDirectory())));*/
                 break;
             }
         }

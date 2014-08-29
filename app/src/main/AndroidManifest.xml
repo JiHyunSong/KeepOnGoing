@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.secsm.keepongoing" >
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <protected-broadcast android:name="android.intent.action.MEDIA_MOUNTED" />
     <!-- 자신의 핸드폰 번호 알아내기 위한 permission -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -30,7 +34,6 @@
 
     <!-- 알람 관련 -->
     <uses-permission android:name="android.permission.SET_TIME_ZONE" />
-    <uses-permission android:name="android.permission.VIBRATE" />
 
     <permission
         android:name="com.secsm.keepongoing.permission.C2D_MESSAGE"

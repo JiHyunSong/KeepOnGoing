@@ -6,4 +6,4 @@
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:paddingLeft="6dip"
     android:textAppearance="?android:attr/textAppearanceLarge"
-    android:textColor="#708090" />
+    android:textColor="@color/black" />
