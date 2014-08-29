@@ -1057,6 +1057,7 @@ public class StudyRoomActivity extends BaseActivity {
                 intentFilter.addDataScheme("file");
           /*      sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"
                         + Environment.getExternalStorageDirectory())));*/
+//                refreshActivity();
                 break;
             }
         }
