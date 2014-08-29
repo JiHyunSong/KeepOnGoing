@@ -2,214 +2,214 @@
 <merger version="2" >
 
     <dataSet config="main" >
-        <source path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res" >
+        <source path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res" >
             <file
                 name="bbuton_danger"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable\bbuton_danger.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable/bbuton_danger.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="bbuton_danger_rounded"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable\bbuton_danger_rounded.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable/bbuton_danger_rounded.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="bbuton_default"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable\bbuton_default.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable/bbuton_default.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="bbuton_default_rounded"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable\bbuton_default_rounded.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable/bbuton_default_rounded.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="bbuton_info"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable\bbuton_info.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable/bbuton_info.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="bbuton_info_rounded"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable\bbuton_info_rounded.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable/bbuton_info_rounded.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="bbuton_inverse"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable\bbuton_inverse.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable/bbuton_inverse.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="bbuton_inverse_rounded"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable\bbuton_inverse_rounded.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable/bbuton_inverse_rounded.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="bbuton_primary"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable\bbuton_primary.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable/bbuton_primary.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="bbuton_primary_rounded"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable\bbuton_primary_rounded.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable/bbuton_primary_rounded.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="bbuton_success"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable\bbuton_success.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable/bbuton_success.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="bbuton_success_rounded"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable\bbuton_success_rounded.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable/bbuton_success_rounded.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="bbuton_warning"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable\bbuton_warning.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable/bbuton_warning.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="bbuton_warning_rounded"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable\bbuton_warning_rounded.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable/bbuton_warning_rounded.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="bthumbnail_container_rounded"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable\bthumbnail_container_rounded.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable/bthumbnail_container_rounded.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="bthumbnail_container_square"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable\bthumbnail_container_square.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable/bthumbnail_container_square.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="bthumbnail_placeholder_default"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable\bthumbnail_placeholder_default.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable/bthumbnail_placeholder_default.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="edittext_background"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable\edittext_background.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable/edittext_background.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="edittext_background_danger"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable\edittext_background_danger.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable/edittext_background_danger.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="edittext_background_rounded"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable\edittext_background_rounded.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable/edittext_background_rounded.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="edittext_background_rounded_danger"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable\edittext_background_rounded_danger.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable/edittext_background_rounded_danger.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="edittext_background_rounded_success"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable\edittext_background_rounded_success.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable/edittext_background_rounded_success.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="edittext_background_rounded_warning"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable\edittext_background_rounded_warning.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable/edittext_background_rounded_warning.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="edittext_background_success"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable\edittext_background_success.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable/edittext_background_success.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="edittext_background_warning"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable\edittext_background_warning.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable/edittext_background_warning.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="thumbnail_circle"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable\thumbnail_circle.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable/thumbnail_circle.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="thumbnail_circle_container"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable\thumbnail_circle_container.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable/thumbnail_circle_container.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="thumbnail_circle_minimal"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable\thumbnail_circle_minimal.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable/thumbnail_circle_minimal.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="ic_launcher"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable-hdpi\ic_launcher.png"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable-hdpi/ic_launcher.png"
                 qualifiers="hdpi-v4"
                 type="drawable" />
             <file
                 name="ic_launcher"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable-mdpi\ic_launcher.png"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable-mdpi/ic_launcher.png"
                 qualifiers="mdpi-v4"
                 type="drawable" />
             <file
                 name="ic_launcher"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\drawable-xhdpi\ic_launcher.png"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/drawable-xhdpi/ic_launcher.png"
                 qualifiers="xhdpi-v4"
                 type="drawable" />
             <file
                 name="bootstrap_button"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\layout\bootstrap_button.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/layout/bootstrap_button.xml"
                 qualifiers=""
                 type="layout" />
             <file
                 name="bootstrap_button_fill"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\layout\bootstrap_button_fill.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/layout/bootstrap_button_fill.xml"
                 qualifiers=""
                 type="layout" />
             <file
                 name="bootstrap_edit_text"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\layout\bootstrap_edit_text.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/layout/bootstrap_edit_text.xml"
                 qualifiers=""
                 type="layout" />
             <file
                 name="bootstrap_thumbnail"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\layout\bootstrap_thumbnail.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/layout/bootstrap_thumbnail.xml"
                 qualifiers=""
                 type="layout" />
             <file
                 name="bootstrap_thumbnail_circle"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\layout\bootstrap_thumbnail_circle.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/layout/bootstrap_thumbnail_circle.xml"
                 qualifiers=""
                 type="layout" />
             <file
                 name="font_awesome_text"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\layout\font_awesome_text.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/layout/font_awesome_text.xml"
                 qualifiers=""
                 type="layout" />
             <file
                 name="row_title"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\layout\row_title.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/layout/row_title.xml"
                 qualifiers=""
                 type="layout" />
             <file
                 name="row_title_and_subtitle"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\layout\row_title_and_subtitle.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/layout/row_title_and_subtitle.xml"
                 qualifiers=""
                 type="layout" />
             <file
                 name="row_two_columns"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\layout\row_two_columns.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/layout/row_two_columns.xml"
                 qualifiers=""
                 type="layout" />
             <file
                 name="main"
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\menu\main.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/menu/main.xml"
                 qualifiers=""
                 type="menu" />
             <file
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\values\attrs.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/values/attrs.xml"
                 qualifiers="" >
                 <declare-styleable name="BootstrapButton" >
                     <attr
@@ -289,7 +289,7 @@
                 </declare-styleable>
             </file>
             <file
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\values\colors.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/values/colors.xml"
                 qualifiers="" >
                 <color name="bbutton_default_pressed" >#ffebebeb
                 </color>
@@ -393,7 +393,7 @@
                 </color>
             </file>
             <file
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\values\dimens.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/values/dimens.xml"
                 qualifiers="" >
                 <dimen name="padding_medium" >12dp
                 </dimen>
@@ -413,7 +413,7 @@
                 </dimen>
             </file>
             <file
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\values\strings.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/values/strings.xml"
                 qualifiers="" >
                 <string name="action_settings" >Settings
                 </string>
@@ -423,7 +423,7 @@
                 </string>
             </file>
             <file
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\values\styles.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/values/styles.xml"
                 qualifiers="" >
 
                 <style
@@ -438,13 +438,13 @@
                 </style>
             </file>
             <file
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\values-sw720dp-land\dimens.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/values-sw720dp-land/dimens.xml"
                 qualifiers="sw720dp-land-v13" >
                 <dimen name="activity_horizontal_margin" >128dp
                 </dimen>
             </file>
             <file
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\values-v11\styles.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/values-v11/styles.xml"
                 qualifiers="v11" >
 
                 <style
@@ -455,7 +455,7 @@
                 </style>
             </file>
             <file
-                path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\res\values-v14\styles.xml"
+                path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/res/values-v14/styles.xml"
                 qualifiers="v14" >
 
                 <style
@@ -466,11 +466,11 @@
                 </style>
             </file>
         </source>
-        <source path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\build\generated\res\rs\release" />
-        <source path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\build\generated\res\generated\release" />
+        <source path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/build/generated/res/rs/release" />
+        <source path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/build/generated/res/generated/release" />
     </dataSet>
     <dataSet config="release" >
-        <source path="C:\Users\kim\Desktop\git folder\keepongoing\libs\AndroidBootstrap\src\release\res" />
+        <source path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/src/release/res" />
     </dataSet>
 
 </merger>

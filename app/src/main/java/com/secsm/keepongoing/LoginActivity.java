@@ -27,6 +27,7 @@ import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MyVolley;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -195,15 +196,25 @@ public class LoginActivity extends BaseActivity {
 //        login_fl.setVisibility(View.VISIBLE);
 
         String get_url = KogPreference.REST_URL +
-                "User" +
-                "?nickname=" + nickName.trim() +
-                "&password=" + Encrypt.encodingMsg(password) +
-                "&gcmid=" + KogPreference.getRegId(LoginActivity.this);
+                "User"; // +
+//                "?nickname=" + nickName.trim() +
+//                "&password=" + Encrypt.encodingMsg(password) +
+//                "&gcmid=" + KogPreference.getRegId(LoginActivity.this);
         Log.i(LOG_TAG, "URL : " + get_url);
 
+        JSONObject sendBody = new JSONObject();
+
+        try {
+            sendBody.put("nickname", nickName.trim());
+            sendBody.put("password", Encrypt.encodingMsg(password));
+            sendBody.put("gcmid", KogPreference.getRegId(LoginActivity.this));
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, "UserLogin error : " + e.toString());
+
+        }
         Log.i(LOG_TAG, "post btn event trigger");
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), null,
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), sendBody,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -251,6 +262,7 @@ public class LoginActivity extends BaseActivity {
         }
         );
         vQueue.add(jsObjRequest);
+        vQueue.start();
     }
 
     private boolean isValidProfile() {

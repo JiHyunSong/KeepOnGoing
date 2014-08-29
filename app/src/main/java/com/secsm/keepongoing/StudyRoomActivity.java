@@ -12,7 +12,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
+import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -99,6 +101,11 @@ import java.util.Date;
 import java.util.Map;
 
 public class StudyRoomActivity extends BaseActivity {
+
+    private SnowWiFiMonitor m_SnowWifiMonitor = null;
+
+//    private String previous_ip=null;
+    private int previous_state=-5;
 
     private Intent intent;
     private static String LOG_TAG = "StudyRoom Activity";
@@ -327,7 +334,135 @@ public class StudyRoomActivity extends BaseActivity {
             }
 
         });
+
+        m_SnowWifiMonitor = new SnowWiFiMonitor(this);
+        m_SnowWifiMonitor.setOnChangeNetworkStatusListener(SnowChangedListener);
+        registerReceiver(m_SnowWifiMonitor, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        registerReceiver(m_SnowWifiMonitor, new IntentFilter(WifiManager.NETWORK_STATE_CHANGED_ACTION));
+        registerReceiver(m_SnowWifiMonitor, new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION));
+
+
     }
+
+    SnowWiFiMonitor.OnChangeNetworkStatusListener SnowChangedListener
+            = new SnowWiFiMonitor.OnChangeNetworkStatusListener()
+    {
+        @Override
+        public void OnChanged(int status)
+        {
+            switch(status)
+            {
+                case SnowWiFiMonitor.WIFI_STATE_DISABLED:
+                    Log.i(LOG_TAG, "[WifiMonitor] WIFI_STATE_DISABLED");
+                    break;
+
+                case SnowWiFiMonitor.WIFI_STATE_DISABLING:
+                    Log.i(LOG_TAG, "[WifiMonitor] WIFI_STATE_DISABLING");
+                    break;
+
+                case SnowWiFiMonitor.WIFI_STATE_ENABLED:
+                    Log.i(LOG_TAG, "[WifiMonitor] WIFI_STATE_ENABLED");
+                    break;
+
+                case SnowWiFiMonitor.WIFI_STATE_ENABLING:
+                    Log.i(LOG_TAG, "[WifiMonitor] WIFI_STATE_ENABLING");
+                    break;
+
+                case SnowWiFiMonitor.WIFI_STATE_UNKNOWN:
+                    Log.i(LOG_TAG, "[WifiMonitor] WIFI_STATE_UNKNOWN");
+                    break;
+
+                case SnowWiFiMonitor.NETWORK_STATE_CONNECTED:
+                    Log.i(LOG_TAG, "[WifiMonitor] NETWORK_STATE_CONNECTED");
+                    if(previous_state==-5)
+                        previous_state = SnowWiFiMonitor.NETWORK_STATE_CONNECTED;
+                    /*else {
+                        if(previous_state!=SnowWiFiMonitor.NETWORK_STATE_CONNECTED) {
+                            previous_state = SnowWiFiMonitor.NETWORK_STATE_CONNECTED;
+                        //    disconnectConnection();
+                        }
+                    }*/
+                    break;
+
+                case SnowWiFiMonitor.NETWORK_STATE_CONNECTING:
+                    Log.i(LOG_TAG, "[WifiMonitor] NETWORK_STATE_CONNECTING");
+                    if(previous_state==-5) {
+                        previous_state = SnowWiFiMonitor.NETWORK_STATE_CONNECTING;
+                        //    disconnectConnection();
+                        close();
+                        finish();
+                    }
+                    else {
+                        if(previous_state!=SnowWiFiMonitor.NETWORK_STATE_CONNECTING) {
+                            previous_state = SnowWiFiMonitor.NETWORK_STATE_CONNECTING;
+                            //      disconnectConnection();
+                            close();
+                            finish();
+                        }
+                    }
+                    break;
+
+                case SnowWiFiMonitor.NETWORK_STATE_DISCONNECTED:
+                    Log.i(LOG_TAG, "[WifiMonitor] NETWORK_STATE_DISCONNECTED");
+                    if(previous_state==-5)
+                        previous_state = SnowWiFiMonitor.NETWORK_STATE_DISCONNECTED;
+                    else {
+                        if(previous_state!=SnowWiFiMonitor.NETWORK_STATE_DISCONNECTED) {
+                            previous_state = SnowWiFiMonitor.NETWORK_STATE_DISCONNECTED;
+                            //disconnectConnection();
+                            close();
+                            finish();
+                        }
+                    }
+                    break;
+
+                case SnowWiFiMonitor.NETWORK_STATE_DISCONNECTING:
+                    Log.i(LOG_TAG, "[WifiMonitor] NETWORK_STATE_DISCONNECTING");
+                    if(previous_state==-5) {
+                        previous_state = SnowWiFiMonitor.NETWORK_STATE_DISCONNECTING;
+                        close();
+                        finish();
+                        //disconnectConnection();
+                    }
+                    else {
+                        if(previous_state!=SnowWiFiMonitor.NETWORK_STATE_DISCONNECTING) {
+                            previous_state = SnowWiFiMonitor.NETWORK_STATE_DISCONNECTING;
+                            //  disconnectConnection();
+                            close();
+                            finish();
+                        }
+                    }
+                    break;
+
+                case SnowWiFiMonitor.NETWORK_STATE_SUSPENDED:
+                    Log.i(LOG_TAG, "[WifiMonitor] NETWORK_STATE_SUSPENDED");
+                    if(previous_state==-5)
+                        previous_state = SnowWiFiMonitor.NETWORK_STATE_SUSPENDED;
+                    else {
+                        if(previous_state!=SnowWiFiMonitor.NETWORK_STATE_SUSPENDED) {
+                            previous_state = SnowWiFiMonitor.NETWORK_STATE_SUSPENDED;
+                            //   disconnectConnection();
+                        }
+                    }
+                    break;
+
+                case SnowWiFiMonitor.NETWORK_STATE_UNKNOWN:
+                    Log.i(LOG_TAG, "[WifiMonitor] WIFI_STATE_UNKNOWN");
+                    if(previous_state==-5)
+                        previous_state = SnowWiFiMonitor.NETWORK_STATE_UNKNOWN;
+                    else {
+                        if(previous_state!=SnowWiFiMonitor.NETWORK_STATE_UNKNOWN) {
+                            previous_state = SnowWiFiMonitor.NETWORK_STATE_UNKNOWN;
+                            //   disconnectConnection();
+                        }
+                    }
+
+                    break;
+
+            }
+        }
+    };
+
 
     private void setInvisibleAddtionalPage() {
         study_room_additional_page.setVisibility(View.INVISIBLE);
@@ -525,43 +660,6 @@ public class StudyRoomActivity extends BaseActivity {
         );
         vQueue.add(jsObjRequest);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     private void sendMessage() {
@@ -1176,6 +1274,24 @@ S3
                 {
                     // 스코어 상세보기
                     if(KogPreference.ROOM_TYPE_LIFE.equals(type)) {
+                        if(mFriends != null) {
+                            Intent intent = new Intent(StudyRoomActivity.this, ScoreViewActivity.class);
+                            if(KogPreference.ROOM_TYPE_LIFE.equals(type)) {
+                                String[] FriendNicks = new String[mFriends.size() - 2];
+                                for (int i = 1; i < mFriends.size() - 1; i++) {
+                                    FriendNicks[i - 1] = mFriends.get(i).getName();
+                                }
+                                intent.putExtra("Friends", FriendNicks);
+                                startActivity(intent);
+                            }else{
+                                String[] FriendNicks = new String[mFriends.size() - 1];
+                                for (int i = 1; i < mFriends.size(); i++) {
+                                    FriendNicks[i - 1] = mFriends.get(i).getName();
+                                }
+                                intent.putExtra("Friends", FriendNicks);
+                                startActivity(intent);
+                            }
+                        }
                     }
                 }
 
@@ -1420,6 +1536,7 @@ S3
     void init() {
         if (soc_writer == null) {
             Log.i(LOG_TAG, "soc=null");
+            disconnectConnection();
             getFriendsRequest();
             soc_writer = new SocketAsyncTask_Writer();
             soc_writer.execute();
@@ -1472,6 +1589,8 @@ S3
 
     protected void onDestroy() {
         super.onDestroy();
+
+        unregisterReceiver(m_SnowWifiMonitor);
 
         close();
         Log.d("info>> ", "unregisterReceiver()...");
@@ -1773,6 +1892,55 @@ S3
     ////////////////////////////////////
     // REST API                       //
     ////////////////////////////////////
+
+
+    private void disconnectConnection(){
+        //TODO : check POST/GET METHOD and get_URL
+        String get_url = KogPreference.REST_URL
+                + "Socket"
+                + "?previousip=" + KogPreference.getNickName(StudyRoomActivity.this);
+
+        Log.i(LOG_TAG, "URL : " + get_url);
+
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, Encrypt.encodeIfNeed(get_url), null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(LOG_TAG, "get JSONObject");
+                        Log.i(LOG_TAG, response.toString());
+
+                        try {
+                            int status_code = response.getInt("status");
+                            if (status_code == 200) {
+                                Log.i(LOG_TAG, "Disconnection succeed");
+                            }
+                            else {
+                                Log.i(LOG_TAG, "Disconnection failed");
+                                Toast.makeText(getBaseContext(), "?µì‹  ?ëŸ¬ : \n?œë²„?€???°ê²°??ëª¨í˜¸?©ë‹ˆ??", Toast.LENGTH_SHORT).show();
+                                if (KogPreference.DEBUG_MODE) {
+                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                        catch (Exception e) {
+                            Log.i(LOG_TAG, "Disconnection error");
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getBaseContext(), "?µì‹  ?ëŸ¬ : \nError on disconnecting socket", Toast.LENGTH_SHORT).show();
+                        Log.i(LOG_TAG, "Disconnection Response Error");
+                        if (KogPreference.DEBUG_MODE) {
+                            Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+        vQueue.add(jsObjRequest);
+        vQueue.start();
+    }
 
     public String getRealDate() {
         long time = System.currentTimeMillis();
