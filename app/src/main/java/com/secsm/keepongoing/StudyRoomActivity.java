@@ -145,6 +145,7 @@ public class StudyRoomActivity extends BaseActivity {
     private FrameLayout study_room_fl1;
     private boolean isPageOpen = false;
     private boolean isAdditionalPageOpen = false;
+    private boolean BACK_MODE=false;
     private ListView friendList;
     private TextView room_rule_tv;
     private Handler mainHandler;
@@ -790,6 +791,7 @@ public class StudyRoomActivity extends BaseActivity {
 
         camera.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                close();
                 doTakePhotoAction();
                 setDismiss(mDialog);
             }
@@ -797,6 +799,7 @@ public class StudyRoomActivity extends BaseActivity {
 
         gellary.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                close();
                 doTakeAlbumAction();
                 setDismiss(mDialog);
             }
@@ -1058,6 +1061,8 @@ public class StudyRoomActivity extends BaseActivity {
           /*      sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"
                         + Environment.getExternalStorageDirectory())));*/
 //                refreshActivity();
+
+                init();
                 break;
             }
         }
@@ -1590,22 +1595,23 @@ S3
             sendMessage();
 
         } else if (keyCode == KeyEvent.KEYCODE_BACK) {
-
-            if (isAdditionalPageOpen) {
-                setInvisibleAddtionalPage();
-            }else if(!isAdditionalPageOpen && !isPageOpen) {
+            if(BACK_MODE) {
+                if (isAdditionalPageOpen) {
+                    setInvisibleAddtionalPage();
+                } else if (!isAdditionalPageOpen && !isPageOpen) {
 //                setResult(RESULT_OK);
 //                setInvisibleAddtionalPage();
-                StudyRoomActivity.this.finish();
-            }
-            if (isPageOpen){
-                additionalBtn.setEnabled(true);
+                    StudyRoomActivity.this.finish();
+                }
+                if (isPageOpen) {
+                    additionalBtn.setEnabled(true);
 //                showSoftKeyboard();
-                slidingPage01.startAnimation(translateLeftAnim);
+                    slidingPage01.startAnimation(translateLeftAnim);
 //                slidingPage01.setVisibility(View.VISIBLE);
-            }
+                }
 //            Intent intent = new Intent(StudyRoomActivity.this, TabActivity.class);
 //            startActivity(intent);
+            }
         }
         return false;
     }
@@ -2007,6 +2013,7 @@ S3
                                 friendList.setAdapter(friendArrayAdapter);
 
                                 loadText();
+                                BACK_MODE = true;
                             } else {
                                 Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
                                 if (KogPreference.DEBUG_MODE) {
