@@ -191,7 +191,10 @@ public class GcmIntentService extends IntentService {
                 NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
                 Intent _intent = new Intent(getApplicationContext(), StudyRoomActivity.class);
-                _intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                _intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//                FLAG_ACTIVITY_NEW_TASK
+//                FLAG_ACTIVITY_CLEAR_TOP
+                //FLAG_ACTIVITY_SINGLE_TOP
 //                _intent.putExtra("msg", msg);
                 _intent.putExtra("type", thisRoom.getType());
                 _intent.putExtra("rule", thisRoom.getRule());
