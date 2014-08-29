@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.secsm.keepongoing.Quiz.QuizSetlistData;
 import com.secsm.keepongoing.Quiz.Quiz_Result_Adapter;
@@ -20,6 +21,7 @@ public class SlidingListFragmentLeft extends Fragment implements MyInterface{
 
     private ArrayAdapter<String> _arrAdapter;
     private ListView listView;
+    private TextView error_msg;
     private View view;
     ArrayList<QuizSetlistData> list;
     //int[] imageLocations = {R.drawable.dream01, R.drawable.dream02, R.drawable.dream03};
@@ -28,7 +30,10 @@ public class SlidingListFragmentLeft extends Fragment implements MyInterface{
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.sliding_fragment_layout_left, container, false);
+        error_msg = (TextView)view.findViewById(R.id.error_msg);
         listView = (ListView) view.findViewById(R.id.listView_test2);
+        error_msg.setVisibility(View.GONE);
+        listView.setVisibility(View.VISIBLE);
         listView.setAdapter(new Quiz_Result_Adapter(view.getContext(), list,this));
         return view;
     }
@@ -78,8 +83,9 @@ public class SlidingListFragmentLeft extends Fragment implements MyInterface{
         this.list = new ArrayList<QuizSetlistData>();
         this.list.addAll(list);
     settingListView(this.view);
-        if(list.size()==1&&list.get(0).date==null) {
+        if(list.size()==1&&list.get(0).date=="null") {
             listView.setVisibility(View.GONE);
+            error_msg.setVisibility(View.VISIBLE);
             Log.e("minsu:)", "listview list size : " + list.size() + "list contents : " + list.get(0).date);
 
         }
