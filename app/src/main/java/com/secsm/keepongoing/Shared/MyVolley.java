@@ -29,8 +29,9 @@ public class MyVolley {
     public static void init(Context context) {
         mContext = context;
         mRequestQueue = Volley.newRequestQueue(context);
-        ImprovedDiskBasedCache cache = new ImprovedDiskBasedCache(context.getCacheDir(), 16 * 1024 * 1024);
-        mRequestQueue = new RequestQueue(cache, new BasicNetwork(new HurlStack()));
+//        ImprovedDiskBasedCache cache = new ImprovedDiskBasedCache(context.getCacheDir(), 16 * 1024 * 1024);
+//
+//        mRequestQueue = new RequestQueue(cache, new BasicNetwork(new HurlStack()));
         mRequestQueue.start();
         int memClass = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE))
                 .getMemoryClass();
@@ -45,8 +46,8 @@ public class MyVolley {
             return mRequestQueue;
         } else {
             mRequestQueue = Volley.newRequestQueue(context);
-            ImprovedDiskBasedCache cache = new ImprovedDiskBasedCache(context.getCacheDir(), 16 * 1024 * 1024);
-            mRequestQueue = new RequestQueue(cache, new BasicNetwork(new HurlStack()));
+//            ImprovedDiskBasedCache cache = new ImprovedDiskBasedCache(context.getCacheDir(), 16 * 1024 * 1024);
+//            mRequestQueue = new RequestQueue(cache, new BasicNetwork(new HurlStack()));
             mRequestQueue.start();
             return mRequestQueue;
 //            throw new IllegalStateException("RequestQueue not initialized");
