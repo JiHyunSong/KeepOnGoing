@@ -34,8 +34,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tvNickname"
-                android:layout_gravity="left"
-                android:inputType="textVisiblePassword" />
+                android:layout_gravity="left" />
 
             <TextView
                 android:id="@+id/tvNickAlert"

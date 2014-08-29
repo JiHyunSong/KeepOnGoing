@@ -1,5 +1,7 @@
 package com.secsm.keepongoing.Adapters;
 
+import android.util.Log;
+
 public class FriendScore {
     String score;
     String index;
@@ -22,20 +24,25 @@ public class FriendScore {
         this.index = index;
         if(accomplishedTime != null) {
             if (!accomplishedTime.equals("null")) {
-                this.accomplishedTime = accomplishedTime.substring(0, accomplishedTime.length() - 3);
+                this.accomplishedTime = accomplishedTime.substring(0, 5);
             } else {
                 this.accomplishedTime = "00:00";
             }
+        }else{
+            this.accomplishedTime = "00:00";
         }
         this.goalTime += this.accomplishedTime;
         this.goalTime += " / ";
         this.date = date;
         if(targetTime != null) {
             if (!targetTime.equals("null")) {
-                this.targetTime = targetTime.substring(0, targetTime.length() - 3);
+                this.targetTime = targetTime.substring(0, 5);
             } else {
                 this.targetTime = "00:00";
             }
+        }else
+        {
+            this.targetTime = "00:00";
         }
         this.goalTime += this.targetTime;
         this.nickname = nickname;

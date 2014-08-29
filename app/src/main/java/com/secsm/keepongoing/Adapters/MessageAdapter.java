@@ -82,7 +82,7 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
                         viewHolder.tt.setText(m.getTime());
                         viewHolder.wv.setBackgroundColor(0); // 투명처리
                         String htmlForm1 = "<metahttp-equiv='Content-Type' content='text'/html; charset = utf-8 /> " +
-                                "<html>" + "<body bgcolor='#ffc0cb'> ";
+                                "<html>" + "<body text='#8d5e42'> ";
                         String htmlFormText = m.getText();
                         String htmlForm2 = "</body></html>";
 

@@ -1,5 +1,7 @@
 package com.secsm.keepongoing.Adapters;
 
+import android.util.Log;
+
 import com.secsm.keepongoing.R;
 
 public class FriendNameAndIcon {
@@ -11,26 +13,65 @@ public class FriendNameAndIcon {
     private String isMaster;
     private String score;
 
-    public FriendNameAndIcon(String profile_path, String name, String targetTime, String isMaster, String accomplishedTime) {
+
+    public FriendNameAndIcon(String profile_path, String name, String _targetTime, String isMaster, String _accomplishedTime, String _score) {
         this.profile_path = profile_path;
         // TODO : profile change
         this.icon = R.drawable.profile_default;
         this.name = name;
-        if(targetTime!=null) {
-
-            if (!targetTime.equals("null")) {
-                this.targetTime = targetTime.substring(0, targetTime.length() - 3);
+        if(_targetTime!=null) {
+            if (!_targetTime.equals("null")) {
+                Log.i("adapter", "targetTime " + _targetTime);
+                this.targetTime = _targetTime.substring(0, 5);
             } else {
+                Log.i("adapter", "targetTime " + _targetTime);
                 this.targetTime = "00:00";
             }
+        }else
+        {
+            this.targetTime = "00:00";
         }
         this.isMaster = isMaster;
-        if(accomplishedTime !=null) {
-            if (!accomplishedTime.equals("null")) {
-                this.accomplishedTime = accomplishedTime.substring(0, accomplishedTime.length() - 3);
+        if(_accomplishedTime !=null) {
+            if (!_accomplishedTime.equals("null")) {
+                this.accomplishedTime = _accomplishedTime.substring(0, 5);
             } else {
                 this.accomplishedTime = "00:00";
             }
+        }else
+        {
+            this.accomplishedTime = "00:00";
+        }
+        this.score = _score;
+    }
+
+    public FriendNameAndIcon(String profile_path, String name, String _targetTime, String isMaster, String _accomplishedTime) {
+        this.profile_path = profile_path;
+        // TODO : profile change
+        this.icon = R.drawable.profile_default;
+        this.name = name;
+        if(_targetTime!=null) {
+            if (!_targetTime.equals("null")) {
+                Log.i("adapter", "targetTime " + _targetTime);
+                this.targetTime = _targetTime.substring(0, 5);
+            } else {
+                Log.i("adapter", "targetTime " + _targetTime);
+                this.targetTime = "00:00";
+            }
+        }else
+        {
+            this.targetTime = "00:00";
+        }
+        this.isMaster = isMaster;
+        if(_accomplishedTime !=null) {
+            if (!_accomplishedTime.equals("null")) {
+                this.accomplishedTime = _accomplishedTime.substring(0, 5);
+            } else {
+                this.accomplishedTime = "00:00";
+            }
+        }else
+        {
+            this.accomplishedTime = "00:00";
         }
     }
 

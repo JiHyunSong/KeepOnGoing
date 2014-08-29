@@ -32,6 +32,7 @@ import com.secsm.keepongoing.Shared.MyVolley;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.URLDecoder;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -279,9 +280,11 @@ public class AddMoreFriendActivity extends BaseActivity {
 
     private boolean isInRoom(String f_nickName)
     {
-        Log.i(LOG_TAG, "isInRoom, Friends length" + FriendNicks.length);
+        Log.i(LOG_TAG, "isInRoom, Friends length : " + FriendNicks.length);
+        Log.i(LOG_TAG, "isInRoom, Friends name : " + f_nickName);
         for(int j=0; j<FriendNicks.length; j++)
         {
+            Log.i(LOG_TAG, "isInRoom, Friends : " + FriendNicks[j]);
             if(FriendNicks[j].equals(f_nickName))
             {
                 return true;
@@ -323,10 +326,10 @@ public class AddMoreFriendActivity extends BaseActivity {
                                 for(int i=0; i< rMessage.length(); i++)
                                 {
                                     rObj = rMessage.getJSONObject(i);
-                                    if (!"null".equals(rObj.getString("nickname")) && !isInRoom(rObj.getString("nickname"))) {
+                                    if (!"null".equals(rObj.getString("nickname")) && !isInRoom(URLDecoder.decode(rObj.getString("nickname"), "UTF-8"))) {
                                         Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" + rObj.getString("nickname") + "|" + rObj.getString("targetTime"));
                                         mFriends.add(new FriendNameAndIcon(rObj.getString("image"),
-                                                rObj.getString("nickname"),
+                                                URLDecoder.decode(rObj.getString("nickname"), "UTF-8"),
                                                 rObj.getString("targetTime")));
 
                                     }
@@ -372,7 +375,7 @@ public class AddMoreFriendActivity extends BaseActivity {
 
         Log.i(LOG_TAG, "URL : " + get_url);
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, get_url, null,
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

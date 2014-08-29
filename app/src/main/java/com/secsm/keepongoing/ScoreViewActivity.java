@@ -26,6 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URLDecoder;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -82,6 +83,17 @@ public class ScoreViewActivity extends Activity {
         int mJ = (maxIndex + 3 + 3 + 1);
 
         Log.i(LOG_TAG, " mI : " + mI + " mJ : " + mJ);
+
+//        if(KogPreference.DEBUG_MODE)
+//        {
+//            for(int k=0; k<FriendNicks.length; k++)
+//            {
+//                Log.i(LOG_TAG, "get Friends nickname " + k + " : " + FriendNicks[k]);
+//                Log.i(LOG_TAG, " " + mFriendsScore.get(FriendNicks[k]).get(0).getGoalTime());
+//
+//            }
+//        }
+
 
         for (int i = 0; i < mI; i++) {
             for (int j = 0; j < 7 + 1; j++) {
@@ -419,7 +431,7 @@ public class ScoreViewActivity extends Activity {
                                             rObj.getString("accomplishedtime"),
                                             rObj.getString("date"),
                                             rObj.getString("targettime"),
-                                            rObj.getString("nickname")
+                                            URLDecoder.decode(rObj.getString("nickname"), "UTF-8")
                                     );
                                     temp.add(fs);
 //                                    Log.i(LOG_TAG, "temp : " + temp.toString());
