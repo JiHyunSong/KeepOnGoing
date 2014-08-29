@@ -208,6 +208,7 @@ public class LoginActivity extends BaseActivity {
             sendBody.put("nickname", nickName.trim());
             sendBody.put("password", Encrypt.encodingMsg(password));
             sendBody.put("gcmid", KogPreference.getRegId(LoginActivity.this));
+            Log.i(LOG_TAG, "sendbody : " + sendBody.toString());
         } catch (JSONException e) {
             Log.e(LOG_TAG, "UserLogin error : " + e.toString());
 
