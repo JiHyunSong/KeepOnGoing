@@ -125,7 +125,7 @@ public class LoginActivity extends BaseActivity {
 
      //   if (KogPreference.DEBUG_MODE) {
             easterEggButton = (BootstrapButton) findViewById(R.id.easter_egg_button);
-            easterEggButton.setVisibility(View.VISIBLE);
+            easterEggButton.setVisibility(View.GONE);
             // go to Register page
             easterEggButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {

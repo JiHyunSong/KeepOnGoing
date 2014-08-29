@@ -305,12 +305,14 @@ public class StudyRoomActivity extends BaseActivity {
 
         study_room_additional_ll1_camera.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                close();
                 doTakePhotoAction();
             }
         });
 
         study_room_additional_ll2_album.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                close();
                 doTakeAlbumAction();
             }
         });
@@ -503,7 +505,7 @@ public class StudyRoomActivity extends BaseActivity {
         try {
             JSONObject jObj = new JSONObject();
             Log.i(LOG_TAG, "jObj.toString()");
-            jObj.put("nickname", KogPreference.getNickName(StudyRoomActivity.this));
+            jObj.put("nickname", Encrypt.encodeIfNeed(KogPreference.getNickName(StudyRoomActivity.this)));
             jObj.put("rid", KogPreference.getRid(StudyRoomActivity.this));
             Log.i(LOG_TAG, "jObj.toString() " + jObj.toString() + "\n");
             jObj.put("rid", KogPreference.getRid(StudyRoomActivity.this));
@@ -1724,7 +1726,7 @@ S3
     public void sendMsgToSvr(String msg, String messageType) {
         try {
             JSONObject jObj = new JSONObject();
-            jObj.put("nickname", KogPreference.getNickName(StudyRoomActivity.this));
+            jObj.put("nickname", Encrypt.encodeIfNeed(KogPreference.getNickName(StudyRoomActivity.this)));
             jObj.put("rid", KogPreference.getRid(StudyRoomActivity.this));
             jObj.put("message", msg);
             jObj.put("messageType", messageType);
@@ -1889,7 +1891,7 @@ S3
         //TODO : check POST/GET METHOD and get_URL
         String get_url = KogPreference.REST_URL
                 + "Socket"
-                + "?previousip=" + KogPreference.getNickName(StudyRoomActivity.this);
+                + "?previousip=" + Encrypt.encodeIfNeed(KogPreference.getNickName(StudyRoomActivity.this));
 
         Log.i(LOG_TAG, "URL : " + get_url);
 
