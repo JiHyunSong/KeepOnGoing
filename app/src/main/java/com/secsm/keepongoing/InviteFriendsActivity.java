@@ -35,6 +35,7 @@ import com.secsm.keepongoing.Shared.MyVolley;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.URLDecoder;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -328,8 +329,8 @@ public class InviteFriendsActivity extends BaseActivity {
                                     if (!"null".equals(rObj.getString("nickname"))) {
                                         Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" + rObj.getString("nickname") + "|" + rObj.getString("targetTime"));
                                         mFriends.add(new FriendNameAndIcon(rObj.getString("image"),
-                                                rObj.getString("nickname"),
-                                                rObj.getString("targetTime")));
+                                                URLDecoder.decode(rObj.getString("nickname"),"UTF-8"),
+                                                        rObj.getString("targetTime")));
                                     }
                                 }
 
@@ -512,7 +513,7 @@ public class InviteFriendsActivity extends BaseActivity {
 
         Log.i(LOG_TAG, "URL : " + get_url);
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, get_url, null,
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

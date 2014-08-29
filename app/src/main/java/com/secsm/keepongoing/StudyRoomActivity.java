@@ -287,8 +287,8 @@ public class StudyRoomActivity extends BaseActivity {
         translateLeftAnim.setAnimationListener(animListener);
         translateRightAnim.setAnimationListener(animListener);
 
-        mFriendsFristToAdd = new FriendNameAndIcon("friend_btn_mypp_plus_press.png","친구 초대하기", null, null);
-        mFriendsLastToShowScoreDetail = new FriendNameAndIcon("talk_ico_menu_vote.png","스코어 상세보기", null, null);
+        mFriendsFristToAdd = new FriendNameAndIcon("friend_btn_mypp_plus_press.png","친구 초대하기", "null", "null");
+        mFriendsLastToShowScoreDetail = new FriendNameAndIcon("talk_ico_menu_vote.png","스코어 상세보기", "null", "null");
 
 //        init();
         /* at First, holding the focus */
@@ -1963,34 +1963,44 @@ S3
 
                                 if(KogPreference.ROOM_TYPE_LIFE.equals(type)) {
 
+                                    Log.i(LOG_TAG, "friends length : " +rMessage.length());
                                     for (int i = 0; i < rMessage.length(); i++) {
                                         rObj = rMessage.getJSONObject(i);
+                                        Log.i(LOG_TAG, "i : " + i );
+                                        Log.i(LOG_TAG, "rObj.toString() : " + rObj.toString());
                                         if (!"null".equals(rObj.getString("nickname"))) {
-                                            Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" + rObj.getString("nickname") + "|" + rObj.getString("targetTime") + "|" + rObj.getString("isMaster"));
+                                            Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" + URLDecoder.decode(rObj.getString("nickname"), "UTF-8") + "|" + rObj.getString("targetTime") + "|" + rObj.getString("isMaster"));
                                             mFriends.add(new FriendNameAndIcon(
                                                     URLDecoder.decode(rObj.getString("image"), "UTF-8"),
                                                     URLDecoder.decode(rObj.getString("nickname"), "UTF-8"),
                                                     URLDecoder.decode(rObj.getString("targetTime"), "UTF-8"),
                                                     URLDecoder.decode(rObj.getString("isMaster"), "UTF-8"),
+                                                    URLDecoder.decode(rObj.getString("accomplishedTime"), "UTF-8"),
                                                     URLDecoder.decode(rObj.getString("score"), "UTF-8")));
+                                            Log.i(LOG_TAG, "add");
                                         }
                                     }
+                                    Log.i(LOG_TAG, "in liferoom, add all");
                                     mFriends.add(mFriendsLastToShowScoreDetail);
+                                    Log.i(LOG_TAG, "in liferoom, add tail");
                                 }else
                                 {
                                     for (int i = 0; i < rMessage.length(); i++) {
                                         rObj = rMessage.getJSONObject(i);
                                         if (!"null".equals(rObj.getString("nickname"))) {
-                                            Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" + rObj.getString("nickname") + "|" + rObj.getString("targetTime") + "|" + rObj.getString("isMaster"));
+                                            Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" +  URLDecoder.decode(rObj.getString("nickname"), "UTF-8") + "|" + rObj.getString("targetTime") + "|" + rObj.getString("isMaster"));
                                             mFriends.add(new FriendNameAndIcon(
                                                     URLDecoder.decode(rObj.getString("image"), "UTF-8"),
                                                     URLDecoder.decode(rObj.getString("nickname"), "UTF-8"),
                                                     URLDecoder.decode(rObj.getString("targetTime"), "UTF-8"),
-                                                    URLDecoder.decode(rObj.getString("isMaster"), "UTF-8")));
+                                                    URLDecoder.decode(rObj.getString("isMaster"), "UTF-8"),
+                                                    URLDecoder.decode(rObj.getString("accomplishedTime"), "UTF-8")));
                                         }
                                     }
+                                    Log.i(LOG_TAG, "in studyroom, add all");
 
                                 }
+                                Log.i(LOG_TAG, "set friends adapter");
                                 /////////////////////////////
                                 friendArrayAdapter = new FriendsArrayAdapters(StudyRoomActivity.this, R.layout.friend_list_item, mFriends);
                                 friendList.setAdapter(friendArrayAdapter);
@@ -2003,6 +2013,7 @@ S3
                                 }
                             }
                         } catch (Exception e) {
+                            Log.e(LOG_TAG, "get friends error : " + e.toString());
                         }
                     }
                 }, new Response.ErrorListener() {
