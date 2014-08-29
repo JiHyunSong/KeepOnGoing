@@ -20,8 +20,8 @@ public class FriendNameAndIcon {
         this.icon = R.drawable.profile_default;
         this.name = name;
         if(_targetTime!=null) {
-            if (!_targetTime.equals("null")) {
-                Log.i("adapter", "targetTime " + _targetTime);
+            if (!_targetTime.equals("null") && _targetTime.length()>5) {
+                Log.i("adapter", "targetTime sub(0,5)" + _targetTime);
                 this.targetTime = _targetTime.substring(0, 5);
             } else {
                 Log.i("adapter", "targetTime " + _targetTime);
@@ -33,13 +33,16 @@ public class FriendNameAndIcon {
         }
         this.isMaster = isMaster;
         if(_accomplishedTime !=null) {
-            if (!_accomplishedTime.equals("null")) {
+            if (!_accomplishedTime.equals("null") && _accomplishedTime.length()>5) {
+                Log.i("adapter", "_accomplishedTime sub(0,5)" + _accomplishedTime);
                 this.accomplishedTime = _accomplishedTime.substring(0, 5);
             } else {
+                Log.i("adapter", "_accomplishedTime 00:00" + _accomplishedTime);
                 this.accomplishedTime = "00:00";
             }
         }else
         {
+            Log.i("adapter", "_accomplishedTime 00:00" + _accomplishedTime);
             this.accomplishedTime = "00:00";
         }
         this.score = _score;
@@ -51,7 +54,7 @@ public class FriendNameAndIcon {
         this.icon = R.drawable.profile_default;
         this.name = name;
         if(_targetTime!=null) {
-            if (!_targetTime.equals("null")) {
+            if (!_targetTime.equals("null") && _targetTime.length() > 5) {
                 Log.i("adapter", "targetTime " + _targetTime);
                 this.targetTime = _targetTime.substring(0, 5);
             } else {
@@ -64,7 +67,7 @@ public class FriendNameAndIcon {
         }
         this.isMaster = isMaster;
         if(_accomplishedTime !=null) {
-            if (!_accomplishedTime.equals("null")) {
+            if (!_accomplishedTime.equals("null") && _accomplishedTime.length() > 5) {
                 this.accomplishedTime = _accomplishedTime.substring(0, 5);
             } else {
                 this.accomplishedTime = "00:00";
@@ -81,11 +84,14 @@ public class FriendNameAndIcon {
         this.icon = R.drawable.profile_default;
         this.name = name;
         if(targetTime!=null) {
-            if (!targetTime.equals("null")) {
-                this.targetTime = targetTime.substring(0, targetTime.length() - 3);
+            if (!targetTime.equals("null") && targetTime.length() > 5) {
+                this.targetTime = targetTime.substring(0, 5);
             } else {
                 this.targetTime = "00:00";
             }
+        }else
+        {
+            this.targetTime = "00:00";
         }
         this.isMaster = isMaster;
         this.score = null;

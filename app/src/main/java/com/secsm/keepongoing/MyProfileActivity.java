@@ -50,7 +50,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.nio.charset.Charset;
+import java.sql.Timestamp;
 import java.util.Map;
 
 public class MyProfileActivity extends BaseActivity {
@@ -83,7 +85,7 @@ public class MyProfileActivity extends BaseActivity {
         my_profile_my_target_time = (TextView)findViewById(R.id.my_profile_my_target_time);
         my_profile_phone_num = (TextView)findViewById(R.id.my_profile_phone_num);
 
-
+        Log.i(LOG_TAG, " my pre " +  KogPreference.getNickName(MyProfileActivity.this));
         my_profile_image_crop_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 getImage();
@@ -143,6 +145,8 @@ public class MyProfileActivity extends BaseActivity {
     void getImageFromURL(String img_name, ImageView imgView) {
 
         String ImgURL = KogPreference.DOWNLOAD_PROFILE_URL+img_name;
+
+
         // TODO R.drawable.error_image
         ImageLoader imageLoader = MyVolley.getImageLoader();
         imageLoader.get(ImgURL,
@@ -273,7 +277,7 @@ public class MyProfileActivity extends BaseActivity {
     void VolleyUploadImage()
     {
         Charset c = Charset.forName("utf-8");
-        String URL = KogPreference.UPLOAD_PROFILE_URL+ "?rid=" + KogPreference.getRid(MyProfileActivity.this) + "&nickname=" + KogPreference.getNickName(MyProfileActivity.this);
+        String URL = KogPreference.UPLOAD_PROFILE_URL+ "?rid=" + KogPreference.getRid(MyProfileActivity.this) + "&nickname=" + Encrypt.encodeIfNeed(KogPreference.getNickName(MyProfileActivity.this));
         MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, Charset.forName("UTF-8"));
         try
         {
@@ -415,12 +419,19 @@ public class MyProfileActivity extends BaseActivity {
         startActivity(_intent);
     }
 
+    public String getRealDate() {
+        long time = System.currentTimeMillis();
+        Timestamp currentTimestamp = new Timestamp(time);
+        return currentTimestamp.toString().substring(0, 10);
+    }
+
     private void getMyInfoRequest() {
 
         //TODO : check POST/GET METHOD and get_URL
         String get_url = KogPreference.REST_URL +
                 "User" +
-                "?nickname=" + KogPreference.getNickName(MyProfileActivity.this);
+                "?nickname=" + KogPreference.getNickName(MyProfileActivity.this) +
+                "&date=" + getRealDate();
 
         Log.i(LOG_TAG, "URL : " + get_url);
 
@@ -428,7 +439,7 @@ public class MyProfileActivity extends BaseActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.i(LOG_TAG, "get JSONObject");
+                        Log.i(LOG_TAG, "get JSONObject getMyInfoRequest");
                         Log.i(LOG_TAG, response.toString());
 
                         try {
@@ -437,12 +448,16 @@ public class MyProfileActivity extends BaseActivity {
                             if (status_code == 200) {
                                 /////////////////////////////
                                 JSONArray rMessage = response.getJSONArray("message");
-                                my_nickname = rMessage.getJSONObject(0).getString("nickname");
-                                my_target_time = rMessage.getJSONObject(0).getString("targetTime");
-                                my_profile = rMessage.getJSONObject(0).getString("image");
-
-                                setAllEnable();
-                                setInit();
+                                // URLDecoder.decode(rObj.getString("nickname"), "UTF-8")
+                                if(URLDecoder.decode(rMessage.getJSONObject(0).getString("nickname"), "UTF-8") != null) {
+                                    my_nickname = URLDecoder.decode(rMessage.getJSONObject(0).getString("nickname"), "UTF-8");
+                                    my_target_time = rMessage.getJSONObject(0).getString("targetTime");
+                                    my_profile = URLDecoder.decode(rMessage.getJSONObject(0).getString("image"), "UTF-8");
+                                    Log.i(LOG_TAG, "getMyInfoRequest, nick " + my_nickname);
+                                    Log.i(LOG_TAG, "getMyInfoRequest, my_profile " + my_profile);
+                                    setAllEnable();
+                                    setInit();
+                                }
 
                                 /////////////////////////////
                             } else {
@@ -489,7 +504,7 @@ public class MyProfileActivity extends BaseActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.i(LOG_TAG, "get JSONObject");
+                        Log.i(LOG_TAG, "get JSONObject updateMyInfoReqeust");
                         Log.i(LOG_TAG, response.toString());
 
                         try {
@@ -497,7 +512,13 @@ public class MyProfileActivity extends BaseActivity {
                             int status_code = response.getInt("status");
                             if (status_code == 200) {
                                 /////////////////////////////
+
+
                                 Toast.makeText(getBaseContext(), "사진 업로드 완료!", Toast.LENGTH_SHORT).show();
+
+                                setAllDisable();
+                                getMyInfoRequest();
+
                                 /////////////////////////////
                             } else {
                                 Toast.makeText(getBaseContext(), "통신 에러 : \n상태를 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
@@ -549,10 +570,12 @@ public class MyProfileActivity extends BaseActivity {
                     Log.i(LOG_TAG, "profile status code : " + status_code);
                     if (status_code == 200) {
                         /////////////////////////////
-                        String uploadedProfileName = _response.getString("message");
+                        String uploadedProfileName = URLDecoder.decode(_response.getString("message"), "UTF-8");
                         Log.i(LOG_TAG, "profile rMessage : " + uploadedProfileName);
+                        Log.i(LOG_TAG, "내 사진을 업로드 할거야!");
 
                         updateMyInfoRequest(uploadedProfileName);
+
                         setAllDisable();
                         getMyInfoRequest();
 

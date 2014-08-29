@@ -896,7 +896,7 @@ public class StudyRoomActivity extends BaseActivity {
 
     void VolleyUploadImage() {
         Charset c = Charset.forName("utf-8");
-        String URL = KogPreference.UPLOAD_CHAT_IMAGE_URL + "?rid=" + KogPreference.getRid(StudyRoomActivity.this) + "&nickname=" + KogPreference.getNickName(StudyRoomActivity.this);
+        String URL = KogPreference.UPLOAD_CHAT_IMAGE_URL + "?rid=" + KogPreference.getRid(StudyRoomActivity.this) + "&nickname=" + Encrypt.encodeIfNeed(KogPreference.getNickName(StudyRoomActivity.this));
         MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, Charset.forName("UTF-8"));
         try {
             entity.addPart("file", new FileBody(new File(asyncFilePath)));
@@ -2020,8 +2020,10 @@ S3
                                     Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
                                 }
                             }
+                            BACK_MODE = true;
                         } catch (Exception e) {
                             Log.e(LOG_TAG, "get friends error : " + e.toString());
+                            BACK_MODE = true;
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -2030,6 +2032,7 @@ S3
                 Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
                 Log.i(LOG_TAG, "Response Error");
                 if (KogPreference.DEBUG_MODE) {
+                    BACK_MODE = true;
                     Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
                 }
 
