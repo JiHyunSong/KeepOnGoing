@@ -1087,8 +1087,9 @@ public class StudyRoomActivity extends BaseActivity {
 //                Log.e(LOG_TAG, "study_room_below_layout_lp.height : " + study_room_below_layout_lp.height);
 //                Log.e(LOG_TAG, "isAdditionalPageOpen : " + isAdditionalPageOpen);
 //                Log.e(LOG_TAG, "study_room_fl1_lp.height  : " + study_room_fl1_lp.height);
+//                study_room_fl1_lp.height = (activityRootView.getHeight() - actionBarHeight < 0 ? 100 : activityRootView.getHeight() - actionBarHeight);
+//                study_room_fl1_lp.height = (availableHeight - actionBarHeight < 0 ? 100 : availableHeight - actionBarHeight);
                 study_room_fl1_lp.height = (activityRootView.getHeight() - actionBarHeight < 0 ? 100 : activityRootView.getHeight() - actionBarHeight);
-                study_room_fl1_lp.height = (availableHeight - actionBarHeight < 0 ? 100 : availableHeight - actionBarHeight);
                 study_room_below_layout_lp.height = actionBarHeight;
                 study_room_additional_page_lp.height = 0;
             }
@@ -1192,22 +1193,6 @@ S3
         if (weekday != Calendar.MONDAY) {
             int days = (Calendar.SUNDAY - weekday + 1) % 7;
             now.add(Calendar.DAY_OF_YEAR, days);
-        }
-        Date date = now.getTime();
-
-        String format = new SimpleDateFormat("yyyy-MM-dd").format(date);
-        return format;
-    }
-
-    private String getPrevMonday() {
-        Calendar now = Calendar.getInstance();
-        int weekday = now.get(Calendar.DAY_OF_WEEK);
-        Log.i("getMonday1", "now.toString : " + now.toString());
-        Log.i("getMonday1", "weekday : " + weekday);
-        if (weekday != Calendar.MONDAY) {
-            int days = (Calendar.SUNDAY - weekday + 1) % 7;
-            now.add(Calendar.DAY_OF_YEAR, days);
-            now.add(Calendar.DAY_OF_YEAR, -7);
         }
         Date date = now.getTime();
 
@@ -1607,8 +1592,7 @@ S3
 
             if (isAdditionalPageOpen) {
                 setInvisibleAddtionalPage();
-            }
-            if(!isAdditionalPageOpen && !isPageOpen) {
+            }else if(!isAdditionalPageOpen && !isPageOpen) {
 //                setResult(RESULT_OK);
 //                setInvisibleAddtionalPage();
                 StudyRoomActivity.this.finish();

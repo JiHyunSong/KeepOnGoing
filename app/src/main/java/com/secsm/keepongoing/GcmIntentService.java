@@ -83,7 +83,8 @@ public class GcmIntentService extends IntentService {
                 }
                 else if(m_type.equals(KogPreference.MESSAGE_TYPE_TEXT)) {
                     Log.i(LOG_TAG, "GCM get text type message");
-                    pushChatMessage(GcmIntentService.this, intent);
+//                    pushChatMessage(GcmIntentService.this, intent);
+                    getStudyRoomsRequest(GcmIntentService.this, intent);
                 }
                 else if(m_type.equals(KogPreference.MESSAGE_TYPE_IMAGE)){
                     Log.i(LOG_TAG, "GCM get image type message");
@@ -189,7 +190,7 @@ public class GcmIntentService extends IntentService {
 
                 NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-                Intent _intent = new Intent(getApplicationContext(), TabActivity.class);
+                Intent _intent = new Intent(getApplicationContext(), StudyRoomActivity.class);
                 _intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //                _intent.putExtra("msg", msg);
                 _intent.putExtra("type", thisRoom.getType());
@@ -197,9 +198,9 @@ public class GcmIntentService extends IntentService {
                 KogPreference.setRid(context, rid);
                 KogPreference.setQuizNum(context, thisRoom.getQuiz_num());
 
-                PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent contentIntent = PendingIntent.getActivity(this, 0, _intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_launcher)
+                NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.kog_ico)
                         .setContentTitle(senderNickname)
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
                         .setContentText(message)
@@ -295,7 +296,7 @@ public class GcmIntentService extends IntentService {
     private ArrayList<RoomNaming> mRooms;
     private RoomNaming thisRoom;
 
-    private void getStudyRoomsRequest(Context context) {
+    private void getStudyRoomsRequest(Context context, final Intent intent) {
         String get_url = KogPreference.REST_URL +
                 "Rooms" +
                 "?nickname=" + KogPreference.getNickName(context);
@@ -342,6 +343,9 @@ public class GcmIntentService extends IntentService {
 //                                roomsArrayAdapter = new RoomsArrayAdapters(TabActivity.this, R.layout.room_list_item, mRooms);
 //                                roomList.setAdapter(roomsArrayAdapter);
                                 /////////////////////////////
+
+                                pushChatMessageOnlyNotificationBar(GcmIntentService.this, intent);
+
                             } else {
 //                                Toast.makeText(getBaseContext(), "통신 에러 : \n스터디 방 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
                                 if (KogPreference.DEBUG_MODE) {
