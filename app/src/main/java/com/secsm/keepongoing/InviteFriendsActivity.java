@@ -33,6 +33,7 @@ import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MyVolley;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URLDecoder;
@@ -268,24 +269,24 @@ public class InviteFriendsActivity extends BaseActivity {
         InviteFriendsActivity.this.finish();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.invite_friends, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.invite_friends, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
     public String getRealDate() {
         long time = System.currentTimeMillis();
@@ -367,23 +368,35 @@ public class InviteFriendsActivity extends BaseActivity {
     // room create
     private void createLifeRoomRequest() {
 //    String type, rule, max_holiday_count, start_time, duration_time, showup_time, meet_days;
-        String _roomname = roomname.trim().replace(" ", "%20");
-        _roomname = _roomname.trim().replace("\n", "%0D%0A");
-
-        String _rule = rule.trim().replace(" ", "%20");
-        _rule = _rule.trim().replace("\n", "%0D%0A");
+//        String _roomname = roomname.trim().replace(" ", "%20");
+//        _roomname = _roomname.trim().replace("\n", "%0D%0A");
+//
+//        String _rule = rule.trim().replace(" ", "%20");
+//        _rule = _rule.trim().replace("\n", "%0D%0A");
 
         String get_url = KogPreference.REST_URL +
-                "Room" +
-                "?nickname=" + KogPreference.getNickName(InviteFriendsActivity.this)+
-                "&type=" + type +
-                "&rule=" + _rule +
-                "&roomname=" + _roomname +
-                "&max_holiday_count=" + max_holiday_count;
+                "Room";// +
+//                "?nickname=" + KogPreference.getNickName(InviteFriendsActivity.this)+
+//                "&type=" + type +
+//                "&rule=" + _rule +
+//                "&roomname=" + _roomname +
+//                "&max_holiday_count=" + max_holiday_count;
+
+        JSONObject sendBody = new JSONObject();
+        try{
+            sendBody.put("nickname", KogPreference.getNickName(InviteFriendsActivity.this));
+            sendBody.put("type", type);
+            sendBody.put("rule", rule);
+            sendBody.put("roomname", roomname);
+            sendBody.put("max_holiday_count", max_holiday_count);
+        }catch (JSONException e)
+        {
+            Log.e(LOG_TAG, " sendBody e : " + e.toString());
+        }
 
         Log.i(LOG_TAG, "URL : " + get_url);
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), null,
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), sendBody,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -435,27 +448,43 @@ public class InviteFriendsActivity extends BaseActivity {
     private void createSubjectRoomRequest() {
 
 //    String type, rule, max_holiday_count, start_time, duration_time, showup_time, meet_days;
-        String _roomname = roomname.trim().replace(" ", "%20");
-        _roomname = _roomname.trim().replace("\n", "%0D%0A");
-
-        String _rule = rule.trim().replace(" ", "%20");
-        _rule = _rule.trim().replace("\n", "%0D%0A");
+//        String _roomname = roomname.trim().replace(" ", "%20");
+//        _roomname = _roomname.trim().replace("\n", "%0D%0A");
+//
+//        String _rule = rule.trim().replace(" ", "%20");
+//        _rule = _rule.trim().replace("\n", "%0D%0A");
 
         //TODO : check POST/GET METHOD and get_URL
         String get_url = KogPreference.REST_URL +
-                "Room" +
-                "?nickname=" + KogPreference.getNickName(InviteFriendsActivity.this)+
-                "&type=" + type +
-                "&rule=" + _rule +
-                "&roomname=" + _roomname +
-                "&start_time=" + start_time +
-                "&duration_time=" + duration_time +
-                "&showup_time=" + showup_time +
-                "&meet_days=" + meet_days;
+                "Room"; //+
+//                "?nickname=" + KogPreference.getNickName(InviteFriendsActivity.this)+
+//                "&type=" + type +
+//                "&rule=" + _rule +
+//                "&roomname=" + _roomname +
+//                "&start_time=" + start_time +
+//                "&duration_time=" + duration_time +
+//                "&showup_time=" + showup_time +
+//                "&meet_days=" + meet_days;
+
+        JSONObject sendBody = new JSONObject();
+        try{
+            sendBody.put("nickname", KogPreference.getNickName(InviteFriendsActivity.this));
+            sendBody.put("type", type);
+            sendBody.put("rule", rule);
+            sendBody.put("roomname", roomname);
+            sendBody.put("start_time", start_time);
+            sendBody.put("duration_time", duration_time);
+            sendBody.put("showup_time", showup_time);
+            sendBody.put("meet_days", meet_days);
+        }catch (JSONException e)
+        {
+            Log.e(LOG_TAG, " sendBody e : " + e.toString());
+        }
+
 
         Log.i(LOG_TAG, "URL : " + get_url);
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), null,
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), sendBody,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -507,13 +536,22 @@ public class InviteFriendsActivity extends BaseActivity {
 
         //TODO : check POST/GET METHOD and get_URL
         String get_url = KogPreference.REST_URL +
-                "Room/User" +
-                "?rid=" + rid +
-                "&nickname=" + friendName;
+                "Room/User"; // +
+//                "?rid=" + rid +
+//                "&nickname=" + friendName;
+
+        JSONObject sendBody = new JSONObject();
+        try{
+            sendBody.put("rid", rid);
+            sendBody.put("nickname", friendName);
+        }catch (JSONException e)
+        {
+            Log.e(LOG_TAG, " sendBody e : " + e.toString());
+        }
 
         Log.i(LOG_TAG, "URL : " + get_url);
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), null,
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), sendBody,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

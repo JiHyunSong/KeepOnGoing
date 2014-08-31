@@ -310,25 +310,24 @@ public class AddStudyRoomActivity extends BaseActivity {
         }
     };
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.add_study_room, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.add_study_room, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
 
     TimePicker.OnTimeChangedListener tp_onTimeChangedListener = new TimePicker.OnTimeChangedListener() {
@@ -352,13 +351,6 @@ public class AddStudyRoomActivity extends BaseActivity {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             setResult(RESULT_OK);
             finish();
-
-//            Intent intent = new Intent(AddStudyRoomActivity.this, TabActivity.class);
-////            intent.putExtra("phoneNo", phoneNo);
-//            //intent.putExtra("roomName", roomNameArray.get(position));
-//            //intent.putExtra("rid", roomIDArrayFromSQLite.get(position));
-//            //startActivityForResult(intent, CHATROOM_REQUEST_CODE);
-//            startActivity(intent);
         }
         return false;
     }

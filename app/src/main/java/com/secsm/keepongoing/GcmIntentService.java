@@ -371,7 +371,6 @@ public class GcmIntentService extends IntentService {
         }
         );
         vQueue.add(jsObjRequest);
-        vQueue.start();
     }
 
 }

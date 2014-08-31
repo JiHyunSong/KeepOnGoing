@@ -173,25 +173,6 @@ public class LoginActivity extends BaseActivity {
         LoginActivity.this.finish();
     }
 
-//    Handler loginHandler = new Handler(){
-//
-//        @Override
-//        public void handleMessage(Message msg) {
-//
-//            if(msg.what == 1) {
-////                Toast.makeText(LoginActivity.this, "응답 왔음 1", Toast.LENGTH_SHORT).show();
-//                GoNextPage(nickName, password);
-//            }
-//            else if(msg.what == -1)
-//                Toast.makeText(LoginActivity.this, "응답 왔음 -1", Toast.LENGTH_SHORT).show();
-//            else if(msg.what == 0)
-//                Toast.makeText(LoginActivity.this, "응답 왔음 0", Toast.LENGTH_SHORT).show();
-//
-//        }
-//    };
-
-
-
     private void UserLogin(final String nickName, final String password) {
 //        login_fl.setVisibility(View.VISIBLE);
 

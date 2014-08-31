@@ -485,7 +485,6 @@ public class MyProfileActivity extends BaseActivity {
         }
         );
         vQueue.add(jsObjRequest);
-        vQueue.start();
     }
 
 
@@ -493,14 +492,25 @@ public class MyProfileActivity extends BaseActivity {
 
         //TODO : check POST/GET METHOD and get_URL
         String get_url = KogPreference.REST_URL +
-                "User" +
-                "?nickname=" + KogPreference.getNickName(MyProfileActivity.this) +
-                "&password=" + Encrypt.encodingMsg(KogPreference.getPassword(MyProfileActivity.this))+
-                "&image=" + _image;
+                "User"; // +
+//                "?nickname=" + KogPreference.getNickName(MyProfileActivity.this) +
+//                "&password=" + Encrypt.encodingMsg(KogPreference.getPassword(MyProfileActivity.this))+
+//                "&image=" + _image;
+        JSONObject sendBody = new JSONObject();
+
+        try {
+            sendBody.put("nickname", KogPreference.getNickName(MyProfileActivity.this));
+            sendBody.put("password", Encrypt.encodingMsg(KogPreference.getPassword(MyProfileActivity.this)));
+            sendBody.put("image", _image);
+            Log.i(LOG_TAG, "sendbody : " + sendBody.toString());
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, "UserLogin error : " + e.toString());
+
+        }
 
         Log.i(LOG_TAG, "URL : " + get_url);
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.PUT, Encrypt.encodeIfNeed(get_url), null,
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.PUT, Encrypt.encodeIfNeed(get_url), sendBody,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -545,7 +555,6 @@ public class MyProfileActivity extends BaseActivity {
         }
         );
         vQueue.add(jsObjRequest);
-        vQueue.start();
     }
 
 

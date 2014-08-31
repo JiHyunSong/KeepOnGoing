@@ -25,6 +25,7 @@ import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MyVolley;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -115,14 +116,24 @@ public class MainActivity extends Activity {
     // TODO : Auto Login
     private void AutoLogin(final String nickName, String password) {
         String get_url = KogPreference.REST_URL +
-                "User" +
-                "?nickname=" + nickName +
-                "&password=" + Encrypt.encodingMsg(password);
+                "User";// +
+//                "?nickname=" + nickName +
+//                "&password=" + Encrypt.encodingMsg(password);
         Log.i(LOG_TAG, "URL : " + get_url);
+
+        JSONObject sendBody = new JSONObject();
+
+        try {
+            sendBody.put("nickname", nickName);
+            sendBody.put("password", Encrypt.encodingMsg(password));
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, "UserLogin error : " + e.toString());
+
+        }
 
         Log.i(LOG_TAG, "post btn event trigger");
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, get_url, null,
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, get_url, sendBody,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -213,12 +224,8 @@ public class MainActivity extends Activity {
 
     // registraion id를 preference에 저장한다.
     private void storeRegistrationId(String regId) {
-//                Log.i("MainActivity.java | storeRegistrationId", "|" + "Saving regId on app version " + appVersion + "|");
-//        KogPreference.setString(MainActivity.this, regId, "");
         KogPreference.setRegId(MainActivity.this, regId);
         Log.i(LOG_TAG, "reg: " + regId);
-//                PreferenceUtil.instance(getApplicationContext()).putRedId(regId);
-//                PreferenceUtil.instance(getApplicationContext()).putAppVersion(appVersion);
     }
 
 

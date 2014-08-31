@@ -552,17 +552,29 @@ public class StudyRoomActivity extends BaseActivity {
         final String temp_accomplished_time=accomplished_time;
         final String temp_date=date;
         String get_url = KogPreference.REST_URL +
-                "Time" +
-                "?nickname=" + KogPreference.getNickName(StudyRoomActivity.this) +
-                "&target_time=" + target_time +
-                "&accomplished_time=" + accomplished_time+
-                "&date=" + date;
+                "Time"; //+
+//                "?nickname=" + KogPreference.getNickName(StudyRoomActivity.this) +
+//                "&target_time=" + target_time +
+//                "&accomplished_time=" + accomplished_time+
+//                "&date=" + date;
+        JSONObject sendBody = new JSONObject();
+        try{
+            sendBody.put("nickname", KogPreference.getNickName(StudyRoomActivity.this));
+            sendBody.put("target_time", target_time);
+            sendBody.put("accomplished_time", accomplished_time);
+            sendBody.put("date", date);
+        }catch (JSONException e)
+        {
+            Log.e(LOG_TAG, " sendBody e : " + e.toString());
+        }
+
+
 
 //http://210.118.74.195:8080/KOG_Server_Rest/rest/Time?nickname=jins&target_time=10:00:00&accomplished_time=00:00:00&date=2014/8/25
 
         Log.i(LOG_TAG, "get_url : " + get_url);
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, get_url, null,
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, get_url, sendBody,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -615,12 +627,22 @@ public class StudyRoomActivity extends BaseActivity {
     //@통신
     private void acheivetimeputRequest(String target_time,String accomplished_time,String date) {
         String get_url = KogPreference.REST_URL +
-                "Time" +
-                "?nickname=" + KogPreference.getNickName(StudyRoomActivity.this) +
-                "&target_time=" + target_time +
-                "&accomplished_time=" + accomplished_time+
-                "&date=" + date;
+                "Time"; // +
+//                "?nickname=" + KogPreference.getNickName(StudyRoomActivity.this) +
+//                "&target_time=" + target_time +
+//                "&accomplished_time=" + accomplished_time+
+//                "&date=" + date;
 
+        JSONObject sendBody = new JSONObject();
+        try{
+            sendBody.put("nickname", KogPreference.getNickName(StudyRoomActivity.this));
+            sendBody.put("target_time", target_time);
+            sendBody.put("accomplished_time", accomplished_time);
+            sendBody.put("date", date);
+        }catch (JSONException e)
+        {
+            Log.e(LOG_TAG, " sendBody e : " + e.toString());
+        }
 
 
         Log.i(LOG_TAG, "get_url : " + get_url);

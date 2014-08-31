@@ -20,6 +20,7 @@ import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MyVolley;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class AddFriendActivity extends BaseActivity {
@@ -77,13 +78,25 @@ public class AddFriendActivity extends BaseActivity {
 
         //TODO : check POST/GET METHOD and get_URL
         String get_url = KogPreference.REST_URL +
-                "Friend" +
-                "?nickname=" + KogPreference.getNickName(AddFriendActivity.this) +
-                "&nickname_f=" + mf_nickName;
+                "Friend";// +
+//                "?nickname=" + KogPreference.getNickName(AddFriendActivity.this) +
+//                "&nickname_f=" + mf_nickName;
+
+        JSONObject sendBody = new JSONObject();
+
+        try{
+            sendBody.put("nickname", KogPreference.getNickName(AddFriendActivity.this));
+            sendBody.put("nickname_f", mf_nickName);
+            Log.i(LOG_TAG, "sendBody : " + sendBody.toString() );
+        }catch (JSONException e)
+        {
+            Log.e(LOG_TAG, " sendBody e : " + e.toString());
+        }
+
 
         Log.i(LOG_TAG, "URL : " + get_url);
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), null,
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), sendBody,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

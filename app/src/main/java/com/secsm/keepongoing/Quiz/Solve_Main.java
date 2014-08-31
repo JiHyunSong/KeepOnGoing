@@ -26,6 +26,7 @@ import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MyVolley;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URLDecoder;
@@ -282,17 +283,29 @@ return total;
         answer = answer.trim().replace(" ", "%20");
         answer = answer.trim().replace("\n", "%0A");
         String get_url = KogPreference.REST_URL +
-                "Room/Quiz" +
-                "?srid=" + KogPreference.getRid(Solve_Main.this) +
-                "&num="+ KogPreference.getQuizNum(Solve_Main.this) +
-                "&type="+type+//type 받아와야됨
-                 "&answer=" + answer+
-                "&nickname="+ KogPreference.getNickName(Solve_Main.this);
+                "Room/Quiz"; // +
+//                "?srid=" + KogPreference.getRid(Solve_Main.this) +
+//                "&num="+ KogPreference.getQuizNum(Solve_Main.this) +
+//                "&type="+type+//type 받아와야됨
+//                 "&answer=" + answer+
+//                "&nickname="+ KogPreference.getNickName(Solve_Main.this);
 
+        JSONObject sendBody = new JSONObject();
+        try{
+            sendBody.put("srid", KogPreference.getRid(Solve_Main.this));
+            sendBody.put("num", KogPreference.getQuizNum(Solve_Main.this));
+            sendBody.put("type", type);
+            sendBody.put("answer", answer);
+            sendBody.put("nickname", KogPreference.getNickName(Solve_Main.this));
+            Log.e(LOG_TAG, " sendBody : " + sendBody.toString());
+        }catch (JSONException e)
+        {
+            Log.e(LOG_TAG, " sendBody e : " + e.toString());
+        }
 
         Log.i(LOG_TAG, "get_url : " + get_url);
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.PUT, Encrypt.encodeIfNeed(get_url), null,
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.PUT, Encrypt.encodeIfNeed(get_url), sendBody,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

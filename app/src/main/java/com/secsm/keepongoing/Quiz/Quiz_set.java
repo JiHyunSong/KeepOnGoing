@@ -3,6 +3,7 @@ package com.secsm.keepongoing.Quiz;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +27,7 @@ import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MyVolley;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URLDecoder;
@@ -277,17 +279,29 @@ public class Quiz_set extends BaseActivity {
         answer = answer.trim().replace(" ", "%20");
         answer = answer.trim().replace("\n", "%0A");
         String get_url = KogPreference.REST_URL +
-                "Room/Quiz" +
-                "?srid=" + KogPreference.getRid(Quiz_set.this) +
-                "&num="+ KogPreference.getQuizNum(Quiz_set.this) +
-                "&type="+type+//type 받아와야됨
-                "&answer=" + answer+
-                "&nickname="+ KogPreference.getNickName(Quiz_set.this);
+                "Room/Quiz";// +
+//                "?srid=" + KogPreference.getRid(Quiz_set.this) +
+//                "&num="+ KogPreference.getQuizNum(Quiz_set.this) +
+//                "&type="+type+//type 받아와야됨
+//                "&answer=" + answer+
+//                "&nickname="+ KogPreference.getNickName(Quiz_set.this);
 
+        JSONObject sendBody = new JSONObject();
+        try{
+            sendBody.put("srid", KogPreference.getRid(Quiz_set.this));
+            sendBody.put("num", KogPreference.getQuizNum(Quiz_set.this));
+            sendBody.put("type", type);
+            sendBody.put("answer", answer);
+            sendBody.put("nickname", KogPreference.getNickName(Quiz_set.this));
+            Log.i(LOG_TAG, "sendBody : " + sendBody.toString() );
+        }catch (JSONException e)
+        {
+            Log.e(LOG_TAG, " sendBody e : " + e.toString());
+        }
 
         Log.i(LOG_TAG, "get_url : " + get_url);
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.PUT, Encrypt.encodeIfNeed(get_url), null,
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.PUT, Encrypt.encodeIfNeed(get_url), sendBody,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

@@ -24,6 +24,7 @@ import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MyVolley;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Timestamp;
@@ -149,16 +150,29 @@ public class RegisterActivity extends BaseActivity {
 
     private void register(final String _nickName, String password, String image, String phone) {
         String get_url = KogPreference.REST_URL +
-                "Register" +
-                "?nickname=" + _nickName +
-                "&password=" + Encrypt.encodingMsg(password) +
-                "&image=" + image +
-                "&phone=" + phone +
-                "&gcmid=" + KogPreference.getRegId(RegisterActivity.this);
+                "Register"; // +
+//                "?nickname=" + _nickName +
+//                "&password=" + Encrypt.encodingMsg(password) +
+//                "&image=" + image +
+//                "&phone=" + phone +
+//                "&gcmid=" + KogPreference.getRegId(RegisterActivity.this);
+
+        JSONObject sendBody = new JSONObject();
+        try{
+            sendBody.put("nickname", _nickName);
+            sendBody.put("password", Encrypt.encodingMsg(password));
+            sendBody.put("image", image);
+            sendBody.put("phone", phone);
+            sendBody.put("gcmid", KogPreference.getRegId(RegisterActivity.this));
+            Log.i(LOG_TAG, "sendBody : " + sendBody.toString() );
+        }catch (JSONException e)
+        {
+            Log.e(LOG_TAG, " sendBody e : " + e.toString());
+        }
 
         Log.i(LOG_TAG, "post btn event trigger");
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), null,
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), sendBody,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -211,17 +225,27 @@ public class RegisterActivity extends BaseActivity {
 
     private void acheivetimeputRequest(final String __nickname, String target_time, String accomplished_time, String date) {
         String get_url = KogPreference.REST_URL +
-                "Time" +
-                "?nickname=" + __nickname +
-                "&target_time=" + target_time +
-                "&accomplished_time=" + accomplished_time+
-                "&date=" + date;
+                "Time"; // +
+//                "?nickname=" + __nickname +
+//                "&target_time=" + target_time +
+//                "&accomplished_time=" + accomplished_time+
+//                "&date=" + date;
 
+        JSONObject sendBody = new JSONObject();
+        try{
+            sendBody.put("nickname", __nickname);
+            sendBody.put("target_time", target_time);
+            sendBody.put("accomplished_time", accomplished_time);
+            sendBody.put("date", date);
+        }catch (JSONException e)
+        {
+            Log.e(LOG_TAG, " sendBody e : " + e.toString());
+        }
 
 
         Log.i(LOG_TAG, "get_url : " + get_url);
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.PUT, get_url, null,
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.PUT, get_url, sendBody,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -260,22 +284,22 @@ public class RegisterActivity extends BaseActivity {
         vQueue.add(jsObjRequest);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.profile, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.profile, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 }

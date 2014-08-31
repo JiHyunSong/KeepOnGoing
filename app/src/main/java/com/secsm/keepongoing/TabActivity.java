@@ -49,6 +49,7 @@ import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MyVolley;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URLDecoder;
@@ -380,17 +381,30 @@ public class TabActivity extends BaseActivity {
         final String temp_accomplished_time=accomplished_time;
         final String temp_date=date;
         String get_url = KogPreference.REST_URL +
-                "Time" +
-                "?nickname=" + KogPreference.getNickName(TabActivity.this) +
-                "&target_time=" + target_time +
-                "&accomplished_time=" + accomplished_time+
-                "&date=" + date;
+                "Time"; // +
+//                "?nickname=" + KogPreference.getNickName(TabActivity.this) +
+//                "&target_time=" + target_time +
+//                "&accomplished_time=" + accomplished_time+
+//                "&date=" + date;
+
+        JSONObject sendBody = new JSONObject();
+        try{
+            sendBody.put("nickname", KogPreference.getNickName(TabActivity.this));
+            sendBody.put("target_time", target_time);
+            sendBody.put("accomplished_time", accomplished_time);
+            sendBody.put("date", date);
+        }catch (JSONException e)
+        {
+            Log.e(LOG_TAG, " sendBody e : " + e.toString());
+        }
+
+
 
 //http://210.118.74.195:8080/KOG_Server_Rest/rest/Time?nickname=jins&target_time=10:00:00&accomplished_time=00:00:00&date=2014/8/25
 
         Log.i(LOG_TAG, "get_url : " + get_url);
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, get_url, null,
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, get_url, sendBody,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -431,30 +445,34 @@ public class TabActivity extends BaseActivity {
             }
         }
         );
-
-
         vQueue.add(jsObjRequest);
-        vQueue.start();
-
-
-
 
     }
     //@통신
     private void acheivetimeputRequest(String target_time,String accomplished_time,String date) {
         final String temp_accomplished_time=accomplished_time;
         String get_url = KogPreference.REST_URL +
-                "Time" +
-                "?nickname=" + KogPreference.getNickName(TabActivity.this) +
-                "&target_time=" + target_time +
-                "&accomplished_time=" + accomplished_time+
-                "&date=" + date;
+                "Time"; // +
+//                "?nickname=" + KogPreference.getNickName(TabActivity.this) +
+//                "&target_time=" + target_time +
+//                "&accomplished_time=" + accomplished_time+
+//                "&date=" + date;
 
+        JSONObject sendBody = new JSONObject();
+        try{
+            sendBody.put("nickname", KogPreference.getNickName(TabActivity.this));
+            sendBody.put("target_time", target_time);
+            sendBody.put("accomplished_time", accomplished_time);
+            sendBody.put("date", date);
+        }catch (JSONException e)
+        {
+            Log.e(LOG_TAG, " sendBody e : " + e.toString());
+        }
 
 
         Log.i(LOG_TAG, "get_url : " + get_url);
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.PUT, get_url, null,
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.PUT, get_url, sendBody,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -1131,7 +1149,7 @@ public class TabActivity extends BaseActivity {
         }
         );
         vQueue.add(jsObjRequest);
-        vQueue.start();
+
     }
 
 
@@ -1191,7 +1209,6 @@ public class TabActivity extends BaseActivity {
         }
         );
         vQueue.add(jsObjRequest);
-        vQueue.start();
     }
 
     private void logoutRequest(String nickname) {
@@ -1207,14 +1224,6 @@ public class TabActivity extends BaseActivity {
 
         JSONObject sendBody = new JSONObject(map);
 
-//        JSONObject sendBody = new JSONObject();
-//        try {
-//            sendBody.put("nickname", nickname);
-//            Log.i(LOG_TAG, "nickname : " + nickname);
-//        }catch (JSONException e)
-//        {
-//            Log.e(LOG_TAG, "logout request exception : " + e.toString());
-//        }
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.DELETE, Encrypt.encodeIfNeed(get_url), sendBody,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -1257,7 +1266,6 @@ public class TabActivity extends BaseActivity {
         }
         );
         vQueue.add(jsObjRequest);
-        vQueue.start();
     }
 
     private void refreshActivity() {

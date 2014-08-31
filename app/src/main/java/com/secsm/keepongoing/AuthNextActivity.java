@@ -24,7 +24,10 @@ import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MyVolley;
 
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.net.URLEncoder;
 
 public class AuthNextActivity extends BaseActivity {
     Intent intent;
@@ -108,13 +111,22 @@ public class AuthNextActivity extends BaseActivity {
     // register my phone number and random_generated_number
     private void AuthNumRegister(String phone, int random_num) {
         String get_url = KogPreference.REST_URL +
-                "Auth" +
-                "?phone=" + phone +
-                "&random_num=" + random_num;
+                "Auth"; //+
+//                "?phone=" + phone +
+//                "&random_num=" + random_num;
+        JSONObject sendBody = new JSONObject();
+        try{
+            sendBody.put("randomnum", random_num);
+            sendBody.put("phone", URLEncoder.encode(phone, "UTF-8"));
+            Log.i(LOG_TAG, "sendBody : " + sendBody.toString());
+        }catch (Exception e)
+        {
+            Log.e(LOG_TAG, " sendBody e : " + e.toString());
+        }
 
         Log.i(LOG_TAG, "post btn event trigger");
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), null,
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, get_url, sendBody,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -156,6 +168,7 @@ public class AuthNextActivity extends BaseActivity {
         }
         );
         vQueue.add(jsObjRequest);
+        vQueue.start();
     }
 
 
@@ -214,22 +227,22 @@ public class AuthNextActivity extends BaseActivity {
         return randomNo;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.auth_next, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.auth_next, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 }

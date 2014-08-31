@@ -204,39 +204,41 @@ public class Quiz_Main extends BaseActivity {
 
     //@통신
     private void quizRegisterRequest(String question, String type, String solution,String title,String date) {
-        question = question.trim().replace(" ", "%20");
-        solution = solution.trim().replace(" ", "%20");
-        question = question.trim().replace("\n", "%0A");
-        solution = solution.trim().replace("\n", "%0A");
+//        question = question.trim().replace(" ", "%20");
+//        solution = solution.trim().replace(" ", "%20");
+//        question = question.trim().replace("\n", "%0A");
+//        solution = solution.trim().replace("\n", "%0A");
         Log.i("minsu: ) ","minsu: whffu"+question);
 
        final  String temp= solution;
         String get_url = KogPreference.REST_URL +
-                "Room/Quiz" +
-                "?srid=" +KogPreference.getRid(Quiz_Main.this) +
-                "&type=" + type +
-                "&question=" + question +
-                "&solution=" + solution +
-                "&nickname=" + KogPreference.getNickName(Quiz_Main.this)+
-                "&title="+ title+
-                "&date="+ date;
+                "Room/Quiz";// +
+//                "?srid=" +KogPreference.getRid(Quiz_Main.this) +
+//                "&type=" + type +
+//                "&question=" + question +
+//                "&solution=" + solution +
+//                "&nickname=" + KogPreference.getNickName(Quiz_Main.this)+
+//                "&title="+ title+
+//                "&date="+ date;
 
 
-//        JSONObject jsonObj = new JSONObject();
-//        try {
-//            jsonObj.put("srid", KogPreference.getRid(Quiz_Main.this));
-//            jsonObj.put("type", type);
-//            jsonObj.put("question", question);
-//            jsonObj.put("solution", solution);
-//            jsonObj.put("nickname", KogPreference.getNickName(Quiz_Main.this));
-//        }
-//        catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        JSONObject sendBody = new JSONObject();
+        try {
+            sendBody.put("srid", KogPreference.getRid(Quiz_Main.this));
+            sendBody.put("type", type);
+            sendBody.put("question", question);
+            sendBody.put("solution", solution);
+            sendBody.put("nickname", KogPreference.getNickName(Quiz_Main.this));
+            sendBody.put("title", title);
+            sendBody.put("date", date);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
 //        Log.i(LOG_TAG, "get_url : " + get_url);
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), null,
-    //    JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, KogPreference.REST_URL+"Room/Quiz", jsonObj,
+    //    JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), null,
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, KogPreference.REST_URL+"Room/Quiz", sendBody,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -252,9 +254,6 @@ public class Quiz_Main extends BaseActivity {
                                 rMessageget = response.getJSONArray("message");
                                 JSONObject rObj;
                                 rObj=rMessageget.getJSONObject(0);
-
-
-
                            //     Toast.makeText(getBaseContext(), LOG_TAG + URLDecoder.decode(rObj.getString("num").toString(), "UTF-8"), Toast.LENGTH_SHORT).show();
                          //       Log.e("minsu ):","minsu:) receive : "+ URLDecoder.decode(rObj.getString("num").toString(), "UTF-8"));
                             //   Log.e("minsu ):","minsue:) send solution : "+ temp);
