@@ -17,7 +17,7 @@
             android:layout_margin="5dp"
             android:cacheColorHint="#00000000"
             android:stackFromBottom="true"
-            android:transcriptMode="normal"></ListView>
+            android:transcriptMode="normal" />
     </FrameLayout>
 
     <LinearLayout
@@ -41,7 +41,7 @@
             android:layout_width="45dp"
             android:layout_height="fill_parent"
             android:layout_weight="0.0"
-            android:text="+"
+            android:text="@string/study_room_additional"
             android:visibility="visible" />
 
         <EditText
@@ -57,7 +57,7 @@
             android:layout_width="70sp"
             android:layout_height="fill_parent"
             android:layout_weight="0.0"
-            android:text="전송"></Button>
+            android:text="@string/study_room_send" />
 
     </LinearLayout>
 
@@ -85,13 +85,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="15dp"
-                android:background="@drawable/talk_ico_menu_camera" />
+                android:background="@drawable/talk_ico_menu_camera"
+                android:contentDescription="@string/study_room_camera" />
 
             <TextView
                 android:id="@+id/study_room_camera_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="카메라"
+                android:text="@string/study_room_camera"
                 android:textAlignment="center" />
         </LinearLayout>
 
@@ -99,7 +100,6 @@
             android:id="@+id/study_room_additional_ll2_album"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/study_room_additional_ll1_camera"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
@@ -109,21 +109,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="15dp"
-                android:background="@drawable/talk_ico_menu_album" />
+                android:background="@drawable/talk_ico_menu_album"
+                android:contentDescription="@string/study_room_gallery" />
 
             <TextView
                 android:id="@+id/study_room_album_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="갤러리"
-                android:textAlignment="center" />
+                android:text="@string/study_room_gallery" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/study_room_additional_ll3_my_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/study_room_additional_ll2_album"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
@@ -133,14 +132,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="15dp"
-                android:background="@drawable/talk_ico_menu_secretm" />
+                android:background="@drawable/talk_ico_menu_secretm"
+                android:contentDescription="@string/study_room_today_achievement" />
 
             <TextView
                 android:id="@+id/study_room_my_time_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="오늘의 달성량"
-                android:textAlignment="center" />
+                android:text="@string/study_room_today_achievement" />
         </LinearLayout>
 
     </LinearLayout>
@@ -159,14 +158,13 @@
             android:id="@+id/room_tv1"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="공지사항 :"
+            android:text="@string/study_room_notice"
             android:textColor="#ff000000" />
 
         <TextView
             android:id="@+id/room_role_tv"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/room_tv1"
             android:layout_margin="5dp"
             android:maxLines="5"
             android:scrollbars="vertical"
@@ -175,8 +173,7 @@
         <ListView
             android:id="@+id/roomFriendList"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_below="@id/room_role_tv" />
+            android:layout_height="fill_parent" />
     </LinearLayout>
 
 
