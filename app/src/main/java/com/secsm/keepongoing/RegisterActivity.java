@@ -234,8 +234,8 @@ public class RegisterActivity extends BaseActivity {
         JSONObject sendBody = new JSONObject();
         try{
             sendBody.put("nickname", __nickname);
-            sendBody.put("target_time", target_time);
-            sendBody.put("accomplished_time", accomplished_time);
+            sendBody.put("targettime", target_time);
+            sendBody.put("accomplishedtime", accomplished_time);
             sendBody.put("date", date);
         }catch (JSONException e)
         {

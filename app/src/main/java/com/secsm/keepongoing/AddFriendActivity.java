@@ -86,7 +86,7 @@ public class AddFriendActivity extends BaseActivity {
 
         try{
             sendBody.put("nickname", KogPreference.getNickName(AddFriendActivity.this));
-            sendBody.put("nickname_f", mf_nickName);
+            sendBody.put("nicknamef", mf_nickName);
             Log.i(LOG_TAG, "sendBody : " + sendBody.toString() );
         }catch (JSONException e)
         {

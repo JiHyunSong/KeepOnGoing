@@ -388,7 +388,7 @@ public class InviteFriendsActivity extends BaseActivity {
             sendBody.put("type", type);
             sendBody.put("rule", rule);
             sendBody.put("roomname", roomname);
-            sendBody.put("max_holiday_count", max_holiday_count);
+            sendBody.put("maxholidaycount", max_holiday_count);
         }catch (JSONException e)
         {
             Log.e(LOG_TAG, " sendBody e : " + e.toString());
@@ -472,10 +472,10 @@ public class InviteFriendsActivity extends BaseActivity {
             sendBody.put("type", type);
             sendBody.put("rule", rule);
             sendBody.put("roomname", roomname);
-            sendBody.put("start_time", start_time);
-            sendBody.put("duration_time", duration_time);
-            sendBody.put("showup_time", showup_time);
-            sendBody.put("meet_days", meet_days);
+            sendBody.put("starttime", start_time);
+            sendBody.put("durationtime", duration_time);
+            sendBody.put("showuptime", showup_time);
+            sendBody.put("meetdays", meet_days);
         }catch (JSONException e)
         {
             Log.e(LOG_TAG, " sendBody e : " + e.toString());
