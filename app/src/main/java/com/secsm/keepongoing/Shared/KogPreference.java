@@ -23,6 +23,7 @@ public final class KogPreference {
     private static String LOG_TAG = "Preference LOG";
     public static Boolean DEBUG_MODE = true;
     public static Boolean NO_AUTH = false;
+    public static Boolean NO_SOCKET = true;
     private static final String PREF_NAME = "KeepOnGoingPreference";
     private static String LOGIN_TAG = "LOGIN";
     private static String AUTOLOGIN_TAG = "AUTO_LOGIN";
@@ -39,6 +40,7 @@ public final class KogPreference {
     public static String DOWNLOAD_CHAT_IMAGE_URL = "http://210.118.74.195:8080/KOG_Server_Rest/upload/ChatImage/";
     public static String MESSAGE_TYPE_TEXT = "text";
     public static String MESSAGE_TYPE_IMAGE = "image";
+    public static String MESSAGE_TYPE_DUMMY = "dummy";
     public static String MESSAGE_TYPE_QUIZ = "quiz";
     public static String MESSAGE_TYPE_LOGOUT="logout";
     public static String ROOM_TYPE_LIFE="liferoom";

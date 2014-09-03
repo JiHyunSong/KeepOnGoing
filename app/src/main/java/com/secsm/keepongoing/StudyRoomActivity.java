@@ -236,10 +236,10 @@ public class StudyRoomActivity extends BaseActivity {
 
         /* initial UI */
         activityRootView = (RelativeLayout) findViewById(R.id.activityRoot);
-        activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(mGlobalLayoutListener);
+//        activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(mGlobalLayoutListener);
 
         study_room_below_layout = (LinearLayout) findViewById(R.id.study_room_below_layout);
-        study_room_fl1 = (FrameLayout) findViewById(R.id.study_room_fl1);
+//        study_room_fl1 = (FrameLayout) findViewById(R.id.study_room_fl1);
 
         sendMsgBtn = (Button) findViewById(R.id.study_room_sendMsgBtn);
         messageTxt = (EditText) findViewById(R.id.study_room_messageTxtView);
@@ -273,7 +273,7 @@ public class StudyRoomActivity extends BaseActivity {
         statusBarHeight = getStatusBarHeight();
         actionBarHeight = getActionBarHeight();
         study_room_below_layout_lp = (RelativeLayout.LayoutParams) study_room_below_layout.getLayoutParams();
-        study_room_fl1_lp = (RelativeLayout.LayoutParams) study_room_fl1.getLayoutParams();
+//        study_room_fl1_lp = (RelativeLayout.LayoutParams) study_room_fl1.getLayoutParams();
         study_room_additional_page_lp = (RelativeLayout.LayoutParams) study_room_additional_page.getLayoutParams();
         /* IF there is and exists room, load the stored message */
 
@@ -329,9 +329,13 @@ public class StudyRoomActivity extends BaseActivity {
             public void onClick(View v) {
                 if (!isAdditionalPageOpen) {
                     setVisibleAdditionalPage();
+                    getWindow().setSoftInputMode(
+                            WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 //                getImage();
                 } else {
                     setInvisibleAddtionalPage();
+                    getWindow().setSoftInputMode(
+                            WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
                 }
             }
 
@@ -469,6 +473,7 @@ public class StudyRoomActivity extends BaseActivity {
 
     private void setInvisibleAddtionalPage() {
         study_room_additional_page.setVisibility(View.INVISIBLE);
+        study_room_additional_page_lp.height = 0;
         showSoftKeyboard();
         isAdditionalPageOpen = false;
     }
@@ -476,6 +481,7 @@ public class StudyRoomActivity extends BaseActivity {
     private void setVisibleAdditionalPage() {
         hideSoftKeyboard(study_room_additional_page);
         study_room_additional_page.setVisibility(View.VISIBLE);
+        study_room_additional_page_lp.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
         isAdditionalPageOpen = true;
     }
 
@@ -607,7 +613,7 @@ public class StudyRoomActivity extends BaseActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i(LOG_TAG, "Response Error");
+                Log.i(LOG_TAG, "acheivetimeRegisterRequest Response Error : " + error.toString());
                 Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
                 if (KogPreference.DEBUG_MODE) {
                     Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
@@ -675,7 +681,7 @@ public class StudyRoomActivity extends BaseActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i(LOG_TAG, "Response Error");
+                Log.i(LOG_TAG, "acheivetimeputRequest Response Error : " + error.toString());
                 Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
                 if (KogPreference.DEBUG_MODE) {
                     Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
@@ -1095,89 +1101,89 @@ public class StudyRoomActivity extends BaseActivity {
     ////////////////////
     // send my time   //
     ////////////////////
-    int availableHeight;
-    private ViewTreeObserver.OnGlobalLayoutListener mGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
-        public void onGlobalLayout() {
-            int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
-            rootHeight = activityRootView.getRootView().getHeight();
-            if(activityRootView.getHeight() < rootHeight * 2 / 3 && activityRootView.getHeight() > rootHeight * 1 / 4)
-                availableHeight = activityRootView.getHeight();
-
-            if (isAdditionalPageOpen) { // VISIBLE
-//                Log.e(LOG_TAG, "study_room_below_layout_lp.height : " + actionBarHeight);
-//                Log.e(LOG_TAG, "activityRootView.getHeight()  : " + activityRootView.getHeight());
-//                Log.e(LOG_TAG, "isAdditionalPageOpen (VISIBLE): " + isAdditionalPageOpen);
-//                Log.e(LOG_TAG, "study_room_fl1_lp.height  : " + (activityRootView.getHeight() - actionBarHeight - keyBoardHeight));
-                study_room_fl1_lp.height = (activityRootView.getHeight() - actionBarHeight - keyBoardHeight < 0 ? 100 : activityRootView.getHeight() - actionBarHeight - keyBoardHeight) ;
-//                study_room_fl1_lp.height = availableHeight - actionBarHeight - keyBoardHeight;
-                study_room_below_layout_lp.height = actionBarHeight;
-                study_room_additional_page_lp.height = keyBoardHeight;
-            } else {
-//                Log.e(LOG_TAG, "activityRootView.getHeight()  : " + activityRootView.getHeight());
-//                Log.e(LOG_TAG, "study_room_below_layout_lp.height : " + study_room_below_layout_lp.height);
-//                Log.e(LOG_TAG, "isAdditionalPageOpen : " + isAdditionalPageOpen);
-//                Log.e(LOG_TAG, "study_room_fl1_lp.height  : " + study_room_fl1_lp.height);
+//    int availableHeight;
+//    private ViewTreeObserver.OnGlobalLayoutListener mGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+//        public void onGlobalLayout() {
+//            int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
+//            rootHeight = activityRootView.getRootView().getHeight();
+//            if(activityRootView.getHeight() < rootHeight * 2 / 3 && activityRootView.getHeight() > rootHeight * 1 / 4)
+//                availableHeight = activityRootView.getHeight();
+//
+//            if (isAdditionalPageOpen) { // VISIBLE
+////                Log.e(LOG_TAG, "study_room_below_layout_lp.height : " + actionBarHeight);
+////                Log.e(LOG_TAG, "activityRootView.getHeight()  : " + activityRootView.getHeight());
+////                Log.e(LOG_TAG, "isAdditionalPageOpen (VISIBLE): " + isAdditionalPageOpen);
+////                Log.e(LOG_TAG, "study_room_fl1_lp.height  : " + (activityRootView.getHeight() - actionBarHeight - keyBoardHeight));
+//                study_room_fl1_lp.height = (activityRootView.getHeight() - actionBarHeight - keyBoardHeight < 0 ? 100 : activityRootView.getHeight() - actionBarHeight - keyBoardHeight) ;
+////                study_room_fl1_lp.height = availableHeight - actionBarHeight - keyBoardHeight;
+//                study_room_below_layout_lp.height = actionBarHeight;
+//                study_room_additional_page_lp.height = keyBoardHeight;
+//            } else {
+////                Log.e(LOG_TAG, "activityRootView.getHeight()  : " + activityRootView.getHeight());
+////                Log.e(LOG_TAG, "study_room_below_layout_lp.height : " + study_room_below_layout_lp.height);
+////                Log.e(LOG_TAG, "isAdditionalPageOpen : " + isAdditionalPageOpen);
+////                Log.e(LOG_TAG, "study_room_fl1_lp.height  : " + study_room_fl1_lp.height);
+////                study_room_fl1_lp.height = (activityRootView.getHeight() - actionBarHeight < 0 ? 100 : activityRootView.getHeight() - actionBarHeight);
+////                study_room_fl1_lp.height = (availableHeight - actionBarHeight < 0 ? 100 : availableHeight - actionBarHeight);
 //                study_room_fl1_lp.height = (activityRootView.getHeight() - actionBarHeight < 0 ? 100 : activityRootView.getHeight() - actionBarHeight);
-//                study_room_fl1_lp.height = (availableHeight - actionBarHeight < 0 ? 100 : availableHeight - actionBarHeight);
-                study_room_fl1_lp.height = (activityRootView.getHeight() - actionBarHeight < 0 ? 100 : activityRootView.getHeight() - actionBarHeight);
-                study_room_below_layout_lp.height = actionBarHeight;
-                study_room_additional_page_lp.height = 0;
-            }
-
-//            Log.i("Keyboard Size", "mGlobalLayoutListener");
-/*
-            Log.e(LOG_TAG, "getStatusBarHeight : " + getStatusBarHeight());
-            Log.e(LOG_TAG, "getActionBarHeight : " + getActionBarHeight());
-            Log.e(LOG_TAG, "activityRootView.getHeight() : " + activityRootView.getHeight());
-            Log.e(LOG_TAG, "activityRootView.getRootView().getHeight() : " + activityRootView.getRootView().getHeight());
-            Log.e(LOG_TAG, "getMessageListHeight: " + messageList.getHeight());
-            Log.e(LOG_TAG, "get study_room_below_layout Height: " + study_room_below_layout.getHeight());
-            Log.e(LOG_TAG, "get study_room_fl1 Height: " + study_room_fl1.getHeight());
-S2
-// without keyboard
-08-26 20:54:49.191  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ getStatusBarHeight : 38
-08-26 20:54:49.191  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ getActionBarHeight : 72
-08-26 20:54:49.191  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ activityRootView.getHeight() : 690
-08-26 20:54:49.191  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ activityRootView.getRootView().getHeight() : 800
-08-26 20:54:49.191  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ getMessageListHeight: 599
-08-26 20:54:49.191  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ get study_room_below_layout Height: 75
-08-26 20:54:49.191  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ get study_room_fl1 Height: 615
-// with keyboard
-08-26 20:54:32.831  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ getStatusBarHeight : 38
-08-26 20:54:32.831  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ getActionBarHeight : 72
-08-26 20:54:32.831  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ activityRootView.getHeight() : 392
-08-26 20:54:32.831  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ activityRootView.getRootView().getHeight() : 800
-08-26 20:54:32.831  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ getMessageListHeight: 301
-08-26 20:54:32.831  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ get study_room_below_layout Height: 75
-08-26 20:54:32.831  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ get study_room_fl1 Height: 317
-
-
-S3
-// no keyboard
-08-27 14:48:57.579    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ getStatusBarHeight : 50
-08-27 14:48:57.579    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ getActionBarHeight : 96
-08-27 14:48:57.579    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ activityRootView.getHeight() : 1134
-08-27 14:48:57.579    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ activityRootView.getRootView().getHeight() : 1280
-08-27 14:48:57.579    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ getMessageListHeight: 1014
-08-27 14:48:57.579    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ get study_room_below_layout Height: 100
-08-27 14:48:57.579    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ get study_room_fl1 Height: 1034
-// with keyboard
-08-27 14:48:49.224    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ getStatusBarHeight : 50
-08-27 14:48:49.224    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ getActionBarHeight : 96
-08-27 14:48:49.224    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ activityRootView.getHeight() : 690
-08-27 14:48:49.224    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ activityRootView.getRootView().getHeight() : 1280
-08-27 14:48:49.224    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ getMessageListHeight: 570
-08-27 14:48:49.224    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ get study_room_below_layout Height: 100
-08-27 14:48:49.224    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ get study_room_fl1 Height: 590
-
- */
-
-            getSoftKeyboardHeight();
-            if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
-                //         ... do something here
-            }
-        }
-    };
+//                study_room_below_layout_lp.height = actionBarHeight;
+//                study_room_additional_page_lp.height = 0;
+//            }
+//
+////            Log.i("Keyboard Size", "mGlobalLayoutListener");
+///*
+//            Log.e(LOG_TAG, "getStatusBarHeight : " + getStatusBarHeight());
+//            Log.e(LOG_TAG, "getActionBarHeight : " + getActionBarHeight());
+//            Log.e(LOG_TAG, "activityRootView.getHeight() : " + activityRootView.getHeight());
+//            Log.e(LOG_TAG, "activityRootView.getRootView().getHeight() : " + activityRootView.getRootView().getHeight());
+//            Log.e(LOG_TAG, "getMessageListHeight: " + messageList.getHeight());
+//            Log.e(LOG_TAG, "get study_room_below_layout Height: " + study_room_below_layout.getHeight());
+//            Log.e(LOG_TAG, "get study_room_fl1 Height: " + study_room_fl1.getHeight());
+//S2
+//// without keyboard
+//08-26 20:54:49.191  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ getStatusBarHeight : 38
+//08-26 20:54:49.191  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ getActionBarHeight : 72
+//08-26 20:54:49.191  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ activityRootView.getHeight() : 690
+//08-26 20:54:49.191  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ activityRootView.getRootView().getHeight() : 800
+//08-26 20:54:49.191  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ getMessageListHeight: 599
+//08-26 20:54:49.191  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ get study_room_below_layout Height: 75
+//08-26 20:54:49.191  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ get study_room_fl1 Height: 615
+//// with keyboard
+//08-26 20:54:32.831  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ getStatusBarHeight : 38
+//08-26 20:54:32.831  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ getActionBarHeight : 72
+//08-26 20:54:32.831  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ activityRootView.getHeight() : 392
+//08-26 20:54:32.831  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ activityRootView.getRootView().getHeight() : 800
+//08-26 20:54:32.831  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ getMessageListHeight: 301
+//08-26 20:54:32.831  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ get study_room_below_layout Height: 75
+//08-26 20:54:32.831  24340-24340/com.secsm.keepongoing E/StudyRoom Activity﹕ get study_room_fl1 Height: 317
+//
+//
+//S3
+//// no keyboard
+//08-27 14:48:57.579    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ getStatusBarHeight : 50
+//08-27 14:48:57.579    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ getActionBarHeight : 96
+//08-27 14:48:57.579    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ activityRootView.getHeight() : 1134
+//08-27 14:48:57.579    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ activityRootView.getRootView().getHeight() : 1280
+//08-27 14:48:57.579    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ getMessageListHeight: 1014
+//08-27 14:48:57.579    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ get study_room_below_layout Height: 100
+//08-27 14:48:57.579    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ get study_room_fl1 Height: 1034
+//// with keyboard
+//08-27 14:48:49.224    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ getStatusBarHeight : 50
+//08-27 14:48:49.224    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ getActionBarHeight : 96
+//08-27 14:48:49.224    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ activityRootView.getHeight() : 690
+//08-27 14:48:49.224    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ activityRootView.getRootView().getHeight() : 1280
+//08-27 14:48:49.224    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ getMessageListHeight: 570
+//08-27 14:48:49.224    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ get study_room_below_layout Height: 100
+//08-27 14:48:49.224    9081-9081/com.secsm.keepongoing E/StudyRoom Activity﹕ get study_room_fl1 Height: 590
+//
+// */
+//
+//            getSoftKeyboardHeight();
+//            if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
+//                //         ... do something here
+//            }
+//        }
+//    };
 
     int keyBoardHeight = 0;
     int screenHeight = 0;
@@ -1420,10 +1426,12 @@ S3
                 study_room_additional_ll1_camera.setEnabled(true);
                 study_room_additional_ll2_album.setEnabled(true);
                 study_room_additional_ll3_my_time.setEnabled(true);
-                showSoftKeyboard();
+                messageTxt.setEnabled(true);
+                messageTxt.requestFocus();
                 slidingPage01.startAnimation(translateLeftAnim);
                 Log.e(LOG_TAG, "left");
                 slidingPage01.setVisibility(View.VISIBLE);
+                showSoftKeyboard();
             } else {
 //                if(isAdditionalPageOpen) {
 //                    setInvisibleAddtionalPage();
@@ -1432,11 +1440,12 @@ S3
                 study_room_additional_ll1_camera.setEnabled(false);
                 study_room_additional_ll2_album.setEnabled(false);
                 study_room_additional_ll3_my_time.setEnabled(false);
+                messageTxt.setEnabled(false);
 
 
-                hideSoftKeyboard(slidingPage01);
                 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
                 slidingPage01.startAnimation(translateRightAnim);
+                hideSoftKeyboard(slidingPage01);
                 Log.e(LOG_TAG, "right");
             }
             return true;
@@ -1548,25 +1557,32 @@ S3
         return super.onOptionsItemSelected(item);
     }
 
-    void init() {
-        if (soc_writer == null) {
-            Log.i(LOG_TAG, "soc=null");
-            disconnectConnection();
+    synchronized void init() {
+
+        if(!KogPreference.NO_SOCKET) {
+            if (soc_writer == null) {
+                Log.i(LOG_TAG, "soc=null");
+                disconnectConnection();
+                getFriendsRequest();
+                soc_writer = new SocketAsyncTask_Writer();
+                soc_writer.execute();
+            }
+        }else{
             getFriendsRequest();
-            soc_writer = new SocketAsyncTask_Writer();
-            soc_writer.execute();
         }
     }
 
-    void close() {
-        if (soc_reader != null) {
-            soc_reader.cancel(true);
-            soc_reader = null;
-        }
-        if (soc_writer != null) {
-            soc_writer.sendMsgToSvr("exit");
-            soc_writer.cancel(true);
-            soc_writer = null;
+    synchronized void close() {
+        if(!KogPreference.NO_SOCKET){
+            if (soc_reader != null) {
+                soc_reader.cancel(true);
+                soc_reader = null;
+            }
+            if (soc_writer != null) {
+                soc_writer.sendMsgToSvr("exit");
+                soc_writer.cancel(true);
+                soc_writer = null;
+            }
         }
     }
 
@@ -1623,8 +1639,6 @@ S3
                 if (isAdditionalPageOpen) {
                     setInvisibleAddtionalPage();
                 } else if (!isAdditionalPageOpen && !isPageOpen) {
-//                setResult(RESULT_OK);
-//                setInvisibleAddtionalPage();
                     StudyRoomActivity.this.finish();
                 }
                 if (isPageOpen) {
@@ -1690,6 +1704,12 @@ S3
         Log.i(LOG_TAG, "loadText");
 
         messageHistoryMAdaptor.clear();
+        // dummy list item
+        Msg dummyMsg = new Msg(StudyRoomActivity.this, null, null, null, null, KogPreference.MESSAGE_TYPE_DUMMY, null);
+        for(int i=0; i<6; i++)
+            messageHistoryMAdaptor.add(dummyMsg);
+
+
         try {
             SQLiteDatabase db;
             Cursor cursor = null;
@@ -1945,8 +1965,8 @@ S3
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getBaseContext(), "?µì‹  ?ëŸ¬ : \nError on disconnecting socket", Toast.LENGTH_SHORT).show();
-                        Log.i(LOG_TAG, "Disconnection Response Error");
+                        Toast.makeText(getBaseContext(), "Error on disconnecting socket", Toast.LENGTH_SHORT).show();
+                        Log.i(LOG_TAG, "Disconnection Response Error : " + error.toString());
                         if (KogPreference.DEBUG_MODE) {
                             Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
                         }
@@ -2054,7 +2074,7 @@ S3
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-                Log.i(LOG_TAG, "Response Error");
+                Log.i(LOG_TAG, "Response Error : " + error.toString());
                 if (KogPreference.DEBUG_MODE) {
                     BACK_MODE = true;
                     Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
@@ -2118,11 +2138,10 @@ S3
             public void onErrorResponse(VolleyError error) {
                 setAllEnable();
                 Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-                Log.i(LOG_TAG, "Response Error");
+                Log.i(LOG_TAG, "kickOffMemberRequest Response Error : " + error.toString());
                 if (KogPreference.DEBUG_MODE) {
                     Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
                 }
-
             }
         }
         );

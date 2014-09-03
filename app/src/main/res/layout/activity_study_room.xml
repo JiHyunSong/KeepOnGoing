@@ -5,68 +5,13 @@
     android:layout_height="match_parent"
     tools:context="com.secsm.keepongoing.StudyRoomActivity">
 
-    <FrameLayout
-        android:id="@+id/study_room_fl1"
-        android:layout_width="fill_parent"
-        android:layout_height="300dp">
-
-        <ListView
-            android:id="@+id/study_room_message_list"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_margin="5dp"
-            android:cacheColorHint="#00000000"
-            android:stackFromBottom="true"
-            android:transcriptMode="normal" />
-    </FrameLayout>
-
-    <LinearLayout
-        android:id="@+id/study_room_black_line"
-        android:layout_width="fill_parent"
-        android:layout_height="1px"
-        android:layout_below="@id/study_room_fl1"
-        android:background="@color/black"
-        android:orientation="vertical" />
-
-    <LinearLayout
-        android:id="@+id/study_room_below_layout"
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:layout_below="@id/study_room_black_line"
-        android:orientation="horizontal"
-        android:visibility="visible">
-
-        <Button
-            android:id="@+id/study_room_additional"
-            android:layout_width="45dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="0.0"
-            android:text="@string/study_room_additional"
-            android:visibility="visible" />
-
-        <EditText
-            android:id="@+id/study_room_messageTxtView"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="100"
-            android:bufferType="spannable"
-            android:gravity="top" />
-
-        <Button
-            android:id="@+id/study_room_sendMsgBtn"
-            android:layout_width="70sp"
-            android:layout_height="fill_parent"
-            android:layout_weight="0.0"
-            android:text="@string/study_room_send" />
-
-    </LinearLayout>
-
     <LinearLayout
         android:id="@+id/study_room_additional_page"
         android:layout_width="fill_parent"
-        android:layout_height="250dp"
+        android:layout_height="0dp"
+        android:paddingBottom="15dp"
+        android:paddingTop="15dp"
         android:layout_alignParentBottom="true"
-        android:layout_below="@id/study_room_below_layout"
         android:background="#ffffffff"
         android:gravity="center"
         android:orientation="horizontal"
@@ -143,6 +88,69 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/study_room_black_line2"
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:layout_above="@id/study_room_additional_page"
+        android:background="@color/black"
+        android:orientation="vertical" />
+
+    <LinearLayout
+        android:id="@+id/study_room_below_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/abc_action_bar_default_height"
+        android:layout_above="@id/study_room_black_line2"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <Button
+            android:id="@+id/study_room_additional"
+            android:layout_width="45dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.0"
+            android:text="@string/study_room_additional"
+            android:visibility="visible" />
+
+        <EditText
+            android:id="@+id/study_room_messageTxtView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="100"
+            android:bufferType="spannable"
+            android:gravity="top" >
+            <requestFocus/>
+        </EditText>
+
+        <Button
+            android:id="@+id/study_room_sendMsgBtn"
+            android:layout_width="70sp"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.0"
+            android:text="@string/study_room_send" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/study_room_black_line"
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:layout_above="@id/study_room_below_layout"
+        android:background="@color/black"
+        android:orientation="vertical" />
+
+        <ListView
+            android:id="@+id/study_room_message_list"
+            android:layout_above="@id/study_room_black_line"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:cacheColorHint="#00000000"
+            android:stackFromBottom="true"
+            android:transcriptMode="normal" />
+
 
     <LinearLayout
         android:id="@+id/slidingPage01"

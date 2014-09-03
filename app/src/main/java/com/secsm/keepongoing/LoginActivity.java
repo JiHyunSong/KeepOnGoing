@@ -207,6 +207,7 @@ public class LoginActivity extends BaseActivity {
                             status_code = response.getInt("status");
                             if (status_code == 200) {
                                 rMessage = response.getString("message");
+                                Log.i(LOG_TAG, "rMessage in Login :"  + rMessage.toString());
                                 GoNextPage(nickName, password);
 //                                loginHandler.sendEmptyMessage(1);
                             } else if (status_code == 1001)
@@ -234,7 +235,7 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 setAllEnable();
-                Log.i(LOG_TAG, "Response Error");
+                Log.i(LOG_TAG, "Response Error + " + error.toString());
                 Toast.makeText(getBaseContext(), "통신 에러!", Toast.LENGTH_SHORT).show();
                 if (KogPreference.DEBUG_MODE) {
                     Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();

@@ -158,7 +158,7 @@ public class MainActivity extends Activity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i(LOG_TAG, "Response Error");
+                Log.i(LOG_TAG, "Response Error : " + error.toString());
                 if (KogPreference.DEBUG_MODE) {
                     Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
                 }
