@@ -264,53 +264,6 @@ public class AuthNextActivity extends BaseActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-
-//        String get_url = KogPreference.REST_URL +
-//                "Auth" +
-//                "?phone=" + phone +
-//                "&random_num=" + random_num;
-//
-//        Log.i(LOG_TAG, "post btn event trigger");
-//
-//        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, Encrypt.encodeIfNeed(get_url), null,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        Log.i(LOG_TAG, "get JSONObject");
-//                        Log.i(LOG_TAG, response.toString());
-//
-//                        try {
-//                            status_code = response.getInt("status");
-//                            if (status_code == 200) {
-//                                rMessage = response.getString("message");
-//                                // real action
-//                                Log.i(LOG_TAG, "receive 200 OK");
-//
-//                                GoNextPage();
-//                            } else {
-//
-//                                Toast.makeText(getBaseContext(), "인증에 실패했습니다.\n다시 요청해 주세요.", Toast.LENGTH_SHORT).show();
-//                                if (KogPreference.DEBUG_MODE) {
-//                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-//                                }
-//                            }
-//                        } catch (Exception e) {
-//                        }
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Log.i(LOG_TAG, "Response Error");
-//                if (KogPreference.DEBUG_MODE) {
-//                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
-//                }
-//
-//            }
-//        }
-//        );
-//        vQueue.add(jsObjRequest);
     }
 
     /* making random number */
