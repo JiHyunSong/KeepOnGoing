@@ -761,12 +761,8 @@ public class TabActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.actionBarFirstBtn) {
-
             return true;
         }
         if (id == R.id.actionBarSecondBtn) {
@@ -893,6 +889,7 @@ public class TabActivity extends BaseActivity {
         Timestamp currentTimestamp = new Timestamp(time);
         return currentTimestamp.toString().substring(0, 10);
     }
+
     //////////////////////////////////
     // REST API //
     //////////////////////////////////
@@ -923,7 +920,6 @@ public class TabActivity extends BaseActivity {
                                 mFriends = new ArrayList<FriendNameAndIcon>();
                                 JSONObject rObj;
 
-                                //{"message":[{"targetTime":null,"image":"http:\/\/210.118.74.195:8080\/KOG_Server_Rest\/upload\/UserImage\/default.png","nickname":"jonghean"}],"status":"200"}
                                 for(int i=0; i< rMessage.length(); i++)
                                 {
                                     rObj = rMessage.getJSONObject(i);
@@ -944,8 +940,6 @@ public class TabActivity extends BaseActivity {
                                 mockFriendArrayAdapter = new FriendsArrayAdapters(TabActivity.this, R.layout.friend_list_item, mFriends);
                                 friendList.setAdapter(mockFriendArrayAdapter);
 
-
-                                /////////////////////////////
                             } else {
                                 Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
                                 if (KogPreference.DEBUG_MODE) {
@@ -985,36 +979,16 @@ public class TabActivity extends BaseActivity {
                         Log.i(LOG_TAG, "get JSONObject");
                         Log.i(LOG_TAG, response.toString());
 
-                        //{"message":[
-                        // {"startTime":null,"roomname":"KOF STUDY","rid":"23","meetDays":null,"rule":"meet 6days","maxHolidayCount":"2","showupTime":null,"type":"liferoom","durationTime":null},
-                        // {"startTime":null,"roomname":"liferoom","rid":"29","meetDays":null,"rule":"tt","maxHolidayCount":"1","showupTime":null,"type":"liferoom","durationTime":null},
-                        // {"startTime":null,"roomname":"lif","rid":"30","meetDays":null,"rule":"134","maxHolidayCount":"1","showupTime":null,"type":"liferoom","durationTime":null},
-                        // {"startTime":null,"roomname":"??","rid":"31","meetDays":null,"rule":"???","maxHolidayCount":"1","showupTime":null,"type":"liferoom","durationTime":null},
-                        // {"startTime":null,"roomname":"??2?","rid":"34","meetDays":null,"rule":"??","maxHolidayCount":"5","showupTime":null,"type":"liferoom","durationTime":null},
-                        // {"startTime":"04:26:09","roomname":"tesmpSub","rid":"33","meetDays":"mon|tue|wed|fri|sun","rule":"???","maxHolidayCount":null,"showupTime":"18","type":"subjectroom","durationTime":"16"}
-                        // ],"status":"200"}
-
                         try {
                             status_code = response.getInt("status");
                             if (status_code == 200) {
                                 JSONArray rMessage;
                                 rMessage = response.getJSONArray("message");
-                                //////// real action ////////
                                 mRooms = new ArrayList<RoomNaming>();
                                 JSONObject rObj;
 
-                                //{"message":[{"targetTime":null,"image":"http:\/\/210.118.74.195:8080\/KOG_Server_Rest\/upload\/UserImage\/default.png","nickname":"jonghean"}],"status":"200"}
-                                Log.i(LOG_TAG, "room size : " + rMessage.length());
                                 for(int i=0; i< rMessage.length(); i++) {
-//                                    Log.i(LOG_TAG, "index : " + i);
-//                                    Log.i(LOG_TAG, "rMessage.getJSONObject(i) : " + rMessage.getJSONObject(i));
                                     rObj = rMessage.getJSONObject(i);
-                                    //rMessage.getJSONObject(i) : {"startTime":"04:26:09","roomname":"tesmpSub","rid":"33","meetDays":"mon|tue|wed|fri|sun","rule":"???","maxHolidayCount":null,"showupTime":"18","type":"subjectroom","durationTime":"16"}
-                                    //add Rooms : subjectroom|33|???|tesmpSub|null|04:26:09|16|18|mon|tue|wed|fri|sun
-                                    //add Rooms : liferoom|23|meet 6days|KOF STUDY|2|null|null|null|null
-//                                    Log.i(LOG_TAG, "add Rooms : " + rObj.getString("type") + "|" + rObj.getString("rid") + "|" + rObj.getString("rule") + "|" +rObj.getString("roomname")
-//                                            + "|" +rObj.getString("maxHolidayCount")+ "|" +rObj.getString("startTime")+ "|" +rObj.getString("durationTime")
-//                                            + "|" +rObj.getString("showupTime")+ "|" +rObj.getString("meetDays"));
                                     if (!"null".equals(rObj.getString("rid"))){
                                         mRooms.add(new RoomNaming(
                                                 URLDecoder.decode(rObj.getString("type"), "UTF-8"),
@@ -1063,63 +1037,49 @@ public class TabActivity extends BaseActivity {
 
     }
 
+    /**  방 나갔을떄 요청에 대한 핸들링 */
+    public Handler outRoomRequestHandler = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+
+            Log.e("통신", "msg: " + msg.getData().getString("res"));
+            if(msg.what != -1){
+                Toast.makeText(getBaseContext(), "방을 나왔습니다.", Toast.LENGTH_SHORT).show();
+                setAllEnable();
+                refreshActivity();
+            }
+            else{
+                // 요청 실패시
+            }
+
+        }
+    };
 
     private void outRoomRequest(String room_id) {
 
-        //TODO : check POST/GET METHOD and get_URL
-        String get_url = KogPreference.REST_URL +
-                "Room/User" +
-                "?rid=" + room_id +
-                "&nickname=" + KogPreference.getNickName(TabActivity.this);
+            HttpRequestBase requestOutRoom = HttpAPIs.outRoomRequest(room_id, KogPreference.getNickName(TabActivity.this));
+            try {
+                HttpAPIs.background(requestOutRoom, new CallbackResponse() {
+                    public void success(HttpResponse response) {
 
-        Log.i(LOG_TAG, "URL : " + get_url);
+                        JSONObject result = HttpAPIs.getJSONData(response);
+                        Message message = null;
+                        Bundle data = new Bundle();
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.DELETE, Encrypt.encodeIfNeed(get_url), null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.i(LOG_TAG, " kickOffMemberRequest get JSONObject");
-                        Log.i(LOG_TAG, response.toString());
-
-                        try {
-                            int status_code = response.getInt("status");
-                            if (status_code == 200) {
-//                                JSONArray rMessage;
-//                                rMessage = response.getJSONArray("message");
-                                //////// real action ////////
-
-                                Toast.makeText(getBaseContext(), "방을 나왔습니다.", Toast.LENGTH_SHORT).show();
-                                setAllEnable();
-
-                                refreshActivity();
-
-                                //////// real action ////////
-                            } else {
-                                Toast.makeText(getBaseContext(), "통신 에러", Toast.LENGTH_SHORT).show();
-                                setAllEnable();
-                                if (KogPreference.DEBUG_MODE) {
-                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        } catch (Exception e) {
-                            Toast.makeText(getBaseContext(), "통신 에러", Toast.LENGTH_SHORT).show();
-                            setAllEnable();
-                        }
+                        message = outRoomRequestHandler.obtainMessage();
+                        data.putString("res", result.toString());
+                        message.setData(data);
+                        outRoomRequestHandler.sendMessage(message);
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                setAllEnable();
-                Toast.makeText(getBaseContext(), "통신 에러 : \n방을 나올 수 없습니다", Toast.LENGTH_SHORT).show();
-                Log.i(LOG_TAG, "Response Error");
-                if (KogPreference.DEBUG_MODE) {
-                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
-                }
 
+                    public void error(Exception e) {
+                        outRoomRequestHandler.sendEmptyMessage(-1);
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        }
-        );
-        vQueue.add(jsObjRequest);
     }
 
     private void logoutRequest(String nickname) {
@@ -1172,7 +1132,6 @@ public class TabActivity extends BaseActivity {
                 if (KogPreference.DEBUG_MODE) {
                     Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
                 }
-
             }
         }
         );

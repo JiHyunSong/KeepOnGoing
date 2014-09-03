@@ -3,9 +3,12 @@ package com.com.lanace.connecter;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.secsm.keepongoing.Shared.KogPreference;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -14,6 +17,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Timestamp;
 
 /**
  * Created by Lanace on 2014-09-02.
@@ -129,7 +133,33 @@ public class HttpAPIs {
         return httpPut;
     }
 
+    public static HttpRequestBase getFriendsRequest(String nickname){
+        HttpGet httpPut = new HttpGet(HttpConnecter.getRestfullBaseURL() + "Friend" +
+                "?nickname=" + nickname +
+                "&date=" + getRealDate());
+        return httpPut;
+    }
 
+    public static HttpRequestBase getStudyRoomsRequest(String nickname){
+        HttpGet httpPut = new HttpGet(HttpConnecter.getRestfullBaseURL() + "Rooms" +
+                "?nickname=" + nickname);
+        return httpPut;
+    }
+
+    public static HttpRequestBase outRoomRequest(String room_id, String nickname){
+        HttpDelete httpPut = new HttpDelete(HttpConnecter.getRestfullBaseURL() + "Room/User" +
+                "?rid=" + room_id +
+                "&nickname=" + nickname);
+
+        httpPut.setHeader("Content-Type", "application/json");
+        return httpPut;
+    }
+
+    public static String getRealDate() {
+        long time = System.currentTimeMillis();
+        Timestamp currentTimestamp = new Timestamp(time);
+        return currentTimestamp.toString().substring(0, 10);
+    }
 
     public static class LoginDataSet{
         public String nickname;
