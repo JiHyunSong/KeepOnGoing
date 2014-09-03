@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -129,6 +130,44 @@ public class HttpAPIs {
         return httpPut;
     }
 
+    /** POST Auth Send */
+    public static HttpRequestBase authPost(String phone, int random_num) throws IOException {
+
+        HttpPost httpPost = new HttpPost(HttpConnecter.getRestfullBaseURL() + "Auth");
+
+        AuthDataSet dataSet = new AuthDataSet();
+        dataSet.phone = phone;
+        dataSet.randomnum = random_num;
+
+        String json = new Gson().toJson(dataSet);
+
+        httpPost.setHeader("Content-Type", "application/json");
+        StringEntity entity = new StringEntity(json);
+        httpPost.setEntity(entity);
+
+        return httpPost;
+    }
+
+    /** POST Auth Send */
+    public static HttpRequestBase authGet(String phone, int random_num) throws IOException {
+
+        HttpGet httpGet = new HttpGet(HttpConnecter.getRestfullBaseURL() + "Auth"
+                +"?phone=" + phone +
+                "&random_num=" + random_num);
+
+//        AuthDataSet dataSet = new AuthDataSet();
+//        dataSet.phone = phone;
+//        dataSet.randomnum = random_num;
+//
+//        String json = new Gson().toJson(dataSet);
+//
+//        httpPost.setHeader("Content-Type", "application/json");
+//        StringEntity entity = new StringEntity(json);
+//        httpPost.setEntity(entity);
+
+        return httpGet;
+    }
+
 
 
     public static class LoginDataSet{
@@ -142,6 +181,11 @@ public class HttpAPIs {
         public String target_time;
         public String accomplished_time;
         public String date;
+    }
+
+    public static class AuthDataSet{
+        public String phone;
+        public int randomnum;
     }
 
 }
