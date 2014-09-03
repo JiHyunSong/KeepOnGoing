@@ -22,13 +22,21 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.beardedhen.androidbootstrap.BootstrapButton;
+import com.com.lanace.connecter.CallbackResponse;
+import com.com.lanace.connecter.HttpAPIs;
 import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MyVolley;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * A login screen that offers login via email/password.
@@ -38,41 +46,13 @@ public class LoginActivity extends BaseActivity {
     private static String LOG_TAG = "Login Activity";
     // UI references.
     private CheckBox login_auto_login_cb;
-    private EditText mNicknameView;
-    private EditText mPasswordView;
-    private View mProgressView;
-    private View mLoginFormView;
-    private RequestQueue vQueue;
-    private int status_code;
-    private String rMessage;
+    private EditText mNicknameView, mPasswordView;
+    private View mProgressView, mLoginFormView;
+    private String rMessage, savedNick;
     private Intent intent;
-    private String savedNick;
-    private Button mSignUpButton;
-    private Button mSignInButton;
+    private Button mSignUpButton, mSignInButton;
     private BootstrapButton easterEggButton;
     private ProgressBar loginProgressBar;
-
-    private void setAllEnable()
-    {
-        login_auto_login_cb.setEnabled(true);
-        mNicknameView.setEnabled(true);
-        mPasswordView.setEnabled(true);
-        mSignInButton.setEnabled(true);
-        mSignUpButton.setEnabled(true);
-        easterEggButton.setEnabled(true);
-        loginProgressBar.setVisibility(View.GONE);
-    }
-
-    private void setAllDisable()
-    {
-        login_auto_login_cb.setEnabled(false);
-        mNicknameView.setEnabled(false);
-        mPasswordView.setEnabled(false);
-        mSignInButton.setEnabled(false);
-        mSignUpButton.setEnabled(false);
-        easterEggButton.setEnabled(false);
-        loginProgressBar.setVisibility(View.VISIBLE);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,9 +62,11 @@ public class LoginActivity extends BaseActivity {
         intent = getIntent();
         savedNick = intent.getStringExtra("nickname");
 
-        vQueue = MyVolley.getRequestQueue(LoginActivity.this);
+        init();
+    }
 
-        // Set up the login form.
+    /** 리소스 초기화 */
+    private void init() {
         mNicknameView = (EditText) findViewById(R.id.nickname);
         mPasswordView = (EditText) findViewById(R.id.password);
 
@@ -110,7 +92,6 @@ public class LoginActivity extends BaseActivity {
 
         // Sign up (Register) button
         mSignUpButton = (Button) findViewById(R.id.sign_up_button);
-        // go to Register page
         mSignUpButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(LoginActivity.this, AuthActivity.class);
@@ -123,19 +104,16 @@ public class LoginActivity extends BaseActivity {
         mProgressView = findViewById(R.id.login_progress);
 
 
-     //   if (KogPreference.DEBUG_MODE) {
-            easterEggButton = (BootstrapButton) findViewById(R.id.easter_egg_button);
-            easterEggButton.setVisibility(View.GONE);
-            // go to Register page
-            easterEggButton.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-
-                    String easter_msg = "안녕";
-            //       SimpleDialogFragment.createBuilder(LoginActivity.this, android.support.v4.app.FragmentManager())
-          //                  .setMessage(easter_msg).show();
-                    GoNextPage(mNicknameView.getText().toString(), mPasswordView.getText().toString());
-                }
-            });
+        //   if (KogPreference.DEBUG_MODE) {
+        easterEggButton = (BootstrapButton) findViewById(R.id.easter_egg_button);
+        easterEggButton.setVisibility(View.GONE);
+        // go to Register page
+        easterEggButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                String easter_msg = "안녕";
+                GoNextPage(mNicknameView.getText().toString(), mPasswordView.getText().toString());
+            }
+        });
 
         //}
 
@@ -150,9 +128,9 @@ public class LoginActivity extends BaseActivity {
             savedNick = KogPreference.getNickName(LoginActivity.this);
             mNicknameView.setText(savedNick);
         }
-
     }
 
+    /** 다음화면으로 */
     private void GoNextPage(String nickname, String password) {
         if (login_auto_login_cb.isChecked()) {
             KogPreference.setAutoLogin(LoginActivity.this, true);
@@ -162,91 +140,89 @@ public class LoginActivity extends BaseActivity {
             KogPreference.setPassword(LoginActivity.this, "");
         }
 
-        Toast.makeText(getBaseContext(), "로그인이 되었습니다.", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(LoginActivity.this, "로그인이 되었습니다.", Toast.LENGTH_SHORT).show();
 
         KogPreference.setLogin(LoginActivity.this, true);
-        //KogPreference.setString(LoginActivity.this, "nickName", nickname);
         KogPreference.setNickName(LoginActivity.this, nickname);
-//        Intent intent = new Intent(this, MainmenuActivity.class);
+
         Intent intent = new Intent(LoginActivity.this, TabActivity.class);
         startActivity(intent);
         LoginActivity.this.finish();
     }
 
+    /** 로그인 요청 */
     private void UserLogin(final String nickName, final String password) {
-//        login_fl.setVisibility(View.VISIBLE);
-
-        String get_url = KogPreference.REST_URL +
-                "User"; // +
-//                "?nickname=" + nickName.trim() +
-//                "&password=" + Encrypt.encodingMsg(password) +
-//                "&gcmid=" + KogPreference.getRegId(LoginActivity.this);
-        Log.i(LOG_TAG, "URL : " + get_url);
-
-        JSONObject sendBody = new JSONObject();
 
         try {
-            sendBody.put("nickname", nickName.trim());
-            sendBody.put("password", Encrypt.encodingMsg(password));
-            sendBody.put("gcmid", KogPreference.getRegId(LoginActivity.this));
-            Log.i(LOG_TAG, "sendbody : " + sendBody.toString());
-        } catch (JSONException e) {
-            Log.e(LOG_TAG, "UserLogin error : " + e.toString());
+            HttpRequestBase requestLogin = HttpAPIs.login(
+                    nickName.trim()
+                    , Encrypt.encodingMsg(password)
+                    , KogPreference.getRegId(LoginActivity.this));
 
-        }
-        Log.i(LOG_TAG, "post btn event trigger");
+            HttpAPIs.background(requestLogin, new CallbackResponse() {
+                public void success(HttpResponse response) {
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), sendBody,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.i(LOG_TAG, "get JSONObject");
-                        Log.i(LOG_TAG, response.toString());
+                    loginHandler.sendEmptyMessage(1);
 
-                        try {
-                            status_code = response.getInt("status");
-                            if (status_code == 200) {
-                                rMessage = response.getString("message");
+                    JSONObject result = HttpAPIs.getJSONData(response);
+                    Log.e(LOG_TAG, "응답: " + result.toString());
+                    try {
+                        if(result != null){
+                            int statusCode = Integer.parseInt(result.getString("httpStatusCode"));
+                            if (statusCode == 200) {
+                                //rMessage = result.getString("message");
                                 GoNextPage(nickName, password);
-//                                loginHandler.sendEmptyMessage(1);
-                            } else if (status_code == 1001)
-                            {
-                                setAllEnable();
+                            }
+                            else if (statusCode == 1001) {
                                 GoNextPage(nickName, password);
                                 Toast.makeText(getBaseContext(), "다른기기에서 로그아웃 됩니다", Toast.LENGTH_SHORT).show();
-                            } else if (status_code == 9001) {
-                                setAllEnable();
-                                Toast.makeText(getBaseContext(), "아이디와 패스워드를 확인해주세요", Toast.LENGTH_SHORT).show();
-//                                loginHandler.sendEmptyMessage(0);
-                            } else {
-                                setAllEnable();
-                                if (KogPreference.DEBUG_MODE) {
-                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-                                }
-
-//                                loginHandler.sendEmptyMessage(-1);
                             }
-                        } catch (Exception e) {
-                            setAllEnable();
+                            else if (statusCode == 9001) {
+                                Toast.makeText(getBaseContext(), "아이디와 패스워드를 확인해주세요", Toast.LENGTH_SHORT).show();
+                            }
+                            else {
+                                if (KogPreference.DEBUG_MODE) {
+                                    Toast.makeText(getBaseContext(), LOG_TAG + result.getString("message"), Toast.LENGTH_SHORT).show();
+                                }
+                            }
                         }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                setAllEnable();
-                Log.i(LOG_TAG, "Response Error");
-                Toast.makeText(getBaseContext(), "통신 에러!", Toast.LENGTH_SHORT).show();
-                if (KogPreference.DEBUG_MODE) {
-                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
                 }
 
-            }
+                public void error(Exception e) {
+                    loginHandler.sendEmptyMessage(1);
+                    Log.i(LOG_TAG, "Response Error: " +  e.toString());
+                    e.printStackTrace();
+                    //Toast.makeText(LoginActivity.this, "연결이 원활하지 않습니다.\n잠시후에 시도해주세요.", Toast.LENGTH_SHORT).show();
+                    if (KogPreference.DEBUG_MODE) {
+                      //  Toast.makeText(LoginActivity.this, LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        );
-        vQueue.add(jsObjRequest);
-        vQueue.start();
     }
 
+    Handler loginHandler = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+
+            if(msg.what == 1){
+                setAllEnable();
+            }
+            else if(msg.what == -1){
+                setAllDisable();
+            }
+
+        }
+    };
+
+    /** ID / PW 유효성 체크 */
     private boolean isValidProfile() {
         String rNickName = mNicknameView.getText().toString();
         String rPassWord = mPasswordView.getText().toString();
@@ -254,15 +230,37 @@ public class LoginActivity extends BaseActivity {
         return !TextUtils.isEmpty(rPassWord) && isPasswordValid(rPassWord) && !TextUtils.isEmpty(rNickName) && isNicknameValid(rNickName);
     }
 
+    /** ID 유효성 체크 */
     private boolean isNicknameValid(String nickName) {
         return (nickName.length() >= 4) && (nickName.length() <= 10);
     }
 
+    /** PW  유효성 체크 */
     private boolean isPasswordValid(String password) {
         return (password.length() >= 4) && (password.length() <= 12);
     }
 
+    /** 리소스 활성화 */
+    private void setAllEnable() {
+        login_auto_login_cb.setEnabled(true);
+        mNicknameView.setEnabled(true);
+        mPasswordView.setEnabled(true);
+        mSignInButton.setEnabled(true);
+        mSignUpButton.setEnabled(true);
+        easterEggButton.setEnabled(true);
+        loginProgressBar.setVisibility(View.GONE);
+    }
 
+    /** 리소스 비활성화 */
+    private void setAllDisable() {
+        login_auto_login_cb.setEnabled(false);
+        mNicknameView.setEnabled(false);
+        mPasswordView.setEnabled(false);
+        mSignInButton.setEnabled(false);
+        mSignUpButton.setEnabled(false);
+        easterEggButton.setEnabled(false);
+        loginProgressBar.setVisibility(View.VISIBLE);
+    }
 }
 
 

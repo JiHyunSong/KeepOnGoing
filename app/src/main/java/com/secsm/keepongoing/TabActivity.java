@@ -33,6 +33,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.com.lanace.connecter.CallbackResponse;
+import com.com.lanace.connecter.HttpAPIs;
 import com.secsm.keepongoing.Adapters.FriendNameAndIcon;
 import com.secsm.keepongoing.Adapters.FriendsArrayAdapters;
 import com.secsm.keepongoing.Adapters.RoomNaming;
@@ -48,10 +50,13 @@ import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MyVolley;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.net.URLDecoder;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -64,7 +69,6 @@ import java.util.TimerTask;
 
 public class TabActivity extends BaseActivity {
     private String rMessage;
-
 
     final static int TAB_DELAY = 10;
 
@@ -98,57 +102,28 @@ public class TabActivity extends BaseActivity {
     ArrayList<String> arGeneral3;
 
 
-    private void setAllEnable() {
-        tab_progress.setVisibility(View.GONE);
-        ahcieve.setEnabled(true);
-        _current_time_text.setEnabled(true);
-        _current_time_text2.setEnabled(true);
-        _goal_time.setEnabled(true);
-        _text2.setEnabled(true);
-        roomList.setEnabled(true);
-        friendList.setEnabled(true);
-        settingList.setEnabled(true);
-        tabStopwatch.setEnabled(true);
-        tabFriends.setEnabled(true);
-        tabRooms.setEnabled(true);
-        tabSettings.setEnabled(true);
-    }
-
-    private void setAllDisable() {
-        tab_progress.setVisibility(View.VISIBLE);
-        ahcieve.setEnabled(false);
-        _current_time_text.setEnabled(false);
-        _current_time_text2.setEnabled(false);
-        _goal_time.setEnabled(false);
-        _text2.setEnabled(false);
-        roomList.setEnabled(false);
-        friendList.setEnabled(false);
-        settingList.setEnabled(false);
-        tabStopwatch.setEnabled(false);
-        tabFriends.setEnabled(false);
-        tabRooms.setEnabled(false);
-        tabSettings.setEnabled(false);
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab);
 
-//        MyVolley.init(TabActivity.this);
-//        vQueue = Volley.newRequestQueue(this);
         vQueue = MyVolley.getRequestQueue(TabActivity.this);
 
+        mDBHelper = new DBHelper(this);
+
+        init();
+        initTap();
+        initAlarm();
+
+    }
+
+    public void init() {
+        // TODO 리소스 초기화
         tab_progress = (ProgressBar)findViewById(R.id.tab_progress);
 
         ActionBar bar = getActionBar();
         bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_USE_LOGO | ActionBar.NAVIGATION_MODE_STANDARD);
-
-
-//        getFriendsRequest();
-//
-//        getStudyRoomsRequest();
 
         // layout (when the tab image button clicked, visibility change
         layoutStopwatch = (RelativeLayout) findViewById(R.id.tab_stopwatch_layout);
@@ -168,22 +143,15 @@ public class TabActivity extends BaseActivity {
         tabRooms = (ImageButton) findViewById(R.id.imgBtn_tab_rooms);
         tabSettings = (ImageButton) findViewById(R.id.imgBtn_tab_settings);
 
-        Log.i(LOG_TAG, "onCreate");
-        Log.i(LOG_TAG, "onCreate nickname : " + KogPreference.getNickName(TabActivity.this));
-        Log.i(LOG_TAG, "onCreate rid : " + KogPreference.getRid(TabActivity.this));
-        Log.i(LOG_TAG, "onCreate regid : " + KogPreference.getRegId(TabActivity.this));
-
-        mDBHelper = new DBHelper(this);
-
         roomList = (ListView) findViewById(R.id.room_list);
         friendList = (ListView) findViewById(R.id.friend_list);
 
-        // add list item onClickListener
         roomList.setOnItemClickListener(itemClickListener);
         friendList.setOnItemClickListener(itemClickListener);
-
         roomList.setOnItemLongClickListener(itemLongClickListener);
+    }
 
+    public void initTap(){
         // setup tab_settings
         arGeneral3 = new ArrayList<String>();
         arGeneral3.add("내 프로필");
@@ -194,6 +162,7 @@ public class TabActivity extends BaseActivity {
         }else{
             arGeneral3.add("로그아웃");
         }
+
         ArrayAdapter<String> optionArrayAdapter;
         optionArrayAdapter = new ArrayAdapter<String>(this,
                 R.layout.tab_list, arGeneral3);
@@ -210,13 +179,9 @@ public class TabActivity extends BaseActivity {
         tabFriends.setOnClickListener(tabListener);
         tabRooms.setOnClickListener(tabListener);
         tabSettings.setOnClickListener(tabListener);
+    }
 
-        // add create room listener
-//        tabRoomCreateBtn.setOnClickListener(roomCreateListener);
-
-
-//@민수 시작
-
+    public void initAlarm(){
         // Alarm OnCreate
         a = Preference.getBoolean(TabActivity.this, "testValue");
         Log.i(LOG_TAG, "a : " + a);
@@ -235,7 +200,7 @@ public class TabActivity extends BaseActivity {
         _text2 = (TextView) findViewById(R.id.goal);
         ahcieve.setText("00:00:00");
 
-       //@민수 삽입
+        //@민수 삽입
 
 
 
@@ -314,7 +279,7 @@ public class TabActivity extends BaseActivity {
             public void onClick(View v) {
                 play_pause.setChecked(false);
                 play_pause.setBackgroundResource(R.drawable.selector_tab_play_button);
-               Preference.setString(TabActivity.this, "Resumetimer", "");
+                Preference.setString(TabActivity.this, "Resumetimer", "");
                 Preference.putBoolean(TabActivity.this, "toggle", false);
                 if (timer != null) {
                     timer.cancel();
@@ -367,9 +332,7 @@ public class TabActivity extends BaseActivity {
             roomList.setAdapter(roomsArrayAdapter);
 
         }
-
     }
-
 
     //@민수 통신
     private void acheivetimeRegisterRequest(String target_time,String accomplished_time,String date) {
@@ -380,145 +343,108 @@ public class TabActivity extends BaseActivity {
         final String temp_target_time=target_time;
         final String temp_accomplished_time=accomplished_time;
         final String temp_date=date;
-        String get_url = KogPreference.REST_URL +
-                "Time"; // +
-//                "?nickname=" + KogPreference.getNickName(TabActivity.this) +
-//                "&target_time=" + target_time +
-//                "&accomplished_time=" + accomplished_time+
-//                "&date=" + date;
 
-        JSONObject sendBody = new JSONObject();
-        try{
-            sendBody.put("nickname", KogPreference.getNickName(TabActivity.this));
-            sendBody.put("target_time", target_time);
-            sendBody.put("accomplished_time", accomplished_time);
-            sendBody.put("date", date);
-        }catch (JSONException e)
-        {
-            Log.e(LOG_TAG, " sendBody e : " + e.toString());
-        }
+        try {
+            HttpRequestBase requestTime = HttpAPIs.timePost(
+                    KogPreference.getNickName(TabActivity.this)
+                    , target_time
+                    , accomplished_time
+                    , date);
 
+            HttpAPIs.background(requestTime, new CallbackResponse() {
+                public void success(HttpResponse response) {
 
+                    JSONObject result = HttpAPIs.getJSONData(response);
+                    Log.e(LOG_TAG, "응답: " + result.toString());
+                    try {
+                        int statusCode = Integer.parseInt(result.getString("status"));
+                        if (status_code == 200) {
+                            rMessage = result.getString("message");
+                            // real action
+                            // GoNextPage();
+                            Toast.makeText(getBaseContext(),"시간등록 완료"+temp_accomplished_time, Toast.LENGTH_SHORT).show();
+                        } else if (status_code == 9001) {
 
-//http://210.118.74.195:8080/KOG_Server_Rest/rest/Time?nickname=jins&target_time=10:00:00&accomplished_time=00:00:00&date=2014/8/25
-
-        Log.i(LOG_TAG, "get_url : " + get_url);
-
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, get_url, sendBody,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.i(LOG_TAG, "POST JSONObject");
-                        Log.i(LOG_TAG, response.toString());
-
-                        try {
-                            status_code = response.getInt("status");
-                            if (status_code == 200) {
-                                rMessage = response.getString("message");
-                                // real action
-                               // GoNextPage();
-                                     Toast.makeText(getBaseContext(),"시간등록 완료"+temp_accomplished_time, Toast.LENGTH_SHORT).show();
-                            } else if (status_code == 9001) {
-
-                                    Toast.makeText(getBaseContext(), "시간등록이 불가능합니다.", Toast.LENGTH_SHORT).show();
-                            }
-                            else if(status_code ==1001) {
-                                acheivetimeputRequest(temp_target_time, temp_accomplished_time, temp_date);
-                            }
-                            else {
-                                Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
-                                if (KogPreference.DEBUG_MODE) {
-                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        } catch (Exception e) {
+                            Toast.makeText(getBaseContext(), "시간등록이 불가능합니다.", Toast.LENGTH_SHORT).show();
                         }
+                        else if(status_code ==1001) {
+                            acheivetimeputRequest(temp_target_time, temp_accomplished_time, temp_date);
+                        }
+                        else {
+                            Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
+                            if (KogPreference.DEBUG_MODE) {
+                                Toast.makeText(getBaseContext(), LOG_TAG + result.getString("message"), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    } catch (Exception e) {
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.i(LOG_TAG, "Response Error");
-                Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
-                if (KogPreference.DEBUG_MODE) {
-                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
                 }
-            }
-        }
-        );
-        vQueue.add(jsObjRequest);
 
+                public void error(Exception e) {
+                    Log.i(LOG_TAG, "Response Error");
+                    Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
+                    if (KogPreference.DEBUG_MODE) {
+                        Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
     //@통신
     private void acheivetimeputRequest(String target_time,String accomplished_time,String date) {
         final String temp_accomplished_time=accomplished_time;
         String get_url = KogPreference.REST_URL +
-                "Time"; // +
-//                "?nickname=" + KogPreference.getNickName(TabActivity.this) +
-//                "&target_time=" + target_time +
-//                "&accomplished_time=" + accomplished_time+
-//                "&date=" + date;
+                "Time";
 
-        JSONObject sendBody = new JSONObject();
-        try{
-            sendBody.put("nickname", KogPreference.getNickName(TabActivity.this));
-            sendBody.put("target_time", target_time);
-            sendBody.put("accomplished_time", accomplished_time);
-            sendBody.put("date", date);
-        }catch (JSONException e)
-        {
-            Log.e(LOG_TAG, " sendBody e : " + e.toString());
-        }
+        try {
+            HttpRequestBase requestTime = HttpAPIs.timePut(
+                    KogPreference.getNickName(TabActivity.this)
+                    , target_time
+                    , accomplished_time
+                    , date);
 
+            HttpAPIs.background(requestTime, new CallbackResponse() {
+                public void success(HttpResponse response) {
 
-        Log.i(LOG_TAG, "get_url : " + get_url);
-
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.PUT, get_url, sendBody,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.i(LOG_TAG, "get JSONObject");
-                        Log.i(LOG_TAG, response.toString());
-
-                        try {
-                            status_code = response.getInt("status");
-                            if (status_code == 200) {
-                                rMessage = response.getString("message");
-                                // real action
-                                // GoNextPage();
-                                Toast.makeText(getBaseContext(),"시간등록 완료"+temp_accomplished_time, Toast.LENGTH_SHORT).show();
-                            //    Toast.makeText(getBaseContext(), LOG_TAG +rMessage, Toast.LENGTH_SHORT).show();
-                            } else if (status_code == 9001) {
-                                Toast.makeText(getBaseContext(), "시간등록이 불가능합니다. PUT", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
-                                if (KogPreference.DEBUG_MODE) {
-                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-                                }
+                    JSONObject result = HttpAPIs.getJSONData(response);
+                    Log.e(LOG_TAG, "응답: " + result.toString());
+                    try {
+                        int statusCode = Integer.parseInt(result.getString("status"));
+                        if (statusCode == 200) {
+                            rMessage = result.getString("message");
+                            Toast.makeText(getBaseContext(),"시간등록 완료"+temp_accomplished_time, Toast.LENGTH_SHORT).show();
+                        } else if (statusCode == 9001) {
+                            Toast.makeText(getBaseContext(), "시간등록이 불가능합니다. PUT", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
+                            if (KogPreference.DEBUG_MODE) {
+                                Toast.makeText(getBaseContext(), LOG_TAG + result.getString("message"), Toast.LENGTH_SHORT).show();
                             }
-                        } catch (Exception e) {
                         }
+
+                    } catch (Exception e) {
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.i(LOG_TAG, "Response Error");
-                Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
-                if (KogPreference.DEBUG_MODE) {
-                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
                 }
-            }
+
+                public void error(Exception e) {
+                    Log.i(LOG_TAG, "Response Error");
+                    Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
+                    if (KogPreference.DEBUG_MODE) {
+                        Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        );
-        vQueue.add(jsObjRequest);
     }
 
-
-
-
-
-
-
-
+    /**  리소스 비활성화 */
     private void setInvisibleBody() {
         layoutStopwatch.setVisibility(View.INVISIBLE);
         layoutFriends.setVisibility(View.INVISIBLE);
@@ -534,8 +460,6 @@ public class TabActivity extends BaseActivity {
         tabFriends.setBackgroundResource(R.drawable.tab_friends_icon);
         tabRooms.setBackgroundResource(R.drawable.tab_chatroom_icon);
         tabSettings.setBackgroundResource(R.drawable.tab_option_icon);
-//        actionBarRoomTabNotifyBtn.setVisibility(View.INVISIBLE);
-//        actionBarRoomTabAddBtn.setVisibility(View.INVISIBLE);
     }
 
     // tab setOnClickListener
@@ -624,6 +548,7 @@ public class TabActivity extends BaseActivity {
             return false;
         }
     };
+
     private AlertDialog mOutRoomDialog;
     TextView simple_dialog_text;
 
@@ -632,7 +557,6 @@ public class TabActivity extends BaseActivity {
         AlertDialog.Builder ab = new AlertDialog.Builder(this);
         simple_dialog_text = (TextView) innerView.findViewById(R.id.simple_dialog_text);
 
-//        info_iconFriend.setBackgroundResource(R.drawable.ic_action_add_group);
         simple_dialog_text.setText(room_name + "를 나오시겠습니까?");
         ab.setTitle("방 나가기");
         ab.setView(innerView);
@@ -667,23 +591,16 @@ public class TabActivity extends BaseActivity {
 
 
             } else if (adapterView.getId() == R.id.room_list) {
-                Log.i(LOG_TAG, "tab3, rooms Clicked");
-                Log.i(LOG_TAG, "position : " + position);
                 Intent intent = new Intent(TabActivity.this, StudyRoomActivity.class);
                 intent.putExtra("type", mRooms.get(position).getType());
                 intent.putExtra("rule", mRooms.get(position).getRule());
                 KogPreference.setRid(TabActivity.this, mRooms.get(position).getRid());
                 KogPreference.setQuizNum(TabActivity.this, mRooms.get(position).getQuiz_num());
-                Log.i(LOG_TAG, "RID (mRooms.get(position).getRid()): " + mRooms.get(position).getRid());
-                Log.i(LOG_TAG, "RID (KogPreference.getRid(TabActivity.this)): " + KogPreference.getRid(TabActivity.this));
-
                 startActivity(intent);
 //                TabActivity.this.finish();
 
 
             } else if (adapterView.getId() == R.id.setting_list) {
-                Log.i(LOG_TAG, "tab4, settings Clicked");
-                Log.i(LOG_TAG, "position : " + position);
                 switch (position) {
                     case 0: // 내 프로필
                         Log.i(LOG_TAG, "tab4, settings Clicked");
@@ -720,13 +637,13 @@ public class TabActivity extends BaseActivity {
         }
     };
 
+    /** 로그아웃 */
     private void logout() {
         logoutRequest(KogPreference.getNickName(this));
         KogPreference.setLogin(this, false);
         KogPreference.setNickName(this, "");
         KogPreference.setPassword(this, "");
         KogPreference.setRid(this, "");
-//        KogPreference.setRegId(this, "");
         KogPreference.setQuizNum(this, "");
         KogPreference.setAutoLogin(this, false);
 
@@ -737,8 +654,6 @@ public class TabActivity extends BaseActivity {
 
     /**
      * Infalter 다이얼로그
-     *
-     * @return ab
      */
     private AlertDialog mDialog = null;
     private ImageView info_iconFriend = null;
@@ -752,8 +667,6 @@ public class TabActivity extends BaseActivity {
         info_txtFriendNickname = (TextView) innerView.findViewById(R.id.info_txtFriendNickname);
         info_txtTargetTime = (TextView) innerView.findViewById(R.id.info_txtTargetTime);
 
-//        info_iconFriend.setBackgroundResource(R.drawable.ic_action_add_group);
-        Log.i(LOG_TAG, "profileUrl : " + profileUrl);
         getImageFromURL(profileUrl, info_iconFriend);
 
         info_txtFriendNickname.setText(name);
@@ -791,8 +704,6 @@ public class TabActivity extends BaseActivity {
 
     @Override
     protected void onResume() {
-
-
         super.onResume();
         if (Preference.getString(TabActivity.this, "Resumetimer") == "")
             ahcieve.setText("00:00:00");
@@ -1274,5 +1185,38 @@ public class TabActivity extends BaseActivity {
         startActivity(_intent);
     }
 
+    /** 리소스 활성화 */
+    private void setAllEnable() {
+        tab_progress.setVisibility(View.GONE);
+        ahcieve.setEnabled(true);
+        _current_time_text.setEnabled(true);
+        _current_time_text2.setEnabled(true);
+        _goal_time.setEnabled(true);
+        _text2.setEnabled(true);
+        roomList.setEnabled(true);
+        friendList.setEnabled(true);
+        settingList.setEnabled(true);
+        tabStopwatch.setEnabled(true);
+        tabFriends.setEnabled(true);
+        tabRooms.setEnabled(true);
+        tabSettings.setEnabled(true);
+    }
+
+    /** 리소스 비활성화 */
+    private void setAllDisable() {
+        tab_progress.setVisibility(View.VISIBLE);
+        ahcieve.setEnabled(false);
+        _current_time_text.setEnabled(false);
+        _current_time_text2.setEnabled(false);
+        _goal_time.setEnabled(false);
+        _text2.setEnabled(false);
+        roomList.setEnabled(false);
+        friendList.setEnabled(false);
+        settingList.setEnabled(false);
+        tabStopwatch.setEnabled(false);
+        tabFriends.setEnabled(false);
+        tabRooms.setEnabled(false);
+        tabSettings.setEnabled(false);
+    }
 
 }
