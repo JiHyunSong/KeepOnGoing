@@ -341,6 +341,23 @@ public class StudyRoomActivity extends BaseActivity {
 
         });
 
+        messageTxt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                Log.i(LOG_TAG, "setOnFocusChangeListener , has Focus : " + hasFocus);
+            }
+        });
+
+        messageTxt.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Log.i(LOG_TAG, "setOnClickListener , ");
+                if (isAdditionalPageOpen) {
+                    setInvisibleAddtionalPage();
+                }
+
+            }
+        });
         m_SnowWifiMonitor = new SnowWiFiMonitor(this);
         m_SnowWifiMonitor.setOnChangeNetworkStatusListener(SnowChangedListener);
         registerReceiver(m_SnowWifiMonitor, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
