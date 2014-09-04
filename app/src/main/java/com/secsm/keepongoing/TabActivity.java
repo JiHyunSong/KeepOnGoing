@@ -348,16 +348,16 @@ public class TabActivity extends BaseActivity {
                     Log.e(LOG_TAG, "응답: " + result.toString());
                     try {
                         int statusCode = Integer.parseInt(result.getString("status"));
-                        if (status_code == 200) {
+                        if (statusCode == 200) {
                             rMessage = result.getString("message");
                             // real action
                             // GoNextPage();
                             Toast.makeText(getBaseContext(),"시간등록 완료"+temp_accomplished_time, Toast.LENGTH_SHORT).show();
-                        } else if (status_code == 9001) {
+                        } else if (statusCode == 9001) {
 
                             Toast.makeText(getBaseContext(), "시간등록이 불가능합니다.", Toast.LENGTH_SHORT).show();
                         }
-                        else if(status_code ==1001) {
+                        else if(statusCode ==1001) {
                             acheivetimeputRequest(temp_target_time, temp_accomplished_time, temp_date);
                         }
                         else {

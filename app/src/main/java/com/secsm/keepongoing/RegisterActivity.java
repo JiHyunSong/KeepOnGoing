@@ -256,12 +256,12 @@ public class RegisterActivity extends BaseActivity {
                 Bundle b = msg.getData();
                 JSONObject result = new JSONObject(b.getString("JSONData"));
                 int statusCode = Integer.parseInt(result.getString("httpStatusCode"));
-                if (status_code == 200) {
+                if (statusCode == 200) {
                     rMessage = result.getString("message");
                     // real action
                     GoNextPage();
 //                                Toast.makeText(getBaseContext(), LOG_TAG +rMessage, Toast.LENGTH_SHORT).show();
-                } else if (status_code == 9001) {
+                } else if (statusCode == 9001) {
                     Toast.makeText(getBaseContext(), "시간등록이 불가능합니다.", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
