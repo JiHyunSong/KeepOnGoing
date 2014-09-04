@@ -98,8 +98,8 @@ public class HttpAPIs {
 
         TimeDataSet dataSet = new TimeDataSet();
         dataSet.nickname = nickname;
-        dataSet.target_time = target_time;
-        dataSet.accomplished_time = accomplished_time;
+        dataSet.targettime = target_time;
+        dataSet.accomplishedtime = accomplished_time;
         dataSet.date = date;
 
         String json = new Gson().toJson(dataSet);
@@ -119,8 +119,8 @@ public class HttpAPIs {
 
         TimeDataSet dataSet = new TimeDataSet();
         dataSet.nickname = nickname;
-        dataSet.target_time = target_time;
-        dataSet.accomplished_time = accomplished_time;
+        dataSet.targettime = target_time;
+        dataSet.accomplishedtime = accomplished_time;
         dataSet.date = date;
 
         String json = new Gson().toJson(dataSet);
@@ -180,9 +180,6 @@ public class HttpAPIs {
     }
 
 
-
-
-
     public static class LoginDataSet{
         public String nickname;
         public String password;
@@ -191,8 +188,8 @@ public class HttpAPIs {
 
     public static class TimeDataSet{
         public String nickname;
-        public String target_time;
-        public String accomplished_time;
+        public String targettime;
+        public String accomplishedtime;
         public String date;
     }
 
