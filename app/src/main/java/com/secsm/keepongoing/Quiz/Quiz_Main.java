@@ -2,6 +2,8 @@ package com.secsm.keepongoing.Quiz;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,15 +22,22 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.beardedhen.androidbootstrap.BootstrapButton;
+import com.com.lanace.connecter.CallbackResponse;
+import com.com.lanace.connecter.HttpAPIs;
 import com.secsm.keepongoing.R;
 import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MyVolley;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Date;
@@ -202,88 +211,177 @@ public class Quiz_Main extends BaseActivity {
         // TODO Real Action
     }
 
+    /** base Handler for Enable/Disable all UI components */
+    Handler baseHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+
+            if(msg.what == 1){
+//                TODO : implement setAllEnable()
+//                setAllEnable();
+            }
+            else if(msg.what == -1){
+//                TODO : implement setAllDisable()
+//                setAllDisable();
+            }
+        }
+    };
+
+    /** quizRegisterRequestHandler
+     * statusCode == 200 => get My info, Update UI
+     */
+    Handler quizRegisterRequestHandler = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+                Bundle b = msg.getData();
+                JSONObject result = new JSONObject(b.getString("JSONData"));
+                int statusCode = Integer.parseInt(result.getString("httpStatusCode"));
+                if (statusCode == 200) {
+                    // rMessage = response.getString("message");
+                    JSONArray rMessageget;
+
+                    rMessageget = result.getJSONArray("message");
+                    JSONObject rObj;
+                    rObj=rMessageget.getJSONObject(0);
+                    //     Toast.makeText(getBaseContext(), LOG_TAG + URLDecoder.decode(rObj.getString("num").toString(), "UTF-8"), Toast.LENGTH_SHORT).show();
+                    //       Log.e("minsu ):","minsu:) receive : "+ URLDecoder.decode(rObj.getString("num").toString(), "UTF-8"));
+                    //   Log.e("minsu ):","minsue:) send solution : "+ temp);
+                    KogPreference.setQuizNum(Quiz_Main.this,  URLDecoder.decode(rObj.getString("num").toString(), "UTF-8"));
+                    Toast.makeText(getBaseContext(), "제출완료", Toast.LENGTH_SHORT).show();
+                } else if (status_code == 9001) {
+                    Toast.makeText(getBaseContext(), "퀴즈 등록이 불가능합니다.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
+                    Log.e(LOG_TAG, "통신 에러 : " + result.getString("message"));
+                }
+            }catch (JSONException e)
+            {
+                e.printStackTrace();
+            }catch (UnsupportedEncodingException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    };
+
     //@통신
-//    private void quizRegisterRequest(String question, String type, String solution,String title,String date) {
-////        question = question.trim().replace(" ", "%20");
-////        solution = solution.trim().replace(" ", "%20");
-////        question = question.trim().replace("\n", "%0A");
-////        solution = solution.trim().replace("\n", "%0A");
-//        Log.i("minsu: ) ","minsu: whffu"+question);
-//
-//       final  String temp= solution;
-//        String get_url = KogPreference.REST_URL +
-//                "Room/Quiz";// +
-////                "?srid=" +KogPreference.getRid(Quiz_Main.this) +
-////                "&type=" + type +
-////                "&question=" + question +
-////                "&solution=" + solution +
-////                "&nickname=" + KogPreference.getNickName(Quiz_Main.this)+
-////                "&title="+ title+
-////                "&date="+ date;
-//
-//
-//        JSONObject sendBody = new JSONObject();
-//        try {
-//            sendBody.put("srid", KogPreference.getRid(Quiz_Main.this));
-//            sendBody.put("type", type);
-//            sendBody.put("question", question);
-//            sendBody.put("solution", solution);
-//            sendBody.put("nickname", KogPreference.getNickName(Quiz_Main.this));
-//            sendBody.put("title", title);
-//            sendBody.put("date", date);
-//        }
-//        catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-////        Log.i(LOG_TAG, "get_url : " + get_url);
-//    //    JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), null,
-//        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, KogPreference.REST_URL+"Room/Quiz", sendBody,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        Log.i(LOG_TAG, "get JSONObject");
-//                        Log.i(LOG_TAG, response.toString());
-//
-//                        try {
-//                            status_code = response.getInt("status");
-//                            if (status_code == 200) {
-//                               // rMessage = response.getString("message");
-//                                JSONArray rMessageget;
-//
-//                                rMessageget = response.getJSONArray("message");
-//                                JSONObject rObj;
-//                                rObj=rMessageget.getJSONObject(0);
-//                           //     Toast.makeText(getBaseContext(), LOG_TAG + URLDecoder.decode(rObj.getString("num").toString(), "UTF-8"), Toast.LENGTH_SHORT).show();
-//                         //       Log.e("minsu ):","minsu:) receive : "+ URLDecoder.decode(rObj.getString("num").toString(), "UTF-8"));
-//                            //   Log.e("minsu ):","minsue:) send solution : "+ temp);
-//                                KogPreference.setQuizNum(Quiz_Main.this,  URLDecoder.decode(rObj.getString("num").toString(), "UTF-8"));
-//                                Toast.makeText(getBaseContext(), "제출완료", Toast.LENGTH_SHORT).show();
-//                            } else if (status_code == 9001) {
-//                                Toast.makeText(getBaseContext(), "퀴즈 등록이 불가능합니다.", Toast.LENGTH_SHORT).show();
-//                            } else {
-//                                Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
-//                                if (KogPreference.DEBUG_MODE) {
-//                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-//                                }
-//                            }
-//                        } catch (Exception e) {
-//                        }
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Log.i(LOG_TAG, "Response Error : status_code : " +status_code);
-//                Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
-//                if (KogPreference.DEBUG_MODE) {
-//                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        }
-//        );
-//
-//        vQueue.add(jsObjRequest);
-//    }
+    private void quizRegisterRequest(String question, String type, String solution,String title,String date) {
+        try {
+            baseHandler.sendEmptyMessage(-1);
+            HttpRequestBase requestAuthRegister = HttpAPIs.quizRegisterPost(
+            KogPreference.getRid(Quiz_Main.this),
+            type, question, solution,
+            KogPreference.getNickName(Quiz_Main.this),
+            title, date);
+            HttpAPIs.background(requestAuthRegister, new CallbackResponse() {
+                public void success(HttpResponse response) {
+                    baseHandler.sendEmptyMessage(1);
+                    JSONObject result = HttpAPIs.getJSONData(response);
+                    Log.e(LOG_TAG, "응답: " + result.toString());
+                    if(result != null) {
+                        Message msg = quizRegisterRequestHandler.obtainMessage();
+                        Bundle b = new Bundle();
+                        b.putString("JSONData", result.toString());
+                        msg.setData(b);
+                        quizRegisterRequestHandler.sendMessage(msg);
+                    }
+                }
+
+                public void error(Exception e) {
+                    baseHandler.sendEmptyMessage(1);
+                    Log.i(LOG_TAG, "Response Error: " +  e.toString());
+                    e.printStackTrace();
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+//        question = question.trim().replace(" ", "%20");
+//        solution = solution.trim().replace(" ", "%20");
+//        question = question.trim().replace("\n", "%0A");
+//        solution = solution.trim().replace("\n", "%0A");
+        Log.i("minsu: ) ","minsu: whffu"+question);
+
+       final  String temp= solution;
+        String get_url = KogPreference.REST_URL +
+                "Room/Quiz";// +
+//                "?srid=" +KogPreference.getRid(Quiz_Main.this) +
+//                "&type=" + type +
+//                "&question=" + question +
+//                "&solution=" + solution +
+//                "&nickname=" + KogPreference.getNickName(Quiz_Main.this)+
+//                "&title="+ title+
+//                "&date="+ date;
+
+
+        JSONObject sendBody = new JSONObject();
+        try {
+            sendBody.put("srid", KogPreference.getRid(Quiz_Main.this));
+            sendBody.put("type", type);
+            sendBody.put("question", question);
+            sendBody.put("solution", solution);
+            sendBody.put("nickname", KogPreference.getNickName(Quiz_Main.this));
+            sendBody.put("title", title);
+            sendBody.put("date", date);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+//        Log.i(LOG_TAG, "get_url : " + get_url);
+    //    JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), null,
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, KogPreference.REST_URL+"Room/Quiz", sendBody,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(LOG_TAG, "get JSONObject");
+                        Log.i(LOG_TAG, response.toString());
+
+                        try {
+                            status_code = response.getInt("status");
+                            if (status_code == 200) {
+                               // rMessage = response.getString("message");
+                                JSONArray rMessageget;
+
+                                rMessageget = response.getJSONArray("message");
+                                JSONObject rObj;
+                                rObj=rMessageget.getJSONObject(0);
+                           //     Toast.makeText(getBaseContext(), LOG_TAG + URLDecoder.decode(rObj.getString("num").toString(), "UTF-8"), Toast.LENGTH_SHORT).show();
+                         //       Log.e("minsu ):","minsu:) receive : "+ URLDecoder.decode(rObj.getString("num").toString(), "UTF-8"));
+                            //   Log.e("minsu ):","minsue:) send solution : "+ temp);
+                                KogPreference.setQuizNum(Quiz_Main.this,  URLDecoder.decode(rObj.getString("num").toString(), "UTF-8"));
+                                Toast.makeText(getBaseContext(), "제출완료", Toast.LENGTH_SHORT).show();
+                            } else if (status_code == 9001) {
+                                Toast.makeText(getBaseContext(), "퀴즈 등록이 불가능합니다.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
+                                if (KogPreference.DEBUG_MODE) {
+                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        } catch (Exception e) {
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i(LOG_TAG, "Response Error : status_code : " +status_code);
+                Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
+                if (KogPreference.DEBUG_MODE) {
+                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+        );
+
+        vQueue.add(jsObjRequest);
+    }
 
 ///*
 //            jsonObj.put("srid", KogPreference.getRid(Quiz_Main.this));
