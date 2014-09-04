@@ -3,6 +3,8 @@ package com.com.lanace.connecter;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.secsm.keepongoing.Shared.Encrypt;
+import com.secsm.keepongoing.Shared.KogPreference;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -148,25 +150,36 @@ public class HttpAPIs {
         return httpPost;
     }
 
-    /** POST Auth Send */
+    /** GET Auth Send */
     public static HttpRequestBase authGet(String phone, int random_num) throws IOException {
 
         HttpGet httpGet = new HttpGet(HttpConnecter.getRestfullBaseURL() + "Auth"
                 +"?phone=" + phone +
                 "&random_num=" + random_num);
 
-//        AuthDataSet dataSet = new AuthDataSet();
-//        dataSet.phone = phone;
-//        dataSet.randomnum = random_num;
-//
-//        String json = new Gson().toJson(dataSet);
-//
-//        httpPost.setHeader("Content-Type", "application/json");
-//        StringEntity entity = new StringEntity(json);
-//        httpPost.setEntity(entity);
-
         return httpGet;
     }
+
+    /** POST Register Send */
+    public static HttpRequestBase registerPost(String nickname, String password, String image, String phone, String gcmid) throws IOException {
+        HttpPost httpPost = new HttpPost(HttpConnecter.getRestfullBaseURL() + "Auth");
+
+        RegisterDataSet dataSet = new RegisterDataSet();
+        dataSet.nickname = nickname;
+        dataSet.password = password;
+        dataSet.image = image;
+        dataSet.phone = phone;
+        dataSet.gcmid = gcmid;
+        String json = new Gson().toJson(dataSet);
+
+        httpPost.setHeader("Content-Type", "application/json");
+        StringEntity entity = new StringEntity(json);
+        httpPost.setEntity(entity);
+
+        return httpPost;
+    }
+
+
 
 
 
@@ -186,6 +199,15 @@ public class HttpAPIs {
     public static class AuthDataSet{
         public String phone;
         public int randomnum;
+    }
+
+    public static class RegisterDataSet{
+        public String nickname;
+        public String password;
+        public String image;
+        public String phone;
+        public String gcmid;
+
     }
 
 }

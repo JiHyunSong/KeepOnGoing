@@ -122,7 +122,7 @@ public class AuthNextActivity extends BaseActivity {
         sms.sendTextMessage(phoneNumber, null, message, pi, null);
     }
 
-    /** */
+    /** base Handler for Enable/Disable all UI components */
     Handler baseHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -171,8 +171,8 @@ public class AuthNextActivity extends BaseActivity {
 
     // register my phone number and random_generated_number
     private void AuthNumRegister(final String phone, final int random_num) {
-
         try {
+            baseHandler.sendEmptyMessage(-1);
             HttpRequestBase requestAuthRegister = HttpAPIs.authPost(URLEncoder.encode(phone, "UTF-8"), random_num);
             HttpAPIs.background(requestAuthRegister, new CallbackResponse() {
                 public void success(HttpResponse response) {
