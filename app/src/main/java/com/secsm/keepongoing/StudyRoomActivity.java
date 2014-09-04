@@ -2333,66 +2333,131 @@ S3
 //    }
 
 
-    private void kickOffMemberRequest(final String f_nickname) {
+    /** kickOffMemberRequestHandler
+     * statusCode == 200 => kickoff member success
+     */
+    Handler kickOffMemberRequestHandler = new Handler(){
 
-        //TODO : check POST/GET METHOD and get_URL
-        String get_url = KogPreference.REST_URL +
-                "Room/User" +
-                "?rid=" + KogPreference.getRid(StudyRoomActivity.this) +
-                "&nickname=" + f_nickname;
-
-        Log.i(LOG_TAG, "URL : " + get_url);
-
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.DELETE, Encrypt.encodeIfNeed(get_url), null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.i(LOG_TAG, " kickOffMemberRequest get JSONObject");
-                        Log.i(LOG_TAG, response.toString());
-
-                        try {
-                            int status_code = response.getInt("status");
-                            if (status_code == 200) {
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+                Bundle b = msg.getData();
+                JSONObject result = new JSONObject(b.getString("JSONData"));
+                int statusCode = Integer.parseInt(result.getString("httpStatusCode"));
+                if (statusCode == 200) {
 //                                JSONArray rMessage;
 //                                rMessage = response.getJSONArray("message");
-                                //////// real action ////////
+                    //////// real action ////////
 
-                                Toast.makeText(getBaseContext(), f_nickname + "를 강퇴하였습니다.", Toast.LENGTH_SHORT).show();
-                                setAllEnable();
+                    Toast.makeText(getBaseContext(), "강퇴시켰습니다.", Toast.LENGTH_SHORT).show();
+                    setAllEnable();
 
-                                refreshActivity();
+                    refreshActivity();
 
-                                //////// real action ////////
-                            } else if (status_code == 1001) {
-                                Toast.makeText(getBaseContext(), "권한이 없습니다! \n방장만 가능합니다!", Toast.LENGTH_SHORT).show();
-                                setAllEnable();
-                            } else {
-                                Toast.makeText(getBaseContext(), "통신 에러", Toast.LENGTH_SHORT).show();
-                                setAllEnable();
-                                if (KogPreference.DEBUG_MODE) {
-                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        } catch (Exception e) {
-                            Toast.makeText(getBaseContext(), "통신 에러", Toast.LENGTH_SHORT).show();
-                            setAllEnable();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                setAllEnable();
-                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-                Log.i(LOG_TAG, "Response Error");
-                if (KogPreference.DEBUG_MODE) {
-                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
-                }
-
+                    //////// real action ////////
+                } else if (statusCode == 1001) {
+                    Toast.makeText(getBaseContext(), "권한이 없습니다! \n방장만 가능합니다!", Toast.LENGTH_SHORT).show();
+                    setAllEnable();
+                } else {
+                    Toast.makeText(getBaseContext(), "통신 에러", Toast.LENGTH_SHORT).show();
+                    setAllEnable();
+                    if (KogPreference.DEBUG_MODE) {
+                        Toast.makeText(getBaseContext(), LOG_TAG + result.getString("message"), Toast.LENGTH_SHORT).show();
+                    }                }
+            }catch (JSONException e)
+            {
+                e.printStackTrace();
             }
         }
-        );
-        vQueue.add(jsObjRequest);
-        vQueue.start();
+    };
+
+    private void kickOffMemberRequest(final String f_nickname) {
+        try {
+            baseHandler.sendEmptyMessage(-1);
+            HttpRequestBase requestAuthRegister = HttpAPIs.outRoomRequest(
+                    KogPreference.getRid(StudyRoomActivity.this),f_nickname);
+            HttpAPIs.background(requestAuthRegister, new CallbackResponse() {
+                public void success(HttpResponse response) {
+                    baseHandler.sendEmptyMessage(1);
+                    JSONObject result = HttpAPIs.getJSONData(response);
+                    Log.e(LOG_TAG, "응답: " + result.toString());
+                    if(result != null) {
+                        Message msg = kickOffMemberRequestHandler.obtainMessage();
+                        Bundle b = new Bundle();
+                        b.putString("JSONData", result.toString());
+                        msg.setData(b);
+                        kickOffMemberRequestHandler.sendMessage(msg);
+                    }
+                }
+
+                public void error(Exception e) {
+                    baseHandler.sendEmptyMessage(1);
+                    Log.i(LOG_TAG, "Response Error: " +  e.toString());
+                    e.printStackTrace();
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        //TODO : check POST/GET METHOD and get_URL
+//        String get_url = KogPreference.REST_URL +
+//                "Room/User" +
+//                "?rid=" + KogPreference.getRid(StudyRoomActivity.this) +
+//                "&nickname=" + f_nickname;
+//
+//        Log.i(LOG_TAG, "URL : " + get_url);
+//
+//        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.DELETE, Encrypt.encodeIfNeed(get_url), null,
+//                new Response.Listener<JSONObject>() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//                        Log.i(LOG_TAG, " kickOffMemberRequest get JSONObject");
+//                        Log.i(LOG_TAG, response.toString());
+//
+//                        try {
+//                            int status_code = response.getInt("status");
+//                            if (status_code == 200) {
+////                                JSONArray rMessage;
+////                                rMessage = response.getJSONArray("message");
+//                                //////// real action ////////
+//
+//                                Toast.makeText(getBaseContext(), f_nickname + "를 강퇴하였습니다.", Toast.LENGTH_SHORT).show();
+//                                setAllEnable();
+//
+//                                refreshActivity();
+//
+//                                //////// real action ////////
+//                            } else if (status_code == 1001) {
+//                                Toast.makeText(getBaseContext(), "권한이 없습니다! \n방장만 가능합니다!", Toast.LENGTH_SHORT).show();
+//                                setAllEnable();
+//                            } else {
+//                                Toast.makeText(getBaseContext(), "통신 에러", Toast.LENGTH_SHORT).show();
+//                                setAllEnable();
+//                                if (KogPreference.DEBUG_MODE) {
+//                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
+//                                }
+//                            }
+//                        } catch (Exception e) {
+//                            Toast.makeText(getBaseContext(), "통신 에러", Toast.LENGTH_SHORT).show();
+//                            setAllEnable();
+//                        }
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                setAllEnable();
+//                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+//                Log.i(LOG_TAG, "Response Error");
+//                if (KogPreference.DEBUG_MODE) {
+//                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
+//                }
+//
+//            }
+//        }
+//        );
+//        vQueue.add(jsObjRequest);
+//        vQueue.start();
     }
 
     private void refreshActivity() {

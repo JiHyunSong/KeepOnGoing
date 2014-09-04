@@ -379,7 +379,6 @@ public class HttpAPIs {
         return httpGet;
     }
 
-
     public static JSONObject getHttpResponseToJSON(HttpResponse httpResponse) {
         BufferedReader reader;
         StringBuilder builder = new StringBuilder();
