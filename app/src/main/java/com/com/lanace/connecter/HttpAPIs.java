@@ -190,6 +190,25 @@ public class HttpAPIs {
         return httpPost;
     }
 
+    /** POST get Friends Score in Room*/
+    public static HttpRequestBase getFriendsInRoomGet(String rid, String fromdate, String todate, CallbackResponse callbackResponse) throws IOException {
+        HttpGet httpGet = new HttpGet(HttpConnecter.getRestfullBaseURL()
+                + "Room/User"
+//                "?rid=" + KogPreference.getRid(StudyRoomActivity.this) +
+//                "&fromdate=" + getThisMonday() +
+//                "&todate=" + getRealDate();
+                + "?rid=" + rid
+                + "&fromdate=" + fromdate
+                + "&todate=" + todate);
+
+        httpGet.setHeader("Content-Type", "application/json");
+
+        background(httpGet, callbackResponse);
+        return httpGet;
+
+    }
+
+
     public static String getRealDate() {
         long time = System.currentTimeMillis();
         Timestamp currentTimestamp = new Timestamp(time);
