@@ -3,6 +3,8 @@ package com.com.lanace.connecter;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.secsm.keepongoing.Shared.Encrypt;
+import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.KogPreference;
 
 import org.apache.http.HttpResponse;
@@ -13,10 +15,14 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 
 /**
@@ -99,8 +105,8 @@ public class HttpAPIs {
 
         TimeDataSet dataSet = new TimeDataSet();
         dataSet.nickname = nickname;
-        dataSet.target_time = target_time;
-        dataSet.accomplished_time = accomplished_time;
+        dataSet.targettime = target_time;
+        dataSet.accomplishedtime = accomplished_time;
         dataSet.date = date;
 
         String json = new Gson().toJson(dataSet);
@@ -114,14 +120,14 @@ public class HttpAPIs {
 
     /** POST Time Put */
     public static HttpRequestBase timePut(String nickname, String target_time,
-                                           String accomplished_time, String date) throws IOException {
+                                          String accomplished_time, String date) throws IOException {
 
         HttpPut httpPut = new HttpPut(HttpConnecter.getRestfullBaseURL() + "Time");
 
         TimeDataSet dataSet = new TimeDataSet();
         dataSet.nickname = nickname;
-        dataSet.target_time = target_time;
-        dataSet.accomplished_time = accomplished_time;
+        dataSet.targettime = target_time;
+        dataSet.accomplishedtime = accomplished_time;
         dataSet.date = date;
 
         String json = new Gson().toJson(dataSet);
@@ -139,10 +145,29 @@ public class HttpAPIs {
                 "&date=" + getRealDate());
         return httpPut;
     }
+    /** POST Auth Send */
+    public static HttpRequestBase authPost(String phone, int random_num) throws IOException {
+        HttpPost httpPost = new HttpPost(HttpConnecter.getRestfullBaseURL() + "Auth");
 
-    public static HttpRequestBase getStudyRoomsRequest(String nickname){
+        AuthDataSet dataSet = new AuthDataSet();
+        dataSet.phone = phone;
+        dataSet.randomnum = random_num;
+
+        String json = new Gson().toJson(dataSet);
+
+        httpPost.setHeader("Content-Type", "application/json");
+        StringEntity entity = new StringEntity(json);
+        httpPost.setEntity(entity);
+
+        return httpPost;
+    }
+
+    public static HttpRequestBase getStudyRoomsRequest(String nickname, CallbackResponse callbackResponse) throws IOException {
         HttpGet httpPut = new HttpGet(HttpConnecter.getRestfullBaseURL() + "Rooms" +
                 "?nickname=" + nickname);
+
+        background(httpPut, callbackResponse);
+
         return httpPut;
     }
 
@@ -168,12 +193,65 @@ public class HttpAPIs {
         return httpPost;
     }
 
-
-
     public static String getRealDate() {
         long time = System.currentTimeMillis();
         Timestamp currentTimestamp = new Timestamp(time);
         return currentTimestamp.toString().substring(0, 10);
+    }
+
+    /** GET Auth Send */
+    public static HttpRequestBase authGet(String phone, int random_num) throws IOException {
+
+        HttpGet httpGet = new HttpGet(HttpConnecter.getRestfullBaseURL() + "Auth"
+                +"?phone=" + phone +
+                "&random_num=" + random_num);
+
+        return httpGet;
+    }
+
+    /** POST Register Send */
+    public static HttpRequestBase registerPost(String nickname, String password, String image, String phone, String gcmid) throws IOException {
+        HttpPost httpPost = new HttpPost(HttpConnecter.getRestfullBaseURL() + "Auth");
+
+        RegisterDataSet dataSet = new RegisterDataSet();
+        dataSet.nickname = nickname;
+        dataSet.password = password;
+        dataSet.image = image;
+        dataSet.phone = phone;
+        dataSet.gcmid = gcmid;
+        String json = new Gson().toJson(dataSet);
+
+        httpPost.setHeader("Content-Type", "application/json");
+        StringEntity entity = new StringEntity(json);
+        httpPost.setEntity(entity);
+
+        return httpPost;
+    }
+
+    public static JSONObject getHttpResponseToJSON(HttpResponse httpResponse) {
+        BufferedReader reader;
+        StringBuilder builder = new StringBuilder();
+        JSONObject obj = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent(), "UTF-8"));
+
+            for (String line = null; (line = reader.readLine()) != null;) {
+                builder.append(line).append("\n");
+            }
+            obj = new JSONObject(builder.toString());
+        } catch (UnsupportedEncodingException e1) {
+            e1.printStackTrace();
+        } catch (IllegalStateException e1) {
+            e1.printStackTrace();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(builder.toString());
+
+        return obj;
     }
 
     public static class LoginDataSet{
@@ -184,9 +262,23 @@ public class HttpAPIs {
 
     public static class TimeDataSet{
         public String nickname;
-        public String target_time;
-        public String accomplished_time;
+        public String targettime;
+        public String accomplishedtime;
         public String date;
+    }
+
+    public static class AuthDataSet{
+        public String phone;
+        public int randomnum;
+    }
+
+    public static class RegisterDataSet{
+        public String nickname;
+        public String password;
+        public String image;
+        public String phone;
+        public String gcmid;
+
     }
 
 }

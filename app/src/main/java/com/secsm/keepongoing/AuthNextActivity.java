@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.Menu;
@@ -19,14 +21,19 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.com.lanace.connecter.CallbackResponse;
+import com.com.lanace.connecter.HttpAPIs;
 import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MyVolley;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.net.URLEncoder;
 
 public class AuthNextActivity extends BaseActivity {
@@ -37,10 +44,18 @@ public class AuthNextActivity extends BaseActivity {
     int certiNo;
     String phoneNo;
     private RequestQueue vQueue;
-    private int status_code;
     private String rMessage;
     static String LOG_TAG = "AuthNext Activity";
 
+    void setAllEnable(){
+        btnOk.setEnabled(true);
+        btnGoBack.setEnabled(true);
+    }
+    void setAllDisable(){
+        btnOk.setEnabled(false);
+        btnGoBack.setEnabled(false);
+
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,117 +122,148 @@ public class AuthNextActivity extends BaseActivity {
         sms.sendTextMessage(phoneNumber, null, message, pi, null);
     }
 
+    /** base Handler for Enable/Disable all UI components */
+    Handler baseHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
 
-    // register my phone number and random_generated_number
-    private void AuthNumRegister(String phone, int random_num) {
-        String get_url = KogPreference.REST_URL +
-                "Auth"; //+
-//                "?phone=" + phone +
-//                "&random_num=" + random_num;
-        JSONObject sendBody = new JSONObject();
-        try{
-            sendBody.put("randomnum", random_num);
-            sendBody.put("phone", URLEncoder.encode(phone, "UTF-8"));
-            Log.i(LOG_TAG, "sendBody : " + sendBody.toString());
-        }catch (Exception e)
-        {
-            Log.e(LOG_TAG, " sendBody e : " + e.toString());
-        }
-
-        Log.i(LOG_TAG, "post btn event trigger");
-
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, get_url, sendBody,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.i(LOG_TAG, "get JSONObject");
-                        Log.i(LOG_TAG, response.toString());
-
-                        try {
-                            status_code = response.getInt("status");
-                            if (status_code == 200) {
-                                rMessage = response.getString("message");
-                                // real action
-                                Log.i(LOG_TAG, "receive 200 OK");
-                                sendSMS(phoneNo);
-                                // nothing to do
-                            } else if (status_code == 1001) {
-                                Toast.makeText(getBaseContext(), "이미 가입된 번호입니다.\n중복가입 하실 수 없습니다.", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(AuthNextActivity.this, LoginActivity.class);
-                                startActivity(intent);
-                                AuthNextActivity.this.finish();
-                            } else {
-
-                                if (KogPreference.DEBUG_MODE) {
-                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        } catch (Exception e) {
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.i(LOG_TAG, "Response Error : " + error.toString());
-
-                if (KogPreference.DEBUG_MODE) {
-                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
-                }
-
+            if(msg.what == 1){
+                setAllEnable();
+            }
+            else if(msg.what == -1){
+                setAllDisable();
             }
         }
-        );
-        vQueue.add(jsObjRequest);
-        vQueue.start();
-    }
+    };
 
+    /** AuthNumRegister
+     * statusCode == 200 => send SMS to phone num
+     * statusCode == 1001 => auth duplicate! go back to the back page */
+    Handler AuthNumRegisterHandler = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+                Bundle b = msg.getData();
+                JSONObject result = new JSONObject(b.getString("JSONData"));
+                int statusCode = Integer.parseInt(result.getString("httpStatusCode"));
+                if (statusCode == 200) {
+                    Log.i(LOG_TAG, "receive 200 OK");
+                    sendSMS(phoneNo);
+
+                } else if (statusCode == 1001) {
+                    Toast.makeText(getBaseContext(), "이미 가입된 번호입니다.\n중복가입 하실 수 없습니다.", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(AuthNextActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    AuthNextActivity.this.finish();
+                } else {
+
+                    if (KogPreference.DEBUG_MODE) {
+                        Toast.makeText(getBaseContext(), LOG_TAG + result.getString("message"), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    // register my phone number and random_generated_number
+    private void AuthNumRegister(final String phone, final int random_num) {
+        try {
+            baseHandler.sendEmptyMessage(-1);
+            HttpRequestBase requestAuthRegister = HttpAPIs.authPost(URLEncoder.encode(phone, "UTF-8"), random_num);
+            HttpAPIs.background(requestAuthRegister, new CallbackResponse() {
+                public void success(HttpResponse response) {
+                    baseHandler.sendEmptyMessage(1);
+                    JSONObject result = HttpAPIs.getJSONData(response);
+                    Log.e(LOG_TAG, "응답: " + result.toString());
+                        if(result != null) {
+                            Message msg = AuthNumRegisterHandler.obtainMessage();
+                            Bundle b = new Bundle();
+                            b.putString("JSONData", result.toString());
+                            msg.setData(b);
+                            AuthNumRegisterHandler.sendMessage(msg);
+                        }
+                }
+
+                public void error(Exception e) {
+                    baseHandler.sendEmptyMessage(1);
+                    Log.i(LOG_TAG, "Response Error: " +  e.toString());
+                    e.printStackTrace();
+                    //Toast.makeText(LoginActivity.this, "연결이 원활하지 않습니다.\n잠시후에 시도해주세요.", Toast.LENGTH_SHORT).show();
+                    if (KogPreference.DEBUG_MODE) {
+                        //  Toast.makeText(LoginActivity.this, LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    Handler AuthConfirmHandler = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+                Bundle b = msg.getData();
+                JSONObject result = new JSONObject(b.getString("JSONData"));
+                int statusCode = Integer.parseInt(result.getString("httpStatusCode"));
+                if (statusCode == 200) {
+//                                rMessage = result.getString("message");
+                    // real action
+                    Log.i(LOG_TAG, "receive 200 OK");
+                    GoNextPage();
+                } else {
+                    Toast.makeText(getBaseContext(), "인증에 실패했습니다.\n다시 요청해 주세요.", Toast.LENGTH_SHORT).show();
+                    if (KogPreference.DEBUG_MODE) {
+                        Toast.makeText(getBaseContext(), LOG_TAG + result.getString("message"), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    };
 
     // check my phone number and random_num from input by person
     private void AuthConfirm(String phone, int random_num) {
-        String get_url = KogPreference.REST_URL +
-                "Auth" +
-                "?phone=" + phone +
-                "&random_num=" + random_num;
 
-        Log.i(LOG_TAG, "post btn event trigger");
+        try {
+            HttpRequestBase requestAuthConfirm = HttpAPIs.authGet(URLEncoder.encode(phone, "UTF-8"), random_num);
+            HttpAPIs.background(requestAuthConfirm, new CallbackResponse() {
+                public void success(HttpResponse response) {
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, Encrypt.encodeIfNeed(get_url), null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.i(LOG_TAG, "get JSONObject");
-                        Log.i(LOG_TAG, response.toString());
+                    baseHandler.sendEmptyMessage(1);
 
-                        try {
-                            status_code = response.getInt("status");
-                            if (status_code == 200) {
-                                rMessage = response.getString("message");
-                                // real action
-                                Log.i(LOG_TAG, "receive 200 OK");
-
-                                GoNextPage();
-                            } else {
-
-                                Toast.makeText(getBaseContext(), "인증에 실패했습니다.\n다시 요청해 주세요.", Toast.LENGTH_SHORT).show();
-                                if (KogPreference.DEBUG_MODE) {
-                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        } catch (Exception e) {
-                        }
+                    JSONObject result = HttpAPIs.getJSONData(response);
+                    Log.e(LOG_TAG, "응답: " + result.toString());
+                    if(result != null){
+                        Message msg = AuthConfirmHandler.obtainMessage();
+                        Bundle b = new Bundle();
+                        b.putString("JSONData", result.toString());
+                        msg.setData(b);
+                        AuthConfirmHandler.sendMessage(msg);
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.i(LOG_TAG, "Response Error");
-                if (KogPreference.DEBUG_MODE) {
-                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
                 }
 
-            }
+                public void error(Exception e) {
+                    baseHandler.sendEmptyMessage(1);
+                    Log.i(LOG_TAG, "Response Error: " +  e.toString());
+                    e.printStackTrace();
+                    //Toast.makeText(LoginActivity.this, "연결이 원활하지 않습니다.\n잠시후에 시도해주세요.", Toast.LENGTH_SHORT).show();
+                    if (KogPreference.DEBUG_MODE) {
+                        //  Toast.makeText(LoginActivity.this, LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        );
-        vQueue.add(jsObjRequest);
     }
 
     /* making random number */
