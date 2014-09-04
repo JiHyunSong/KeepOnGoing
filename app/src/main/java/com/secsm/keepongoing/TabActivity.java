@@ -57,6 +57,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -101,7 +102,8 @@ public class TabActivity extends BaseActivity {
     ArrayList<RoomNaming> mRooms;
     ArrayList<String> arGeneral3;
 
-
+    private AlertDialog mOutRoomDialog;
+    private TextView simple_dialog_text;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +120,7 @@ public class TabActivity extends BaseActivity {
 
     }
 
+    /** 리소스 초기화 */
     public void init() {
         // TODO 리소스 초기화
         tab_progress = (ProgressBar)findViewById(R.id.tab_progress);
@@ -151,6 +154,7 @@ public class TabActivity extends BaseActivity {
         roomList.setOnItemLongClickListener(itemLongClickListener);
     }
 
+    /** 텝 초기화 */
     public void initTap(){
         // setup tab_settings
         arGeneral3 = new ArrayList<String>();
@@ -167,20 +171,17 @@ public class TabActivity extends BaseActivity {
         optionArrayAdapter = new ArrayAdapter<String>(this,
                 R.layout.tab_list, arGeneral3);
         settingList = (ListView) findViewById(R.id.setting_list);
-//        View header_setting = getLayoutInflater().inflate(R.layout.tab_header_setting, null, false);
-//        settingList.addHeaderView(header_setting);
         settingList.setAdapter(optionArrayAdapter);
 
-        // add list item onClickListener
         settingList.setOnItemClickListener(itemClickListener);
 
-        // add listener
         tabStopwatch.setOnClickListener(tabListener);
         tabFriends.setOnClickListener(tabListener);
         tabRooms.setOnClickListener(tabListener);
         tabSettings.setOnClickListener(tabListener);
     }
 
+    /** 알람 초기화 */
     public void initAlarm(){
         // Alarm OnCreate
         a = Preference.getBoolean(TabActivity.this, "testValue");
@@ -200,19 +201,10 @@ public class TabActivity extends BaseActivity {
         _text2 = (TextView) findViewById(R.id.goal);
         ahcieve.setText("00:00:00");
 
-        //@민수 삽입
-
-
-
         _current_time_text = (TextView) findViewById(R.id.currenttime);
         _current_time_text2 = (TextView) findViewById(R.id.currenttime2);
         _goal_time = (TextView) findViewById(R.id.goal);
 
-
-        //@민수 테스트
-
-
-        //@민수 타이머 선언
         TimerTask adTast2 = new TimerTask() {
             public void run() {
                 replace_current_time_Handler.sendEmptyMessage(0);
@@ -221,14 +213,12 @@ public class TabActivity extends BaseActivity {
         Timer timer2 = new Timer();
         timer2.schedule(adTast2, 0, 1000); // 0초후 첫실행, 1초마다 계속실행
 
-
         Contact contact3 = helper.getContact(2);
         _text2.setText(
                 (contact3.gethour() / 10 == 0 ? "0" + contact3.gethour() : contact3.gethour())
                         + ":" + (contact3.getminute() / 10 == 0 ? "0" + contact3.getminute() : contact3.getminute()) + ":" + "00"
         );
         Preference.setString(TabActivity.this, "goal_time", _text2.getText().toString());
-
 
         final ToggleButton play_pause = (ToggleButton) findViewById(R.id.toggleButton2);
         play_pause.setOnClickListener(new Button.OnClickListener() {
@@ -334,7 +324,7 @@ public class TabActivity extends BaseActivity {
         }
     }
 
-    //@민수 통신
+    /** 타이머 종료시 서버에 시간 전송 Post */
     private void acheivetimeRegisterRequest(String target_time,String accomplished_time,String date) {
         target_time = target_time.trim().replace(" ", "%20");
         accomplished_time = accomplished_time.trim().replace(" ", "%20");
@@ -394,7 +384,7 @@ public class TabActivity extends BaseActivity {
         }
     }
 
-    //@통신
+    /** 타이머 종료시 서버에 시간 전송 Put */
     private void acheivetimeputRequest(String target_time,String accomplished_time,String date) {
         final String temp_accomplished_time=accomplished_time;
         String get_url = KogPreference.REST_URL +
@@ -462,7 +452,7 @@ public class TabActivity extends BaseActivity {
         tabSettings.setBackgroundResource(R.drawable.tab_option_icon);
     }
 
-    // tab setOnClickListener
+    /** 탭 클릭시 이벤트 */
     View.OnClickListener tabListener = new View.OnClickListener() {
         public void onClick(View v) {
             switch (v.getId()) {
@@ -493,21 +483,15 @@ public class TabActivity extends BaseActivity {
                 case R.id.imgBtn_tab_rooms:
 //                    Log.i(LOG_TAG, "rooms tab");
                     setInvisibleBody();
-//                    actionBarRoomTabNotifyBtn.setVisibility(View.VISIBLE);
-//                    actionBarRoomTabAddBtn.setVisibility(View.VISIBLE);
                     layoutRooms.setVisibility(View.VISIBLE);
-//                    actionBarFirstBtn.setIcon(R.drawable.ic_action_web_site);
-//                    actionBarFirstBtn.setVisible(true);
                     actionBarSecondBtn.setIcon(R.drawable.ic_action_new);
                     actionBarSecondBtn.setVisible(true);
-//                    actionBarFirstBtn.setOnMenuItemClickListener(ab_rooms_notify_listener);
                     actionBarSecondBtn.setOnMenuItemClickListener(ab_rooms_add_listener);
                     llRooms.setBackgroundColor(getResources().getColor(R.color.keep_on_going));
                     tabRooms.setBackgroundResource(R.drawable.tab_chatroom_icon_p);
                     break;
 
                 case R.id.imgBtn_tab_settings:
-//                    Log.i(LOG_TAG, "settings tab");
                     setInvisibleBody();
                     layoutSettings.setVisibility(View.VISIBLE);
                     llSettings.setBackgroundColor(getResources().getColor(R.color.keep_on_going));
@@ -517,11 +501,10 @@ public class TabActivity extends BaseActivity {
         }
     };
 
-
-    void getImageFromURL(String img_name, ImageView imgView) {
+    /** 이미지 다운로드 후 수정 */
+    public void getImageFromURL(String img_name, ImageView imgView) {
 
         String ImgURL = KogPreference.DOWNLOAD_PROFILE_URL+img_name;
-        // TODO R.drawable.error_image
         ImageLoader imageLoader = MyVolley.getImageLoader();
         imageLoader.get(ImgURL,
                 ImageLoader.getImageListener(imgView,
@@ -530,6 +513,7 @@ public class TabActivity extends BaseActivity {
         );
     }
 
+    /** 리스트뷰 클릭시 이벤트 */
     ListView.OnItemLongClickListener itemLongClickListener = new ListView.OnItemLongClickListener() {
         int selectedPosition = 0;
 
@@ -549,9 +533,7 @@ public class TabActivity extends BaseActivity {
         }
     };
 
-    private AlertDialog mOutRoomDialog;
-    TextView simple_dialog_text;
-
+    /** 다이얼로그 생성 */
     private AlertDialog outRoomDialog(final String room_name, final String room_id) {
         final View innerView = getLayoutInflater().inflate(R.layout.simple_dialog_layout, null);
         AlertDialog.Builder ab = new AlertDialog.Builder(this);
@@ -579,17 +561,14 @@ public class TabActivity extends BaseActivity {
         return ab.create();
     }
 
-    /* click listener for setting tab */
+    /** 더보기 탭 리스트 클릭 리스너 */
     ListView.OnItemClickListener itemClickListener = new ListView.OnItemClickListener() {
 
         public void onItemClick(AdapterView<?> adapterView, View arg1, int position, long arg3) {
-            // TODO Auto-generated method stub
             if (adapterView.getId() == R.id.friend_list) {
                 Log.i(LOG_TAG, "tab2, friends Clicked");
                 mDialog = createInflaterDialog(mFriends.get(position).getProfile_path(), mFriends.get(position).getName(), mFriends.get(position).getTargetTime());
                 mDialog.show();
-
-
             } else if (adapterView.getId() == R.id.room_list) {
                 Intent intent = new Intent(TabActivity.this, StudyRoomActivity.class);
                 intent.putExtra("type", mRooms.get(position).getType());
@@ -597,28 +576,20 @@ public class TabActivity extends BaseActivity {
                 KogPreference.setRid(TabActivity.this, mRooms.get(position).getRid());
                 KogPreference.setQuizNum(TabActivity.this, mRooms.get(position).getQuiz_num());
                 startActivity(intent);
-//                TabActivity.this.finish();
-
-
             } else if (adapterView.getId() == R.id.setting_list) {
                 switch (position) {
                     case 0: // 내 프로필
-                        Log.i(LOG_TAG, "tab4, settings Clicked");
                         Intent intent_my_profile = new Intent(TabActivity.this, MyProfileActivity.class);
                         startActivity(intent_my_profile);
 
                         break;
                     case 1: // 알람 / 목표시간 설정
-                        Log.i(LOG_TAG, "tab4, settings Clicked");
                         Intent intent_alarm = new Intent(TabActivity.this, alram_list.class);
                         startActivity(intent_alarm);
 //                        Intent intent_alarm = new Intent(TabActivity.this, NoticeActivity.class);
 //                        startActivity(intent_notice);
                         break;
-//                    case 2: // 목표 시간 설정
-//                        Log.i(LOG_TAG, "tab4, settings Clicked");
-//
-//                        break;
+
                     case 2: // 퀴즈 모음
                         Intent intent = new Intent(TabActivity.this, Quiz_Set_Search.class);
                         startActivity(intent);
@@ -626,9 +597,9 @@ public class TabActivity extends BaseActivity {
                         break;
 
                     case 3:
+                        //TODO 이부분 왜 이런식으로 구현했는지 모르겠음, 그냥 로그아웃 하면 안되는거
                         if(arGeneral3.get(position).toString().equals("로그아웃"))
                         {
-                            Log.i(LOG_TAG, "tab4, 로그아웃");
                             logout();
                         }
                         break;
@@ -652,9 +623,7 @@ public class TabActivity extends BaseActivity {
         this.finish();
     }
 
-    /**
-     * Infalter 다이얼로그
-     */
+    /** Infalter 다이얼로그 */
     private AlertDialog mDialog = null;
     private ImageView info_iconFriend = null;
     private TextView info_txtFriendNickname = null;
@@ -692,11 +661,7 @@ public class TabActivity extends BaseActivity {
     }
 
 
-    /**
-     * 다이얼로그 종료
-     *
-     * @param dialog
-     */
+    /** 다이얼로그 종료 */
     private void setDismiss(Dialog dialog) {
         if (dialog != null && dialog.isShowing())
             dialog.dismiss();
@@ -761,12 +726,8 @@ public class TabActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.actionBarFirstBtn) {
-
             return true;
         }
         if (id == R.id.actionBarSecondBtn) {
@@ -774,24 +735,19 @@ public class TabActivity extends BaseActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-    ////////////////////
-    // Action bar     //
-    ////////////////////
 
+    //TODO 메뉴부분 잘못되었음. 이런식으로 하는게 아니라 메뉴아이템을 가지고 하는것.
+    //TODO 프리퍼런스는 저런 용도가 아님
     MenuItem.OnMenuItemClickListener ab_stopwatchTab_settings_listener = new MenuItem.OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(MenuItem mi) {
             Log.i(LOG_TAG, "onMenuItemClicked ab_stopwatchTab_settings_listener");
             //@preference로 flag 설정
             Preference.putBoolean(TabActivity.this, "Mflag", true);
-
-
             //@preference를 불러와서 flag 확인후 set이 안되있으면 set으로 함
 
             Intent intent = new Intent(TabActivity.this, alram_list.class);
-            //Intent intent = new Intent(MainActivity.this, Alarm_main.class);
             startActivity(intent);
-
 
             return true;
         }
@@ -801,12 +757,8 @@ public class TabActivity extends BaseActivity {
         @Override
         public boolean onMenuItemClick(MenuItem mi) {
             Log.i(LOG_TAG, "onMenuItemClicked ab_friends_add_listener");
-
             Intent intent = new Intent(TabActivity.this, AddFriendActivity.class);
             startActivity(intent);
-//            TabActivity.this.();
-
-
             return true;
         }
     };
@@ -830,6 +782,7 @@ public class TabActivity extends BaseActivity {
         }
     };
 
+    //TODO 무슨 핸들러인지 작성하기
     Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -837,6 +790,8 @@ public class TabActivity extends BaseActivity {
             Preference.setString(TabActivity.this, "achieve_time", ahcieve.getText().toString());
         }
     };
+
+
     Handler replace_current_time_Handler = new Handler() {
 
         public void handleMessage(Message msg) {
@@ -893,37 +848,30 @@ public class TabActivity extends BaseActivity {
         Timestamp currentTimestamp = new Timestamp(time);
         return currentTimestamp.toString().substring(0, 10);
     }
+
     //////////////////////////////////
     // REST API //
     //////////////////////////////////
 
+    /** 친구목록 가져오기 */
     private void getFriendsRequest() {
 
-        //TODO : check POST/GET METHOD and get_URL
-        String get_url = KogPreference.REST_URL +
-                "Friend" +
-                "?nickname=" + KogPreference.getNickName(TabActivity.this) +
-                "&date=" + getRealDate();
+        try {
+            HttpAPIs.getFriendList(KogPreference.getNickName(TabActivity.this), new CallbackResponse() {
+                @Override
+                public void success(HttpResponse httpResponse) {
 
-        Log.i(LOG_TAG, "URL : " + get_url);
-
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, Encrypt.encodeIfNeed(get_url), null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.i(LOG_TAG, "get JSONObject");
-                        Log.i(LOG_TAG, response.toString());
-
+                    JSONObject obj = HttpAPIs.getHttpResponseToJSON(httpResponse);
+                    if(obj != null){
                         try {
-                            status_code = response.getInt("status");
+                            status_code = obj.getInt("status");
+
                             if (status_code == 200) {
-                                JSONArray rMessage;
-                                rMessage = response.getJSONArray("message");
-                                //////// real action ////////
+                                JSONArray rMessage = obj.getJSONArray("message");
                                 mFriends = new ArrayList<FriendNameAndIcon>();
+
                                 JSONObject rObj;
 
-                                //{"message":[{"targetTime":null,"image":"http:\/\/210.118.74.195:8080\/KOG_Server_Rest\/upload\/UserImage\/default.png","nickname":"jonghean"}],"status":"200"}
                                 for(int i=0; i< rMessage.length(); i++)
                                 {
                                     rObj = rMessage.getJSONObject(i);
@@ -944,190 +892,143 @@ public class TabActivity extends BaseActivity {
                                 mockFriendArrayAdapter = new FriendsArrayAdapters(TabActivity.this, R.layout.friend_list_item, mFriends);
                                 friendList.setAdapter(mockFriendArrayAdapter);
 
-
-                                /////////////////////////////
                             } else {
                                 Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-                                if (KogPreference.DEBUG_MODE) {
-//                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-                                }
                             }
-                        } catch (Exception e) {
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
                         }
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-                Log.i(LOG_TAG, "Response Error");
-                if (KogPreference.DEBUG_MODE) {
-                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
+
                 }
 
-            }
+                @Override
+                public void error(Exception e) {
+                    Log.e(LOG_TAG, "에러");
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        );
-        vQueue.add(jsObjRequest);
     }
 
-
+    /** 스터디룸 요청 */
     private void getStudyRoomsRequest() {
-        String get_url = KogPreference.REST_URL +
-                "Rooms" +
-                "?nickname=" + KogPreference.getNickName(TabActivity.this);
 
-        Log.i(LOG_TAG, "URL : " + get_url);
+        try {
+            HttpAPIs.getStudyRoomsRequest(KogPreference.getNickName(TabActivity.this), new CallbackResponse() {
+                @Override
+                public void success(HttpResponse httpResponse) {
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, Encrypt.encodeIfNeed(get_url), null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.i(LOG_TAG, "get JSONObject");
-                        Log.i(LOG_TAG, response.toString());
+                    JSONObject obj = HttpAPIs.getHttpResponseToJSON(httpResponse);
 
-                        //{"message":[
-                        // {"startTime":null,"roomname":"KOF STUDY","rid":"23","meetDays":null,"rule":"meet 6days","maxHolidayCount":"2","showupTime":null,"type":"liferoom","durationTime":null},
-                        // {"startTime":null,"roomname":"liferoom","rid":"29","meetDays":null,"rule":"tt","maxHolidayCount":"1","showupTime":null,"type":"liferoom","durationTime":null},
-                        // {"startTime":null,"roomname":"lif","rid":"30","meetDays":null,"rule":"134","maxHolidayCount":"1","showupTime":null,"type":"liferoom","durationTime":null},
-                        // {"startTime":null,"roomname":"??","rid":"31","meetDays":null,"rule":"???","maxHolidayCount":"1","showupTime":null,"type":"liferoom","durationTime":null},
-                        // {"startTime":null,"roomname":"??2?","rid":"34","meetDays":null,"rule":"??","maxHolidayCount":"5","showupTime":null,"type":"liferoom","durationTime":null},
-                        // {"startTime":"04:26:09","roomname":"tesmpSub","rid":"33","meetDays":"mon|tue|wed|fri|sun","rule":"???","maxHolidayCount":null,"showupTime":"18","type":"subjectroom","durationTime":"16"}
-                        // ],"status":"200"}
+                    try {
+                        status_code = obj.getInt("status");
+                        if (status_code == 200) {
+                            JSONArray rMessage;
+                            rMessage = obj.getJSONArray("message");
+                            mRooms = new ArrayList<RoomNaming>();
+                            JSONObject rObj;
 
-                        try {
-                            status_code = response.getInt("status");
-                            if (status_code == 200) {
-                                JSONArray rMessage;
-                                rMessage = response.getJSONArray("message");
-                                //////// real action ////////
-                                mRooms = new ArrayList<RoomNaming>();
-                                JSONObject rObj;
-
-                                //{"message":[{"targetTime":null,"image":"http:\/\/210.118.74.195:8080\/KOG_Server_Rest\/upload\/UserImage\/default.png","nickname":"jonghean"}],"status":"200"}
-                                Log.i(LOG_TAG, "room size : " + rMessage.length());
-                                for(int i=0; i< rMessage.length(); i++) {
-//                                    Log.i(LOG_TAG, "index : " + i);
-//                                    Log.i(LOG_TAG, "rMessage.getJSONObject(i) : " + rMessage.getJSONObject(i));
-                                    rObj = rMessage.getJSONObject(i);
-                                    //rMessage.getJSONObject(i) : {"startTime":"04:26:09","roomname":"tesmpSub","rid":"33","meetDays":"mon|tue|wed|fri|sun","rule":"???","maxHolidayCount":null,"showupTime":"18","type":"subjectroom","durationTime":"16"}
-                                    //add Rooms : subjectroom|33|???|tesmpSub|null|04:26:09|16|18|mon|tue|wed|fri|sun
-                                    //add Rooms : liferoom|23|meet 6days|KOF STUDY|2|null|null|null|null
-//                                    Log.i(LOG_TAG, "add Rooms : " + rObj.getString("type") + "|" + rObj.getString("rid") + "|" + rObj.getString("rule") + "|" +rObj.getString("roomname")
-//                                            + "|" +rObj.getString("maxHolidayCount")+ "|" +rObj.getString("startTime")+ "|" +rObj.getString("durationTime")
-//                                            + "|" +rObj.getString("showupTime")+ "|" +rObj.getString("meetDays"));
-                                    if (!"null".equals(rObj.getString("rid"))){
-                                        mRooms.add(new RoomNaming(
-                                                URLDecoder.decode(rObj.getString("type"), "UTF-8"),
-                                                URLDecoder.decode(rObj.getString("rid"),"UTF-8"),
-                                                URLDecoder.decode(rObj.getString("rule"),"UTF-8"),
-                                                URLDecoder.decode(rObj.getString("roomname"), "UTF-8"),
-                                                URLDecoder.decode(rObj.getString("maxHolidayCount"),"UTF-8"),
-                                                URLDecoder.decode(rObj.getString("startTime"),"UTF-8"),
-                                                URLDecoder.decode(rObj.getString("durationTime"),"UTF-8"),
-                                                URLDecoder.decode(rObj.getString("showupTime"),"UTF-8"),
-                                                URLDecoder.decode(rObj.getString("meetDays"),"UTF-8"),
-                                                URLDecoder.decode(rObj.getString("num"),"UTF-8")
-                                            ));
-                                        Log.i(LOG_TAG, "num"+ URLDecoder.decode(rObj.getString("num"),"UTF-8"));
-                                    }
-                                }
-
-                                RoomsArrayAdapters roomsArrayAdapter;
-                                roomsArrayAdapter = new RoomsArrayAdapters(TabActivity.this, R.layout.room_list_item, mRooms);
-                                roomList.setAdapter(roomsArrayAdapter);
-
-
-                                /////////////////////////////
-                            } else {
-                                Toast.makeText(getBaseContext(), "통신 에러 : \n스터디 방 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-                                if (KogPreference.DEBUG_MODE) {
-                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
+                            for(int i=0; i< rMessage.length(); i++) {
+                                rObj = rMessage.getJSONObject(i);
+                                if (!"null".equals(rObj.getString("rid"))){
+                                    mRooms.add(new RoomNaming(
+                                            URLDecoder.decode(rObj.getString("type"), "UTF-8"),
+                                            URLDecoder.decode(rObj.getString("rid"),"UTF-8"),
+                                            URLDecoder.decode(rObj.getString("rule"),"UTF-8"),
+                                            URLDecoder.decode(rObj.getString("roomname"), "UTF-8"),
+                                            URLDecoder.decode(rObj.getString("maxHolidayCount"),"UTF-8"),
+                                            URLDecoder.decode(rObj.getString("startTime"),"UTF-8"),
+                                            URLDecoder.decode(rObj.getString("durationTime"),"UTF-8"),
+                                            URLDecoder.decode(rObj.getString("showupTime"),"UTF-8"),
+                                            URLDecoder.decode(rObj.getString("meetDays"),"UTF-8"),
+                                            URLDecoder.decode(rObj.getString("num"),"UTF-8")
+                                    ));
+                                    Log.i(LOG_TAG, "num"+ URLDecoder.decode(rObj.getString("num"),"UTF-8"));
                                 }
                             }
-                        } catch (Exception e) {
+
+                            RoomsArrayAdapters roomsArrayAdapter;
+                            roomsArrayAdapter = new RoomsArrayAdapters(TabActivity.this, R.layout.room_list_item, mRooms);
+                            roomList.setAdapter(roomsArrayAdapter);
+
+
+                            /////////////////////////////
+                        } else {
+                            Toast.makeText(getBaseContext(), "통신 에러 : \n스터디 방 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+                            if (KogPreference.DEBUG_MODE) {
+                                Toast.makeText(getBaseContext(), LOG_TAG + obj.getString("message"), Toast.LENGTH_SHORT).show();
+                            }
                         }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getBaseContext(), "통신 에러 : \n스터디 방 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-                Log.i(LOG_TAG, "Response Error");
-                if (KogPreference.DEBUG_MODE) {
-                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
                 }
 
-            }
-        }
-        );
-        vQueue.add(jsObjRequest);
+                @Override
+                public void error(Exception e) {
 
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
+    /**  방 나갔을떄 요청에 대한 핸들링 */
+    public Handler outRoomRequestHandler = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+
+            Log.e("통신", "msg: " + msg.getData().getString("res"));
+            if(msg.what != -1){
+                Toast.makeText(getBaseContext(), "방을 나왔습니다.", Toast.LENGTH_SHORT).show();
+                setAllEnable();
+                refreshActivity();
+            }
+            else{
+                // 요청 실패시
+            }
+
+        }
+    };
 
     private void outRoomRequest(String room_id) {
 
-        //TODO : check POST/GET METHOD and get_URL
-        String get_url = KogPreference.REST_URL +
-                "Room/User" +
-                "?rid=" + room_id +
-                "&nickname=" + KogPreference.getNickName(TabActivity.this);
+            HttpRequestBase requestOutRoom = HttpAPIs.outRoomRequest(room_id, KogPreference.getNickName(TabActivity.this));
+            try {
+                HttpAPIs.background(requestOutRoom, new CallbackResponse() {
+                    public void success(HttpResponse response) {
 
-        Log.i(LOG_TAG, "URL : " + get_url);
+                        JSONObject result = HttpAPIs.getJSONData(response);
+                        Message message = null;
+                        Bundle data = new Bundle();
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.DELETE, Encrypt.encodeIfNeed(get_url), null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.i(LOG_TAG, " kickOffMemberRequest get JSONObject");
-                        Log.i(LOG_TAG, response.toString());
-
-                        try {
-                            int status_code = response.getInt("status");
-                            if (status_code == 200) {
-//                                JSONArray rMessage;
-//                                rMessage = response.getJSONArray("message");
-                                //////// real action ////////
-
-                                Toast.makeText(getBaseContext(), "방을 나왔습니다.", Toast.LENGTH_SHORT).show();
-                                setAllEnable();
-
-                                refreshActivity();
-
-                                //////// real action ////////
-                            } else {
-                                Toast.makeText(getBaseContext(), "통신 에러", Toast.LENGTH_SHORT).show();
-                                setAllEnable();
-                                if (KogPreference.DEBUG_MODE) {
-                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        } catch (Exception e) {
-                            Toast.makeText(getBaseContext(), "통신 에러", Toast.LENGTH_SHORT).show();
-                            setAllEnable();
-                        }
+                        message = outRoomRequestHandler.obtainMessage();
+                        data.putString("res", result.toString());
+                        message.setData(data);
+                        outRoomRequestHandler.sendMessage(message);
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                setAllEnable();
-                Toast.makeText(getBaseContext(), "통신 에러 : \n방을 나올 수 없습니다", Toast.LENGTH_SHORT).show();
-                Log.i(LOG_TAG, "Response Error");
-                if (KogPreference.DEBUG_MODE) {
-                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
-                }
 
+                    public void error(Exception e) {
+                        outRoomRequestHandler.sendEmptyMessage(-1);
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        }
-        );
-        vQueue.add(jsObjRequest);
     }
 
     private void logoutRequest(String nickname) {
 
-        //TODO : check POST/GET METHOD and get_URL
         String get_url = KogPreference.REST_URL +
                 "LoginSession";
-        Log.i(LOG_TAG, "URL : " + get_url);
 
         Map<String, String> map = new HashMap<String, String>();
         map.put("nickname", nickname);
@@ -1172,7 +1073,6 @@ public class TabActivity extends BaseActivity {
                 if (KogPreference.DEBUG_MODE) {
                     Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
                 }
-
             }
         }
         );

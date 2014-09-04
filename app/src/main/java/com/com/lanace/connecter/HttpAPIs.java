@@ -4,17 +4,23 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.secsm.keepongoing.Shared.KogPreference;
-
 import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.sql.Timestamp;
 
 /**
  * Created by Lanace on 2014-09-02.
@@ -111,7 +117,7 @@ public class HttpAPIs {
 
     /** POST Time Put */
     public static HttpRequestBase timePut(String nickname, String target_time,
-                                           String accomplished_time, String date) throws IOException {
+                                          String accomplished_time, String date) throws IOException {
 
         HttpPut httpPut = new HttpPut(HttpConnecter.getRestfullBaseURL() + "Time");
 
@@ -130,9 +136,14 @@ public class HttpAPIs {
         return httpPut;
     }
 
+    public static HttpRequestBase getFriendsRequest(String nickname){
+        HttpGet httpPut = new HttpGet(HttpConnecter.getRestfullBaseURL() + "Friend" +
+                "?nickname=" + nickname +
+                "&date=" + getRealDate());
+        return httpPut;
+    }
     /** POST Auth Send */
     public static HttpRequestBase authPost(String phone, int random_num) throws IOException {
-
         HttpPost httpPost = new HttpPost(HttpConnecter.getRestfullBaseURL() + "Auth");
 
         AuthDataSet dataSet = new AuthDataSet();
@@ -146,6 +157,43 @@ public class HttpAPIs {
         httpPost.setEntity(entity);
 
         return httpPost;
+    }
+
+    public static HttpRequestBase getStudyRoomsRequest(String nickname, CallbackResponse callbackResponse) throws IOException {
+        HttpGet httpPut = new HttpGet(HttpConnecter.getRestfullBaseURL() + "Rooms" +
+                "?nickname=" + nickname);
+
+        background(httpPut, callbackResponse);
+
+        return httpPut;
+    }
+
+    public static HttpRequestBase outRoomRequest(String room_id, String nickname){
+        HttpDelete httpPut = new HttpDelete(HttpConnecter.getRestfullBaseURL() + "Room/User" +
+                "?rid=" + room_id +
+                "&nickname=" + nickname);
+
+        httpPut.setHeader("Content-Type", "application/json");
+        return httpPut;
+    }
+
+    public static HttpRequestBase getFriendList(String nickname, CallbackResponse callBack) throws IOException {
+
+        HttpGet httpPost = new HttpGet(HttpConnecter.getRestfullBaseURL()
+                + "Friend"
+                + "?nickname=" + nickname
+                + "&date=" + getRealDate());
+
+        httpPost.setHeader("Content-Type", "application/json");
+
+        background(httpPost, callBack);
+        return httpPost;
+    }
+
+    public static String getRealDate() {
+        long time = System.currentTimeMillis();
+        Timestamp currentTimestamp = new Timestamp(time);
+        return currentTimestamp.toString().substring(0, 10);
     }
 
     /** GET Auth Send */
@@ -256,6 +304,31 @@ public class HttpAPIs {
         return httpPost;
     }
 
+    public static JSONObject getHttpResponseToJSON(HttpResponse httpResponse) {
+        BufferedReader reader;
+        StringBuilder builder = new StringBuilder();
+        JSONObject obj = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent(), "UTF-8"));
+
+            for (String line = null; (line = reader.readLine()) != null;) {
+                builder.append(line).append("\n");
+            }
+            obj = new JSONObject(builder.toString());
+        } catch (UnsupportedEncodingException e1) {
+            e1.printStackTrace();
+        } catch (IllegalStateException e1) {
+            e1.printStackTrace();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(builder.toString());
+
+        return obj;
+    }
 
     public static class LoginDataSet{
         public String nickname;
