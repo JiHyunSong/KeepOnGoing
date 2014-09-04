@@ -155,6 +155,21 @@ public class HttpAPIs {
         return httpPut;
     }
 
+    public static HttpRequestBase getFriendList(String nickname, CallbackResponse callBack) throws IOException {
+
+        HttpGet httpPost = new HttpGet(HttpConnecter.getRestfullBaseURL()
+                + "Friend"
+                + "?nickname=" + nickname
+                + "&date=" + getRealDate());
+
+        httpPost.setHeader("Content-Type", "application/json");
+
+        background(httpPost, callBack);
+        return httpPost;
+    }
+
+
+
     public static String getRealDate() {
         long time = System.currentTimeMillis();
         Timestamp currentTimestamp = new Timestamp(time);

@@ -101,7 +101,8 @@ public class TabActivity extends BaseActivity {
     ArrayList<RoomNaming> mRooms;
     ArrayList<String> arGeneral3;
 
-
+    private AlertDialog mOutRoomDialog;
+    private TextView simple_dialog_text;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +119,7 @@ public class TabActivity extends BaseActivity {
 
     }
 
+    /** 리소스 초기화 */
     public void init() {
         // TODO 리소스 초기화
         tab_progress = (ProgressBar)findViewById(R.id.tab_progress);
@@ -151,6 +153,7 @@ public class TabActivity extends BaseActivity {
         roomList.setOnItemLongClickListener(itemLongClickListener);
     }
 
+    /** 텝 초기화 */
     public void initTap(){
         // setup tab_settings
         arGeneral3 = new ArrayList<String>();
@@ -167,20 +170,17 @@ public class TabActivity extends BaseActivity {
         optionArrayAdapter = new ArrayAdapter<String>(this,
                 R.layout.tab_list, arGeneral3);
         settingList = (ListView) findViewById(R.id.setting_list);
-//        View header_setting = getLayoutInflater().inflate(R.layout.tab_header_setting, null, false);
-//        settingList.addHeaderView(header_setting);
         settingList.setAdapter(optionArrayAdapter);
 
-        // add list item onClickListener
         settingList.setOnItemClickListener(itemClickListener);
 
-        // add listener
         tabStopwatch.setOnClickListener(tabListener);
         tabFriends.setOnClickListener(tabListener);
         tabRooms.setOnClickListener(tabListener);
         tabSettings.setOnClickListener(tabListener);
     }
 
+    /** 알람 초기화 */
     public void initAlarm(){
         // Alarm OnCreate
         a = Preference.getBoolean(TabActivity.this, "testValue");
@@ -200,19 +200,10 @@ public class TabActivity extends BaseActivity {
         _text2 = (TextView) findViewById(R.id.goal);
         ahcieve.setText("00:00:00");
 
-        //@민수 삽입
-
-
-
         _current_time_text = (TextView) findViewById(R.id.currenttime);
         _current_time_text2 = (TextView) findViewById(R.id.currenttime2);
         _goal_time = (TextView) findViewById(R.id.goal);
 
-
-        //@민수 테스트
-
-
-        //@민수 타이머 선언
         TimerTask adTast2 = new TimerTask() {
             public void run() {
                 replace_current_time_Handler.sendEmptyMessage(0);
@@ -221,14 +212,12 @@ public class TabActivity extends BaseActivity {
         Timer timer2 = new Timer();
         timer2.schedule(adTast2, 0, 1000); // 0초후 첫실행, 1초마다 계속실행
 
-
         Contact contact3 = helper.getContact(2);
         _text2.setText(
                 (contact3.gethour() / 10 == 0 ? "0" + contact3.gethour() : contact3.gethour())
                         + ":" + (contact3.getminute() / 10 == 0 ? "0" + contact3.getminute() : contact3.getminute()) + ":" + "00"
         );
         Preference.setString(TabActivity.this, "goal_time", _text2.getText().toString());
-
 
         final ToggleButton play_pause = (ToggleButton) findViewById(R.id.toggleButton2);
         play_pause.setOnClickListener(new Button.OnClickListener() {
@@ -334,7 +323,7 @@ public class TabActivity extends BaseActivity {
         }
     }
 
-    //@민수 통신
+    /** 타이머 종료시 서버에 시간 전송 Post */
     private void acheivetimeRegisterRequest(String target_time,String accomplished_time,String date) {
         target_time = target_time.trim().replace(" ", "%20");
         accomplished_time = accomplished_time.trim().replace(" ", "%20");
@@ -394,7 +383,7 @@ public class TabActivity extends BaseActivity {
         }
     }
 
-    //@통신
+    /** 타이머 종료시 서버에 시간 전송 Put */
     private void acheivetimeputRequest(String target_time,String accomplished_time,String date) {
         final String temp_accomplished_time=accomplished_time;
         String get_url = KogPreference.REST_URL +
@@ -462,7 +451,7 @@ public class TabActivity extends BaseActivity {
         tabSettings.setBackgroundResource(R.drawable.tab_option_icon);
     }
 
-    // tab setOnClickListener
+    /** 탭 클릭시 이벤트 */
     View.OnClickListener tabListener = new View.OnClickListener() {
         public void onClick(View v) {
             switch (v.getId()) {
@@ -493,21 +482,15 @@ public class TabActivity extends BaseActivity {
                 case R.id.imgBtn_tab_rooms:
 //                    Log.i(LOG_TAG, "rooms tab");
                     setInvisibleBody();
-//                    actionBarRoomTabNotifyBtn.setVisibility(View.VISIBLE);
-//                    actionBarRoomTabAddBtn.setVisibility(View.VISIBLE);
                     layoutRooms.setVisibility(View.VISIBLE);
-//                    actionBarFirstBtn.setIcon(R.drawable.ic_action_web_site);
-//                    actionBarFirstBtn.setVisible(true);
                     actionBarSecondBtn.setIcon(R.drawable.ic_action_new);
                     actionBarSecondBtn.setVisible(true);
-//                    actionBarFirstBtn.setOnMenuItemClickListener(ab_rooms_notify_listener);
                     actionBarSecondBtn.setOnMenuItemClickListener(ab_rooms_add_listener);
                     llRooms.setBackgroundColor(getResources().getColor(R.color.keep_on_going));
                     tabRooms.setBackgroundResource(R.drawable.tab_chatroom_icon_p);
                     break;
 
                 case R.id.imgBtn_tab_settings:
-//                    Log.i(LOG_TAG, "settings tab");
                     setInvisibleBody();
                     layoutSettings.setVisibility(View.VISIBLE);
                     llSettings.setBackgroundColor(getResources().getColor(R.color.keep_on_going));
@@ -517,11 +500,10 @@ public class TabActivity extends BaseActivity {
         }
     };
 
-
-    void getImageFromURL(String img_name, ImageView imgView) {
+    /** 이미지 다운로드 후 수정 */
+    public void getImageFromURL(String img_name, ImageView imgView) {
 
         String ImgURL = KogPreference.DOWNLOAD_PROFILE_URL+img_name;
-        // TODO R.drawable.error_image
         ImageLoader imageLoader = MyVolley.getImageLoader();
         imageLoader.get(ImgURL,
                 ImageLoader.getImageListener(imgView,
@@ -530,6 +512,7 @@ public class TabActivity extends BaseActivity {
         );
     }
 
+    /** 리스트뷰 클릭시 이벤트 */
     ListView.OnItemLongClickListener itemLongClickListener = new ListView.OnItemLongClickListener() {
         int selectedPosition = 0;
 
@@ -549,9 +532,7 @@ public class TabActivity extends BaseActivity {
         }
     };
 
-    private AlertDialog mOutRoomDialog;
-    TextView simple_dialog_text;
-
+    /** 다이얼로그 생성 */
     private AlertDialog outRoomDialog(final String room_name, final String room_id) {
         final View innerView = getLayoutInflater().inflate(R.layout.simple_dialog_layout, null);
         AlertDialog.Builder ab = new AlertDialog.Builder(this);
@@ -579,17 +560,14 @@ public class TabActivity extends BaseActivity {
         return ab.create();
     }
 
-    /* click listener for setting tab */
+    /** 더보기 탭 리스트 클릭 리스너 */
     ListView.OnItemClickListener itemClickListener = new ListView.OnItemClickListener() {
 
         public void onItemClick(AdapterView<?> adapterView, View arg1, int position, long arg3) {
-            // TODO Auto-generated method stub
             if (adapterView.getId() == R.id.friend_list) {
                 Log.i(LOG_TAG, "tab2, friends Clicked");
                 mDialog = createInflaterDialog(mFriends.get(position).getProfile_path(), mFriends.get(position).getName(), mFriends.get(position).getTargetTime());
                 mDialog.show();
-
-
             } else if (adapterView.getId() == R.id.room_list) {
                 Intent intent = new Intent(TabActivity.this, StudyRoomActivity.class);
                 intent.putExtra("type", mRooms.get(position).getType());
@@ -597,28 +575,20 @@ public class TabActivity extends BaseActivity {
                 KogPreference.setRid(TabActivity.this, mRooms.get(position).getRid());
                 KogPreference.setQuizNum(TabActivity.this, mRooms.get(position).getQuiz_num());
                 startActivity(intent);
-//                TabActivity.this.finish();
-
-
             } else if (adapterView.getId() == R.id.setting_list) {
                 switch (position) {
                     case 0: // 내 프로필
-                        Log.i(LOG_TAG, "tab4, settings Clicked");
                         Intent intent_my_profile = new Intent(TabActivity.this, MyProfileActivity.class);
                         startActivity(intent_my_profile);
 
                         break;
                     case 1: // 알람 / 목표시간 설정
-                        Log.i(LOG_TAG, "tab4, settings Clicked");
                         Intent intent_alarm = new Intent(TabActivity.this, alram_list.class);
                         startActivity(intent_alarm);
 //                        Intent intent_alarm = new Intent(TabActivity.this, NoticeActivity.class);
 //                        startActivity(intent_notice);
                         break;
-//                    case 2: // 목표 시간 설정
-//                        Log.i(LOG_TAG, "tab4, settings Clicked");
-//
-//                        break;
+
                     case 2: // 퀴즈 모음
                         Intent intent = new Intent(TabActivity.this, Quiz_Set_Search.class);
                         startActivity(intent);
@@ -626,9 +596,9 @@ public class TabActivity extends BaseActivity {
                         break;
 
                     case 3:
+                        //TODO 이부분 왜 이런식으로 구현했는지 모르겠음, 그냥 로그아웃 하면 안되는거
                         if(arGeneral3.get(position).toString().equals("로그아웃"))
                         {
-                            Log.i(LOG_TAG, "tab4, 로그아웃");
                             logout();
                         }
                         break;
@@ -652,9 +622,7 @@ public class TabActivity extends BaseActivity {
         this.finish();
     }
 
-    /**
-     * Infalter 다이얼로그
-     */
+    /** Infalter 다이얼로그 */
     private AlertDialog mDialog = null;
     private ImageView info_iconFriend = null;
     private TextView info_txtFriendNickname = null;
@@ -692,11 +660,7 @@ public class TabActivity extends BaseActivity {
     }
 
 
-    /**
-     * 다이얼로그 종료
-     *
-     * @param dialog
-     */
+    /** 다이얼로그 종료 */
     private void setDismiss(Dialog dialog) {
         if (dialog != null && dialog.isShowing())
             dialog.dismiss();
@@ -770,24 +734,19 @@ public class TabActivity extends BaseActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-    ////////////////////
-    // Action bar     //
-    ////////////////////
 
+    //TODO 메뉴부분 잘못되었음. 이런식으로 하는게 아니라 메뉴아이템을 가지고 하는것.
+    //TODO 프리퍼런스는 저런 용도가 아님
     MenuItem.OnMenuItemClickListener ab_stopwatchTab_settings_listener = new MenuItem.OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(MenuItem mi) {
             Log.i(LOG_TAG, "onMenuItemClicked ab_stopwatchTab_settings_listener");
             //@preference로 flag 설정
             Preference.putBoolean(TabActivity.this, "Mflag", true);
-
-
             //@preference를 불러와서 flag 확인후 set이 안되있으면 set으로 함
 
             Intent intent = new Intent(TabActivity.this, alram_list.class);
-            //Intent intent = new Intent(MainActivity.this, Alarm_main.class);
             startActivity(intent);
-
 
             return true;
         }
@@ -797,12 +756,8 @@ public class TabActivity extends BaseActivity {
         @Override
         public boolean onMenuItemClick(MenuItem mi) {
             Log.i(LOG_TAG, "onMenuItemClicked ab_friends_add_listener");
-
             Intent intent = new Intent(TabActivity.this, AddFriendActivity.class);
             startActivity(intent);
-//            TabActivity.this.();
-
-
             return true;
         }
     };
@@ -826,6 +781,7 @@ public class TabActivity extends BaseActivity {
         }
     };
 
+    //TODO 무슨 핸들러인지 작성하기
     Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -833,6 +789,8 @@ public class TabActivity extends BaseActivity {
             Preference.setString(TabActivity.this, "achieve_time", ahcieve.getText().toString());
         }
     };
+
+
     Handler replace_current_time_Handler = new Handler() {
 
         public void handleMessage(Message msg) {
@@ -894,17 +852,66 @@ public class TabActivity extends BaseActivity {
     // REST API //
     //////////////////////////////////
 
+
     private void getFriendsRequest() {
 
-        //TODO : check POST/GET METHOD and get_URL
-        String get_url = KogPreference.REST_URL +
-                "Friend" +
-                "?nickname=" + KogPreference.getNickName(TabActivity.this) +
-                "&date=" + getRealDate();
+//        try {
+//            HttpAPIs.getFriendList(KogPreference.getNickName(TabActivity.this), new CallbackResponse() {
+//                @Override
+//                public void success(HttpResponse httpResponse) {
+//
+//                    JSONObject obj = HttpAPIs.getJSONData(httpResponse);
+//
+//                    try {
+//                        status_code = obj.getInt("httpStatusCode");
+//
+//                        if (status_code == 200) {
+//                            JSONArray rMessage = response.getJSONArray("message");
+//                            mFriends = new ArrayList<FriendNameAndIcon>();
+//
+//                            JSONObject rObj;
+//
+//                            for(int i=0; i< rMessage.length(); i++)
+//                            {
+//                                rObj = rMessage.getJSONObject(i);
+//                                if (!"null".equals(rObj.getString("nickname"))) {
+//                                    Log.i(LOG_TAG, "add Friends : " + Encrypt.encodeIfNeed(rObj.getString("image")) + "|" +
+//                                            Encrypt.encodeIfNeed(rObj.getString("nickname")) + "|" + Encrypt.encodeIfNeed(rObj.getString("targetTime")));
+//
+//
+//                                    mFriends.add(new FriendNameAndIcon(
+////                                                URLDecoder.decode(rObj.getString("type"), "UTF-8"),
+//                                            URLDecoder.decode(rObj.getString("image"), "UTF-8"),
+//                                            URLDecoder.decode(rObj.getString("nickname"), "UTF-8"),
+//                                            URLDecoder.decode(rObj.getString("targetTime"), "UTF-8")));
+//                                }
+//                            }
+//
+//                            FriendsArrayAdapters mockFriendArrayAdapter;
+//                            mockFriendArrayAdapter = new FriendsArrayAdapters(TabActivity.this, R.layout.friend_list_item, mFriends);
+//                            friendList.setAdapter(mockFriendArrayAdapter);
+//
+//                        } else {
+//                            Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+//                            if (KogPreference.DEBUG_MODE) {
+////                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
+//                            }
+//                        }
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//
+//                @Override
+//                public void error(Exception e) {
+//
+//                }
+//            });
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
-        Log.i(LOG_TAG, "URL : " + get_url);
-
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, Encrypt.encodeIfNeed(get_url), null,
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, Encrypt.encodeIfNeed(""), null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
