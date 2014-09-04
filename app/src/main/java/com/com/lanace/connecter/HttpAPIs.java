@@ -334,6 +334,24 @@ public class HttpAPIs {
         return httpPut;
     }
 
+    /** POST add Friend*/
+    public static HttpRequestBase addFriendPost(String nickname, String nickname_f) throws IOException {
+        HttpPost httpPost = new HttpPost(HttpConnecter.getRestfullBaseURL() + "Friend");
+
+        AddFriendDataSet dataSet = new AddFriendDataSet();
+        dataSet.nickname = nickname;
+        dataSet.nicknamef = nickname_f;
+
+        String json = new Gson().toJson(dataSet);
+
+        httpPost.setHeader("Content-Type", "application/json");
+        StringEntity entity = new StringEntity(json);
+        httpPost.setEntity(entity);
+
+        return httpPost;
+    }
+
+
     public static JSONObject getHttpResponseToJSON(HttpResponse httpResponse) {
         BufferedReader reader;
         StringBuilder builder = new StringBuilder();
@@ -421,7 +439,11 @@ public class HttpAPIs {
         public String nickname;
         public String password;
         public String image;
+    }
 
+    public static class AddFriendDataSet{
+        public String nickname;
+        public String nicknamef;
     }
 
 }
