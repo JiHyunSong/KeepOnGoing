@@ -3,6 +3,8 @@ package com.secsm.keepongoing;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -32,6 +34,7 @@ import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MyVolley;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -383,65 +386,129 @@ public class AddMoreFriendActivity extends BaseActivity {
 //        vQueue.add(jsObjRequest);
     }
 
+    Handler baseHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+
+            if(msg.what == 1){
+                setAllEnable();
+            }
+            else if(msg.what == -1){
+                setAllDisable();
+            }
+        }
+    };
+
+    Handler inviteFriendToRoomRequestHandler = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+                Bundle b = msg.getData();
+                JSONObject result = new JSONObject(b.getString("JSONData"));
+                int statusCode = Integer.parseInt(result.getString("httpStatusCode"));
+                if (statusCode == 200) {
+                    //////// real action ////////
+
+                    /////////////////////////////
+                } else {
+                    setAllDisable();
+                    Toast.makeText(getBaseContext(), "통신 에러 : \n" + "친구를 초대할 수 없습니다", Toast.LENGTH_SHORT).show();
+                    Log.e(LOG_TAG, "통신 에러 : "+ result.getString("message"));
+                }
+            }catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    };
 
     private void inviteFriendToRoomRequest(String rid, final String friendName) {
 
-        //TODO : check POST/GET METHOD and get_URL
-        String get_url = KogPreference.REST_URL +
-                "Room/User" ;//+
-//                "?rid=" + rid +
-//                "&nickname=" + friendName;
-
-        JSONObject sendBody = new JSONObject();
-        try{
-            sendBody.put("rid", rid);
-            sendBody.put("nickname", KogPreference.getNickName(AddMoreFriendActivity.this));
-        }catch (JSONException e)
-        {
-            Log.e(LOG_TAG, " sendBody e : " + e.toString());
-        }
-
-        Log.i(LOG_TAG, "URL : " + get_url);
-
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), sendBody,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.i(LOG_TAG, "get JSONObject");
-                        Log.i(LOG_TAG, response.toString());
-
-                        try {
-                            status_code = response.getInt("status");
-
-                            if (status_code == 200) {
-                                //////// real action ////////
-
-                                /////////////////////////////
-                            } else {
-                                setAllDisable();
-                                Toast.makeText(getBaseContext(), "통신 에러 : \n" + friendName + "친구를 초대할 수 없습니다", Toast.LENGTH_SHORT).show();
-                                if (KogPreference.DEBUG_MODE) {
-                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        } catch (Exception e) {
-                            setAllDisable();
-                        }
+        try {
+            baseHandler.sendEmptyMessage(-1);
+            HttpRequestBase inviteFriendToRoomRequest = HttpAPIs.inviteFriendToRoomPost(rid, friendName);
+            HttpAPIs.background(inviteFriendToRoomRequest, new CallbackResponse() {
+                public void success(HttpResponse response) {
+                    baseHandler.sendEmptyMessage(1);
+                    JSONObject result = HttpAPIs.getJSONData(response);
+                    Log.e(LOG_TAG, "응답: " + result.toString());
+                    if(result != null) {
+                        Message msg = inviteFriendToRoomRequestHandler.obtainMessage();
+                        Bundle b = new Bundle();
+                        b.putString("JSONData", result.toString());
+                        msg.setData(b);
+                        inviteFriendToRoomRequestHandler.sendMessage(msg);
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.i(LOG_TAG, "Response Error");
-                setAllDisable();
-                Toast.makeText(getBaseContext(), "통신 에러 : \n" + friendName + "친구를 초대할 수 없습니다", Toast.LENGTH_SHORT).show();
-                if (KogPreference.DEBUG_MODE) {
-                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
                 }
 
-            }
+                public void error(Exception e) {
+                    baseHandler.sendEmptyMessage(1);
+                    Log.i(LOG_TAG, "Response Error: " +  e.toString());
+                    e.printStackTrace();
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        );
-        vQueue.add(jsObjRequest);
+//
+//        //TODO : check POST/GET METHOD and get_URL
+//        String get_url = KogPreference.REST_URL +
+//                "Room/User" ;//+
+////                "?rid=" + rid +
+////                "&nickname=" + friendName;
+//
+//        JSONObject sendBody = new JSONObject();
+//        try{
+//            sendBody.put("rid", rid);
+//            sendBody.put("nickname", KogPreference.getNickName(AddMoreFriendActivity.this));
+//        }catch (JSONException e)
+//        {
+//            Log.e(LOG_TAG, " sendBody e : " + e.toString());
+//        }
+//
+//        Log.i(LOG_TAG, "URL : " + get_url);
+//
+//        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), sendBody,
+//                new Response.Listener<JSONObject>() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//                        Log.i(LOG_TAG, "get JSONObject");
+//                        Log.i(LOG_TAG, response.toString());
+//
+//                        try {
+//                            status_code = response.getInt("status");
+//
+//                            if (status_code == 200) {
+//                                //////// real action ////////
+//
+//                                /////////////////////////////
+//                            } else {
+//                                setAllDisable();
+//                                Toast.makeText(getBaseContext(), "통신 에러 : \n" + friendName + "친구를 초대할 수 없습니다", Toast.LENGTH_SHORT).show();
+//                                if (KogPreference.DEBUG_MODE) {
+//                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
+//                                }
+//                            }
+//                        } catch (Exception e) {
+//                            setAllDisable();
+//                        }
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Log.i(LOG_TAG, "Response Error");
+//                setAllDisable();
+//                Toast.makeText(getBaseContext(), "통신 에러 : \n" + friendName + "친구를 초대할 수 없습니다", Toast.LENGTH_SHORT).show();
+//                if (KogPreference.DEBUG_MODE) {
+//                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
+//                }
+//
+//            }
+//        }
+//        );
+//        vQueue.add(jsObjRequest);
     }
 
 
