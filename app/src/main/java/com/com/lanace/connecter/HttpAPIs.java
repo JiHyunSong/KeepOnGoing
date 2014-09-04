@@ -3,9 +3,6 @@ package com.com.lanace.connecter;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.secsm.keepongoing.Shared.Encrypt;
-import com.secsm.keepongoing.Shared.KogPreference;
-import com.secsm.keepongoing.Shared.KogPreference;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
