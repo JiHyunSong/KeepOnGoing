@@ -22,6 +22,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.beardedhen.androidbootstrap.BootstrapEditText;
+import com.com.lanace.connecter.CallbackResponse;
+import com.com.lanace.connecter.HttpAPIs;
 import com.secsm.keepongoing.Adapters.FriendNameAndIcon;
 import com.secsm.keepongoing.Adapters.FriendsArrayAdapters;
 import com.secsm.keepongoing.Shared.BaseActivity;
@@ -29,10 +31,13 @@ import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MyVolley;
 
+import org.apache.http.HttpResponse;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -250,28 +255,19 @@ public class AddMoreFriendActivity extends BaseActivity {
     //////////////////////
 
     private void getFriendsRequest() {
+        try {
+            HttpAPIs.getFriendList(KogPreference.getNickName(AddMoreFriendActivity.this), new CallbackResponse() {
+                @Override
+                public void success(HttpResponse httpResponse) {
 
-        //TODO : check POST/GET METHOD and get_URL
-        String get_url = KogPreference.REST_URL +
-                "Friend" +
-                "?nickname=" + KogPreference.getNickName(AddMoreFriendActivity.this) +
-                "&date=" + getRealDate();
-
-        Log.i(LOG_TAG, "URL : " + get_url);
-
-
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, Encrypt.encodeIfNeed(get_url), null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.i(LOG_TAG, "get JSONObject");
-                        Log.i(LOG_TAG, response.toString());
-
+                    JSONObject obj = HttpAPIs.getHttpResponseToJSON(httpResponse);
+                    if (obj != null) {
                         try {
-                            status_code = response.getInt("status");
+                            status_code = obj.getInt("status");
+
                             if (status_code == 200) {
                                 JSONArray rMessage;
-                                rMessage = response.getJSONArray("message");
+                                rMessage = obj.getJSONArray("message");
                                 //////// real action ////////
                                 mFriends = new ArrayList<FriendNameAndIcon>();
                                 JSONObject rObj;
@@ -298,26 +294,93 @@ public class AddMoreFriendActivity extends BaseActivity {
                                 /////////////////////////////
                             } else {
                                 Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-                                if (KogPreference.DEBUG_MODE) {
-                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-                                }
+                                Log.e(LOG_TAG, "통신 에러 : " + obj.getString("message"));
                             }
-                        } catch (Exception e) {
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
                         }
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.i(LOG_TAG, "Response Error");
-                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-                if (KogPreference.DEBUG_MODE) {
-                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
+
                 }
 
-            }
+                @Override
+                public void error(Exception e) {
+                    Log.e(LOG_TAG, "에러");
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        );
-        vQueue.add(jsObjRequest);
+
+//        //TODO : check POST/GET METHOD and get_URL
+//        String get_url = KogPreference.REST_URL +
+//                "Friend" +
+//                "?nickname=" + KogPreference.getNickName(AddMoreFriendActivity.this) +
+//                "&date=" + getRealDate();
+//
+//        Log.i(LOG_TAG, "URL : " + get_url);
+//
+//
+//        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, Encrypt.encodeIfNeed(get_url), null,
+//                new Response.Listener<JSONObject>() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//                        Log.i(LOG_TAG, "get JSONObject");
+//                        Log.i(LOG_TAG, response.toString());
+//
+//                        try {
+//                            status_code = response.getInt("status");
+//                            if (status_code == 200) {
+//                                JSONArray rMessage;
+//                                rMessage = response.getJSONArray("message");
+//                                //////// real action ////////
+//                                mFriends = new ArrayList<FriendNameAndIcon>();
+//                                JSONObject rObj;
+//
+//                                Log.i(LOG_TAG, "rMessage  : " + rMessage);
+//                                Log.i(LOG_TAG, "rMessage.length() : " + rMessage.length());
+//                                //{"message":[{"targetTime":null,"image":"http:\/\/210.118.74.195:8080\/KOG_Server_Rest\/upload\/UserImage\/default.png","nickname":"jonghean"}],"status":"200"}
+//                                for(int i=0; i< rMessage.length(); i++)
+//                                {
+//                                    rObj = rMessage.getJSONObject(i);
+//                                    if (!"null".equals(rObj.getString("nickname")) && !isInRoom(URLDecoder.decode(rObj.getString("nickname"), "UTF-8"))) {
+//                                        Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" + rObj.getString("nickname") + "|" + rObj.getString("targetTime"));
+//                                        mFriends.add(new FriendNameAndIcon(rObj.getString("image"),
+//                                                URLDecoder.decode(rObj.getString("nickname"), "UTF-8"),
+//                                                rObj.getString("targetTime")));
+//
+//                                    }
+//                                }
+//
+//                                friendsArrayAdapters = new FriendsArrayAdapters(AddMoreFriendActivity.this, R.layout.friend_list_item, mFriends);
+//                                add_more_friend_list.setAdapter(friendsArrayAdapters);
+//
+//
+//                                /////////////////////////////
+//                            } else {
+//                                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+//                                if (KogPreference.DEBUG_MODE) {
+//                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
+//                                }
+//                            }
+//                        } catch (Exception e) {
+//                        }
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Log.i(LOG_TAG, "Response Error");
+//                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+//                if (KogPreference.DEBUG_MODE) {
+//                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
+//                }
+//
+//            }
+//        }
+//        );
+//        vQueue.add(jsObjRequest);
     }
 
 
