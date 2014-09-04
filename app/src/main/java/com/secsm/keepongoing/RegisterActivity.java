@@ -40,7 +40,7 @@ import java.sql.Timestamp;
 public class RegisterActivity extends BaseActivity {
 
     private static String LOG_TAG = "Profile";
-    private String rMessage;
+//    private String rMessage;
     private RequestQueue vQueue;
     private EditText nickName, password1, password2, phoneNum;
     private Button btnRegister;
@@ -103,7 +103,7 @@ public class RegisterActivity extends BaseActivity {
             public void onClick(View v) {
                 if (isValidProfile()) {
                     setAllDisable();
-                    registerRequest(nickName.getText().toString(), password1.getText().toString(), null, phoneNum.getText().toString());
+                    registerRequest(nickName.getText().toString(), password1.getText().toString(), "default.png", phoneNum.getText().toString());
                 } else {
                 }
 
@@ -148,7 +148,7 @@ public class RegisterActivity extends BaseActivity {
     }
 
     private boolean isNicknameValid(String nickName) {
-        return (nickName.length() >= 4) && (nickName.length() <= 10);
+        return (nickName.trim().length() >= 4) && (nickName.trim().length() <= 10);
     }
 
     private boolean isPasswordValid(String password) {
@@ -181,12 +181,15 @@ public class RegisterActivity extends BaseActivity {
             try {
                 Bundle b = msg.getData();
                 JSONObject result = new JSONObject(b.getString("JSONData"));
-                int statusCode = Integer.parseInt(result.getString("httpStatusCode"));
+//                int statusCode = Integer.parseInt(result.getString("httpStatusCode"));
+                int statusCode = Integer.parseInt(result.getString("status"));
                 if (statusCode == 200) {
-                    rMessage = result.getString("message");
-                    Log.i(LOG_TAG, "rMessage in RegisterRequest :" + rMessage);
+//                    JSONObject rMessage = result.getJSONObject("message");
+//                    Log.i(LOG_TAG, "rMessage in RegisterRequest :" + rMessage.toString());
                     // real action
-//                    achieveTimePutRequest(_nickName,"10:00:00","00:00:00", getRealDate());
+                    achieveTimePutRequest(nickName.getText().toString(),"10:00:00","00:00:00", getRealDate());
+                } else if (statusCode == 1002) {
+                    Toast.makeText(getBaseContext(), "다른 아이디를 사용해주세요.", Toast.LENGTH_SHORT).show();
                 } else if (statusCode == 9001) {
                     Toast.makeText(getBaseContext(), "회원가입이 불가능합니다.", Toast.LENGTH_SHORT).show();
                 } else {
@@ -211,7 +214,8 @@ public class RegisterActivity extends BaseActivity {
             HttpAPIs.background(requestAuthRegister, new CallbackResponse() {
                 public void success(HttpResponse response) {
                     baseHandler.sendEmptyMessage(1);
-                    JSONObject result = HttpAPIs.getJSONData(response);
+//                    JSONObject result = HttpAPIs.getJSONData(response);
+                    JSONObject result = HttpAPIs.getHttpResponseToJSON(response);
                     Log.e(LOG_TAG, "응답: " + result.toString());
                     if (result != null) {
                         Message msg = registerRequestHandler.obtainMessage();
@@ -255,9 +259,10 @@ public class RegisterActivity extends BaseActivity {
             try {
                 Bundle b = msg.getData();
                 JSONObject result = new JSONObject(b.getString("JSONData"));
-                int statusCode = Integer.parseInt(result.getString("httpStatusCode"));
+//                int statusCode = Integer.parseInt(result.getString("httpStatusCode"));
+                int statusCode = Integer.parseInt(result.getString("status"));
                 if (statusCode == 200) {
-                    rMessage = result.getString("message");
+                    String rMessage = result.getString("message");
                     // real action
                     GoNextPage();
 //                                Toast.makeText(getBaseContext(), LOG_TAG +rMessage, Toast.LENGTH_SHORT).show();
@@ -285,7 +290,7 @@ public class RegisterActivity extends BaseActivity {
             HttpAPIs.background(requestTime, new CallbackResponse() {
                 public void success(HttpResponse response) {
                     baseHandler.sendEmptyMessage(1);
-                    JSONObject result = HttpAPIs.getJSONData(response);
+                    JSONObject result = HttpAPIs.getHttpResponseToJSON(response);
                     Log.e(LOG_TAG, "achieveTimePutRequest 응답: " + result.toString());
                     if(result != null) {
                         Message msg = achieveTimePutRequestHandler.obtainMessage();

@@ -344,7 +344,7 @@ public class TabActivity extends BaseActivity {
             HttpAPIs.background(requestTime, new CallbackResponse() {
                 public void success(HttpResponse response) {
 
-                    JSONObject result = HttpAPIs.getJSONData(response);
+                    JSONObject result = HttpAPIs.getHttpResponseToJSON(response);
                     Log.e(LOG_TAG, "응답: " + result.toString());
                     try {
                         int statusCode = Integer.parseInt(result.getString("status"));
@@ -400,7 +400,7 @@ public class TabActivity extends BaseActivity {
             HttpAPIs.background(requestTime, new CallbackResponse() {
                 public void success(HttpResponse response) {
 
-                    JSONObject result = HttpAPIs.getJSONData(response);
+                    JSONObject result = HttpAPIs.getHttpResponseToJSON(response);
                     Log.e(LOG_TAG, "응답: " + result.toString());
                     try {
                         int statusCode = Integer.parseInt(result.getString("status"));
@@ -978,22 +978,44 @@ public class TabActivity extends BaseActivity {
         }
     }
 
-    /**  방 나갔을떄 요청에 대한 핸들링 */
-    public Handler outRoomRequestHandler = new Handler(){
-
+    Handler baseHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
 
-            Log.e("통신", "msg: " + msg.getData().getString("res"));
-            if(msg.what != -1){
-                Toast.makeText(getBaseContext(), "방을 나왔습니다.", Toast.LENGTH_SHORT).show();
+            if(msg.what == 1){
                 setAllEnable();
-                refreshActivity();
             }
-            else{
-                // 요청 실패시
+            else if(msg.what == -1){
+                setAllDisable();
             }
+        }
+    };
 
+    /**  방 나갔을떄 요청에 대한 핸들링 */
+    public Handler outRoomRequestHandler = new Handler(){
+
+
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+                Bundle b = msg.getData();
+                JSONObject result = new JSONObject(b.getString("JSONData"));
+                int statusCode = Integer.parseInt(result.getString("status"));
+                if (statusCode == 200) {
+                    Toast.makeText(getBaseContext(), "방을 나왔습니다.", Toast.LENGTH_SHORT).show();
+                    setAllEnable();
+
+                    refreshActivity();
+
+                    //////// real action ////////
+                } else {
+                    Toast.makeText(getBaseContext(), "통신 에러", Toast.LENGTH_SHORT).show();
+                    Log.e(LOG_TAG, "통신 에러 : " + result.getString("message"));
+                }
+            }catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
         }
     };
 
@@ -1001,21 +1023,23 @@ public class TabActivity extends BaseActivity {
 
             HttpRequestBase requestOutRoom = HttpAPIs.outRoomRequest(room_id, KogPreference.getNickName(TabActivity.this));
             try {
+                baseHandler.sendEmptyMessage(-1);
                 HttpAPIs.background(requestOutRoom, new CallbackResponse() {
                     public void success(HttpResponse response) {
-
-                        JSONObject result = HttpAPIs.getJSONData(response);
-                        Message message = null;
-                        Bundle data = new Bundle();
-
-                        message = outRoomRequestHandler.obtainMessage();
-                        data.putString("res", result.toString());
-                        message.setData(data);
-                        outRoomRequestHandler.sendMessage(message);
+                        JSONObject result = HttpAPIs.getHttpResponseToJSON(response);
+                        Log.e(LOG_TAG, "응답: " + result.toString());
+                        if(result != null) {
+                            Message msg = outRoomRequestHandler.obtainMessage();
+                            Bundle b = new Bundle();
+                            b.putString("JSONData", result.toString());
+                            msg.setData(b);
+                            outRoomRequestHandler.sendMessage(msg);
+                        }
                     }
 
                     public void error(Exception e) {
                         outRoomRequestHandler.sendEmptyMessage(-1);
+                        baseHandler.sendEmptyMessage(1);
                     }
                 });
             } catch (IOException e) {

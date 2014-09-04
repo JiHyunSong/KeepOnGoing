@@ -456,7 +456,7 @@ public class MyProfileActivity extends BaseActivity {
             try {
                 Bundle b = msg.getData();
                 JSONObject result = new JSONObject(b.getString("JSONData"));
-                int statusCode = Integer.parseInt(result.getString("httpStatusCode"));
+                int statusCode = Integer.parseInt(result.getString("status"));
                 if (statusCode == 200) {
                     JSONArray rMessage = result.getJSONArray("message");
                     // URLDecoder.decode(rObj.getString("nickname"), "UTF-8")
@@ -491,7 +491,7 @@ public class MyProfileActivity extends BaseActivity {
             HttpAPIs.background(getMyInfoRequest, new CallbackResponse() {
                 public void success(HttpResponse response) {
                     baseHandler.sendEmptyMessage(1);
-                    JSONObject result = HttpAPIs.getJSONData(response);
+                    JSONObject result = HttpAPIs.getHttpResponseToJSON(response);
                     Log.e(LOG_TAG, "응답: " + result.toString());
                     if (result != null) {
                         Message msg = getMyInfoRequestHandler.obtainMessage();
@@ -582,7 +582,7 @@ public class MyProfileActivity extends BaseActivity {
             try {
                 Bundle b = msg.getData();
                 JSONObject result = new JSONObject(b.getString("JSONData"));
-                int statusCode = Integer.parseInt(result.getString("httpStatusCode"));
+                int statusCode = Integer.parseInt(result.getString("status"));
                 if (statusCode == 200) {
                     /////////////////////////////
                     Toast.makeText(getBaseContext(), "사진 업로드 완료!", Toast.LENGTH_SHORT).show();
@@ -612,7 +612,7 @@ public class MyProfileActivity extends BaseActivity {
             HttpAPIs.background(updateMyInfoRequest, new CallbackResponse() {
                 public void success(HttpResponse response) {
                     baseHandler.sendEmptyMessage(1);
-                    JSONObject result = HttpAPIs.getJSONData(response);
+                    JSONObject result = HttpAPIs.getHttpResponseToJSON(response);
                     Log.e(LOG_TAG, "응답: " + result.toString());
                     if(result != null) {
                         Message msg = updateMyInfoRequestHandler.obtainMessage();

@@ -446,7 +446,7 @@ public class InviteFriendsActivity extends BaseActivity {
             try {
                 Bundle b = msg.getData();
                 JSONObject result = new JSONObject(b.getString("JSONData"));
-                int statusCode = Integer.parseInt(result.getString("httpStatusCode"));
+                int statusCode = Integer.parseInt(result.getString("status"));
                 if (statusCode == 200) {
                     JSONObject rMessage;
                     rMessage = result.getJSONArray("message").getJSONObject(0);
@@ -489,7 +489,7 @@ public class InviteFriendsActivity extends BaseActivity {
             HttpAPIs.background(createLifeRoomRequest, new CallbackResponse() {
                 public void success(HttpResponse response) {
                     baseHandler.sendEmptyMessage(1);
-                    JSONObject result = HttpAPIs.getJSONData(response);
+                    JSONObject result = HttpAPIs.getHttpResponseToJSON(response);
                     Log.e(LOG_TAG, "응답: " + result.toString());
                     if (result != null) {
                         Message msg = createLifeRoomRequestHandler.obtainMessage();
@@ -595,7 +595,7 @@ public class InviteFriendsActivity extends BaseActivity {
             try {
                 Bundle b = msg.getData();
                 JSONObject result = new JSONObject(b.getString("JSONData"));
-                int statusCode = Integer.parseInt(result.getString("httpStatusCode"));
+                int statusCode = Integer.parseInt(result.getString("status"));
                 if (statusCode == 200) {
                     JSONObject rMessage;
                     rMessage = result.getJSONArray("message").getJSONObject(0);
@@ -641,7 +641,7 @@ public class InviteFriendsActivity extends BaseActivity {
             HttpAPIs.background(requestAuthRegister, new CallbackResponse() {
                 public void success(HttpResponse response) {
                     baseHandler.sendEmptyMessage(1);
-                    JSONObject result = HttpAPIs.getJSONData(response);
+                    JSONObject result = HttpAPIs.getHttpResponseToJSON(response);
                     Log.e(LOG_TAG, "응답: " + result.toString());
                     if(result != null) {
                         Message msg = createSubjectRoomRequestHandler.obtainMessage();
@@ -756,7 +756,7 @@ public class InviteFriendsActivity extends BaseActivity {
             try {
                 Bundle b = msg.getData();
                 JSONObject result = new JSONObject(b.getString("JSONData"));
-                int statusCode = Integer.parseInt(result.getString("httpStatusCode"));
+                int statusCode = Integer.parseInt(result.getString("status"));
                 if (statusCode == 200) {
                     //////// real action ////////
 
@@ -781,7 +781,7 @@ public class InviteFriendsActivity extends BaseActivity {
             HttpAPIs.background(inviteFriendToRoomRequest, new CallbackResponse() {
                 public void success(HttpResponse response) {
                     baseHandler.sendEmptyMessage(1);
-                    JSONObject result = HttpAPIs.getJSONData(response);
+                    JSONObject result = HttpAPIs.getHttpResponseToJSON(response);
                     Log.e(LOG_TAG, "응답: " + result.toString());
                     if(result != null) {
                         Message msg = inviteFriendToRoomRequestHandler.obtainMessage();

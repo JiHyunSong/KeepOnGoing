@@ -646,7 +646,7 @@ public class StudyRoomActivity extends BaseActivity {
             HttpAPIs.background(requestTime, new CallbackResponse() {
                 public void success(HttpResponse response) {
 
-                    JSONObject result = HttpAPIs.getJSONData(response);
+                    JSONObject result = HttpAPIs.getHttpResponseToJSON(response);
                     Log.e(LOG_TAG, "응답: " + result.toString());
                     try {
                         int statusCode = Integer.parseInt(result.getString("status"));
@@ -764,7 +764,7 @@ public class StudyRoomActivity extends BaseActivity {
             HttpAPIs.background(requestTime, new CallbackResponse() {
                 public void success(HttpResponse response) {
 
-                    JSONObject result = HttpAPIs.getJSONData(response);
+                    JSONObject result = HttpAPIs.getHttpResponseToJSON(response);
                     Log.e(LOG_TAG, "응답: " + result.toString());
                     try {
                         int statusCode = Integer.parseInt(result.getString("status"));
@@ -2039,7 +2039,7 @@ S3
             try {
                 Bundle b = msg.getData();
                 JSONObject result = new JSONObject(b.getString("JSONData"));
-                int statusCode = Integer.parseInt(result.getString("httpStatusCode"));
+                int statusCode = Integer.parseInt(result.getString("status"));
                 if (statusCode == 200) {
                     Log.i(LOG_TAG, "Disconnection succeed");
                 }
@@ -2062,7 +2062,7 @@ S3
             HttpAPIs.background(requestAuthRegister, new CallbackResponse() {
                 public void success(HttpResponse response) {
                     baseHandler.sendEmptyMessage(1);
-                    JSONObject result = HttpAPIs.getJSONData(response);
+                    JSONObject result = HttpAPIs.getHttpResponseToJSON(response);
                     Log.e(LOG_TAG, "응답: " + result.toString());
                     if(result != null) {
                         Message msg = disconnectConnectionHandler.obtainMessage();
@@ -2343,7 +2343,7 @@ S3
             try {
                 Bundle b = msg.getData();
                 JSONObject result = new JSONObject(b.getString("JSONData"));
-                int statusCode = Integer.parseInt(result.getString("httpStatusCode"));
+                int statusCode = Integer.parseInt(result.getString("status"));
                 if (statusCode == 200) {
 //                                JSONArray rMessage;
 //                                rMessage = response.getJSONArray("message");
@@ -2379,7 +2379,7 @@ S3
             HttpAPIs.background(requestAuthRegister, new CallbackResponse() {
                 public void success(HttpResponse response) {
                     baseHandler.sendEmptyMessage(1);
-                    JSONObject result = HttpAPIs.getJSONData(response);
+                    JSONObject result = HttpAPIs.getHttpResponseToJSON(response);
                     Log.e(LOG_TAG, "응답: " + result.toString());
                     if(result != null) {
                         Message msg = kickOffMemberRequestHandler.obtainMessage();
