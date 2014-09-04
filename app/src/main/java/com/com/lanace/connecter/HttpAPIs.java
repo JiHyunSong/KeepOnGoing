@@ -304,6 +304,36 @@ public class HttpAPIs {
         return httpPost;
     }
 
+    /** GET My Information Send */
+    public static HttpRequestBase getMyInfoGet(String nickname, String date) throws IOException {
+
+        HttpGet httpGet = new HttpGet(HttpConnecter.getRestfullBaseURL() +
+                "User" +
+                "?nickname=" + nickname +
+                "&date=" + date);
+
+        return httpGet;
+    }
+
+    /** PUT My Information Send */
+    public static HttpRequestBase updateMyInfoPut(String nickname, String password, String image) throws IOException {
+
+        HttpPut httpPut = new HttpPut(HttpConnecter.getRestfullBaseURL() + "User");
+
+        MyInfoDataSet dataSet = new MyInfoDataSet();
+        dataSet.nickname = nickname;
+        dataSet.password = password;
+        dataSet.image = image;
+
+        String json = new Gson().toJson(dataSet);
+
+        httpPut.setHeader("Content-Type", "application/json");
+        StringEntity entity = new StringEntity(json);
+        httpPut.setEntity(entity);
+
+        return httpPut;
+    }
+
     public static JSONObject getHttpResponseToJSON(HttpResponse httpResponse) {
         BufferedReader reader;
         StringBuilder builder = new StringBuilder();
@@ -385,6 +415,13 @@ public class HttpAPIs {
         public String rid;
         public String fromdate;
         public String todate;
+    }
+
+    public static class MyInfoDataSet{
+        public String nickname;
+        public String password;
+        public String image;
+
     }
 
 }
