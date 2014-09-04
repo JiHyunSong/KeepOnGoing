@@ -351,6 +351,15 @@ public class HttpAPIs {
         return httpPost;
     }
 
+    /** GET disconnect connection */
+    public static HttpRequestBase disconnectConnectionGet(String previousip) throws IOException {
+
+        HttpGet httpGet = new HttpGet(HttpConnecter.getRestfullBaseURL() + "Socket"
+                +"?previousip=" + previousip );
+
+        return httpGet;
+    }
+
 
     public static JSONObject getHttpResponseToJSON(HttpResponse httpResponse) {
         BufferedReader reader;

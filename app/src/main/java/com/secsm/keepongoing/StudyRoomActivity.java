@@ -2016,54 +2016,118 @@ S3
     ////////////////////////////////////
     // REST API                       //
     ////////////////////////////////////
+    /** base Handler for Enable/Disable all UI components */
+    Handler baseHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
 
+            if(msg.what == 1){
+                setAllEnable();
+            }
+            else if(msg.what == -1){
+                setAllDisable();
+            }
+        }
+    };
+    /** getMyInfoRequest
+     * statusCode == 200 => get My info, Update UI
+     */
+    Handler disconnectConnectionHandler = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+                Bundle b = msg.getData();
+                JSONObject result = new JSONObject(b.getString("JSONData"));
+                int statusCode = Integer.parseInt(result.getString("httpStatusCode"));
+                if (statusCode == 200) {
+                    Log.i(LOG_TAG, "Disconnection succeed");
+                }
+                else {
+                    Log.i(LOG_TAG, "Disconnection failed");
+                    Toast.makeText(getBaseContext(), "?µì‹  ?ëŸ¬ : \n?œë²„?€???°ê²°??ëª¨í˜¸?©ë‹ˆ??", Toast.LENGTH_SHORT).show();
+                    Log.e(LOG_TAG, "통신 에러 : " + result.getString("message"));
+                }
+            }catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    };
 
     private void disconnectConnection(){
-        //TODO : check POST/GET METHOD and get_URL
-        String get_url = KogPreference.REST_URL
-                + "Socket"
-                + "?previousip=" + Encrypt.encodeIfNeed(KogPreference.getNickName(StudyRoomActivity.this));
-
-        Log.i(LOG_TAG, "URL : " + get_url);
-
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, Encrypt.encodeIfNeed(get_url), null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.i(LOG_TAG, "get JSONObject");
-                        Log.i(LOG_TAG, response.toString());
-
-                        try {
-                            int status_code = response.getInt("status");
-                            if (status_code == 200) {
-                                Log.i(LOG_TAG, "Disconnection succeed");
-                            }
-                            else {
-                                Log.i(LOG_TAG, "Disconnection failed");
-                                Toast.makeText(getBaseContext(), "?µì‹  ?ëŸ¬ : \n?œë²„?€???°ê²°??ëª¨í˜¸?©ë‹ˆ??", Toast.LENGTH_SHORT).show();
-                                if (KogPreference.DEBUG_MODE) {
-                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }
-                        catch (Exception e) {
-                            Log.i(LOG_TAG, "Disconnection error");
-                        }
+        try {
+            baseHandler.sendEmptyMessage(-1);
+            HttpRequestBase requestAuthRegister = HttpAPIs.disconnectConnectionGet(Encrypt.encodeIfNeed(KogPreference.getNickName(StudyRoomActivity.this)));
+            HttpAPIs.background(requestAuthRegister, new CallbackResponse() {
+                public void success(HttpResponse response) {
+                    baseHandler.sendEmptyMessage(1);
+                    JSONObject result = HttpAPIs.getJSONData(response);
+                    Log.e(LOG_TAG, "응답: " + result.toString());
+                    if(result != null) {
+                        Message msg = disconnectConnectionHandler.obtainMessage();
+                        Bundle b = new Bundle();
+                        b.putString("JSONData", result.toString());
+                        msg.setData(b);
+                        disconnectConnectionHandler.sendMessage(msg);
                     }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getBaseContext(), "?µì‹  ?ëŸ¬ : \nError on disconnecting socket", Toast.LENGTH_SHORT).show();
-                        Log.i(LOG_TAG, "Disconnection Response Error");
-                        if (KogPreference.DEBUG_MODE) {
-                            Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                }
 
-        vQueue.add(jsObjRequest);
-        vQueue.start();
+                public void error(Exception e) {
+                    baseHandler.sendEmptyMessage(1);
+                    Log.i(LOG_TAG, "Response Error: " +  e.toString());
+                    e.printStackTrace();
+
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        String get_url = KogPreference.REST_URL
+//                + "Socket"
+//                + "?previousip=" + Encrypt.encodeIfNeed(KogPreference.getNickName(StudyRoomActivity.this));
+//
+//        Log.i(LOG_TAG, "URL : " + get_url);
+//
+//        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, Encrypt.encodeIfNeed(get_url), null,
+//                new Response.Listener<JSONObject>() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//                        Log.i(LOG_TAG, "get JSONObject");
+//                        Log.i(LOG_TAG, response.toString());
+//
+//                        try {
+//                            int status_code = response.getInt("status");
+//                            if (status_code == 200) {
+//                                Log.i(LOG_TAG, "Disconnection succeed");
+//                            }
+//                            else {
+//                                Log.i(LOG_TAG, "Disconnection failed");
+//                                Toast.makeText(getBaseContext(), "?µì‹  ?ëŸ¬ : \n?œë²„?€???°ê²°??ëª¨í˜¸?©ë‹ˆ??", Toast.LENGTH_SHORT).show();
+//                                if (KogPreference.DEBUG_MODE) {
+//                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
+//                                }
+//                            }
+//                        }
+//                        catch (Exception e) {
+//                            Log.i(LOG_TAG, "Disconnection error");
+//                        }
+//                    }
+//                },
+//                new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        Toast.makeText(getBaseContext(), "?µì‹  ?ëŸ¬ : \nError on disconnecting socket", Toast.LENGTH_SHORT).show();
+//                        Log.i(LOG_TAG, "Disconnection Response Error");
+//                        if (KogPreference.DEBUG_MODE) {
+//                            Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                });
+//
+//        vQueue.add(jsObjRequest);
+//        vQueue.start();
     }
 
     public String getRealDate() {
