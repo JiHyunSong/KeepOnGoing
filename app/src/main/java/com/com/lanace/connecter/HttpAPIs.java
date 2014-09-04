@@ -452,7 +452,7 @@ public class HttpAPIs {
      */
     public static HttpRequestBase quizRegisterPost(String srid, String type, String question, String solution,
                                                    String nickname, String title, String date) throws IOException {
-        HttpPost httpPost = new HttpPost(HttpConnecter.getRestfullBaseURL() + "Friend");
+        HttpPost httpPost = new HttpPost(HttpConnecter.getRestfullBaseURL() + "Room/Quiz");
 
         RegisterQuizDataSet dataSet = new RegisterQuizDataSet();
         dataSet.srid = srid;
