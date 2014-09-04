@@ -284,7 +284,7 @@ public class TabActivity extends BaseActivity {
                         "@SERVER : \n"+start.toString()+"|달성시간"+_text.getText(),2).show();*/
                 try {
                     if (Preference.getBoolean(TabActivity.this, "first_start") == true) {
-                        acheivetimeRegisterRequest(_goal_time.getText().toString(), ahcieve.getText().toString(), Preference.getString(TabActivity.this, "start_date"));
+                        achievetimeRegisterRequest(_goal_time.getText().toString(), ahcieve.getText().toString(), Preference.getString(TabActivity.this, "start_date"));
                         Preference.putBoolean(TabActivity.this, "first_start", false);
                         ahcieve.setText("00:00:00");
                         Preference.setLong(TabActivity.this, "diff",0);
@@ -325,7 +325,7 @@ public class TabActivity extends BaseActivity {
     }
 
     /** 타이머 종료시 서버에 시간 전송 Post */
-    private void acheivetimeRegisterRequest(String target_time,String accomplished_time,String date) {
+    private void achievetimeRegisterRequest(String target_time,String accomplished_time,String date) {
         target_time = target_time.trim().replace(" ", "%20");
         accomplished_time = accomplished_time.trim().replace(" ", "%20");
         date = date.trim().replace(" ", "%20");
