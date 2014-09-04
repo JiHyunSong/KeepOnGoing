@@ -379,7 +379,31 @@ public class HttpAPIs {
         return httpGet;
     }
 
-    public static JSONObject getHttpResponseToJSON(HttpResponse httpResponse) {
+    /** PUT Quiz Answer Register Put */
+    public static HttpRequestBase answerRegisterPut(String srid, String num, String type,
+                                                    String answer, String nickname) throws IOException {
+
+        HttpPut httpPut = new HttpPut(HttpConnecter.getRestfullBaseURL() + "Room/Quiz");
+
+        QuizDataSet dataSet = new QuizDataSet();
+
+        dataSet.srid = srid;
+        dataSet.num = num;
+        dataSet.type = type;
+        dataSet.answer = answer;
+        dataSet.nickname = nickname;
+
+        String json = new Gson().toJson(dataSet);
+
+        httpPut.setHeader("Content-Type", "application/json");
+        StringEntity entity = new StringEntity(json);
+        httpPut.setEntity(entity);
+
+        return httpPut;
+    }
+
+
+     public static JSONObject getHttpResponseToJSON(HttpResponse httpResponse) {
         BufferedReader reader;
         StringBuilder builder = new StringBuilder();
         JSONObject obj = null;
@@ -471,6 +495,14 @@ public class HttpAPIs {
     public static class AddFriendDataSet{
         public String nickname;
         public String nicknamef;
+    }
+
+    public static class QuizDataSet{
+        public String srid;
+        public String num;
+        public String type;
+        public String answer;
+        public String nickname;
     }
 
 }
