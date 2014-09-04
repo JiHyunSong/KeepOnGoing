@@ -3,11 +3,9 @@ package com.com.lanace.connecter;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
@@ -179,6 +177,85 @@ public class HttpAPIs {
         return httpPost;
     }
 
+    /** POST create LifeRoom */
+    public static HttpRequestBase createLifeRoomPost(String nickname, String type, String rule, String roomname, String maxholidaycount) throws IOException {
+        HttpPost httpPost = new HttpPost(HttpConnecter.getRestfullBaseURL() + "Room");
+
+        LifeRoomDataSet dataSet = new LifeRoomDataSet();
+        dataSet.nickname = nickname;
+        dataSet.type = type;
+        dataSet.rule = rule;
+        dataSet.roomname = roomname;
+        dataSet.maxholidaycount = maxholidaycount;
+
+        String json = new Gson().toJson(dataSet);
+
+        httpPost.setHeader("Content-Type", "application/json");
+        StringEntity entity = new StringEntity(json);
+        httpPost.setEntity(entity);
+
+        return httpPost;
+    }
+
+    /** POST create SubjectRoom */
+    public static HttpRequestBase createSubjectRoomPost(String nickname, String type, String rule, String roomname,
+                                                        String start_time, String duration_time, String showup_time, String meet_days) throws IOException {
+        HttpPost httpPost = new HttpPost(HttpConnecter.getRestfullBaseURL() + "Room");
+
+        SubjectRoomDataSet dataSet = new SubjectRoomDataSet();
+        dataSet.nickname = nickname;
+        dataSet.type = type;
+        dataSet.rule = rule;
+        dataSet.roomname = roomname;
+        dataSet.starttime = start_time;
+        dataSet.durationtime = duration_time;
+        dataSet.showuptime = showup_time;
+        dataSet.meetdays = meet_days;
+
+        String json = new Gson().toJson(dataSet);
+
+        httpPost.setHeader("Content-Type", "application/json");
+        StringEntity entity = new StringEntity(json);
+        httpPost.setEntity(entity);
+
+        return httpPost;
+    }
+
+    /** POST invite Friend to Room */
+    public static HttpRequestBase inviteFriendToRoomPost(String rid, String nickname) throws IOException {
+        HttpPost httpPost = new HttpPost(HttpConnecter.getRestfullBaseURL() + "Room/User");
+
+        InviteFriendDataSet dataSet = new InviteFriendDataSet();
+        dataSet.rid = rid;
+        dataSet.nickname = nickname;
+
+        String json = new Gson().toJson(dataSet);
+
+        httpPost.setHeader("Content-Type", "application/json");
+        StringEntity entity = new StringEntity(json);
+        httpPost.setEntity(entity);
+
+        return httpPost;
+    }
+
+    /** POST get Friends Score in Room*/
+    public static HttpRequestBase getFriendsScorePost(String rid, String fromdate, String todate) throws IOException {
+        HttpPost httpPost = new HttpPost(HttpConnecter.getRestfullBaseURL() + "Timeset");
+
+        TimeSetDataSet dataSet = new TimeSetDataSet();
+        dataSet.rid = rid;
+        dataSet.fromdate = fromdate;
+        dataSet.todate = todate;
+
+        String json = new Gson().toJson(dataSet);
+
+        httpPost.setHeader("Content-Type", "application/json");
+        StringEntity entity = new StringEntity(json);
+        httpPost.setEntity(entity);
+
+        return httpPost;
+    }
+
 
     public static class LoginDataSet{
         public String nickname;
@@ -205,6 +282,36 @@ public class HttpAPIs {
         public String phone;
         public String gcmid;
 
+    }
+
+    public static class LifeRoomDataSet {
+        public String nickname;
+        public String type;
+        public String rule;
+        public String roomname;
+        public String maxholidaycount;
+    }
+
+    public static class SubjectRoomDataSet{
+        public String nickname;
+        public String type;
+        public String rule;
+        public String roomname;
+        public String starttime;
+        public String durationtime;
+        public String showuptime;
+        public String meetdays;
+    }
+
+    public static class InviteFriendDataSet{
+        public String rid;
+        public String nickname;
+    }
+
+    public static class TimeSetDataSet{
+        public String rid;
+        public String fromdate;
+        public String todate;
     }
 
 }

@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.RelativeLayout;
@@ -17,15 +19,20 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.com.lanace.connecter.CallbackResponse;
+import com.com.lanace.connecter.HttpAPIs;
 import com.secsm.keepongoing.Adapters.FriendScore;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MyVolley;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.net.URLDecoder;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -376,99 +383,80 @@ public class ScoreViewActivity extends Activity {
         Timestamp currentTimestamp = new Timestamp(time);
         return currentTimestamp.toString().substring(0, 10);
     }
+    /** base Handler for Enable/Disable all UI components */
+    Handler baseHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
 
-    private void getFriendsScoreRequest() {
-
-        //TODO : check POST/GET METHOD and get_URL
-        String get_url = KogPreference.REST_URL +
-                "Timeset";
-//                "?rid=" + KogPreference.getRid(StudyRoomActivity.this) +
-//                "&fromdate=" + getThisMonday() +
-//                "&todate=" + getRealDate();
-
-        JSONObject sendBody = new JSONObject();
-        try {
-            sendBody.put("rid", KogPreference.getRid(ScoreViewActivity.this));
-            sendBody.put("fromdate", getPrevMonday());
-            sendBody.put("todate", getRealDate());
-            Log.i(LOG_TAG, "sendbody : " + sendBody.toString());
-        } catch (JSONException e) {
-            Log.e(LOG_TAG, "getFriendsScoreRequest error : " + e.toString());
+            if(msg.what == 1){
+                // TODO : implement setAllEnable()
+//                setAllEnable();
+            }
+            else if(msg.what == -1){
+                // TODO : implement setAllDisable()
+//                setAllDisable();
+            }
         }
+    };
 
-        Log.i(LOG_TAG, "URL : " + get_url);
+    /** AuthNumRegister
+     * statusCode == 200 => send SMS to phone num
+     * statusCode == 1001 => auth duplicate! go back to the back page */
+    Handler getFriendsScoreRequestHandler = new Handler(){
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), sendBody,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.i(LOG_TAG, "get JSONObject");
-                        Log.i(LOG_TAG, response.toString());
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+                Bundle b = msg.getData();
+                JSONObject result = new JSONObject(b.getString("JSONData"));
+                int statusCode = Integer.parseInt(result.getString("httpStatusCode"));
+                if (statusCode == 200) {
+                    JSONArray rMessage;
+                    rMessage = result.getJSONArray("message");
 
-                        try {
-                            int status_code = response.getInt("status");
-                            if (status_code == 200) {
-                                JSONArray rMessage;
-                                rMessage = response.getJSONArray("message");
+                    Log.i(LOG_TAG, "1 rMessage : " + rMessage.toString());
+                    ArrayList<FriendScore> temp = new ArrayList<FriendScore>();
 
-                                Log.i(LOG_TAG, "1 rMessage : " + rMessage.toString());
-                                ArrayList<FriendScore> temp = new ArrayList<FriendScore>();
-
-                                //////// real action ////////
-                                JSONObject rObj;
-                                for (int i = 0; i < rMessage.length(); i++) {
-                                    rObj = rMessage.getJSONObject(i);
+                    //////// real action ////////
+                    JSONObject rObj;
+                    for (int i = 0; i < rMessage.length(); i++) {
+                        rObj = rMessage.getJSONObject(i);
 //                                    Log.i(LOG_TAG, "2 rObj : " + rObj.toString());
 
-                                    if (maxIndex < Integer.parseInt(rObj.getString("index"))) {
-                                        maxIndex = Integer.parseInt(rObj.getString("index"));
-                                    }
+                        if (maxIndex < Integer.parseInt(rObj.getString("index"))) {
+                            maxIndex = Integer.parseInt(rObj.getString("index"));
+                        }
 //                                    Log.i(LOG_TAG, "3 maxIndex : " + maxIndex);
 
-                                    FriendScore fs = new FriendScore(
-                                            rObj.getString("score"),
-                                            rObj.getString("index"),
-                                            rObj.getString("accomplishedtime"),
-                                            rObj.getString("date"),
-                                            rObj.getString("targettime"),
-                                            URLDecoder.decode(rObj.getString("nickname"), "UTF-8")
-                                    );
-                                    temp.add(fs);
-//                                    Log.i(LOG_TAG, "temp : " + temp.toString());
-////                                    mFriendsScore.put(rObj.getString("nickname"), temp);
-//                                    Log.i(LOG_TAG, "put temp ");
-//                                    }
-//                                    else{
-//                                        FriendScore fs = new FriendScore(
-//                                                rObj.getString("score"),
-//                                                rObj.getString("index"),
-//                                                rObj.getString("accomplishedtime"),
-//                                                rObj.getString("date"),
-//                                                rObj.getString("targettime"),
-//                                                rObj.getString("nickname")
-//                                        );
-//                                        mFriendsScore.get(rObj.getString("nickname")).set(Integer.parseInt(rObj.getString("index")), fs);
-//                                    }
-                                }
-                                Log.i(LOG_TAG, "temp filled");
+                        FriendScore fs = new FriendScore(
+                                rObj.getString("score"),
+                                rObj.getString("index"),
+                                rObj.getString("accomplishedtime"),
+                                rObj.getString("date"),
+                                rObj.getString("targettime"),
+                                URLDecoder.decode(rObj.getString("nickname"), "UTF-8")
+                        );
+                        temp.add(fs);
+                    }
+                    Log.i(LOG_TAG, "temp filled");
 //                                Log.i(LOG_TAG, "FriendNicks.length : " + FriendNicks.length);
-                                for (int i = 0; i < FriendNicks.length; i++) {
-                                    ArrayList<FriendScore> tempFs = new ArrayList<FriendScore>();
-                                    tempFs.clear();
-                                    for (int j = 0; j < temp.size(); j++) {
-                                        if (temp.get(j).getNickname().equals(FriendNicks[i])) {
-                                            tempFs.add(Integer.parseInt(temp.get(j).getIndex()), temp.get(j));
+                    for (int i = 0; i < FriendNicks.length; i++) {
+                        ArrayList<FriendScore> tempFs = new ArrayList<FriendScore>();
+                        tempFs.clear();
+                        for (int j = 0; j < temp.size(); j++) {
+                            if (temp.get(j).getNickname().equals(FriendNicks[i])) {
+                                tempFs.add(Integer.parseInt(temp.get(j).getIndex()), temp.get(j));
 //                                            Log.i(LOG_TAG, "add TempFS : " + temp.get(j));
-                                        }
-                                    }
-                                    mFriendsScore.put(FriendNicks[i], tempFs);
+                            }
+                        }
+                        mFriendsScore.put(FriendNicks[i], tempFs);
 //                                    Log.i(LOG_TAG, "put mFriendsScore : " + FriendNicks[i]);
 
-                                }
+                    }
 
-                                maxIndex++;// if index 0 ~ 11, maxIndex will be 12
+                    maxIndex++;// if index 0 ~ 11, maxIndex will be 12
 
-                                Log.i(LOG_TAG, "check log ");
+                    Log.i(LOG_TAG, "check log ");
 //                                if(KogPreference.DEBUG_MODE)
 //                                {
 //                                    Iterator<String> iterator = mFriendsScore.keySet().iterator();
@@ -483,32 +471,180 @@ public class ScoreViewActivity extends Activity {
 //                                    }
 //                                }
 
-                                setView();
+                    setView();
 
-                            } else {
-                                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-                                if (KogPreference.DEBUG_MODE) {
-                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        } catch (Exception e) {
-                            Log.e(LOG_TAG, "getFriendsScoreRequest error :" + e.toString());
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-                Log.i(LOG_TAG, "Response Error");
-                if (KogPreference.DEBUG_MODE) {
-                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+                    Log.e(LOG_TAG, "통신 에러 : " + result.getString("message"));
                 }
-
+            }catch (Exception e)
+            {
+                e.printStackTrace();
             }
         }
-        );
-        vQueue.add(jsObjRequest);
-        vQueue.start();
+    };
+
+    private void getFriendsScoreRequest() {
+        try {
+            baseHandler.sendEmptyMessage(-1);
+            HttpRequestBase getFriendsScoreRequest = HttpAPIs.getFriendsScorePost(
+                    KogPreference.getRid(ScoreViewActivity.this),
+                    getPrevMonday(),
+                    getRealDate());
+            HttpAPIs.background(getFriendsScoreRequest, new CallbackResponse() {
+                public void success(HttpResponse response) {
+                    baseHandler.sendEmptyMessage(1);
+                    JSONObject result = HttpAPIs.getJSONData(response);
+                    Log.e(LOG_TAG, "응답: " + result.toString());
+                    if (result != null) {
+                        Message msg = getFriendsScoreRequestHandler.obtainMessage();
+                        Bundle b = new Bundle();
+                        b.putString("JSONData", result.toString());
+                        msg.setData(b);
+                        getFriendsScoreRequestHandler.sendMessage(msg);
+                    }
+                }
+
+                public void error(Exception e) {
+                    baseHandler.sendEmptyMessage(1);
+                    Log.i(LOG_TAG, "Response Error: " + e.toString());
+                    e.printStackTrace();
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        //TODO : check POST/GET METHOD and get_URL
+//        String get_url = KogPreference.REST_URL +
+//                "Timeset";
+////                "?rid=" + KogPreference.getRid(StudyRoomActivity.this) +
+////                "&fromdate=" + getThisMonday() +
+////                "&todate=" + getRealDate();
+//
+//        JSONObject sendBody = new JSONObject();
+//        try {
+//            sendBody.put("rid", KogPreference.getRid(ScoreViewActivity.this));
+//            sendBody.put("fromdate", getPrevMonday());
+//            sendBody.put("todate", getRealDate());
+//            Log.i(LOG_TAG, "sendbody : " + sendBody.toString());
+//        } catch (JSONException e) {
+//            Log.e(LOG_TAG, "getFriendsScoreRequest error : " + e.toString());
+//        }
+//
+//        Log.i(LOG_TAG, "URL : " + get_url);
+//
+//        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), sendBody,
+//                new Response.Listener<JSONObject>() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//                        Log.i(LOG_TAG, "get JSONObject");
+//                        Log.i(LOG_TAG, response.toString());
+//
+//                        try {
+//                            int status_code = response.getInt("status");
+//                            if (status_code == 200) {
+//                                JSONArray rMessage;
+//                                rMessage = response.getJSONArray("message");
+//
+//                                Log.i(LOG_TAG, "1 rMessage : " + rMessage.toString());
+//                                ArrayList<FriendScore> temp = new ArrayList<FriendScore>();
+//
+//                                //////// real action ////////
+//                                JSONObject rObj;
+//                                for (int i = 0; i < rMessage.length(); i++) {
+//                                    rObj = rMessage.getJSONObject(i);
+////                                    Log.i(LOG_TAG, "2 rObj : " + rObj.toString());
+//
+//                                    if (maxIndex < Integer.parseInt(rObj.getString("index"))) {
+//                                        maxIndex = Integer.parseInt(rObj.getString("index"));
+//                                    }
+////                                    Log.i(LOG_TAG, "3 maxIndex : " + maxIndex);
+//
+//                                    FriendScore fs = new FriendScore(
+//                                            rObj.getString("score"),
+//                                            rObj.getString("index"),
+//                                            rObj.getString("accomplishedtime"),
+//                                            rObj.getString("date"),
+//                                            rObj.getString("targettime"),
+//                                            URLDecoder.decode(rObj.getString("nickname"), "UTF-8")
+//                                    );
+//                                    temp.add(fs);
+////                                    Log.i(LOG_TAG, "temp : " + temp.toString());
+//////                                    mFriendsScore.put(rObj.getString("nickname"), temp);
+////                                    Log.i(LOG_TAG, "put temp ");
+////                                    }
+////                                    else{
+////                                        FriendScore fs = new FriendScore(
+////                                                rObj.getString("score"),
+////                                                rObj.getString("index"),
+////                                                rObj.getString("accomplishedtime"),
+////                                                rObj.getString("date"),
+////                                                rObj.getString("targettime"),
+////                                                rObj.getString("nickname")
+////                                        );
+////                                        mFriendsScore.get(rObj.getString("nickname")).set(Integer.parseInt(rObj.getString("index")), fs);
+////                                    }
+//                                }
+//                                Log.i(LOG_TAG, "temp filled");
+////                                Log.i(LOG_TAG, "FriendNicks.length : " + FriendNicks.length);
+//                                for (int i = 0; i < FriendNicks.length; i++) {
+//                                    ArrayList<FriendScore> tempFs = new ArrayList<FriendScore>();
+//                                    tempFs.clear();
+//                                    for (int j = 0; j < temp.size(); j++) {
+//                                        if (temp.get(j).getNickname().equals(FriendNicks[i])) {
+//                                            tempFs.add(Integer.parseInt(temp.get(j).getIndex()), temp.get(j));
+////                                            Log.i(LOG_TAG, "add TempFS : " + temp.get(j));
+//                                        }
+//                                    }
+//                                    mFriendsScore.put(FriendNicks[i], tempFs);
+////                                    Log.i(LOG_TAG, "put mFriendsScore : " + FriendNicks[i]);
+//
+//                                }
+//
+//                                maxIndex++;// if index 0 ~ 11, maxIndex will be 12
+//
+//                                Log.i(LOG_TAG, "check log ");
+////                                if(KogPreference.DEBUG_MODE)
+////                                {
+////                                    Iterator<String> iterator = mFriendsScore.keySet().iterator();
+////                                    while(iterator.hasNext())
+////                                    {
+////                                        String Key = (String) iterator.next();
+////                                        Log.i(LOG_TAG, "KEY : " + Key + " VALUE : " +mFriendsScore.get(Key));
+////                                        for(int i=0; i<maxIndex; i++)
+////                                            Log.i(LOG_TAG, "KEY : " + Key + " VALUE : " +mFriendsScore.get(Key).get(i));
+////
+////
+////                                    }
+////                                }
+//
+//                                setView();
+//
+//                            } else {
+//                                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+//                                if (KogPreference.DEBUG_MODE) {
+//                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
+//                                }
+//                            }
+//                        } catch (Exception e) {
+//                            Log.e(LOG_TAG, "getFriendsScoreRequest error :" + e.toString());
+//                        }
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+//                Log.i(LOG_TAG, "Response Error");
+//                if (KogPreference.DEBUG_MODE) {
+//                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
+//                }
+//
+//            }
+//        }
+//        );
+//        vQueue.add(jsObjRequest);
+//        vQueue.start();
     }
 
 
