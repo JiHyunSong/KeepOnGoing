@@ -959,9 +959,7 @@ public class TabActivity extends BaseActivity {
                             /////////////////////////////
                         } else {
                             Toast.makeText(getBaseContext(), "통신 에러 : \n스터디 방 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-                            if (KogPreference.DEBUG_MODE) {
-                                Toast.makeText(getBaseContext(), LOG_TAG + obj.getString("message"), Toast.LENGTH_SHORT).show();
-                            }
+                            Log.e(LOG_TAG, "통신 에러 : " + obj.getString("message"));
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -972,7 +970,7 @@ public class TabActivity extends BaseActivity {
 
                 @Override
                 public void error(Exception e) {
-
+                    e.printStackTrace();
                 }
             });
         } catch (IOException e) {
