@@ -472,6 +472,28 @@ public class HttpAPIs {
         return httpPost;
     }
 
+    /**
+     * POST register question
+     */
+    public static HttpRequestBase questionSetPost(String nickname, String date, String types, String title) throws IOException {
+        HttpPost httpPost = new HttpPost(HttpConnecter.getRestfullBaseURL() + "Quizset");
+
+        RegisterQuestionDataSet dataSet = new RegisterQuestionDataSet();
+        dataSet.nickname = nickname;
+        dataSet.date = date;
+        dataSet.types = types;
+        dataSet.title = title;
+
+        String json = new Gson().toJson(dataSet);
+
+        httpPost.setHeader("Content-Type", "application/json");
+        StringEntity entity = new StringEntity(json);
+        httpPost.setEntity(entity);
+
+        return httpPost;
+    }
+
+
     public static JSONObject getHttpResponseToJSON(HttpResponse httpResponse) {
         BufferedReader reader;
         StringBuilder builder = new StringBuilder();
@@ -584,4 +606,10 @@ public class HttpAPIs {
         public String date;
     }
 
+    public static class RegisterQuestionDataSet{
+        public String nickname;
+        public String date;
+        public String types;
+        public String title;
+    }
 }
