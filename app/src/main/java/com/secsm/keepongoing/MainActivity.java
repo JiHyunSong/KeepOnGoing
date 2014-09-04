@@ -114,60 +114,60 @@ public class MainActivity extends Activity {
     }
 
     // TODO : Auto Login
-    private void AutoLogin(final String nickName, String password) {
-        String get_url = KogPreference.REST_URL +
-                "User";// +
-//                "?nickname=" + nickName +
-//                "&password=" + Encrypt.encodingMsg(password);
-        Log.i(LOG_TAG, "URL : " + get_url);
-
-        JSONObject sendBody = new JSONObject();
-
-        try {
-            sendBody.put("nickname", nickName);
-            sendBody.put("password", Encrypt.encodingMsg(password));
-        } catch (JSONException e) {
-            Log.e(LOG_TAG, "UserLogin error : " + e.toString());
-
-        }
-
-        Log.i(LOG_TAG, "post btn event trigger");
-
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, get_url, sendBody,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.i(LOG_TAG, "get JSONObject");
-                        Log.i(LOG_TAG, response.toString());
-
-                        try {
-                            status_code = response.getInt("status");
-                            if (status_code == 200) {
-                                rMessage = response.getString("message");
-                                // real action
-                                GoTabPage();
-
-                            } else {
-                                if (KogPreference.DEBUG_MODE) {
-                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        } catch (Exception e) {
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.i(LOG_TAG, "Response Error");
-                if (KogPreference.DEBUG_MODE) {
-                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        }
-        );
-        vQueue.add(jsObjRequest);
-    }
+//    private void AutoLogin(final String nickName, String password) {
+//        String get_url = KogPreference.REST_URL +
+//                "User";// +
+////                "?nickname=" + nickName +
+////                "&password=" + Encrypt.encodingMsg(password);
+//        Log.i(LOG_TAG, "URL : " + get_url);
+//
+//        JSONObject sendBody = new JSONObject();
+//
+//        try {
+//            sendBody.put("nickname", nickName);
+//            sendBody.put("password", Encrypt.encodingMsg(password));
+//        } catch (JSONException e) {
+//            Log.e(LOG_TAG, "UserLogin error : " + e.toString());
+//
+//        }
+//
+//        Log.i(LOG_TAG, "post btn event trigger");
+//
+//        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, get_url, sendBody,
+//                new Response.Listener<JSONObject>() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//                        Log.i(LOG_TAG, "get JSONObject");
+//                        Log.i(LOG_TAG, response.toString());
+//
+//                        try {
+//                            status_code = response.getInt("status");
+//                            if (status_code == 200) {
+//                                rMessage = response.getString("message");
+//                                // real action
+//                                GoTabPage();
+//
+//                            } else {
+//                                if (KogPreference.DEBUG_MODE) {
+//                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
+//                                }
+//                            }
+//                        } catch (Exception e) {
+//                        }
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Log.i(LOG_TAG, "Response Error");
+//                if (KogPreference.DEBUG_MODE) {
+//                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
+//                }
+//
+//            }
+//        }
+//        );
+//        vQueue.add(jsObjRequest);
+//    }
 
 
     ///////////////////////////////////
