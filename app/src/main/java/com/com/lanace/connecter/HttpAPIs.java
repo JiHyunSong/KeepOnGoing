@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.secsm.keepongoing.Shared.KogPreference;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
@@ -29,11 +30,11 @@ public class HttpAPIs {
 
     private static final String LOG_TAG = "HttpAPIs";
 
-    public static JSONObject getJSONData(HttpResponse response){
+    public static JSONObject getJSONData(HttpResponse response) {
         JSONObject result = new JSONObject();
         try {
             Log.e(LOG_TAG, "zzz) Set-Cookie 길이: " + response.getHeaders("Set-Cookie").length);
-            if(response.getHeaders("Set-Cookie").length > 0)
+            if (response.getHeaders("Set-Cookie").length > 0)
                 result.put("Set-Cookie", response.getHeaders("Set-Cookie")[0].getValue());
 
             result.put("httpStatusCode", response.getStatusLine().getStatusCode());
@@ -43,22 +44,22 @@ public class HttpAPIs {
             long langht = response.getEntity().getContentLength();
             int index;
             InputStream is = response.getEntity().getContent();
-            for(int  n=0;  n < langht; n+=index){
+            for (int n = 0; n < langht; n += index) {
 
-                if((index = is.read(b)) > 0)
+                if ((index = is.read(b)) > 0)
                     sb.append(new String(b, 0, index));
                 else
                     Log.e(LOG_TAG, "read value is " + index);
             }
 
             Log.i(LOG_TAG, "res: " + sb.toString());
-            result.put("res", sb.toString() );
+            result.put("res", sb.toString());
 
             return result;
 
         } catch (Exception e) {
             Log.e(LOG_TAG, "err: " + e.getMessage());
-        } finally{
+        } finally {
         }
         return null;
     }
@@ -94,7 +95,9 @@ public class HttpAPIs {
         return httpPost;
     }
 
-    /** POST Time Send */
+    /**
+     * POST Time Send
+     */
     public static HttpRequestBase timePost(String nickname, String target_time,
                                            String accomplished_time, String date) throws IOException {
 
@@ -115,7 +118,9 @@ public class HttpAPIs {
         return httpPost;
     }
 
-    /** POST Time Put */
+    /**
+     * POST Time Put
+     */
     public static HttpRequestBase timePut(String nickname, String target_time,
                                           String accomplished_time, String date) throws IOException {
 
@@ -136,13 +141,16 @@ public class HttpAPIs {
         return httpPut;
     }
 
-    public static HttpRequestBase getFriendsRequest(String nickname){
+    public static HttpRequestBase getFriendsRequest(String nickname) {
         HttpGet httpPut = new HttpGet(HttpConnecter.getRestfullBaseURL() + "Friend" +
                 "?nickname=" + nickname +
                 "&date=" + getRealDate());
         return httpPut;
     }
-    /** POST Auth Send */
+
+    /**
+     * POST Auth Send
+     */
     public static HttpRequestBase authPost(String phone, int random_num) throws IOException {
         HttpPost httpPost = new HttpPost(HttpConnecter.getRestfullBaseURL() + "Auth");
 
@@ -168,7 +176,7 @@ public class HttpAPIs {
         return httpPut;
     }
 
-    public static HttpRequestBase outRoomRequest(String room_id, String nickname){
+    public static HttpRequestBase outRoomRequest(String room_id, String nickname) {
         HttpDelete httpPut = new HttpDelete(HttpConnecter.getRestfullBaseURL() + "Room/User" +
                 "?rid=" + room_id +
                 "&nickname=" + nickname);
@@ -190,7 +198,9 @@ public class HttpAPIs {
         return httpPost;
     }
 
-    /** POST get Friends Score in Room*/
+    /**
+     * POST get Friends Score in Room
+     */
     public static HttpRequestBase getFriendsInRoomGet(String rid, String fromdate, String todate, CallbackResponse callbackResponse) throws IOException {
         HttpGet httpGet = new HttpGet(HttpConnecter.getRestfullBaseURL()
                 + "Room/User"
@@ -215,17 +225,21 @@ public class HttpAPIs {
         return currentTimestamp.toString().substring(0, 10);
     }
 
-    /** GET Auth Send */
+    /**
+     * GET Auth Send
+     */
     public static HttpRequestBase authGet(String phone, int random_num) throws IOException {
 
         HttpGet httpGet = new HttpGet(HttpConnecter.getRestfullBaseURL() + "Auth"
-                +"?phone=" + phone +
+                + "?phone=" + phone +
                 "&random_num=" + random_num);
 
         return httpGet;
     }
 
-    /** POST Register Send */
+    /**
+     * POST Register Send
+     */
     public static HttpRequestBase registerPost(String nickname, String password, String image, String phone, String gcmid) throws IOException {
         HttpPost httpPost = new HttpPost(HttpConnecter.getRestfullBaseURL() + "Auth");
 
@@ -244,7 +258,9 @@ public class HttpAPIs {
         return httpPost;
     }
 
-    /** POST create LifeRoom */
+    /**
+     * POST create LifeRoom
+     */
     public static HttpRequestBase createLifeRoomPost(String nickname, String type, String rule, String roomname, String maxholidaycount) throws IOException {
         HttpPost httpPost = new HttpPost(HttpConnecter.getRestfullBaseURL() + "Room");
 
@@ -264,7 +280,9 @@ public class HttpAPIs {
         return httpPost;
     }
 
-    /** POST create SubjectRoom */
+    /**
+     * POST create SubjectRoom
+     */
     public static HttpRequestBase createSubjectRoomPost(String nickname, String type, String rule, String roomname,
                                                         String start_time, String duration_time, String showup_time, String meet_days) throws IOException {
         HttpPost httpPost = new HttpPost(HttpConnecter.getRestfullBaseURL() + "Room");
@@ -288,7 +306,9 @@ public class HttpAPIs {
         return httpPost;
     }
 
-    /** POST invite Friend to Room */
+    /**
+     * POST invite Friend to Room
+     */
     public static HttpRequestBase inviteFriendToRoomPost(String rid, String nickname) throws IOException {
         HttpPost httpPost = new HttpPost(HttpConnecter.getRestfullBaseURL() + "Room/User");
 
@@ -305,7 +325,9 @@ public class HttpAPIs {
         return httpPost;
     }
 
-    /** POST get Friends Score in Room*/
+    /**
+     * POST get Friends Score in Room
+     */
     public static HttpRequestBase getFriendsScorePost(String rid, String fromdate, String todate) throws IOException {
         HttpPost httpPost = new HttpPost(HttpConnecter.getRestfullBaseURL() + "Timeset");
 
@@ -323,7 +345,9 @@ public class HttpAPIs {
         return httpPost;
     }
 
-    /** GET My Information Send */
+    /**
+     * GET My Information Send
+     */
     public static HttpRequestBase getMyInfoGet(String nickname, String date) throws IOException {
 
         HttpGet httpGet = new HttpGet(HttpConnecter.getRestfullBaseURL() +
@@ -334,7 +358,9 @@ public class HttpAPIs {
         return httpGet;
     }
 
-    /** PUT My Information Send */
+    /**
+     * PUT My Information Send
+     */
     public static HttpRequestBase updateMyInfoPut(String nickname, String password, String image) throws IOException {
 
         HttpPut httpPut = new HttpPut(HttpConnecter.getRestfullBaseURL() + "User");
@@ -353,7 +379,9 @@ public class HttpAPIs {
         return httpPut;
     }
 
-    /** POST add Friend*/
+    /**
+     * POST add Friend
+     */
     public static HttpRequestBase addFriendPost(String nickname, String nickname_f) throws IOException {
         HttpPost httpPost = new HttpPost(HttpConnecter.getRestfullBaseURL() + "Friend");
 
@@ -370,16 +398,20 @@ public class HttpAPIs {
         return httpPost;
     }
 
-    /** GET disconnect connection */
+    /**
+     * GET disconnect connection
+     */
     public static HttpRequestBase disconnectConnectionGet(String previousip) throws IOException {
 
         HttpGet httpGet = new HttpGet(HttpConnecter.getRestfullBaseURL() + "Socket"
-                +"?previousip=" + previousip );
+                + "?previousip=" + previousip);
 
         return httpGet;
     }
 
-    /** PUT Quiz Answer Register Put */
+    /**
+     * PUT Quiz Answer Register Put
+     */
     public static HttpRequestBase answerRegisterPut(String srid, String num, String type,
                                                     String answer, String nickname) throws IOException {
 
@@ -402,15 +434,28 @@ public class HttpAPIs {
         return httpPut;
     }
 
+    /**
+     * GET quiz question
+     */
+    public static HttpRequestBase questionGet(String srid, String num, String nickname) throws IOException {
 
-     public static JSONObject getHttpResponseToJSON(HttpResponse httpResponse) {
+        HttpGet httpGet = new HttpGet(HttpConnecter.getRestfullBaseURL() + "Room/Quiz" +
+                "?srid=" + srid +
+                "&num="+ num +
+                "&nickname=" + nickname);
+
+        return httpGet;
+    }
+
+
+    public static JSONObject getHttpResponseToJSON(HttpResponse httpResponse) {
         BufferedReader reader;
         StringBuilder builder = new StringBuilder();
         JSONObject obj = null;
         try {
             reader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent(), "UTF-8"));
 
-            for (String line = null; (line = reader.readLine()) != null;) {
+            for (String line = null; (line = reader.readLine()) != null; ) {
                 builder.append(line).append("\n");
             }
             obj = new JSONObject(builder.toString());
@@ -429,25 +474,25 @@ public class HttpAPIs {
         return obj;
     }
 
-    public static class LoginDataSet{
+    public static class LoginDataSet {
         public String nickname;
         public String password;
         public String gcmid;
     }
 
-    public static class TimeDataSet{
+    public static class TimeDataSet {
         public String nickname;
         public String targettime;
         public String accomplishedtime;
         public String date;
     }
 
-    public static class AuthDataSet{
+    public static class AuthDataSet {
         public String phone;
         public int randomnum;
     }
 
-    public static class RegisterDataSet{
+    public static class RegisterDataSet {
         public String nickname;
         public String password;
         public String image;
@@ -464,7 +509,7 @@ public class HttpAPIs {
         public String maxholidaycount;
     }
 
-    public static class SubjectRoomDataSet{
+    public static class SubjectRoomDataSet {
         public String nickname;
         public String type;
         public String rule;
@@ -475,29 +520,29 @@ public class HttpAPIs {
         public String meetdays;
     }
 
-    public static class InviteFriendDataSet{
+    public static class InviteFriendDataSet {
         public String rid;
         public String nickname;
     }
 
-    public static class TimeSetDataSet{
+    public static class TimeSetDataSet {
         public String rid;
         public String fromdate;
         public String todate;
     }
 
-    public static class MyInfoDataSet{
+    public static class MyInfoDataSet {
         public String nickname;
         public String password;
         public String image;
     }
 
-    public static class AddFriendDataSet{
+    public static class AddFriendDataSet {
         public String nickname;
         public String nicknamef;
     }
 
-    public static class QuizDataSet{
+    public static class QuizDataSet {
         public String srid;
         public String num;
         public String type;
