@@ -1000,7 +1000,56 @@ public class TabActivity extends BaseActivity {
             e.printStackTrace();
         }
     }
+    Handler getStudyRoomsRequestHandler = new Handler(){
 
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+                Bundle b = msg.getData();
+                JSONObject result = new JSONObject(b.getString("JSONData"));
+                int statusCode = Integer.parseInt(result.getString("status"));
+                if (statusCode == 200) {
+                    JSONArray rMessage;
+                    rMessage = result.getJSONArray("message");
+                    mRooms = new ArrayList<RoomNaming>();
+                    JSONObject rObj;
+
+                    for(int i=0; i< rMessage.length(); i++) {
+                        rObj = rMessage.getJSONObject(i);
+                        if (!"null".equals(rObj.getString("rid"))){
+                            mRooms.add(new RoomNaming(
+                                    URLDecoder.decode(rObj.getString("type"), "UTF-8"),
+                                    URLDecoder.decode(rObj.getString("rid"),"UTF-8"),
+                                    URLDecoder.decode(rObj.getString("rule"),"UTF-8"),
+                                    URLDecoder.decode(rObj.getString("roomname"), "UTF-8"),
+                                    URLDecoder.decode(rObj.getString("maxHolidayCount"),"UTF-8"),
+                                    URLDecoder.decode(rObj.getString("startTime"),"UTF-8"),
+                                    URLDecoder.decode(rObj.getString("durationTime"),"UTF-8"),
+                                    URLDecoder.decode(rObj.getString("showupTime"),"UTF-8"),
+                                    URLDecoder.decode(rObj.getString("meetDays"),"UTF-8"),
+                                    URLDecoder.decode(rObj.getString("num"),"UTF-8")
+                            ));
+                            Log.i(LOG_TAG, "num"+ URLDecoder.decode(rObj.getString("num"),"UTF-8"));
+                        }
+                    }
+
+                    RoomsArrayAdapters roomsArrayAdapter;
+                    roomsArrayAdapter = new RoomsArrayAdapters(TabActivity.this, R.layout.room_list_item, mRooms);
+                    roomList.setAdapter(roomsArrayAdapter);
+
+
+                    /////////////////////////////
+                } else {
+                    Toast.makeText(getBaseContext(), "통신 에러 : \n스터디 방 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+                    Log.e(LOG_TAG, "통신 에러 : " + result.getString("message"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+    };
     /** 스터디룸 요청 */
     private void getStudyRoomsRequest() {
 
@@ -1010,49 +1059,57 @@ public class TabActivity extends BaseActivity {
                 public void success(HttpResponse httpResponse) {
 
                     JSONObject obj = HttpAPIs.getHttpResponseToJSON(httpResponse);
-
-                    try {
-                        status_code = obj.getInt("status");
-                        if (status_code == 200) {
-                            JSONArray rMessage;
-                            rMessage = obj.getJSONArray("message");
-                            mRooms = new ArrayList<RoomNaming>();
-                            JSONObject rObj;
-
-                            for(int i=0; i< rMessage.length(); i++) {
-                                rObj = rMessage.getJSONObject(i);
-                                if (!"null".equals(rObj.getString("rid"))){
-                                    mRooms.add(new RoomNaming(
-                                            URLDecoder.decode(rObj.getString("type"), "UTF-8"),
-                                            URLDecoder.decode(rObj.getString("rid"),"UTF-8"),
-                                            URLDecoder.decode(rObj.getString("rule"),"UTF-8"),
-                                            URLDecoder.decode(rObj.getString("roomname"), "UTF-8"),
-                                            URLDecoder.decode(rObj.getString("maxHolidayCount"),"UTF-8"),
-                                            URLDecoder.decode(rObj.getString("startTime"),"UTF-8"),
-                                            URLDecoder.decode(rObj.getString("durationTime"),"UTF-8"),
-                                            URLDecoder.decode(rObj.getString("showupTime"),"UTF-8"),
-                                            URLDecoder.decode(rObj.getString("meetDays"),"UTF-8"),
-                                            URLDecoder.decode(rObj.getString("num"),"UTF-8")
-                                    ));
-                                    Log.i(LOG_TAG, "num"+ URLDecoder.decode(rObj.getString("num"),"UTF-8"));
-                                }
-                            }
-
-                            RoomsArrayAdapters roomsArrayAdapter;
-                            roomsArrayAdapter = new RoomsArrayAdapters(TabActivity.this, R.layout.room_list_item, mRooms);
-                            roomList.setAdapter(roomsArrayAdapter);
-
-
-                            /////////////////////////////
-                        } else {
-                            Toast.makeText(getBaseContext(), "통신 에러 : \n스터디 방 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-                            Log.e(LOG_TAG, "통신 에러 : " + obj.getString("message"));
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
+                    Log.e(LOG_TAG, "응답: " + obj.toString());
+                    if(obj != null) {
+                        Message msg = getStudyRoomsRequestHandler.obtainMessage();
+                        Bundle b = new Bundle();
+                        b.putString("JSONData", obj.toString());
+                        msg.setData(b);
+                        getStudyRoomsRequestHandler.sendMessage(msg);
                     }
+
+//                    try {
+//                        status_code = obj.getInt("status");
+//                        if (status_code == 200) {
+//                            JSONArray rMessage;
+//                            rMessage = obj.getJSONArray("message");
+//                            mRooms = new ArrayList<RoomNaming>();
+//                            JSONObject rObj;
+//
+//                            for(int i=0; i< rMessage.length(); i++) {
+//                                rObj = rMessage.getJSONObject(i);
+//                                if (!"null".equals(rObj.getString("rid"))){
+//                                    mRooms.add(new RoomNaming(
+//                                            URLDecoder.decode(rObj.getString("type"), "UTF-8"),
+//                                            URLDecoder.decode(rObj.getString("rid"),"UTF-8"),
+//                                            URLDecoder.decode(rObj.getString("rule"),"UTF-8"),
+//                                            URLDecoder.decode(rObj.getString("roomname"), "UTF-8"),
+//                                            URLDecoder.decode(rObj.getString("maxHolidayCount"),"UTF-8"),
+//                                            URLDecoder.decode(rObj.getString("startTime"),"UTF-8"),
+//                                            URLDecoder.decode(rObj.getString("durationTime"),"UTF-8"),
+//                                            URLDecoder.decode(rObj.getString("showupTime"),"UTF-8"),
+//                                            URLDecoder.decode(rObj.getString("meetDays"),"UTF-8"),
+//                                            URLDecoder.decode(rObj.getString("num"),"UTF-8")
+//                                    ));
+//                                    Log.i(LOG_TAG, "num"+ URLDecoder.decode(rObj.getString("num"),"UTF-8"));
+//                                }
+//                            }
+//
+//                            RoomsArrayAdapters roomsArrayAdapter;
+//                            roomsArrayAdapter = new RoomsArrayAdapters(TabActivity.this, R.layout.room_list_item, mRooms);
+//                            roomList.setAdapter(roomsArrayAdapter);
+//
+//
+//                            /////////////////////////////
+//                        } else {
+//                            Toast.makeText(getBaseContext(), "통신 에러 : \n스터디 방 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+//                            Log.e(LOG_TAG, "통신 에러 : " + obj.getString("message"));
+//                        }
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    } catch (UnsupportedEncodingException e) {
+//                        e.printStackTrace();
+//                    }
                 }
 
                 @Override
