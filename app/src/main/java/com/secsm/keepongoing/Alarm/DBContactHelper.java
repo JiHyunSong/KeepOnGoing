@@ -83,6 +83,9 @@ public class DBContactHelper
 
         Contact contact = new Contact(Integer.parseInt(cursor.getString(0)), Integer.parseInt(cursor.getString(1)),
                 Integer.parseInt(cursor.getString(2)));
+        db.close();
+        cursor.close();
+
         // return contact
         return contact;
     }
@@ -108,6 +111,8 @@ public class DBContactHelper
             } while (cursor.moveToNext());
         }
 
+        db.close();
+        cursor.close();
         // return contact list
         return contactList;
     }
@@ -138,6 +143,7 @@ public class DBContactHelper
         String countQuery = "SELECT  * FROM " + TABLE_CONTACTS;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
+        db.close();
         cursor.close();
 
         // return count
