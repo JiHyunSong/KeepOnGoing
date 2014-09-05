@@ -9,6 +9,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
@@ -28,6 +30,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.com.lanace.connecter.CallbackResponse;
+import com.com.lanace.connecter.HttpAPIs;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.secsm.keepongoing.Shared.BaseActivity;
@@ -36,6 +40,8 @@ import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MultipartRequest;
 import com.secsm.keepongoing.Shared.MyVolley;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
@@ -51,6 +57,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.util.Map;
@@ -425,136 +432,272 @@ public class MyProfileActivity extends BaseActivity {
         return currentTimestamp.toString().substring(0, 10);
     }
 
-    private void getMyInfoRequest() {
+    /** base Handler for Enable/Disable all UI components */
+    Handler baseHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
 
-        //TODO : check POST/GET METHOD and get_URL
-        String get_url = KogPreference.REST_URL +
-                "User" +
-                "?nickname=" + KogPreference.getNickName(MyProfileActivity.this) +
-                "&date=" + getRealDate();
-
-        Log.i(LOG_TAG, "URL : " + get_url);
-
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, Encrypt.encodeIfNeed(get_url), null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.i(LOG_TAG, "get JSONObject getMyInfoRequest");
-                        Log.i(LOG_TAG, response.toString());
-
-                        try {
-
-                            int status_code = response.getInt("status");
-                            if (status_code == 200) {
-                                /////////////////////////////
-                                JSONArray rMessage = response.getJSONArray("message");
-                                // URLDecoder.decode(rObj.getString("nickname"), "UTF-8")
-                                if(URLDecoder.decode(rMessage.getJSONObject(0).getString("nickname"), "UTF-8") != null) {
-                                    my_nickname = URLDecoder.decode(rMessage.getJSONObject(0).getString("nickname"), "UTF-8");
-                                    my_target_time = rMessage.getJSONObject(0).getString("targetTime");
-                                    my_profile = URLDecoder.decode(rMessage.getJSONObject(0).getString("image"), "UTF-8");
-                                    Log.i(LOG_TAG, "getMyInfoRequest, nick " + my_nickname);
-                                    Log.i(LOG_TAG, "getMyInfoRequest, my_profile " + my_profile);
-                                    setAllEnable();
-                                    setInit();
-                                }
-
-                                /////////////////////////////
-                            } else {
-                                Toast.makeText(getBaseContext(), "통신 에러 : \n상태를 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-                                if (KogPreference.DEBUG_MODE) {
-//                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        } catch (Exception e) {
-                            Log.e(LOG_TAG, "get User error : " + e.toString());
-                            Toast.makeText(getBaseContext(), "통신 에러 : \n상태를 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-                            MyProfileActivity.this.finish();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getBaseContext(), "통신 에러 : \n상태를 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-                Log.i(LOG_TAG, "Response Error");
-                if (KogPreference.DEBUG_MODE) {
-                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
-                }
-
+            if(msg.what == 1){
+                setAllEnable();
+            }
+            else if(msg.what == -1){
+                setAllDisable();
             }
         }
-        );
-        vQueue.add(jsObjRequest);
+    };
+
+    /** getMyInfoRequest
+     * statusCode == 200 => get My info, Update UI
+     */
+    Handler getMyInfoRequestHandler = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+                Bundle b = msg.getData();
+                JSONObject result = new JSONObject(b.getString("JSONData"));
+                int statusCode = Integer.parseInt(result.getString("status"));
+                if (statusCode == 200) {
+                    JSONArray rMessage = result.getJSONArray("message");
+                    // URLDecoder.decode(rObj.getString("nickname"), "UTF-8")
+                    if(URLDecoder.decode(rMessage.getJSONObject(0).getString("nickname"), "UTF-8") != null) {
+                        my_nickname = URLDecoder.decode(rMessage.getJSONObject(0).getString("nickname"), "UTF-8");
+                        my_target_time = rMessage.getJSONObject(0).getString("targetTime");
+                        my_profile = URLDecoder.decode(rMessage.getJSONObject(0).getString("image"), "UTF-8");
+                        Log.i(LOG_TAG, "getMyInfoRequest, nick " + my_nickname);
+                        Log.i(LOG_TAG, "getMyInfoRequest, my_profile " + my_profile);
+                        setInit();
+                    }
+
+                    /////////////////////////////
+                } else {
+                    Toast.makeText(getBaseContext(), "통신 에러 : \n상태를 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+                    Log.e(LOG_TAG, "통신 에러 : " + result.getString("message"));
+                }
+            }catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    };
+
+
+    private void getMyInfoRequest() {
+
+        try {
+            baseHandler.sendEmptyMessage(-1);
+            HttpRequestBase getMyInfoRequest = HttpAPIs.getMyInfoGet(
+                    KogPreference.getNickName(MyProfileActivity.this), getRealDate());
+            HttpAPIs.background(getMyInfoRequest, new CallbackResponse() {
+                public void success(HttpResponse response) {
+                    baseHandler.sendEmptyMessage(1);
+                    JSONObject result = HttpAPIs.getHttpResponseToJSON(response);
+                    Log.e(LOG_TAG, "응답: " + result.toString());
+                    if (result != null) {
+                        Message msg = getMyInfoRequestHandler.obtainMessage();
+                        Bundle b = new Bundle();
+                        b.putString("JSONData", result.toString());
+                        msg.setData(b);
+                        getMyInfoRequestHandler.sendMessage(msg);
+                    }
+                }
+
+                public void error(Exception e) {
+                    baseHandler.sendEmptyMessage(1);
+                    Log.i(LOG_TAG, "Response Error: " + e.toString());
+                    e.printStackTrace();
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+//        //TODO : check POST/GET METHOD and get_URL
+//        String get_url = KogPreference.REST_URL +
+//                "User" +
+//                "?nickname=" + KogPreference.getNickName(MyProfileActivity.this) +
+//                "&date=" + getRealDate();
+//
+//        Log.i(LOG_TAG, "URL : " + get_url);
+//
+//        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, Encrypt.encodeIfNeed(get_url), null,
+//                new Response.Listener<JSONObject>() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//                        Log.i(LOG_TAG, "get JSONObject getMyInfoRequest");
+//                        Log.i(LOG_TAG, response.toString());
+//
+//                        try {
+//
+//                            int status_code = response.getInt("status");
+//                            if (status_code == 200) {
+//                                /////////////////////////////
+//                                JSONArray rMessage = response.getJSONArray("message");
+//                                // URLDecoder.decode(rObj.getString("nickname"), "UTF-8")
+//                                if(URLDecoder.decode(rMessage.getJSONObject(0).getString("nickname"), "UTF-8") != null) {
+//                                    my_nickname = URLDecoder.decode(rMessage.getJSONObject(0).getString("nickname"), "UTF-8");
+//                                    my_target_time = rMessage.getJSONObject(0).getString("targetTime");
+//                                    my_profile = URLDecoder.decode(rMessage.getJSONObject(0).getString("image"), "UTF-8");
+//                                    Log.i(LOG_TAG, "getMyInfoRequest, nick " + my_nickname);
+//                                    Log.i(LOG_TAG, "getMyInfoRequest, my_profile " + my_profile);
+//                                    setAllEnable();
+//                                    setInit();
+//                                }
+//
+//                                /////////////////////////////
+//                            } else {
+//                                Toast.makeText(getBaseContext(), "통신 에러 : \n상태를 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+//                                if (KogPreference.DEBUG_MODE) {
+////                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
+//                                }
+//                            }
+//                        } catch (Exception e) {
+//                            Log.e(LOG_TAG, "get User error : " + e.toString());
+//                            Toast.makeText(getBaseContext(), "통신 에러 : \n상태를 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+//                            MyProfileActivity.this.finish();
+//                        }
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Toast.makeText(getBaseContext(), "통신 에러 : \n상태를 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+//                Log.i(LOG_TAG, "Response Error");
+//                if (KogPreference.DEBUG_MODE) {
+//                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
+//                }
+//
+//            }
+//        }
+//        );
+//        vQueue.add(jsObjRequest);
     }
 
+    /** getMyInfoRequest
+     * statusCode == 200 => Upload Image done -> request get my info for refresh
+     */
+    Handler updateMyInfoRequestHandler = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+                Bundle b = msg.getData();
+                JSONObject result = new JSONObject(b.getString("JSONData"));
+                int statusCode = Integer.parseInt(result.getString("status"));
+                if (statusCode == 200) {
+                    /////////////////////////////
+                    Toast.makeText(getBaseContext(), "사진 업로드 완료!", Toast.LENGTH_SHORT).show();
+
+                    setAllDisable();
+                    getMyInfoRequest();
+                    /////////////////////////////
+                } else {
+                    Toast.makeText(getBaseContext(), "통신 에러 : \n상태를 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+                    Log.e(LOG_TAG, "통신 에러 : " + result.getString("message"));
+                }
+            }catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    };
 
     private void updateMyInfoRequest(String _image) {
 
-        //TODO : check POST/GET METHOD and get_URL
-        String get_url = KogPreference.REST_URL +
-                "User"; // +
-//                "?nickname=" + KogPreference.getNickName(MyProfileActivity.this) +
-//                "&password=" + Encrypt.encodingMsg(KogPreference.getPassword(MyProfileActivity.this))+
-//                "&image=" + _image;
-        JSONObject sendBody = new JSONObject();
-
         try {
-            sendBody.put("nickname", KogPreference.getNickName(MyProfileActivity.this));
-            sendBody.put("password", Encrypt.encodingMsg(KogPreference.getPassword(MyProfileActivity.this)));
-            sendBody.put("image", _image);
-            Log.i(LOG_TAG, "sendbody : " + sendBody.toString());
-        } catch (JSONException e) {
-            Log.e(LOG_TAG, "UserLogin error : " + e.toString());
-
-        }
-
-        Log.i(LOG_TAG, "URL : " + get_url);
-
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.PUT, Encrypt.encodeIfNeed(get_url), sendBody,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.i(LOG_TAG, "get JSONObject updateMyInfoReqeust");
-                        Log.i(LOG_TAG, response.toString());
-
-                        try {
-
-                            int status_code = response.getInt("status");
-                            if (status_code == 200) {
-                                /////////////////////////////
-
-
-                                Toast.makeText(getBaseContext(), "사진 업로드 완료!", Toast.LENGTH_SHORT).show();
-
-                                setAllDisable();
-                                getMyInfoRequest();
-
-                                /////////////////////////////
-                            } else {
-                                Toast.makeText(getBaseContext(), "통신 에러 : \n상태를 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-                                if (KogPreference.DEBUG_MODE) {
-//                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        } catch (Exception e) {
-                            Log.e(LOG_TAG, "get User error : " + e.toString());
-                            Toast.makeText(getBaseContext(), "통신 에러 : \n상태를 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-                            MyProfileActivity.this.finish();
-                        }
+            baseHandler.sendEmptyMessage(-1);
+            HttpRequestBase updateMyInfoRequest = HttpAPIs.updateMyInfoPut(
+                    KogPreference.getNickName(MyProfileActivity.this),
+                    Encrypt.encodingMsg(KogPreference.getPassword(MyProfileActivity.this)),
+                    _image);
+            HttpAPIs.background(updateMyInfoRequest, new CallbackResponse() {
+                public void success(HttpResponse response) {
+                    baseHandler.sendEmptyMessage(1);
+                    JSONObject result = HttpAPIs.getHttpResponseToJSON(response);
+                    Log.e(LOG_TAG, "응답: " + result.toString());
+                    if(result != null) {
+                        Message msg = updateMyInfoRequestHandler.obtainMessage();
+                        Bundle b = new Bundle();
+                        b.putString("JSONData", result.toString());
+                        msg.setData(b);
+                        updateMyInfoRequestHandler.sendMessage(msg);
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getBaseContext(), "통신 에러 : \n상태를 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-                Log.i(LOG_TAG, "Response Error");
-                if (KogPreference.DEBUG_MODE) {
-                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
                 }
 
-            }
+                public void error(Exception e) {
+                    baseHandler.sendEmptyMessage(1);
+                    Log.i(LOG_TAG, "Response Error: " +  e.toString());
+                    e.printStackTrace();
+                }
+        });
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        );
-        vQueue.add(jsObjRequest);
+
+//        //TODO : check POST/GET METHOD and get_URL
+//        String get_url = KogPreference.REST_URL +
+//                "User"; // +
+////                "?nickname=" + KogPreference.getNickName(MyProfileActivity.this) +
+////                "&password=" + Encrypt.encodingMsg(KogPreference.getPassword(MyProfileActivity.this))+
+////                "&image=" + _image;
+//        JSONObject sendBody = new JSONObject();
+//
+//        try {
+//            sendBody.put("nickname", KogPreference.getNickName(MyProfileActivity.this));
+//            sendBody.put("password", Encrypt.encodingMsg(KogPreference.getPassword(MyProfileActivity.this)));
+//            sendBody.put("image", _image);
+//            Log.i(LOG_TAG, "sendbody : " + sendBody.toString());
+//        } catch (JSONException e) {
+//            Log.e(LOG_TAG, "UserLogin error : " + e.toString());
+//
+//        }
+//
+//        Log.i(LOG_TAG, "URL : " + get_url);
+//
+//        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.PUT, Encrypt.encodeIfNeed(get_url), sendBody,
+//                new Response.Listener<JSONObject>() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//                        Log.i(LOG_TAG, "get JSONObject updateMyInfoReqeust");
+//                        Log.i(LOG_TAG, response.toString());
+//
+//                        try {
+//
+//                            int status_code = response.getInt("status");
+//                            if (status_code == 200) {
+//                                /////////////////////////////
+//
+//
+//                                Toast.makeText(getBaseContext(), "사진 업로드 완료!", Toast.LENGTH_SHORT).show();
+//
+//                                setAllDisable();
+//                                getMyInfoRequest();
+//
+//                                /////////////////////////////
+//                            } else {
+//                                Toast.makeText(getBaseContext(), "통신 에러 : \n상태를 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+//                                if (KogPreference.DEBUG_MODE) {
+////                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
+//                                }
+//                            }
+//                        } catch (Exception e) {
+//                            Log.e(LOG_TAG, "get User error : " + e.toString());
+//                            Toast.makeText(getBaseContext(), "통신 에러 : \n상태를 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+//                            MyProfileActivity.this.finish();
+//                        }
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Toast.makeText(getBaseContext(), "통신 에러 : \n상태를 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+//                Log.i(LOG_TAG, "Response Error");
+//                if (KogPreference.DEBUG_MODE) {
+//                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
+//                }
+//
+//            }
+//        }
+//        );
+//        vQueue.add(jsObjRequest);
     }
 
 

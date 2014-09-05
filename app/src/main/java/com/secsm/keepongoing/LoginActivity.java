@@ -164,11 +164,11 @@ public class LoginActivity extends BaseActivity {
 
                     loginHandler.sendEmptyMessage(1);
 
-                    JSONObject result = HttpAPIs.getJSONData(response);
+                    JSONObject result = HttpAPIs.getHttpResponseToJSON(response);
                     Log.e(LOG_TAG, "응답: " + result.toString());
                     try {
                         if(result != null){
-                            int statusCode = Integer.parseInt(result.getString("httpStatusCode"));
+                            int statusCode = Integer.parseInt(result.getString("status"));
                             if (statusCode == 200) {
                                 //rMessage = result.getString("message");
                                 GoNextPage(nickName, password);

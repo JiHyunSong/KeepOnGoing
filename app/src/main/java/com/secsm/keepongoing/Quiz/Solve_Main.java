@@ -2,6 +2,8 @@ package com.secsm.keepongoing.Quiz;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,16 +21,22 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.com.lanace.connecter.CallbackResponse;
+import com.com.lanace.connecter.HttpAPIs;
 import com.secsm.keepongoing.R;
 import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MyVolley;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 
@@ -342,71 +350,166 @@ return total;
         vQueue.add(jsObjRequest);
     }
     //@통신
+    /** base Handler for Enable/Disable all UI components */
+    Handler baseHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
 
-
-
-    private void questionRequest() {
-        String get_url = KogPreference.REST_URL +
-                "Room/Quiz" +
-                "?srid=" + KogPreference.getRid(Solve_Main.this) +
-                "&num="+KogPreference.getQuizNum(Solve_Main.this) +//num 받아와야됨
-                "&nickname=" + KogPreference.getNickName(Solve_Main.this);
-
-
-        Log.i(LOG_TAG, "get_url : " + get_url);
-
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, get_url, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.i(LOG_TAG, "get JSONObject");
-
-                        try {
-                            status_code = response.getInt("status");
-                            Log.e(LOG_TAG, "minsu) : status code :" + Integer.toString(status_code));
-                            if (status_code == 200) {
-                                JSONArray rMessageget;
-
-                                rMessageget = response.getJSONArray("message");
-                                JSONObject rObj;
-
-                                rObj=rMessageget.getJSONObject(0);
-                                questiontype= URLDecoder.decode(rObj.getString("type").toString(), "UTF-8");
-                                question=URLDecoder.decode(rObj.getString("question").toString(), "UTF-8");
-                                solution=URLDecoder.decode(rObj.getString("solution").toString(), "UTF-8");
-                                title=URLDecoder.decode(rObj.getString("title").toString(), "UTF-8");
-                                date="출제일 : "+URLDecoder.decode(rObj.getString("date").toString(), "UTF-8");
-                                Log.e("minsu) :","contents2 : "+question+" | "+questiontype+" | "+solution+" | "+title+"|"+date);
-                                settingTextView();
-                                //question = question.replace("\\\n", System.getProperty("line.separator"));
-                                addlist(solution,answer);
-
-
-                                // real action
-                                //          GoNextPage();
-                            } else if (status_code == 9001) {
-                                Toast.makeText(getBaseContext(), "문제 가져오기가 불가능합니다.", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
-                                if (KogPreference.DEBUG_MODE) {
-                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        } catch (Exception e) {
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.i(LOG_TAG, "Response Error");
-                Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
-                if (KogPreference.DEBUG_MODE) {
-                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
-                }
+            if(msg.what == 1){
+//                TODO : implement setAllEnable()
+//                setAllEnable();
+            }
+            else if(msg.what == -1){
+//                TODO : implemnet setAllDisable()
+//                setAllDisable();
             }
         }
-        );
-        vQueue.add(jsObjRequest);
+    };
+
+    /** questionRequestHandler
+     * statusCode == 200 => get question
+     * statusCode == 9001 => server error
+     */
+    Handler questionRequestHandler = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+                Bundle b = msg.getData();
+                JSONObject result = new JSONObject(b.getString("JSONData"));
+                int statusCode = Integer.parseInt(result.getString("status"));
+                if (statusCode == 200) {
+                    JSONArray rMessageget;
+
+                    rMessageget = result.getJSONArray("message");
+                    JSONObject rObj;
+
+                    rObj=rMessageget.getJSONObject(0);
+                    questiontype= URLDecoder.decode(rObj.getString("type").toString(), "UTF-8");
+                    question=URLDecoder.decode(rObj.getString("question").toString(), "UTF-8");
+                    solution=URLDecoder.decode(rObj.getString("solution").toString(), "UTF-8");
+                    title=URLDecoder.decode(rObj.getString("title").toString(), "UTF-8");
+                    date="출제일 : "+URLDecoder.decode(rObj.getString("date").toString(), "UTF-8");
+                    Log.e("minsu) :","contents2 : "+question+" | "+questiontype+" | "+solution+" | "+title+"|"+date);
+                    settingTextView();
+                    //question = question.replace("\\\n", System.getProperty("line.separator"));
+                    addlist(solution,answer);
+
+
+                    // real action
+                    //          GoNextPage();
+                } else if (status_code == 9001) {
+                    Toast.makeText(getBaseContext(), "문제 가져오기가 불가능합니다.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
+                    if (KogPreference.DEBUG_MODE) {
+                        Toast.makeText(getBaseContext(), LOG_TAG + result.getString("message"), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }catch (JSONException e)
+            {
+                e.printStackTrace();
+            }catch (UnsupportedEncodingException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    private void questionRequest() {
+
+        try {
+            baseHandler.sendEmptyMessage(-1);
+            HttpRequestBase questionRequest = HttpAPIs.questionGet(
+                    KogPreference.getRid(Solve_Main.this), KogPreference.getQuizNum(Solve_Main.this),
+                    KogPreference.getNickName(Solve_Main.this));
+            HttpAPIs.background(questionRequest, new CallbackResponse() {
+                public void success(HttpResponse response) {
+                    baseHandler.sendEmptyMessage(1);
+                    JSONObject result = HttpAPIs.getHttpResponseToJSON(response);
+                    Log.e(LOG_TAG, "응답: " + result.toString());
+                    if (result != null) {
+                        Message msg = questionRequestHandler.obtainMessage();
+                        Bundle b = new Bundle();
+                        b.putString("JSONData", result.toString());
+                        msg.setData(b);
+                        questionRequestHandler.sendMessage(msg);
+                    }
+                }
+
+                public void error(Exception e) {
+                    baseHandler.sendEmptyMessage(1);
+                    Log.i(LOG_TAG, "Response Error: " + e.toString());
+                    e.printStackTrace();
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+//        String get_url = KogPreference.REST_URL +
+//                "Room/Quiz" +
+//                "?srid=" + KogPreference.getRid(Solve_Main.this) +
+//                "&num="+KogPreference.getQuizNum(Solve_Main.this) +//num 받아와야됨
+//                "&nickname=" + KogPreference.getNickName(Solve_Main.this);
+//
+//
+//        Log.i(LOG_TAG, "get_url : " + get_url);
+//
+//        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, get_url, null,
+//                new Response.Listener<JSONObject>() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//                        Log.i(LOG_TAG, "get JSONObject");
+//
+//                        try {
+//                            status_code = response.getInt("status");
+//                            Log.e(LOG_TAG, "minsu) : status code :" + Integer.toString(status_code));
+//                            if (status_code == 200) {
+//                                JSONArray rMessageget;
+//
+//                                rMessageget = response.getJSONArray("message");
+//                                JSONObject rObj;
+//
+//                                rObj=rMessageget.getJSONObject(0);
+//                                questiontype= URLDecoder.decode(rObj.getString("type").toString(), "UTF-8");
+//                                question=URLDecoder.decode(rObj.getString("question").toString(), "UTF-8");
+//                                solution=URLDecoder.decode(rObj.getString("solution").toString(), "UTF-8");
+//                                title=URLDecoder.decode(rObj.getString("title").toString(), "UTF-8");
+//                                date="출제일 : "+URLDecoder.decode(rObj.getString("date").toString(), "UTF-8");
+//                                Log.e("minsu) :","contents2 : "+question+" | "+questiontype+" | "+solution+" | "+title+"|"+date);
+//                                settingTextView();
+//                                //question = question.replace("\\\n", System.getProperty("line.separator"));
+//                                addlist(solution,answer);
+//
+//
+//                                // real action
+//                                //          GoNextPage();
+//                            } else if (status_code == 9001) {
+//                                Toast.makeText(getBaseContext(), "문제 가져오기가 불가능합니다.", Toast.LENGTH_SHORT).show();
+//                            } else {
+//                                Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
+//                                if (KogPreference.DEBUG_MODE) {
+//                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
+//                                }
+//                            }
+//                        } catch (Exception e) {
+//                        }
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Log.i(LOG_TAG, "Response Error");
+//                Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
+//                if (KogPreference.DEBUG_MODE) {
+//                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        }
+//        );
+//        vQueue.add(jsObjRequest);
     }
 }
 

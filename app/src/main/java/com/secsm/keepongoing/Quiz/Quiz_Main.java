@@ -2,6 +2,8 @@ package com.secsm.keepongoing.Quiz;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,15 +22,22 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.beardedhen.androidbootstrap.BootstrapButton;
+import com.com.lanace.connecter.CallbackResponse;
+import com.com.lanace.connecter.HttpAPIs;
 import com.secsm.keepongoing.R;
 import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MyVolley;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Date;
@@ -202,8 +211,97 @@ public class Quiz_Main extends BaseActivity {
         // TODO Real Action
     }
 
+    /** base Handler for Enable/Disable all UI components */
+    Handler baseHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+
+            if(msg.what == 1){
+//                TODO : implement setAllEnable()
+//                setAllEnable();
+            }
+            else if(msg.what == -1){
+//                TODO : implement setAllDisable()
+//                setAllDisable();
+            }
+        }
+    };
+
+    /** quizRegisterRequestHandler
+     * statusCode == 200 => get My info, Update UI
+     */
+    Handler quizRegisterRequestHandler = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+                Bundle b = msg.getData();
+                JSONObject result = new JSONObject(b.getString("JSONData"));
+                int statusCode = Integer.parseInt(result.getString("status"));
+                if (statusCode == 200) {
+                    // rMessage = response.getString("message");
+                    JSONArray rMessageget;
+
+                    rMessageget = result.getJSONArray("message");
+                    JSONObject rObj;
+                    rObj=rMessageget.getJSONObject(0);
+                    //     Toast.makeText(getBaseContext(), LOG_TAG + URLDecoder.decode(rObj.getString("num").toString(), "UTF-8"), Toast.LENGTH_SHORT).show();
+                    //       Log.e("minsu ):","minsu:) receive : "+ URLDecoder.decode(rObj.getString("num").toString(), "UTF-8"));
+                    //   Log.e("minsu ):","minsue:) send solution : "+ temp);
+                    KogPreference.setQuizNum(Quiz_Main.this,  URLDecoder.decode(rObj.getString("num").toString(), "UTF-8"));
+                    Toast.makeText(getBaseContext(), "제출완료", Toast.LENGTH_SHORT).show();
+                } else if (status_code == 9001) {
+                    Toast.makeText(getBaseContext(), "퀴즈 등록이 불가능합니다.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
+                    Log.e(LOG_TAG, "통신 에러 : " + result.getString("message"));
+                }
+            }catch (JSONException e)
+            {
+                e.printStackTrace();
+            }catch (UnsupportedEncodingException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    };
+
     //@통신
     private void quizRegisterRequest(String question, String type, String solution,String title,String date) {
+        try {
+            baseHandler.sendEmptyMessage(-1);
+            HttpRequestBase requestAuthRegister = HttpAPIs.quizRegisterPost(
+            KogPreference.getRid(Quiz_Main.this),
+            type, question, solution,
+            KogPreference.getNickName(Quiz_Main.this),
+            title, date);
+            HttpAPIs.background(requestAuthRegister, new CallbackResponse() {
+                public void success(HttpResponse response) {
+                    baseHandler.sendEmptyMessage(1);
+                    JSONObject result = HttpAPIs.getHttpResponseToJSON(response);
+                    Log.e(LOG_TAG, "응답: " + result.toString());
+                    if(result != null) {
+                        Message msg = quizRegisterRequestHandler.obtainMessage();
+                        Bundle b = new Bundle();
+                        b.putString("JSONData", result.toString());
+                        msg.setData(b);
+                        quizRegisterRequestHandler.sendMessage(msg);
+                    }
+                }
+
+                public void error(Exception e) {
+                    baseHandler.sendEmptyMessage(1);
+                    Log.i(LOG_TAG, "Response Error: " +  e.toString());
+                    e.printStackTrace();
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
 //        question = question.trim().replace(" ", "%20");
 //        solution = solution.trim().replace(" ", "%20");
 //        question = question.trim().replace("\n", "%0A");
@@ -281,57 +379,48 @@ public class Quiz_Main extends BaseActivity {
             }
         }
         );
-//        {
-//            @Override
-//            public Map<String, String> getHeaders() throws AuthFailureError {
-//                Map<String, String> header = new HashMap<String, String>();
-//                header.put("Content-Type", "application/json");
-//                return header;
-//            }
-//        };
 
         vQueue.add(jsObjRequest);
     }
 
-/*
-            jsonObj.put("srid", KogPreference.getRid(Quiz_Main.this));
-            jsonObj.put("type", type);
-            jsonObj.put("question", question);
-            jsonObj.put("solution", solution);
-            jsonObj.put("nickname", KogPreference.getNickName(Quiz_Main.this));
- */
-/*    void MultipartEntity(String question, String type, String solution)
-    {
-        Charset c = Charset.forName("utf-8");
-        String URL = KogPreference.REST_URL+"Room/Quiz";
-        MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, Charset.forName("UTF-8"));
-        try
-        {
-            entity.addPart("srid", new StringBody(KogPreference.getRid(Quiz_Main.this)));
-            entity.addPart("type", new StringBody(type));
-            entity.addPart("question", new StringBody(question));
-            entity.addPart("solution", new StringBody(solution));
-            entity.addPart("nickname", new StringBody(KogPreference.getNickName(Quiz_Main.this)));
-            Log.i("MULTIPART-ENTITY", "add addPART");
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
-        MultipartRequest req = new MultipartRequest(Request.Method.POST, URL, entity, errListener);
-        vQueue.add(req);
-        Log.i("MULTIPART-ENTITY", "add queue");
-
-        vQueue.start();
-    }
-
-    Response.ErrorListener errListener = new Response.ErrorListener() {
-        @Override
-        public void onErrorResponse(VolleyError arg0) {
-// TODO Auto-generated method stub
-            Log.d("errrrrrooooor", arg0.toString());
-        }
-    };*/
+///*
+//            jsonObj.put("srid", KogPreference.getRid(Quiz_Main.this));
+//            jsonObj.put("type", type);
+//            jsonObj.put("question", question);
+//            jsonObj.put("solution", solution);
+//            jsonObj.put("nickname", KogPreference.getNickName(Quiz_Main.this));
+// */
+///*    void MultipartEntity(String question, String type, String solution)
+//    {
+//        Charset c = Charset.forName("utf-8");
+//        String URL = KogPreference.REST_URL+"Room/Quiz";
+//        MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, Charset.forName("UTF-8"));
+//        try
+//        {
+//            entity.addPart("srid", new StringBody(KogPreference.getRid(Quiz_Main.this)));
+//            entity.addPart("type", new StringBody(type));
+//            entity.addPart("question", new StringBody(question));
+//            entity.addPart("solution", new StringBody(solution));
+//            entity.addPart("nickname", new StringBody(KogPreference.getNickName(Quiz_Main.this)));
+//            Log.i("MULTIPART-ENTITY", "add addPART");
+//        } catch (Exception e)
+//        {
+//            e.printStackTrace();
+//        }
+//
+//        MultipartRequest req = new MultipartRequest(Request.Method.POST, URL, entity, errListener);
+//        vQueue.add(req);
+//        Log.i("MULTIPART-ENTITY", "add queue");
+//
+//        vQueue.start();
+//    }
+//
+//    Response.ErrorListener errListener = new Response.ErrorListener() {
+//        @Override
+//        public void onErrorResponse(VolleyError arg0) {
+//            Log.d("errrrrrooooor", arg0.toString());
+//        }
+//    };*/
 
 
 
