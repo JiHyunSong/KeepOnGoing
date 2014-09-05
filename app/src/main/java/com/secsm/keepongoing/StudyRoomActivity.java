@@ -2136,7 +2136,87 @@ S3
         return currentTimestamp.toString().substring(0, 10);
     }
 
+    /** getMyInfoRequest
+     * statusCode == 200 => get My info, Update UI
+     */
+    Handler getFriendsRequestHandler = new Handler(){
 
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+                Bundle b = msg.getData();
+                JSONObject result = new JSONObject(b.getString("JSONData"));
+                int statusCode = Integer.parseInt(result.getString("status"));
+                if (statusCode == 200) {
+                    JSONArray rMessage;
+                    rMessage = result.getJSONArray("message");
+                    //////// real action ////////
+                    mFriends = new ArrayList<FriendNameAndIcon>();
+                    JSONObject rObj;
+                    mFriends.add(mFriendsFristToAdd);
+                    //{"message":[{"targetTime":null,"image":"http:\/\/210.118.74.195:8080\/KOG_Server_Rest\/upload\/UserImage\/default.png","nickname":"jonghean"}],"status":"200"}
+
+                    if(KogPreference.ROOM_TYPE_LIFE.equals(type)) {
+
+                        Log.i(LOG_TAG, "friends length : " +rMessage.length());
+                        for (int i = 0; i < rMessage.length(); i++) {
+                            rObj = rMessage.getJSONObject(i);
+                            Log.i(LOG_TAG, "i : " + i );
+                            Log.i(LOG_TAG, "rObj.toString() : " + rObj.toString());
+                            if (!"null".equals(rObj.getString("nickname"))) {
+                                Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" + URLDecoder.decode(rObj.getString("nickname"), "UTF-8") + "|" + rObj.getString("targetTime") + "|" + rObj.getString("isMaster"));
+                                mFriends.add(new FriendNameAndIcon(
+                                        URLDecoder.decode(rObj.getString("image"), "UTF-8"),
+                                        URLDecoder.decode(rObj.getString("nickname"), "UTF-8"),
+                                        URLDecoder.decode(rObj.getString("targetTime"), "UTF-8"),
+                                        URLDecoder.decode(rObj.getString("isMaster"), "UTF-8"),
+                                        URLDecoder.decode(rObj.getString("accomplishedTime"), "UTF-8"),
+                                        URLDecoder.decode(rObj.getString("score"), "UTF-8")));
+                                Log.i(LOG_TAG, "add");
+                            }
+                        }
+                        Log.i(LOG_TAG, "in liferoom, add all");
+                        mFriends.add(mFriendsLastToShowScoreDetail);
+                        Log.i(LOG_TAG, "in liferoom, add tail");
+                    }else
+                    {
+                        for (int i = 0; i < rMessage.length(); i++) {
+                            rObj = rMessage.getJSONObject(i);
+                            if (!"null".equals(rObj.getString("nickname"))) {
+                                Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" +  URLDecoder.decode(rObj.getString("nickname"), "UTF-8") + "|" + rObj.getString("targetTime") + "|" + rObj.getString("isMaster"));
+                                mFriends.add(new FriendNameAndIcon(
+                                        URLDecoder.decode(rObj.getString("image"), "UTF-8"),
+                                        URLDecoder.decode(rObj.getString("nickname"), "UTF-8"),
+                                        URLDecoder.decode(rObj.getString("targetTime"), "UTF-8"),
+                                        URLDecoder.decode(rObj.getString("isMaster"), "UTF-8"),
+                                        URLDecoder.decode(rObj.getString("accomplishedTime"), "UTF-8")));
+                            }
+                        }
+                        Log.i(LOG_TAG, "in studyroom, add all");
+
+                    }
+                    Log.i(LOG_TAG, "set friends adapter");
+                    /////////////////////////////
+                    friendArrayAdapter = new FriendsArrayAdapters(StudyRoomActivity.this, R.layout.friend_list_item, mFriends);
+                    friendList.setAdapter(friendArrayAdapter);
+
+                    loadText();
+                    BACK_MODE = true;
+                } else {
+                    Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+                    Log.e(LOG_TAG, "통신 에러 : " + result.getString("message"));
+
+                }
+            }catch (JSONException e)
+            {
+                e.printStackTrace();
+            }catch (UnsupportedEncodingException e)
+            {
+                e.printStackTrace();
+            }
+
+        }
+    };
     private void getFriendsRequest() {
 
         try {
@@ -2147,68 +2227,76 @@ S3
                     JSONObject obj = HttpAPIs.getHttpResponseToJSON(httpResponse);
                     if(obj != null){
                         try {
-                            int status_code = obj.getInt("status");
-                            if (status_code == 200) {
-                                JSONArray rMessage;
-                                rMessage = obj.getJSONArray("message");
-                                //////// real action ////////
-                                mFriends = new ArrayList<FriendNameAndIcon>();
-                                JSONObject rObj;
-                                mFriends.add(mFriendsFristToAdd);
-                                //{"message":[{"targetTime":null,"image":"http:\/\/210.118.74.195:8080\/KOG_Server_Rest\/upload\/UserImage\/default.png","nickname":"jonghean"}],"status":"200"}
+                            Message msg = getFriendsRequestHandler.obtainMessage();
+                            Bundle b = new Bundle();
+                            b.putString("JSONData", obj.toString());
+                            msg.setData(b);
+                            getFriendsRequestHandler.sendMessage(msg);
 
-                                if(KogPreference.ROOM_TYPE_LIFE.equals(type)) {
+//                            int status_code = obj.getInt("status");
+//                            if (status_code == 200) {
 
-                                    Log.i(LOG_TAG, "friends length : " +rMessage.length());
-                                    for (int i = 0; i < rMessage.length(); i++) {
-                                        rObj = rMessage.getJSONObject(i);
-                                        Log.i(LOG_TAG, "i : " + i );
-                                        Log.i(LOG_TAG, "rObj.toString() : " + rObj.toString());
-                                        if (!"null".equals(rObj.getString("nickname"))) {
-                                            Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" + URLDecoder.decode(rObj.getString("nickname"), "UTF-8") + "|" + rObj.getString("targetTime") + "|" + rObj.getString("isMaster"));
-                                            mFriends.add(new FriendNameAndIcon(
-                                                    URLDecoder.decode(rObj.getString("image"), "UTF-8"),
-                                                    URLDecoder.decode(rObj.getString("nickname"), "UTF-8"),
-                                                    URLDecoder.decode(rObj.getString("targetTime"), "UTF-8"),
-                                                    URLDecoder.decode(rObj.getString("isMaster"), "UTF-8"),
-                                                    URLDecoder.decode(rObj.getString("accomplishedTime"), "UTF-8"),
-                                                    URLDecoder.decode(rObj.getString("score"), "UTF-8")));
-                                            Log.i(LOG_TAG, "add");
-                                        }
-                                    }
-                                    Log.i(LOG_TAG, "in liferoom, add all");
-                                    mFriends.add(mFriendsLastToShowScoreDetail);
-                                    Log.i(LOG_TAG, "in liferoom, add tail");
-                                }else
-                                {
-                                    for (int i = 0; i < rMessage.length(); i++) {
-                                        rObj = rMessage.getJSONObject(i);
-                                        if (!"null".equals(rObj.getString("nickname"))) {
-                                            Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" +  URLDecoder.decode(rObj.getString("nickname"), "UTF-8") + "|" + rObj.getString("targetTime") + "|" + rObj.getString("isMaster"));
-                                            mFriends.add(new FriendNameAndIcon(
-                                                    URLDecoder.decode(rObj.getString("image"), "UTF-8"),
-                                                    URLDecoder.decode(rObj.getString("nickname"), "UTF-8"),
-                                                    URLDecoder.decode(rObj.getString("targetTime"), "UTF-8"),
-                                                    URLDecoder.decode(rObj.getString("isMaster"), "UTF-8"),
-                                                    URLDecoder.decode(rObj.getString("accomplishedTime"), "UTF-8")));
-                                        }
-                                    }
-                                    Log.i(LOG_TAG, "in studyroom, add all");
 
-                                }
-                                Log.i(LOG_TAG, "set friends adapter");
-                                /////////////////////////////
-                                friendArrayAdapter = new FriendsArrayAdapters(StudyRoomActivity.this, R.layout.friend_list_item, mFriends);
-                                friendList.setAdapter(friendArrayAdapter);
-
-                                loadText();
-                                BACK_MODE = true;
-                            } else {
-                                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-                                if (KogPreference.DEBUG_MODE) {
-                                    Toast.makeText(getBaseContext(), LOG_TAG + obj.getString("message"), Toast.LENGTH_SHORT).show();
-                                }
-                            }
+//                                JSONArray rMessage;
+//                                rMessage = obj.getJSONArray("message");
+//                                //////// real action ////////
+//                                mFriends = new ArrayList<FriendNameAndIcon>();
+//                                JSONObject rObj;
+//                                mFriends.add(mFriendsFristToAdd);
+//                                //{"message":[{"targetTime":null,"image":"http:\/\/210.118.74.195:8080\/KOG_Server_Rest\/upload\/UserImage\/default.png","nickname":"jonghean"}],"status":"200"}
+//
+//                                if(KogPreference.ROOM_TYPE_LIFE.equals(type)) {
+//
+//                                    Log.i(LOG_TAG, "friends length : " +rMessage.length());
+//                                    for (int i = 0; i < rMessage.length(); i++) {
+//                                        rObj = rMessage.getJSONObject(i);
+//                                        Log.i(LOG_TAG, "i : " + i );
+//                                        Log.i(LOG_TAG, "rObj.toString() : " + rObj.toString());
+//                                        if (!"null".equals(rObj.getString("nickname"))) {
+//                                            Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" + URLDecoder.decode(rObj.getString("nickname"), "UTF-8") + "|" + rObj.getString("targetTime") + "|" + rObj.getString("isMaster"));
+//                                            mFriends.add(new FriendNameAndIcon(
+//                                                    URLDecoder.decode(rObj.getString("image"), "UTF-8"),
+//                                                    URLDecoder.decode(rObj.getString("nickname"), "UTF-8"),
+//                                                    URLDecoder.decode(rObj.getString("targetTime"), "UTF-8"),
+//                                                    URLDecoder.decode(rObj.getString("isMaster"), "UTF-8"),
+//                                                    URLDecoder.decode(rObj.getString("accomplishedTime"), "UTF-8"),
+//                                                    URLDecoder.decode(rObj.getString("score"), "UTF-8")));
+//                                            Log.i(LOG_TAG, "add");
+//                                        }
+//                                    }
+//                                    Log.i(LOG_TAG, "in liferoom, add all");
+//                                    mFriends.add(mFriendsLastToShowScoreDetail);
+//                                    Log.i(LOG_TAG, "in liferoom, add tail");
+//                                }else
+//                                {
+//                                    for (int i = 0; i < rMessage.length(); i++) {
+//                                        rObj = rMessage.getJSONObject(i);
+//                                        if (!"null".equals(rObj.getString("nickname"))) {
+//                                            Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" +  URLDecoder.decode(rObj.getString("nickname"), "UTF-8") + "|" + rObj.getString("targetTime") + "|" + rObj.getString("isMaster"));
+//                                            mFriends.add(new FriendNameAndIcon(
+//                                                    URLDecoder.decode(rObj.getString("image"), "UTF-8"),
+//                                                    URLDecoder.decode(rObj.getString("nickname"), "UTF-8"),
+//                                                    URLDecoder.decode(rObj.getString("targetTime"), "UTF-8"),
+//                                                    URLDecoder.decode(rObj.getString("isMaster"), "UTF-8"),
+//                                                    URLDecoder.decode(rObj.getString("accomplishedTime"), "UTF-8")));
+//                                        }
+//                                    }
+//                                    Log.i(LOG_TAG, "in studyroom, add all");
+//
+//                                }
+//                                Log.i(LOG_TAG, "set friends adapter");
+//                                /////////////////////////////
+//                                friendArrayAdapter = new FriendsArrayAdapters(StudyRoomActivity.this, R.layout.friend_list_item, mFriends);
+//                                friendList.setAdapter(friendArrayAdapter);
+//
+//                                loadText();
+//                                BACK_MODE = true;
+//                            } else {
+//                                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+//                                if (KogPreference.DEBUG_MODE) {
+//                                    Toast.makeText(getBaseContext(), LOG_TAG + obj.getString("message"), Toast.LENGTH_SHORT).show();
+//                                }
+//                            }
                             BACK_MODE = true;
                         } catch (Exception e) {
                             Log.e(LOG_TAG, "get friends error : " + e.toString());
