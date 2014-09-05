@@ -219,7 +219,7 @@ public class HttpAPIs {
         String json = new Gson().toJson(dataSet);
 
         httpPost.setHeader("Content-Type", "application/json");
-        StringEntity entity = new StringEntity(json);
+        StringEntity entity = new StringEntity(json, "");
         httpPost.setEntity(entity);
 
         return httpPost;
