@@ -2230,7 +2230,8 @@ S3
     private void getFriendsRequest() {
 
         try {
-            HttpAPIs.getFriendsInRoomGet(KogPreference.getNickName(StudyRoomActivity.this),getThisMonday(), getRealDate(), new CallbackResponse() {
+            HttpAPIs.getFriendsInRoomGet(
+                    KogPreference.getRid(StudyRoomActivity.this), getThisMonday(), getRealDate(), new CallbackResponse() {
                 @Override
                 public void success(HttpResponse httpResponse) {
 

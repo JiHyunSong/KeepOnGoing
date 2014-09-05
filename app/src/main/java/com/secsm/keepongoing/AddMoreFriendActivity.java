@@ -256,6 +256,52 @@ public class AddMoreFriendActivity extends BaseActivity {
         return false;
     }
     //////////////////////
+    Handler getFriendsRequestHandler = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+                Bundle b = msg.getData();
+                JSONObject result = new JSONObject(b.getString("JSONData"));
+                int statusCode = Integer.parseInt(result.getString("status"));
+                if (statusCode == 200) {
+                    JSONArray rMessage;
+                    rMessage = result.getJSONArray("message");
+                    //////// real action ////////
+                    mFriends = new ArrayList<FriendNameAndIcon>();
+                    JSONObject rObj;
+
+                    Log.i(LOG_TAG, "rMessage  : " + rMessage);
+                    Log.i(LOG_TAG, "rMessage.length() : " + rMessage.length());
+                    //{"message":[{"targetTime":null,"image":"http:\/\/210.118.74.195:8080\/KOG_Server_Rest\/upload\/UserImage\/default.png","nickname":"jonghean"}],"status":"200"}
+                    for(int i=0; i< rMessage.length(); i++)
+                    {
+                        rObj = rMessage.getJSONObject(i);
+                        if (!"null".equals(rObj.getString("nickname")) && !isInRoom(URLDecoder.decode(rObj.getString("nickname"), "UTF-8"))) {
+                            Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" + rObj.getString("nickname") + "|" + rObj.getString("targetTime"));
+                            mFriends.add(new FriendNameAndIcon(rObj.getString("image"),
+                                    URLDecoder.decode(rObj.getString("nickname"), "UTF-8"),
+                                    rObj.getString("targetTime")));
+
+                        }
+                    }
+
+                    friendsArrayAdapters = new FriendsArrayAdapters(AddMoreFriendActivity.this, R.layout.friend_list_item, mFriends);
+                    add_more_friend_list.setAdapter(friendsArrayAdapters);
+
+
+                    /////////////////////////////
+                } else {
+                    Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+                    Log.e(LOG_TAG, "통신 에러 : " + result.getString("message"));                }
+            }catch (JSONException e)
+            {
+                e.printStackTrace();
+            }catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
     private void getFriendsRequest() {
         try {
@@ -265,45 +311,52 @@ public class AddMoreFriendActivity extends BaseActivity {
 
                     JSONObject obj = HttpAPIs.getHttpResponseToJSON(httpResponse);
                     if (obj != null) {
-                        try {
-                            status_code = obj.getInt("status");
-
-                            if (status_code == 200) {
-                                JSONArray rMessage;
-                                rMessage = obj.getJSONArray("message");
-                                //////// real action ////////
-                                mFriends = new ArrayList<FriendNameAndIcon>();
-                                JSONObject rObj;
-
-                                Log.i(LOG_TAG, "rMessage  : " + rMessage);
-                                Log.i(LOG_TAG, "rMessage.length() : " + rMessage.length());
-                                //{"message":[{"targetTime":null,"image":"http:\/\/210.118.74.195:8080\/KOG_Server_Rest\/upload\/UserImage\/default.png","nickname":"jonghean"}],"status":"200"}
-                                for(int i=0; i< rMessage.length(); i++)
-                                {
-                                    rObj = rMessage.getJSONObject(i);
-                                    if (!"null".equals(rObj.getString("nickname")) && !isInRoom(URLDecoder.decode(rObj.getString("nickname"), "UTF-8"))) {
-                                        Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" + rObj.getString("nickname") + "|" + rObj.getString("targetTime"));
-                                        mFriends.add(new FriendNameAndIcon(rObj.getString("image"),
-                                                URLDecoder.decode(rObj.getString("nickname"), "UTF-8"),
-                                                rObj.getString("targetTime")));
-
-                                    }
-                                }
-
-                                friendsArrayAdapters = new FriendsArrayAdapters(AddMoreFriendActivity.this, R.layout.friend_list_item, mFriends);
-                                add_more_friend_list.setAdapter(friendsArrayAdapters);
+                        Message msg = getFriendsRequestHandler.obtainMessage();
+                        Bundle b = new Bundle();
+                        b.putString("JSONData", obj.toString());
+                        msg.setData(b);
+                        getFriendsRequestHandler.sendMessage(msg);
 
 
-                                /////////////////////////////
-                            } else {
-                                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-                                Log.e(LOG_TAG, "통신 에러 : " + obj.getString("message"));
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
-                        }
+//                        try {
+//                            status_code = obj.getInt("status");
+//
+//                            if (status_code == 200) {
+//                                JSONArray rMessage;
+//                                rMessage = obj.getJSONArray("message");
+//                                //////// real action ////////
+//                                mFriends = new ArrayList<FriendNameAndIcon>();
+//                                JSONObject rObj;
+//
+//                                Log.i(LOG_TAG, "rMessage  : " + rMessage);
+//                                Log.i(LOG_TAG, "rMessage.length() : " + rMessage.length());
+//                                //{"message":[{"targetTime":null,"image":"http:\/\/210.118.74.195:8080\/KOG_Server_Rest\/upload\/UserImage\/default.png","nickname":"jonghean"}],"status":"200"}
+//                                for(int i=0; i< rMessage.length(); i++)
+//                                {
+//                                    rObj = rMessage.getJSONObject(i);
+//                                    if (!"null".equals(rObj.getString("nickname")) && !isInRoom(URLDecoder.decode(rObj.getString("nickname"), "UTF-8"))) {
+//                                        Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" + rObj.getString("nickname") + "|" + rObj.getString("targetTime"));
+//                                        mFriends.add(new FriendNameAndIcon(rObj.getString("image"),
+//                                                URLDecoder.decode(rObj.getString("nickname"), "UTF-8"),
+//                                                rObj.getString("targetTime")));
+//
+//                                    }
+//                                }
+//
+//                                friendsArrayAdapters = new FriendsArrayAdapters(AddMoreFriendActivity.this, R.layout.friend_list_item, mFriends);
+//                                add_more_friend_list.setAdapter(friendsArrayAdapters);
+//
+//
+//                                /////////////////////////////
+//                            } else {
+//                                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+//                                Log.e(LOG_TAG, "통신 에러 : " + obj.getString("message"));
+//                            }
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        } catch (UnsupportedEncodingException e) {
+//                            e.printStackTrace();
+//                        }
                     }
 
                 }
