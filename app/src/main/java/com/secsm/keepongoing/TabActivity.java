@@ -383,9 +383,7 @@ public class TabActivity extends BaseActivity {
             e.printStackTrace();
         }
     }
-    /** getMyInfoRequest
-     * statusCode == 200 => get My info, Update UI
-     */
+
     Handler achievetimeputRequestHandler = new Handler(){
 
         @Override
@@ -887,6 +885,55 @@ public class TabActivity extends BaseActivity {
     // REST API //
     //////////////////////////////////
 
+
+    Handler getFriendsRequestHandler = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+                Bundle b = msg.getData();
+                JSONObject result = new JSONObject(b.getString("JSONData"));
+                int statusCode = Integer.parseInt(result.getString("status"));
+                if (statusCode == 200) {
+                    JSONArray rMessage = result.getJSONArray("message");
+                    mFriends = new ArrayList<FriendNameAndIcon>();
+
+                    JSONObject rObj;
+
+                    for(int i=0; i< rMessage.length(); i++)
+                    {
+                        rObj = rMessage.getJSONObject(i);
+                        if (!"null".equals(rObj.getString("nickname"))) {
+                            Log.i(LOG_TAG, "add Friends : " + Encrypt.encodeIfNeed(rObj.getString("image")) + "|" +
+                                    Encrypt.encodeIfNeed(rObj.getString("nickname")) + "|" + Encrypt.encodeIfNeed(rObj.getString("targetTime")));
+
+
+                            mFriends.add(new FriendNameAndIcon(
+//                                                URLDecoder.decode(rObj.getString("type"), "UTF-8"),
+                                    URLDecoder.decode(rObj.getString("image"), "UTF-8"),
+                                    URLDecoder.decode(rObj.getString("nickname"), "UTF-8"),
+                                    URLDecoder.decode(rObj.getString("targetTime"), "UTF-8")));
+                        }
+                    }
+
+                    FriendsArrayAdapters mockFriendArrayAdapter;
+                    mockFriendArrayAdapter = new FriendsArrayAdapters(TabActivity.this, R.layout.friend_list_item, mFriends);
+                    friendList.setAdapter(mockFriendArrayAdapter);
+
+                } else {
+                    Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+                    Log.e(LOG_TAG, "통신 에러 : " + result.getString("message"));
+                }
+            }catch (JSONException e)
+            {
+                e.printStackTrace();
+            }catch (UnsupportedEncodingException e)
+            {
+                e.printStackTrace();
+            }
+
+        }
+    };
     /** 친구목록 가져오기 */
     private void getFriendsRequest() {
 
@@ -897,43 +944,49 @@ public class TabActivity extends BaseActivity {
 
                     JSONObject obj = HttpAPIs.getHttpResponseToJSON(httpResponse);
                     if(obj != null){
-                        try {
-                            status_code = obj.getInt("status");
+                        Message msg = getFriendsRequestHandler.obtainMessage();
+                        Bundle b = new Bundle();
+                        b.putString("JSONData", obj.toString());
+                        msg.setData(b);
+                        getFriendsRequestHandler.sendMessage(msg);
 
-                            if (status_code == 200) {
-                                JSONArray rMessage = obj.getJSONArray("message");
-                                mFriends = new ArrayList<FriendNameAndIcon>();
-
-                                JSONObject rObj;
-
-                                for(int i=0; i< rMessage.length(); i++)
-                                {
-                                    rObj = rMessage.getJSONObject(i);
-                                    if (!"null".equals(rObj.getString("nickname"))) {
-                                        Log.i(LOG_TAG, "add Friends : " + Encrypt.encodeIfNeed(rObj.getString("image")) + "|" +
-                                                Encrypt.encodeIfNeed(rObj.getString("nickname")) + "|" + Encrypt.encodeIfNeed(rObj.getString("targetTime")));
-
-
-                                        mFriends.add(new FriendNameAndIcon(
-//                                                URLDecoder.decode(rObj.getString("type"), "UTF-8"),
-                                                URLDecoder.decode(rObj.getString("image"), "UTF-8"),
-                                                URLDecoder.decode(rObj.getString("nickname"), "UTF-8"),
-                                                URLDecoder.decode(rObj.getString("targetTime"), "UTF-8")));
-                                    }
-                                }
-
-                                FriendsArrayAdapters mockFriendArrayAdapter;
-                                mockFriendArrayAdapter = new FriendsArrayAdapters(TabActivity.this, R.layout.friend_list_item, mFriends);
-                                friendList.setAdapter(mockFriendArrayAdapter);
-
-                            } else {
-                                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
-                        }
+//                        try {
+//                            status_code = obj.getInt("status");
+//
+//                            if (status_code == 200) {
+//                                JSONArray rMessage = obj.getJSONArray("message");
+//                                mFriends = new ArrayList<FriendNameAndIcon>();
+//
+//                                JSONObject rObj;
+//
+//                                for(int i=0; i< rMessage.length(); i++)
+//                                {
+//                                    rObj = rMessage.getJSONObject(i);
+//                                    if (!"null".equals(rObj.getString("nickname"))) {
+//                                        Log.i(LOG_TAG, "add Friends : " + Encrypt.encodeIfNeed(rObj.getString("image")) + "|" +
+//                                                Encrypt.encodeIfNeed(rObj.getString("nickname")) + "|" + Encrypt.encodeIfNeed(rObj.getString("targetTime")));
+//
+//
+//                                        mFriends.add(new FriendNameAndIcon(
+////                                                URLDecoder.decode(rObj.getString("type"), "UTF-8"),
+//                                                URLDecoder.decode(rObj.getString("image"), "UTF-8"),
+//                                                URLDecoder.decode(rObj.getString("nickname"), "UTF-8"),
+//                                                URLDecoder.decode(rObj.getString("targetTime"), "UTF-8")));
+//                                    }
+//                                }
+//
+//                                FriendsArrayAdapters mockFriendArrayAdapter;
+//                                mockFriendArrayAdapter = new FriendsArrayAdapters(TabActivity.this, R.layout.friend_list_item, mFriends);
+//                                friendList.setAdapter(mockFriendArrayAdapter);
+//
+//                            } else {
+//                                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+//                            }
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        } catch (UnsupportedEncodingException e) {
+//                            e.printStackTrace();
+//                        }
                     }
 
                 }
