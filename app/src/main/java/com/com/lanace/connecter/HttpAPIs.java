@@ -461,7 +461,7 @@ public class HttpAPIs {
         return httpPost;
     }
 
-    public static HttpRequestBase logoutDelete(String nickname) {
+    public static HttpRequestBase logoutDelete(String nickname) throws IOException{
         HttpPost httpPost = new HttpPost(HttpConnecter.getRestfullBaseURL() + "LoginSession");
 
 

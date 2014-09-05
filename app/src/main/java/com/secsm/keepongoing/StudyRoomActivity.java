@@ -191,11 +191,21 @@ public class StudyRoomActivity extends BaseActivity {
         additionalBtn.setEnabled(false);
         messageTxt.setEnabled(false);
         messageList.setEnabled(false);
-        actionBarFirstBtn.setEnabled(false);
-        actionBarSecondBtn.setEnabled(false);
-        actionBarThirdBtn.setEnabled(false);
-        actionBarFourthBtn.setEnabled(false);
-        actionBarFifthBtn.setEnabled(false);
+        if (actionBarFirstBtn != null) {
+            actionBarFirstBtn.setEnabled(false);
+        }
+        if (actionBarSecondBtn != null) {
+            actionBarSecondBtn.setEnabled(false);
+        }
+        if (actionBarThirdBtn != null) {
+            actionBarThirdBtn.setEnabled(false);
+        }
+        if (actionBarFourthBtn != null) {
+            actionBarFourthBtn.setEnabled(false);
+        }
+        if (actionBarFifthBtn != null) {
+            actionBarFifthBtn.setEnabled(false);
+        }
         study_room_additional_page.setEnabled(false);
         study_room_additional_ll1_camera.setEnabled(false);
         study_room_additional_ll2_album.setEnabled(false);
