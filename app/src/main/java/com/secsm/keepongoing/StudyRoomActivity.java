@@ -2320,6 +2320,7 @@ S3
                 @Override
                 public void error(Exception e) {
                     Log.e(LOG_TAG, "에러");
+                    e.printStackTrace();
                 }
             });
         } catch (IOException e) {

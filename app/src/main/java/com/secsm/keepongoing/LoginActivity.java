@@ -143,7 +143,7 @@ public class LoginActivity extends BaseActivity {
 //        Toast.makeText(LoginActivity.this, "로그인이 되었습니다.", Toast.LENGTH_SHORT).show();
 
         KogPreference.setLogin(LoginActivity.this, true);
-        KogPreference.setNickName(LoginActivity.this, nickname);
+        KogPreference.setNickName(LoginActivity.this, nickname.trim());
 
         Intent intent = new Intent(LoginActivity.this, TabActivity.class);
         startActivity(intent);
