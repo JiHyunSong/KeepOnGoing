@@ -26,7 +26,6 @@ public class HttpConnecter {
     private HttpClient httpClient = null;
 
     private HttpConnecter() {
-//        httpClient = new DefaultHttpClient();
         httpClient = new DefaultHttpClient();
         ClientConnectionManager mgr = httpClient.getConnectionManager();
         HttpParams params = httpClient.getParams();

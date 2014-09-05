@@ -171,7 +171,7 @@ public class HttpAPIs {
      * POST get Friends Score in Room
      */
     public static HttpRequestBase getFriendsInRoomGet(String rid, String fromdate, String todate, CallbackResponse callbackResponse) throws IOException {
-        HttpPost httpGet = new HttpPost(HttpConnecter.getRestfullBaseURL()
+        HttpGet httpGet = new HttpGet(HttpConnecter.getRestfullBaseURL()
                 + "Room/User"
                 + "?rid=" + rid
                 + "&fromdate=" + fromdate
@@ -485,6 +485,9 @@ public class HttpAPIs {
             for (String line = null; (line = reader.readLine()) != null; ) {
                 builder.append(line).append("\n");
             }
+
+            Log.e("ilju", "builder.toString() : " + builder.toString());
+
             obj = new JSONObject(URLDecoder.decode(builder.toString(), "utf-8"));
 
             System.out.println(obj.getString("status"));
