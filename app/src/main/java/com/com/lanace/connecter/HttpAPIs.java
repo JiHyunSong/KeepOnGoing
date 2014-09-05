@@ -461,6 +461,22 @@ public class HttpAPIs {
         return httpPost;
     }
 
+    public static HttpRequestBase logoutDelete(String nickname) {
+        HttpPost httpPost = new HttpPost(HttpConnecter.getRestfullBaseURL() + "LoginSession");
+
+
+        LogoutDataSet dataSet = new LogoutDataSet();
+        dataSet.nickname = nickname;
+
+        String json = new Gson().toJson(dataSet);
+
+        httpPost.setHeader("Content-Type", "application/json");
+        StringEntity entity = new StringEntity(json, "utf-8");
+        httpPost.setEntity(entity);
+
+        return httpPost;
+    }
+
 
     public static JSONObject getHttpResponseToJSON(HttpResponse httpResponse) {
         BufferedReader reader;
@@ -588,5 +604,9 @@ public class HttpAPIs {
         public String date;
         public String types;
         public String title;
+    }
+
+    public static class LogoutDataSet{
+        public String nickname;
     }
 }

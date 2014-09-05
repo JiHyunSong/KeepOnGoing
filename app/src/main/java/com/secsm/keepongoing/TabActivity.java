@@ -1178,58 +1178,111 @@ public class TabActivity extends BaseActivity {
             }
     }
 
-    private void logoutRequest(String nickname) {
+    Handler logoutRequestHandler = new Handler(){
 
-        String get_url = KogPreference.REST_URL +
-                "LoginSession";
-
-        Map<String, String> map = new HashMap<String, String>();
-        map.put("nickname", nickname);
-            Log.i(LOG_TAG, "nickname : " + nickname);
-
-        JSONObject sendBody = new JSONObject(map);
-
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.DELETE, Encrypt.encodeIfNeed(get_url), sendBody,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.i(LOG_TAG, " kickOffMemberRequest get JSONObject");
-                        Log.i(LOG_TAG, response.toString());
-
-                        try {
-                            int status_code = response.getInt("status");
-                            if (status_code == 200) {
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+                Bundle b = msg.getData();
+                JSONObject result = new JSONObject(b.getString("JSONData"));
+                int statusCode = Integer.parseInt(result.getString("status"));
+                if (statusCode == 200) {
 //                                JSONArray rMessage;
 //                                rMessage = response.getJSONArray("message");
-                                //////// real action ////////
+                    //////// real action ////////
 
-                                Toast.makeText(getBaseContext(), "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
 
-                                //////// real action ////////
-                            } else {
-                                Toast.makeText(getBaseContext(), "통신 에러", Toast.LENGTH_SHORT).show();
-                                setAllEnable();
-                                if (KogPreference.DEBUG_MODE) {
-                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        } catch (Exception e) {
-                            Toast.makeText(getBaseContext(), "통신 에러", Toast.LENGTH_SHORT).show();
-                            setAllEnable();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                setAllEnable();
-                Log.i(LOG_TAG, "Response Error");
-                if (KogPreference.DEBUG_MODE) {
-                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
+                    //////// real action ////////
+                } else {
+                    Toast.makeText(getBaseContext(), "통신 에러", Toast.LENGTH_SHORT).show();
+                    Log.e(LOG_TAG, "통신 에러 : " + result.getString("message"));
                 }
+            }catch (JSONException e)
+            {
+                e.printStackTrace();
             }
         }
-        );
-        vQueue.add(jsObjRequest);
+    };
+
+    private void logoutRequest(String nickname) {
+        try {
+            baseHandler.sendEmptyMessage(-1);
+            HttpRequestBase logoutRequest = HttpAPIs.logoutDelete(nickname);
+            HttpAPIs.background(logoutRequest, new CallbackResponse() {
+                public void success(HttpResponse response) {
+                    baseHandler.sendEmptyMessage(1);
+                    JSONObject result = HttpAPIs.getHttpResponseToJSON(response);
+                    Log.e(LOG_TAG, "응답: " + result.toString());
+                    if (result != null) {
+                        Message msg = logoutRequestHandler.obtainMessage();
+                        Bundle b = new Bundle();
+                        b.putString("JSONData", result.toString());
+                        msg.setData(b);
+                        logoutRequestHandler.sendMessage(msg);
+                    }
+                }
+
+                public void error(Exception e) {
+                    baseHandler.sendEmptyMessage(1);
+                    Log.i(LOG_TAG, "Response Error: " + e.toString());
+                    e.printStackTrace();
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        String get_url = KogPreference.REST_URL +
+//                "LoginSession";
+//
+//        Map<String, String> map = new HashMap<String, String>();
+//        map.put("nickname", nickname);
+//            Log.i(LOG_TAG, "nickname : " + nickname);
+//
+//        JSONObject sendBody = new JSONObject(map);
+//
+//        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.DELETE, Encrypt.encodeIfNeed(get_url), sendBody,
+//                new Response.Listener<JSONObject>() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//                        Log.i(LOG_TAG, " kickOffMemberRequest get JSONObject");
+//                        Log.i(LOG_TAG, response.toString());
+//
+//                        try {
+//                            int status_code = response.getInt("status");
+//                            if (status_code == 200) {
+////                                JSONArray rMessage;
+////                                rMessage = response.getJSONArray("message");
+//                                //////// real action ////////
+//
+//                                Toast.makeText(getBaseContext(), "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
+//
+//                                //////// real action ////////
+//                            } else {
+//                                Toast.makeText(getBaseContext(), "통신 에러", Toast.LENGTH_SHORT).show();
+//                                setAllEnable();
+//                                if (KogPreference.DEBUG_MODE) {
+//                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
+//                                }
+//                            }
+//                        } catch (Exception e) {
+//                            Toast.makeText(getBaseContext(), "통신 에러", Toast.LENGTH_SHORT).show();
+//                            setAllEnable();
+//                        }
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                setAllEnable();
+//                Log.i(LOG_TAG, "Response Error");
+//                if (KogPreference.DEBUG_MODE) {
+//                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        }
+//        );
+//        vQueue.add(jsObjRequest);
     }
 
     private void refreshActivity() {
