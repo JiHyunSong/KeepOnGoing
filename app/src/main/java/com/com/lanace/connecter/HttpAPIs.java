@@ -171,11 +171,8 @@ public class HttpAPIs {
      * POST get Friends Score in Room
      */
     public static HttpRequestBase getFriendsInRoomGet(String rid, String fromdate, String todate, CallbackResponse callbackResponse) throws IOException {
-        HttpGet httpGet = new HttpGet(HttpConnecter.getRestfullBaseURL()
+        HttpPost httpGet = new HttpPost(HttpConnecter.getRestfullBaseURL()
                 + "Room/User"
-//                "?rid=" + KogPreference.getRid(StudyRoomActivity.this) +
-//                "&fromdate=" + getThisMonday() +
-//                "&todate=" + getRealDate();
                 + "?rid=" + rid
                 + "&fromdate=" + fromdate
                 + "&todate=" + todate);
