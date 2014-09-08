@@ -3,7 +3,6 @@
     package="com.secsm.keepongoing" >
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <protected-broadcast android:name="android.intent.action.MEDIA_MOUNTED" />
     <!-- 자신의 핸드폰 번호 알아내기 위한 permission -->
@@ -30,7 +29,6 @@
 
     <!-- 프로필 설정 -->
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <!-- 알람 관련 -->
     <uses-permission android:name="android.permission.SET_TIME_ZONE" />

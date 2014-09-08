@@ -373,9 +373,7 @@ public class TabActivity extends BaseActivity {
                 public void error(Exception e) {
                     Log.i(LOG_TAG, "Response Error");
                     Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
-                    if (KogPreference.DEBUG_MODE) {
-                        Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
-                    }
+                    e.printStackTrace();
                 }
             });
 

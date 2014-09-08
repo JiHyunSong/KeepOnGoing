@@ -118,10 +118,10 @@ public class ImprovedDiskBasedCache implements Cache {
             if (entry == null)
                 entry = hdr;
             int i = 0;
-            while((int) (file.length() - cis.bytesRead) < 0 && i != 5) {
-                clear();
-                i++;
-            }
+//            while((int) (file.length() - cis.bytesRead) < 0 && i != 5) {
+//                clear();
+//                i++;
+//            }
             byte[] data = streamToBytes(cis, (int) (file.length() - cis.bytesRead));
             return entry.toCacheEntry(data);
         } catch (IOException e) {

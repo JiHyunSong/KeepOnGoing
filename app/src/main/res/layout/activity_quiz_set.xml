@@ -41,7 +41,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"
                         android:text="문제"
-                        android:textSize="20dp" />
+                        android:textSize="20sp" />
 
                     <TextView
                         android:id="@+id/solve_subject_solve"
@@ -50,7 +50,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="20dp"
                         android:text="수학"
-                        android:textSize="20dp" />
+                        android:textSize="20sp" />
 
                     <TextView
                         android:id="@+id/subject_solve_solve"
@@ -59,7 +59,7 @@
                         android:layout_marginRight="10dp"
                         android:layout_toLeftOf="@id/solve_subject_solve"
                         android:text="과목 : "
-                        android:textSize="20dp" />
+                        android:textSize="20sp" />
 
                 </RelativeLayout>
 
@@ -74,7 +74,6 @@
                         android:id="@+id/textview_solve"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/problemandsubject_solve"
                         android:gravity="top|left"
                         android:lines="10"
                         android:maxLines="10"
@@ -90,7 +89,7 @@
                     android:layout_below="@id/scroll_problemandsubject_solve"
                     android:descendantFocusability="afterDescendants"
                     android:scrollbars="vertical"
-                    android:transcriptMode="normal"></ListView>
+                    android:transcriptMode="normal"/>
 
                 <RelativeLayout
                     android:layout_width="fill_parent"

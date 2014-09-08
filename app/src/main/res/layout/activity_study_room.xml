@@ -5,68 +5,13 @@
     android:layout_height="match_parent"
     tools:context="com.secsm.keepongoing.StudyRoomActivity">
 
-    <FrameLayout
-        android:id="@+id/study_room_fl1"
-        android:layout_width="fill_parent"
-        android:layout_height="300dp">
-
-        <ListView
-            android:id="@+id/study_room_message_list"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_margin="5dp"
-            android:cacheColorHint="#00000000"
-            android:stackFromBottom="true"
-            android:transcriptMode="normal"></ListView>
-    </FrameLayout>
-
-    <LinearLayout
-        android:id="@+id/study_room_black_line"
-        android:layout_width="fill_parent"
-        android:layout_height="1px"
-        android:layout_below="@id/study_room_fl1"
-        android:background="@color/black"
-        android:orientation="vertical" />
-
-    <LinearLayout
-        android:id="@+id/study_room_below_layout"
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:layout_below="@id/study_room_black_line"
-        android:orientation="horizontal"
-        android:visibility="visible">
-
-        <Button
-            android:id="@+id/study_room_additional"
-            android:layout_width="45dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="0.0"
-            android:text="+"
-            android:visibility="visible" />
-
-        <EditText
-            android:id="@+id/study_room_messageTxtView"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="100"
-            android:bufferType="spannable"
-            android:gravity="top" />
-
-        <Button
-            android:id="@+id/study_room_sendMsgBtn"
-            android:layout_width="70sp"
-            android:layout_height="fill_parent"
-            android:layout_weight="0.0"
-            android:text="전송"></Button>
-
-    </LinearLayout>
-
     <LinearLayout
         android:id="@+id/study_room_additional_page"
         android:layout_width="fill_parent"
-        android:layout_height="250dp"
+        android:layout_height="0dp"
+        android:paddingBottom="15dp"
+        android:paddingTop="15dp"
         android:layout_alignParentBottom="true"
-        android:layout_below="@id/study_room_below_layout"
         android:background="#ffffffff"
         android:gravity="center"
         android:orientation="horizontal"
@@ -85,13 +30,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="15dp"
-                android:background="@drawable/talk_ico_menu_camera" />
+                android:background="@drawable/talk_ico_menu_camera"
+                android:contentDescription="@string/study_room_camera" />
 
             <TextView
                 android:id="@+id/study_room_camera_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="카메라"
+                android:text="@string/study_room_camera"
                 android:textAlignment="center" />
         </LinearLayout>
 
@@ -99,7 +45,6 @@
             android:id="@+id/study_room_additional_ll2_album"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/study_room_additional_ll1_camera"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
@@ -109,21 +54,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="15dp"
-                android:background="@drawable/talk_ico_menu_album" />
+                android:background="@drawable/talk_ico_menu_album"
+                android:contentDescription="@string/study_room_gallery" />
 
             <TextView
                 android:id="@+id/study_room_album_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="갤러리"
-                android:textAlignment="center" />
+                android:text="@string/study_room_gallery" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/study_room_additional_ll3_my_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/study_room_additional_ll2_album"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
@@ -133,17 +77,80 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="15dp"
-                android:background="@drawable/talk_ico_menu_secretm" />
+                android:background="@drawable/talk_ico_menu_secretm"
+                android:contentDescription="@string/study_room_today_achievement" />
 
             <TextView
                 android:id="@+id/study_room_my_time_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="오늘의 달성량"
-                android:textAlignment="center" />
+                android:text="@string/study_room_today_achievement" />
         </LinearLayout>
 
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/study_room_black_line2"
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:layout_above="@id/study_room_additional_page"
+        android:background="@color/black"
+        android:orientation="vertical" />
+
+    <LinearLayout
+        android:id="@+id/study_room_below_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/abc_action_bar_default_height"
+        android:layout_above="@id/study_room_black_line2"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <Button
+            android:id="@+id/study_room_additional"
+            android:layout_width="45dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.0"
+            android:text="@string/study_room_additional"
+            android:visibility="visible" />
+
+        <EditText
+            android:id="@+id/study_room_messageTxtView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="100"
+            android:bufferType="spannable"
+            android:gravity="top" >
+            <requestFocus/>
+        </EditText>
+
+        <Button
+            android:id="@+id/study_room_sendMsgBtn"
+            android:layout_width="70sp"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.0"
+            android:text="@string/study_room_send" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/study_room_black_line"
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:layout_above="@id/study_room_below_layout"
+        android:background="@color/black"
+        android:orientation="vertical" />
+
+        <ListView
+            android:id="@+id/study_room_message_list"
+            android:layout_above="@id/study_room_black_line"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:cacheColorHint="#00000000"
+            android:stackFromBottom="true"
+            android:transcriptMode="normal" />
+
 
     <LinearLayout
         android:id="@+id/slidingPage01"
@@ -159,14 +166,13 @@
             android:id="@+id/room_tv1"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="공지사항 :"
+            android:text="@string/study_room_notice"
             android:textColor="#ff000000" />
 
         <TextView
             android:id="@+id/room_role_tv"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/room_tv1"
             android:layout_margin="5dp"
             android:maxLines="5"
             android:scrollbars="vertical"
@@ -175,8 +181,7 @@
         <ListView
             android:id="@+id/roomFriendList"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_below="@id/room_role_tv" />
+            android:layout_height="fill_parent" />
     </LinearLayout>
 
 

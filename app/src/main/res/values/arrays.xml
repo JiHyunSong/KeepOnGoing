@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-        <string-array name="nationalNumbers">
-            <item>대한민국 +82</item>
-            <item>USA +1</item>
-            <item>日本 +81</item>
-            <item>Australia +61</item>
-            <item>Canada +1</item>
-            <item>UK +44</item>
-        </string-array>
+    <string-array name="nationalNumbers">
+        <item>대한민국 +82</item>
+        <item>USA +1</item>
+        <item>日本 +81</item>
+        <item>Australia +61</item>
+        <item>Canada +1</item>
+        <item>UK +44</item>
+    </string-array>
     <string-array name="array_spinner">
         <item>SCALEX</item>
         <item>SCALEY</item>

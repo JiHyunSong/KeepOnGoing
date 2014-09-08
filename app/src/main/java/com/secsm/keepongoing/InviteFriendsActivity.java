@@ -650,6 +650,7 @@ public class InviteFriendsActivity extends BaseActivity {
                         b.putString("JSONData", result.toString());
                         msg.setData(b);
                         createSubjectRoomRequestHandler.sendMessage(msg);
+
                     }
                 }
 

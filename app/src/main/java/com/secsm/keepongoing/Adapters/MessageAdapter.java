@@ -263,7 +263,11 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
 
                     }
                 }
-            }else
+            }else if(m.getMessageType().equals(KogPreference.MESSAGE_TYPE_DUMMY)){
+
+
+            }
+            else
             {
 
             }

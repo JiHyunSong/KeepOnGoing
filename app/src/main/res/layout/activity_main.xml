@@ -19,7 +19,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textColor="#444"
-        android:textSize="40dp"
+        android:textSize="40sp"
         android:layout_alignParentBottom="true"
         android:gravity="center_horizontal"
         android:layout_gravity="center_horizontal"

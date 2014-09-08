@@ -370,8 +370,8 @@ public class ScoreViewActivity extends Activity {
         if (weekday != Calendar.MONDAY) {
             int days = (Calendar.SUNDAY - weekday + 1) % 7;
             now.add(Calendar.DAY_OF_YEAR, days);
-            now.add(Calendar.DAY_OF_YEAR, -7);
         }
+        now.add(Calendar.DAY_OF_YEAR, -7);
         Date date = now.getTime();
 
         String format = new SimpleDateFormat("yyyy-MM-dd").format(date);
@@ -421,7 +421,7 @@ public class ScoreViewActivity extends Activity {
                     JSONObject rObj;
                     for (int i = 0; i < rMessage.length(); i++) {
                         rObj = rMessage.getJSONObject(i);
-//                                    Log.i(LOG_TAG, "2 rObj : " + rObj.toString());
+                        Log.i(LOG_TAG, "2 rObj : " + rObj.toString());
 
                         if (maxIndex < Integer.parseInt(rObj.getString("index"))) {
                             maxIndex = Integer.parseInt(rObj.getString("index"));
@@ -457,19 +457,19 @@ public class ScoreViewActivity extends Activity {
                     maxIndex++;// if index 0 ~ 11, maxIndex will be 12
 
                     Log.i(LOG_TAG, "check log ");
-//                                if(KogPreference.DEBUG_MODE)
-//                                {
-//                                    Iterator<String> iterator = mFriendsScore.keySet().iterator();
-//                                    while(iterator.hasNext())
-//                                    {
-//                                        String Key = (String) iterator.next();
-//                                        Log.i(LOG_TAG, "KEY : " + Key + " VALUE : " +mFriendsScore.get(Key));
-//                                        for(int i=0; i<maxIndex; i++)
-//                                            Log.i(LOG_TAG, "KEY : " + Key + " VALUE : " +mFriendsScore.get(Key).get(i));
-//
-//
-//                                    }
-//                                }
+                    if(KogPreference.DEBUG_MODE)
+                    {
+                        Iterator<String> iterator = mFriendsScore.keySet().iterator();
+                        while(iterator.hasNext())
+                        {
+                            String Key = (String) iterator.next();
+                            Log.i(LOG_TAG, "KEY : " + Key + " VALUE : " +mFriendsScore.get(Key));
+                            for(int i=0; i<maxIndex; i++)
+                                Log.i(LOG_TAG, "KEY : " + Key + " VALUE : " +mFriendsScore.get(Key).get(i));
+
+
+                        }
+                    }
 
                     setView();
 

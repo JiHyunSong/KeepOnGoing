@@ -81,6 +81,7 @@ public class AddFriendActivity extends BaseActivity {
     private boolean isNicknameValid(String nickName) {
         return (nickName.length() >= 4) && (nickName.length() <= 10);
     }
+
     /** base Handler for Enable/Disable all UI components */
     Handler baseHandler = new Handler(){
         @Override

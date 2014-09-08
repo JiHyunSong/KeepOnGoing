@@ -82,4 +82,12 @@
     <string name="title_activity_base">BaseActivity</string>
     <string name="title_activity_score_view">ScoreViewActivity</string>
 
+
+    <!-- Study room Activity -->
+    <string name="study_room_camera">카메라</string>
+    <string name="study_room_gallery">갤러리</string>
+    <string name="study_room_today_achievement">오늘의 달성량</string>
+    <string name="study_room_send">전송</string>
+    <string name="study_room_additional">+</string>
+    <string name="study_room_notice">공지사항 :</string>
 </resources>

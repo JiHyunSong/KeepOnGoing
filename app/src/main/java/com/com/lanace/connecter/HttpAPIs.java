@@ -302,7 +302,7 @@ public class HttpAPIs {
         dataSet.todate = todate;
 
         String json = new Gson().toJson(dataSet);
-
+        Log.i(LOG_TAG, "getFriendsScore request : " + json.toString());
         httpPost.setHeader("Content-Type", "application/json");
         StringEntity entity = new StringEntity(json, "utf-8");
         httpPost.setEntity(entity);
