@@ -275,11 +275,75 @@ public class MyProfileActivity extends BaseActivity {
 
         asyncFilePath = filePath;
 
-        VolleyUploadImage();
+//        VolleyUploadImage();
+        ImageUpload(filePath);
 
     }
     String asyncFilePath;
     boolean imageUploadFlag = false;
+
+    Handler ImageUploadHandler = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+                Bundle b = msg.getData();
+                JSONObject result = new JSONObject(b.getString("JSONData"));
+                int statusCode = Integer.parseInt(result.getString("status"));
+                if (statusCode == 200) {
+                    /////////////////////////////
+                    String uploadedProfileName = result.getString("message");
+                    Log.i(LOG_TAG, "profile rMessage : " + uploadedProfileName);
+                    Log.i(LOG_TAG, "내 사진을 업로드 할거야!");
+
+                    updateMyInfoRequest(uploadedProfileName);
+
+                    setAllDisable();
+                    getMyInfoRequest();
+
+                    /////////////////////////////
+                }
+            }catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    };
+
+
+    void ImageUpload(String filePath){
+        try {
+            baseHandler.sendEmptyMessage(-1);
+            HttpRequestBase requestAuthRegister = HttpAPIs.uploadImage(
+                    KogPreference.UPLOAD_PROFILE_URL,
+                    KogPreference.getRid(MyProfileActivity.this),
+                    KogPreference.getNickName(MyProfileActivity.this),
+                    filePath);
+            HttpAPIs.background(requestAuthRegister, new CallbackResponse() {
+                public void success(HttpResponse response) {
+                    baseHandler.sendEmptyMessage(1);
+                    JSONObject result = HttpAPIs.getHttpResponseToJSON(response);
+                    Log.e(LOG_TAG, "응답: " + result.toString());
+                    if(result != null) {
+                        Message msg = ImageUploadHandler.obtainMessage();
+                        Bundle b = new Bundle();
+                        b.putString("JSONData", result.toString());
+                        msg.setData(b);
+                        ImageUploadHandler.sendMessage(msg);
+                    }
+                }
+
+                public void error(Exception e) {
+                    baseHandler.sendEmptyMessage(1);
+                    Log.i(LOG_TAG, "Response Error: " +  e.toString());
+                    e.printStackTrace();
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     void VolleyUploadImage()
     {

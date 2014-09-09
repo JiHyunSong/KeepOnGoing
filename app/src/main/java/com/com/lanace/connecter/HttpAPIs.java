@@ -15,10 +15,14 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.HttpMultipart;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -470,6 +474,19 @@ public class HttpAPIs {
         httpPost.setHeader("Content-Type", "application/json");
         StringEntity entity = new StringEntity(json, "utf-8");
         httpPost.setEntity(entity);
+
+        return httpPost;
+    }
+
+    public static HttpRequestBase uploadImage(String URL, String rid, String nickname, String filePath) throws IOException{
+        HttpPost httpPost = new HttpPost(URL + "?rid="+rid + "&nickname=" + nickname);
+
+        Log.i(LOG_TAG, "URL : "+URL + "?rid="+rid + "&nickname=" + nickname);
+
+        MultipartEntity multipartEntity = new MultipartEntity();
+        multipartEntity.addPart("file", new FileBody(new File(filePath)));
+
+        httpPost.setEntity(multipartEntity);
 
         return httpPost;
     }
