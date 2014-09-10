@@ -153,7 +153,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@id/tab_name"
-        android:visibility="visible" >
+        android:visibility="gone" >
 
         <RelativeLayout
             android:id="@+id/linearLayout2"
@@ -266,17 +266,7 @@
                 />
         </RelativeLayout>
 
-        <Button
-            android:id="@+id/button1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/linearLayout"
-            android:layout_alignParentBottom="true"
-            android:layout_alignRight="@+id/linearLayout"
-            android:layout_marginBottom="55dp"
-            android:text="Alram"
-            android:textSize="35dp"
-            android:visibility="gone" />
+
 
 
     </RelativeLayout>
@@ -349,5 +339,21 @@
         android:layout_centerVertical="true"
         android:layout_marginBottom="8dp"
         android:visibility="gone" />
+    <Button
+        android:id="@+id/testbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tab_name"
+        android:text="testbtn"
+        android:textSize="35dp"
+        android:visibility="gone" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/testbtn"
+        >
+    </android.support.v4.view.ViewPager>
 
 </RelativeLayout>
