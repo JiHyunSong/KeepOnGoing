@@ -5,16 +5,15 @@
     android:background="@drawable/backgroud_image"
     >
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="zz"
-        android:id="@+id/blue"
-        android:visibility="gone"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="tiger test"
-        android:textSize="50dp"
-        android:id="@+id/tiger"/>
+    <RelativeLayout
+        android:id="@+id/tab_friends_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:visibility="invisible">
+
+        <ListView
+            android:id="@+id/friend_list"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
+    </RelativeLayout>
 </LinearLayout>

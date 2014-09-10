@@ -122,7 +122,7 @@ public class TabActivity  extends Activity implements View.OnClickListener {
         mDBHelper = new DBHelper(this);
 
         init();
-        initTap();
+//        initSettingsTab();
         //  initAlarm();
 
 
@@ -142,35 +142,42 @@ public class TabActivity  extends Activity implements View.OnClickListener {
         bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_USE_LOGO | ActionBar.NAVIGATION_MODE_STANDARD);
 
         // layout (when the tab image button clicked, visibility change
-        layoutStopwatch = (RelativeLayout) findViewById(R.id.tab_stopwatch_layout);
-        layoutFriends = (RelativeLayout) findViewById(R.id.tab_friends_layout);
-        layoutRooms = (RelativeLayout) findViewById(R.id.tab_rooms_layout);
-        layoutSettings = (RelativeLayout) findViewById(R.id.tab_settings_layout);
+//        layoutStopwatch = (RelativeLayout) findViewById(R.id.tab_stopwatch_layout);
+//        layoutFriends = (RelativeLayout) findViewById(R.id.tab_friends_layout);
+//        layoutRooms = (RelativeLayout) findViewById(R.id.tab_rooms_layout);
+//        layoutSettings = (RelativeLayout) findViewById(R.id.tab_settings_layout);
 
         // tab layouts
-        llStopwatch = (LinearLayout) findViewById(R.id.tab_stopwatch_ll);
-        llFriends = (LinearLayout) findViewById(R.id.tab_friends_ll);
-        llRooms = (LinearLayout) findViewById(R.id.tab_rooms_ll);
-        llSettings = (LinearLayout) findViewById(R.id.tab_settings_ll);
+//        llStopwatch = (LinearLayout) findViewById(R.id.tab_stopwatch_ll);
+//        llFriends = (LinearLayout) findViewById(R.id.tab_friends_ll);
+//        llRooms = (LinearLayout) findViewById(R.id.tab_rooms_ll);
+//        llSettings = (LinearLayout) findViewById(R.id.tab_settings_ll);
 
-        // tab image button
-     /*   tabStopwatch = (ImageButton) findViewById(R.id.imgBtn_tab_stopwatch);
-        tabFriends = (ImageButton) findViewById(R.id.imgBtn_tab_friends);
-        tabRooms = (ImageButton) findViewById(R.id.imgBtn_tab_rooms);
-        tabSettings = (ImageButton) findViewById(R.id.imgBtn_tab_settings);
-*/
-        roomList = (ListView) findViewById(R.id.room_list);
-        friendList = (ListView) findViewById(R.id.friend_list);
-
-        roomList.setOnItemClickListener(itemClickListener);
-        friendList.setOnItemClickListener(itemClickListener);
-        roomList.setOnItemLongClickListener(itemLongClickListener);
     }
 
     /**
-     * 텝 초기화
+     * "스터디 목록" 초기화
      */
-    public void initTap() {
+    public void initRoomsTab(View view){
+        roomList = (ListView) view.findViewById(R.id.room_list);
+        roomList.setOnItemClickListener(itemClickListener);
+        roomList.setOnItemLongClickListener(itemLongClickListener);
+        getStudyRoomsRequest();
+    }
+
+    /**
+     * "친구 목록" 초기화
+     */
+    public void initFriendsTab(View view){
+        friendList = (ListView) view.findViewById(R.id.friend_list);
+        friendList.setOnItemClickListener(itemClickListener);
+        getFriendsRequest();
+    }
+
+    /**
+     * "더보기" 초기화
+     */
+    public void initSettingsTab(View view) {
         // setup tab_settings
         arGeneral3 = new ArrayList<String>();
         arGeneral3.add("내 프로필");
@@ -185,7 +192,7 @@ public class TabActivity  extends Activity implements View.OnClickListener {
         ArrayAdapter<String> optionArrayAdapter;
         optionArrayAdapter = new ArrayAdapter<String>(this,
                 R.layout.tab_list, arGeneral3);
-        settingList = (ListView) findViewById(R.id.setting_list);
+        settingList = (ListView) view.findViewById(R.id.setting_list);
         settingList.setAdapter(optionArrayAdapter);
 
         settingList.setOnItemClickListener(itemClickListener);
@@ -751,37 +758,46 @@ public class TabActivity  extends Activity implements View.OnClickListener {
             ahcieve_time.setText(Preference.getString(TabActivity.this, "Resumetimer"));
 */
       //      Toast.makeText(getBaseContext(), "tiger", Toast.LENGTH_SHORT).show();
-      if (!KogPreference.NO_AUTH) {
-          getFriendsRequest();
-          getStudyRoomsRequest();
-      }
       if (resumehelp) {
-          DBContactHelper helper = new DBContactHelper(this);
-          Contact contact3 = helper.getContact(2);
-          goal_time = (TextView) viewtemp.findViewById(R.id.goal);
-          goal_time.setText(
-                  (contact3.gethour() / 10 == 0 ? "0" + contact3.gethour() : contact3.gethour())
-                          + ":" + (contact3.getminute() / 10 == 0 ? "0" + contact3.getminute() : contact3.getminute()) + ":" + "00"
-          );
+          Log.i(LOG_TAG, "mPager.getCurrentItem() : " + mPager.getCurrentItem());
+          switch (mPager.getCurrentItem()) {
+              case 0:
+                  DBContactHelper helper = new DBContactHelper(this);
+                  Contact contact3 = helper.getContact(2);
+                  goal_time = (TextView) viewtemp.findViewById(R.id.goal);
+                  goal_time.setText(
+                          (contact3.gethour() / 10 == 0 ? "0" + contact3.gethour() : contact3.gethour())
+                                  + ":" + (contact3.getminute() / 10 == 0 ? "0" + contact3.getminute() : contact3.getminute()) + ":" + "00"
+                  );
 
 
-          final ToggleButton mtoggle = (ToggleButton) viewtemp.findViewById(R.id.toggleButton2);
-          mtoggle.setBackgroundResource(R.drawable.selector_tab_play_button);
-          if (Preference.getBoolean(TabActivity.this, "toggle")) {
-              mtoggle.setChecked(true);
-              mtoggle.setBackgroundResource(R.drawable.selector_tab_pause_button);
+                  final ToggleButton mtoggle = (ToggleButton) viewtemp.findViewById(R.id.toggleButton2);
+                  mtoggle.setBackgroundResource(R.drawable.selector_tab_play_button);
+                  if (Preference.getBoolean(TabActivity.this, "toggle")) {
+                      mtoggle.setChecked(true);
+                      mtoggle.setBackgroundResource(R.drawable.selector_tab_pause_button);
 
-              if (timer == null) {
-                  Date start = new Date();
-                  Preference.setLong(TabActivity.this, "start", start.getTime() - Preference.getLong(TabActivity.this, "diff"));
-                  TimerTask adTast = new TimerTask() {
-                      public void run() {
-                          mHandler.sendEmptyMessage(0);
+                      if (timer == null) {
+                          Date start = new Date();
+                          Preference.setLong(TabActivity.this, "start", start.getTime() - Preference.getLong(TabActivity.this, "diff"));
+                          TimerTask adTast = new TimerTask() {
+                              public void run() {
+                                  mHandler.sendEmptyMessage(0);
+                              }
+                          };
+                          timer = new Timer();
+                          timer.schedule(adTast, 0, 1000); // 0초후 첫실행, 1초마다 계속실행
                       }
-                  };
-                  timer = new Timer();
-                  timer.schedule(adTast, 0, 1000); // 0초후 첫실행, 1초마다 계속실행
-              }
+                  }
+                  break;
+              case 2:
+                  getFriendsRequest();
+                  break;
+              case 3:
+                  getStudyRoomsRequest();
+                  break;
+              default:
+                  break;
           }
       }
   }
@@ -1435,6 +1451,17 @@ public class TabActivity  extends Activity implements View.OnClickListener {
         mPager = (ViewPager)findViewById(R.id.viewpager);
         mPager.setAdapter(new ViewPagerAdapter(this));
     }
+
+
+    /**
+     * 액션바 리소스 비활성화
+     */
+    private void setInvisibleActionBar() {
+        actionBarFirstBtn.setVisible(false);
+        actionBarSecondBtn.setVisible(false);
+    }
+
+
     private class ViewPagerAdapter extends PagerAdapter {
 
         private LayoutInflater mLayoutInflater;
@@ -1447,38 +1474,70 @@ public class TabActivity  extends Activity implements View.OnClickListener {
         public int getCount() {
             return 4;
         }
+
         @Override
         public Object instantiateItem(View pager, int index) {
             View view = null;
             viewtemp=pager;
             //@ view pager 1st menu
+
+            // TODO : to minsu, plz check index. It doesn't work make sense.
             if(index == 0){
+                Log.i(LOG_TAG, "view Pager Index : 0 ");
                 view = mLayoutInflater.inflate(R.layout.one, null);
                 //todo 첫번쨰 메뉴
                 initAlarm(view);
+                if(actionBarFirstBtn != null && actionBarSecondBtn != null) {
+                    setInvisibleActionBar();
+                    actionBarSecondBtn.setIcon(R.drawable.ic_action_new);
+                    actionBarSecondBtn.setVisible(true);
+                    actionBarSecondBtn.setOnMenuItemClickListener(ab_stopwatchTab_settings_listener);
+                }
             }
             //@ view pager 2nd menu
             else if(index == 1) {
                 //todo 두번쨰 메뉴
+                Log.i(LOG_TAG, "view Pager Index : 1 ");
                 view = mLayoutInflater.inflate(R.layout.two, null);
-                tiger=(TextView)view.findViewById(R.id.tiger);
-                view.findViewById(R.id.blue).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        tiger.setText("bluetiger test");
-                    }
+                initFriendsTab(view);
 
-                });
+                if(actionBarFirstBtn != null && actionBarSecondBtn != null) {
+                    setInvisibleActionBar();
+                    actionBarSecondBtn.setIcon(R.drawable.ic_action_add_person);
+                    actionBarSecondBtn.setVisible(true);
+                    actionBarSecondBtn.setOnMenuItemClickListener(ab_friends_add_listener);
+                }
+//                tiger=(TextView)view.findViewById(R.id.tiger);
+//                view.findViewById(R.id.blue).setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        tiger.setText("bluetiger test");
+//                    }
+//
+//                });
 
             //@ view pager 3rd menu
             }  else if(index ==2){
                 //todo 세번쨰 메뉴
+                Log.i(LOG_TAG, "view Pager Index : 2 ");
                 view = mLayoutInflater.inflate(R.layout.three, null);
+                initRoomsTab(view);
+                if(actionBarFirstBtn != null && actionBarSecondBtn != null) {
+                    setInvisibleActionBar();
+                    actionBarSecondBtn.setIcon(R.drawable.ic_action_new);
+                    actionBarSecondBtn.setVisible(true);
+                    actionBarSecondBtn.setOnMenuItemClickListener(ab_rooms_add_listener);
+                }
             }
             //@ view pager @4th menu
             else{
                 //todo 세번쨰 메뉴
+                Log.i(LOG_TAG, "view Pager Index : 3 ");
                 view = mLayoutInflater.inflate(R.layout.four, null);
+                initSettingsTab(view);
+                if(actionBarFirstBtn != null && actionBarSecondBtn != null) {
+                    setInvisibleActionBar();
+                }
             }
             ((ViewPager)pager).addView(view, 0);
             return view;

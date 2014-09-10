@@ -1,16 +1,24 @@
 package com.secsm.keepongoing;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.secsm.keepongoing.Alarm.Preference;
+import com.secsm.keepongoing.Alarm.alram_list;
 
 
 public class ViewPagerActivity extends Activity implements View.OnClickListener {
@@ -20,6 +28,7 @@ public class ViewPagerActivity extends Activity implements View.OnClickListener 
     private Button   mTwo;
     private Button   mThree;
     private TextView tiger;
+    private static String LOG_TAG = "ViewPagerActivity";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,6 +54,8 @@ public class ViewPagerActivity extends Activity implements View.OnClickListener 
     private void setCurrentItem(int index){
         if(index == 0){
             mPager.setCurrentItem(0);
+
+
         }else if(index == 1){
             mPager.setCurrentItem(1);
         }else{
@@ -83,20 +94,25 @@ public class ViewPagerActivity extends Activity implements View.OnClickListener 
             }
             else if(index == 1) {
                 view = mLayoutInflater.inflate(R.layout.two, null);
-                tiger=(TextView)view.findViewById(R.id.tiger);
-                view.findViewById(R.id.blue).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(ViewPagerActivity.this,
-                            "hi yoshi", 2).show();
-                        tiger.setText("hi Tiger");
-                    }
 
-                });
 
+//                tiger=(TextView)view.findViewById(R.id.tiger);
+//                view.findViewById(R.id.blue).setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        Toast.makeText(ViewPagerActivity.this,
+//                            "hi yoshi", 2).show();
+//                        tiger.setText("hi Tiger");
+//                    }
+//
+//                });
+
+
+            }else if(index == 2){
+                view = mLayoutInflater.inflate(R.layout.three, null);
 
             }else{
-                view = mLayoutInflater.inflate(R.layout.three, null);
+                view = mLayoutInflater.inflate(R.layout.four, null);
             }
             ((ViewPager)pager).addView(view, 0);
 //            yoshi = (Button) findViewById(R.id.yoshi);
