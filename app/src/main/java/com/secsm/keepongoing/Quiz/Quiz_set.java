@@ -309,7 +309,7 @@ public class Quiz_set extends BaseActivity {
                 if (statusCode == 200) {
                     rMessageput = result.getString("message");
 
-                } else if (status_code == 9001) {
+                } else if (statusCode == 9001) {
                     Toast.makeText(getBaseContext(), "답안 등록이 불가능합니다.", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
