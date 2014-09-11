@@ -48,7 +48,7 @@ public class LoginActivity extends BaseActivity {
     private CheckBox login_auto_login_cb;
     private EditText mNicknameView, mPasswordView;
     private View mProgressView, mLoginFormView;
-    private String rMessage, savedNick;
+    private String rMessage;
     private Intent intent;
     private Button mSignUpButton, mSignInButton;
     private BootstrapButton easterEggButton;
@@ -58,9 +58,6 @@ public class LoginActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        intent = getIntent();
-        savedNick = intent.getStringExtra("nickname");
 
         init();
     }
@@ -122,10 +119,8 @@ public class LoginActivity extends BaseActivity {
             mPasswordView.setText(KogPreference.getPassword(LoginActivity.this));
             setAllDisable();
             UserLogin(KogPreference.getNickName(LoginActivity.this), KogPreference.getPassword(LoginActivity.this));
-        } else if (!TextUtils.isEmpty(savedNick)) {
-            mNicknameView.setText(savedNick);
         } else {
-            savedNick = KogPreference.getNickName(LoginActivity.this);
+            String savedNick = KogPreference.getNickName(LoginActivity.this);
             mNicknameView.setText(savedNick);
         }
     }
@@ -150,6 +145,36 @@ public class LoginActivity extends BaseActivity {
         LoginActivity.this.finish();
     }
 
+    Handler UserLoginSuccessHandler = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+                Bundle b = msg.getData();
+                JSONObject result = new JSONObject(b.getString("JSONData"));
+                int statusCode = Integer.parseInt(result.getString("status"));
+                if (statusCode == 200) {
+                    //rMessage = result.getString("message");
+                    GoNextPage(mNicknameView.getText().toString(), mPasswordView.getText().toString());
+                }
+                else if (statusCode == 1001) {
+                    GoNextPage(mNicknameView.getText().toString(), mPasswordView.getText().toString());
+                    Toast.makeText(getBaseContext(), "다른기기에서 로그아웃 됩니다", Toast.LENGTH_SHORT).show();
+                }
+                else if (statusCode == 9001) {
+                    Toast.makeText(getBaseContext(), "아이디와 패스워드를 확인해주세요", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    if (KogPreference.DEBUG_MODE) {
+                        Toast.makeText(getBaseContext(), LOG_TAG + result.getString("message"), Toast.LENGTH_SHORT).show();
+                    }                }
+            }catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    };
+
     /** 로그인 요청 */
     private void UserLogin(final String nickName, final String password) {
 
@@ -168,25 +193,14 @@ public class LoginActivity extends BaseActivity {
                     Log.e(LOG_TAG, "응답: " + result.toString());
                     try {
                         if(result != null){
-                            int statusCode = Integer.parseInt(result.getString("status"));
-                            if (statusCode == 200) {
-                                //rMessage = result.getString("message");
-                                GoNextPage(nickName, password);
-                            }
-                            else if (statusCode == 1001) {
-                                GoNextPage(nickName, password);
-                                Toast.makeText(getBaseContext(), "다른기기에서 로그아웃 됩니다", Toast.LENGTH_SHORT).show();
-                            }
-                            else if (statusCode == 9001) {
-                                Toast.makeText(getBaseContext(), "아이디와 패스워드를 확인해주세요", Toast.LENGTH_SHORT).show();
-                            }
-                            else {
-                                if (KogPreference.DEBUG_MODE) {
-                                    Toast.makeText(getBaseContext(), LOG_TAG + result.getString("message"), Toast.LENGTH_SHORT).show();
-                                }
-                            }
+                            Message msg = UserLoginSuccessHandler.obtainMessage();
+                            Bundle b = new Bundle();
+                            b.putString("JSONData", result.toString());
+                            msg.setData(b);
+                            UserLoginSuccessHandler.sendMessage(msg);
+
                         }
-                    } catch (JSONException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -195,7 +209,7 @@ public class LoginActivity extends BaseActivity {
                     loginHandler.sendEmptyMessage(1);
                     Log.i(LOG_TAG, "Response Error: " +  e.toString());
                     e.printStackTrace();
-                    //Toast.makeText(LoginActivity.this, "연결이 원활하지 않습니다.\n잠시후에 시도해주세요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "연결이 원활하지 않습니다.\n잠시후에 시도해주세요.", Toast.LENGTH_SHORT).show();
                     if (KogPreference.DEBUG_MODE) {
                       //  Toast.makeText(LoginActivity.this, LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
                     }

@@ -110,8 +110,9 @@ public class RegisterActivity extends BaseActivity {
 
     private void GoNextPage() {
         Toast.makeText(getBaseContext(), "회원가입이 되었습니다.", Toast.LENGTH_SHORT).show();
+        KogPreference.setNickName(RegisterActivity.this, rNickName);
+        KogPreference.setPassword(RegisterActivity.this, null);
         Intent intent = new Intent(this, LoginActivity.class);
-        intent.putExtra("nickname", rNickName);
         startActivity(intent);
         RegisterActivity.this.finish();
     }
