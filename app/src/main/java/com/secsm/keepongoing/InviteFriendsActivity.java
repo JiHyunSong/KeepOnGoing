@@ -53,8 +53,6 @@ public class InviteFriendsActivity extends BaseActivity {
     String f_nickName;
 
     private static String LOG_TAG = "InviteFriendActivity";
-    private RequestQueue vQueue;
-    private int status_code;
     private String rMessage;
     FriendsArrayAdapters friendsArrayAdapters;
     FriendsArrayAdapters selected_friendsArrayAdapters;
@@ -85,8 +83,6 @@ public class InviteFriendsActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invite_friends);
-//        MyVolley.init(InviteFriendsActivity.this);
-        vQueue = MyVolley.getRequestQueue(InviteFriendsActivity.this);
         inviteProgressBar = (ProgressBar) findViewById(R.id.invite_progress);
 
         intent = getIntent();
@@ -324,7 +320,7 @@ public class InviteFriendsActivity extends BaseActivity {
                     JSONObject obj = HttpAPIs.getHttpResponseToJSON(httpResponse);
                     if(obj != null){
                         try {
-                            status_code = obj.getInt("status");
+                            int status_code = obj.getInt("status");
 
                             if (status_code == 200) {
                                 JSONArray rMessage;
@@ -370,72 +366,7 @@ public class InviteFriendsActivity extends BaseActivity {
             e.printStackTrace();
         }
     }
-//    private void getFriendsRequest() {
-//
-//        //TODO : check POST/GET METHOD and get_URL
-//        String get_url = KogPreference.REST_URL +
-//                "Friend" +
-//                "?nickname=" + KogPreference.getNickName(InviteFriendsActivity.this) +
-//                "&date=" + getRealDate();
-//
-//        Log.i(LOG_TAG, "URL : " + get_url);
-//
-//        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, Encrypt.encodeIfNeed(get_url), null,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        Log.i(LOG_TAG, "get JSONObject");
-//                        Log.i(LOG_TAG, response.toString());
-//
-//                        try {
-//                            status_code = response.getInt("status");
-//                            if (status_code == 200) {
-//                                JSONArray rMessage;
-//                                rMessage = response.getJSONArray("message");
-//                                //////// real action ////////
-//                                mFriends = new ArrayList<FriendNameAndIcon>();
-//                                JSONObject rObj;
-//
-//                                //{"message":[{"targetTime":null,"image":"http:\/\/210.118.74.195:8080\/KOG_Server_Rest\/upload\/UserImage\/default.png","nickname":"jonghean"}],"status":"200"}
-//                                for(int i=0; i< rMessage.length(); i++)
-//                                {
-//                                    rObj = rMessage.getJSONObject(i);
-//                                    if (!"null".equals(rObj.getString("nickname"))) {
-//                                        Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" + rObj.getString("nickname") + "|" + rObj.getString("targetTime"));
-//                                        mFriends.add(new FriendNameAndIcon(rObj.getString("image"),
-//                                                URLDecoder.decode(rObj.getString("nickname"),"UTF-8"),
-//                                                        rObj.getString("targetTime")));
-//                                    }
-//                                }
-//
-//                                friendsArrayAdapters = new FriendsArrayAdapters(InviteFriendsActivity.this, R.layout.friend_list_item, mFriends);
-//                                invite_friend_list.setAdapter(friendsArrayAdapters);
-//
-//
-//                                /////////////////////////////
-//                            } else {
-//                                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-//                                if (KogPreference.DEBUG_MODE) {
-//                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-//                                }
-//                            }
-//                        } catch (Exception e) {
-//                        }
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Log.i(LOG_TAG, "Response Error");
-//                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-//                if (KogPreference.DEBUG_MODE) {
-//                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
-//                }
-//
-//            }
-//        }
-//        );
-//        vQueue.add(jsObjRequest);
-//    }
+
 
     /** createLifeRoomRequest
      * statusCode == 200 => create room done and Request invite Friends
@@ -515,75 +446,6 @@ public class InviteFriendsActivity extends BaseActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        String get_url = KogPreference.REST_URL +
-//                "Room";// +
-////                "?nickname=" + KogPreference.getNickName(InviteFriendsActivity.this)+
-////                "&type=" + type +
-////                "&rule=" + _rule +
-////                "&roomname=" + _roomname +
-////                "&max_holiday_count=" + max_holiday_count;
-//
-//        JSONObject sendBody = new JSONObject();
-//        try{
-//            sendBody.put("nickname", KogPreference.getNickName(InviteFriendsActivity.this));
-//            sendBody.put("type", type);
-//            sendBody.put("rule", rule);
-//            sendBody.put("roomname", roomname);
-//            sendBody.put("max_holiday_count", max_holiday_count);
-//        }catch (JSONException e)
-//        {
-//            Log.e(LOG_TAG, " sendBody e : " + e.toString());
-//        }
-//
-//        Log.i(LOG_TAG, "URL : " + get_url);
-//
-//        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), sendBody,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        Log.i(LOG_TAG, "get JSONObject");
-//                        Log.i(LOG_TAG, response.toString());
-//
-//                        try {
-//                            status_code = response.getInt("status");
-//                            if (status_code == 200) {
-//                                JSONObject rMessage;
-//                                rMessage = response.getJSONArray("message").getJSONObject(0);
-//                                rid = rMessage.getString("rid");
-//                                //////// real action ////////
-//                                for(int i=0; i<selected_Friends.size(); i++)
-//                                {
-//                                    inviteFriendToRoomRequest(rid, selected_Friends.get(i).getName());
-//                                }
-//
-//                                GoTabPage();
-//                                /////////////////////////////
-//                            } else {
-//                                setAllDisable();
-//
-//                                Toast.makeText(getBaseContext(), "통신 에러 : \n방을 생성할 수 없습니다", Toast.LENGTH_SHORT).show();
-//                                if (KogPreference.DEBUG_MODE) {
-//                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-//                                }
-//                            }
-//                        } catch (Exception e) {
-//                        }
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                setAllDisable();
-//
-//                Log.i(LOG_TAG, "Response Error");
-//                Toast.makeText(getBaseContext(), "통신 에러 : \n방을 생성할 수 없습니다", Toast.LENGTH_SHORT).show();
-//                if (KogPreference.DEBUG_MODE) {
-//                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
-//                }
-//
-//            }
-//        }
-//        );
-//        vQueue.add(jsObjRequest);
     }
 
     /** createSubjectRoomRequest
@@ -664,88 +526,6 @@ public class InviteFriendsActivity extends BaseActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-////    String type, rule, max_holiday_count, start_time, duration_time, showup_time, meet_days;
-////        String _roomname = roomname.trim().replace(" ", "%20");
-////        _roomname = _roomname.trim().replace("\n", "%0D%0A");
-////
-////        String _rule = rule.trim().replace(" ", "%20");
-////        _rule = _rule.trim().replace("\n", "%0D%0A");
-//
-//        //TODO : check POST/GET METHOD and get_URL
-//        String get_url = KogPreference.REST_URL +
-//                "Room"; //+
-////                "?nickname=" + KogPreference.getNickName(InviteFriendsActivity.this)+
-////                "&type=" + type +
-////                "&rule=" + _rule +
-////                "&roomname=" + _roomname +
-////                "&start_time=" + start_time +
-////                "&duration_time=" + duration_time +
-////                "&showup_time=" + showup_time +
-////                "&meet_days=" + meet_days;
-//
-//        JSONObject sendBody = new JSONObject();
-//        try{
-//            sendBody.put("nickname", KogPreference.getNickName(InviteFriendsActivity.this));
-//            sendBody.put("type", type);
-//            sendBody.put("rule", rule);
-//            sendBody.put("roomname", roomname);
-//            sendBody.put("start_time", start_time);
-//            sendBody.put("duration_time", duration_time);
-//            sendBody.put("showup_time", showup_time);
-//            sendBody.put("meet_days", meet_days);
-//        }catch (JSONException e)
-//        {
-//            Log.e(LOG_TAG, " sendBody e : " + e.toString());
-//        }
-//
-//
-//        Log.i(LOG_TAG, "URL : " + get_url);
-//
-//        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), sendBody,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        Log.i(LOG_TAG, "get JSONObject");
-//                        Log.i(LOG_TAG, response.toString());
-//
-//                        try {
-//                            status_code = response.getInt("status");
-//                            if (status_code == 200) {
-//                                JSONObject rMessage;
-//                                rMessage = response.getJSONArray("message").getJSONObject(0);
-//                                rid = rMessage.getString("rid");
-//                                //////// real action ////////
-//                                for(int i=0; i<selected_Friends.size(); i++)
-//                                {
-//                                    inviteFriendToRoomRequest(rid, selected_Friends.get(i).getName());
-//                                }
-//
-//                                GoTabPage();
-//                                /////////////////////////////
-//                            } else {
-//                                setAllDisable();
-//                                Toast.makeText(getBaseContext(), "통신 에러 : \n방을 생성할 수 없습니다", Toast.LENGTH_SHORT).show();
-//                                if (KogPreference.DEBUG_MODE) {
-//                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-//                                }
-//                            }
-//                        } catch (Exception e) {
-//                        }
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Log.i(LOG_TAG, "Response Error");
-//                setAllDisable();
-//                Toast.makeText(getBaseContext(), "통신 에러 : \n방을 생성할 수 없습니다", Toast.LENGTH_SHORT).show();
-//                if (KogPreference.DEBUG_MODE) {
-//                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
-//                }
-//
-//            }
-//        }
-//        );
-//        vQueue.add(jsObjRequest);
     }
 
     /** createSubjectRoomRequest
@@ -804,61 +584,6 @@ public class InviteFriendsActivity extends BaseActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        //TODO : check POST/GET METHOD and get_URL
-//        String get_url = KogPreference.REST_URL +
-//                "Room/User"; // +
-////                "?rid=" + rid +
-////                "&nickname=" + friendName;
-//
-//        JSONObject sendBody = new JSONObject();
-//        try{
-//            sendBody.put("rid", rid);
-//            sendBody.put("nickname", friendName);
-//        }catch (JSONException e)
-//        {
-//            Log.e(LOG_TAG, " sendBody e : " + e.toString());
-//        }
-//
-//        Log.i(LOG_TAG, "URL : " + get_url);
-//
-//        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), sendBody,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        Log.i(LOG_TAG, "get JSONObject");
-//                        Log.i(LOG_TAG, response.toString());
-//
-//                        try {
-//                            status_code = response.getInt("status");
-//                            if (status_code == 200) {
-//                                //////// real action ////////
-//
-//                                /////////////////////////////
-//                            } else {
-//                                setAllDisable();
-//                                Toast.makeText(getBaseContext(), "통신 에러 : \n" + friendName + "친구를 초대할 수 없습니다", Toast.LENGTH_SHORT).show();
-//                                if (KogPreference.DEBUG_MODE) {
-//                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-//                                }
-//                            }
-//                        } catch (Exception e) {
-//                            setAllDisable();
-//                        }
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Log.i(LOG_TAG, "Response Error");
-//                setAllDisable();
-//                Toast.makeText(getBaseContext(), "통신 에러 : \n" + friendName + "친구를 초대할 수 없습니다", Toast.LENGTH_SHORT).show();
-//                if (KogPreference.DEBUG_MODE) {
-//                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
-//                }
-//
-//            }
-//        }
-//        );
-//        vQueue.add(jsObjRequest);
     }
 
 

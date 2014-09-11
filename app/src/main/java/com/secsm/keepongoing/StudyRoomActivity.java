@@ -131,7 +131,7 @@ public class StudyRoomActivity extends BaseActivity {
     private FriendNameAndIcon mFriendsLastToShowScoreDetail;
     private FriendsArrayAdapters friendArrayAdapter;
 
-    private RequestQueue vQueue;
+//    private RequestQueue vQueue;
 
 //    private Socket client = null;
 //    private BufferedReader br = null;
@@ -226,8 +226,7 @@ public class StudyRoomActivity extends BaseActivity {
 
         study_room_progress = (ProgressBar) findViewById(R.id.study_room_progress);
 //        MyVolley.init(StudyRoomActivity.this);
-//        vQueue = Volley.newRequestQueue(this);
-        vQueue = MyVolley.getRequestQueue(StudyRoomActivity.this);
+//        vQueue = MyVolley.getRequestQueue(StudyRoomActivity.this);
 
         mDBHelper = new DBHelper(this);
         intent = getIntent();
@@ -1073,10 +1072,10 @@ public class StudyRoomActivity extends BaseActivity {
         }
 
         ChatImageMultipartRequest req = new ChatImageMultipartRequest(Request.Method.POST, URL, entity, errListener);
-        vQueue.add(req);
-        Log.i("MULTIPART-ENTITY", "add queue");
-
-        vQueue.start();
+//        vQueue.add(req);
+//        Log.i("MULTIPART-ENTITY", "add queue");
+//
+//        vQueue.start();
     }
 
 

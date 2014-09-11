@@ -43,8 +43,6 @@ public class AuthNextActivity extends BaseActivity {
     EditText txtInputNo;
     int certiNo;
     String phoneNo;
-    private RequestQueue vQueue;
-    private String rMessage;
     static String LOG_TAG = "AuthNext Activity";
 
     void setAllEnable(){
@@ -60,9 +58,6 @@ public class AuthNextActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth_next);
-
-//        vQueue = Volley.newRequestQueue(this);
-        vQueue = MyVolley.getRequestQueue(AuthNextActivity.this);
 
         intent = getIntent();
         phoneNo = intent.getStringExtra("phoneNo");

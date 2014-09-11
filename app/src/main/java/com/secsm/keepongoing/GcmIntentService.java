@@ -46,7 +46,6 @@ public class GcmIntentService extends IntentService {
     private static final int FRIEND_INVITE = 1;
     private static final int CHAT_MESSAGE_CHAT = 2;
     private static final int CHAT_MESSAGE_IMAGE = 3;
-    private RequestQueue vQueue;
     private DBHelper mDBHelper;
 
     public GcmIntentService() {
@@ -61,7 +60,6 @@ public class GcmIntentService extends IntentService {
         // in your BroadcastReceiver.
         String messageType = gcm.getMessageType(intent);
         mDBHelper = new DBHelper(this);
-        vQueue = MyVolley.getRequestQueue(this);
         if (!extras.isEmpty()) { // has effect of unparcelling Bundle
 
 //          * Filter messages based on message type. Since it is likely that GCM
@@ -372,80 +370,6 @@ public class GcmIntentService extends IntentService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-
-//        String get_url = KogPreference.REST_URL +
-//                "Rooms" +
-//                "?nickname=" + KogPreference.getNickName(context);
-//
-//        Log.i(LOG_TAG, "URL : " + get_url);
-//
-//        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, Encrypt.encodeIfNeed(get_url), null,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        Log.i(LOG_TAG, "get JSONObject");
-//                        Log.i(LOG_TAG, response.toString());
-//                        try {
-//                            int status_code = response.getInt("status");
-//                            if (status_code == 200) {
-//                                JSONArray rMessage;
-//                                rMessage = response.getJSONArray("message");
-//                                //////// real action ////////
-//                                mRooms = new ArrayList<RoomNaming>();
-//                                JSONObject rObj;
-//
-//                                //{"message":[{"targetTime":null,"image":"http:\/\/210.118.74.195:8080\/KOG_Server_Rest\/upload\/UserImage\/default.png","nickname":"jonghean"}],"status":"200"}
-//                                Log.i(LOG_TAG, "room size : " + rMessage.length());
-//                                for(int i=0; i< rMessage.length(); i++) {
-//                                    rObj = rMessage.getJSONObject(i);
-//                                    if (!"null".equals(rObj.getString("rid"))){
-//                                        mRooms.add(new RoomNaming(
-//                                                URLDecoder.decode(rObj.getString("type"), "UTF-8"),
-//                                                URLDecoder.decode(rObj.getString("rid"),"UTF-8"),
-//                                                URLDecoder.decode(rObj.getString("rule"),"UTF-8"),
-//                                                URLDecoder.decode(rObj.getString("roomname"), "UTF-8"),
-//                                                URLDecoder.decode(rObj.getString("maxHolidayCount"),"UTF-8"),
-//                                                URLDecoder.decode(rObj.getString("startTime"),"UTF-8"),
-//                                                URLDecoder.decode(rObj.getString("durationTime"),"UTF-8"),
-//                                                URLDecoder.decode(rObj.getString("showupTime"),"UTF-8"),
-//                                                URLDecoder.decode(rObj.getString("meetDays"),"UTF-8"),
-//                                                URLDecoder.decode(rObj.getString("num"),"UTF-8")
-//                                        ));
-//                                        Log.i(LOG_TAG, "num"+ URLDecoder.decode(rObj.getString("num"),"UTF-8"));
-//                                    }
-//                                }
-//
-////                                RoomsArrayAdapters roomsArrayAdapter;
-////                                roomsArrayAdapter = new RoomsArrayAdapters(TabActivity.this, R.layout.room_list_item, mRooms);
-////                                roomList.setAdapter(roomsArrayAdapter);
-//                                /////////////////////////////
-//
-//                                pushChatMessageOnlyNotificationBar(GcmIntentService.this, intent);
-//
-//                            } else {
-////                                Toast.makeText(getBaseContext(), "통신 에러 : \n스터디 방 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-//                                if (KogPreference.DEBUG_MODE) {
-//                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-//                                }
-//                            }
-//                        } catch (Exception e) {
-//                        }
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-////                Toast.makeText(getBaseContext(), "통신 에러 : \n스터디 방 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-//                Log.i(LOG_TAG, "Response Error");
-//                if (KogPreference.DEBUG_MODE) {
-//                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
-//                }
-//
-//            }
-//        }
-//        );
-//        vQueue.add(jsObjRequest);
     }
 
 }

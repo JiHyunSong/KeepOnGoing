@@ -34,8 +34,6 @@ public class MainActivity extends Activity {
     ShimmerTextView tv;
     Shimmer shimmer;
     private static String LOG_TAG = "MainActivity";
-    private RequestQueue vQueue;
-    private int status_code;
     private String rMessage;
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final String SENDER_ID = "7537883841";
@@ -52,7 +50,6 @@ public class MainActivity extends Activity {
         Encrypt.initKey();
 //        vQueue = Volley.newRequestQueue(this);
         MyVolley.init(MainActivity.this);
-        vQueue = MyVolley.getRequestQueue(MainActivity.this);
 
         _gcm = GoogleCloudMessaging.getInstance(this);
         _regId = getRegistrationId();

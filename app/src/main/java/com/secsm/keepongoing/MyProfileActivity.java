@@ -68,7 +68,6 @@ public class MyProfileActivity extends BaseActivity {
     private static final int PICK_FROM_ALBUM = 1;
     private static final int CROP_FROM_CAMERA = 2;
     private Uri mImageCaptureUri;
-    private RequestQueue vQueue;
 
     private static String LOG_TAG = "MY PROFILE";
 
@@ -98,8 +97,6 @@ public class MyProfileActivity extends BaseActivity {
                 getImage();
             }
         });
-        vQueue = MyVolley.getRequestQueue(MyProfileActivity.this);
-
     }
 
     private void setAllEnable(){
@@ -345,35 +342,6 @@ public class MyProfileActivity extends BaseActivity {
         }
     }
 
-    void VolleyUploadImage()
-    {
-        Charset c = Charset.forName("utf-8");
-        String URL = KogPreference.UPLOAD_PROFILE_URL+ "?rid=" + KogPreference.getRid(MyProfileActivity.this) + "&nickname=" + Encrypt.encodeIfNeed(KogPreference.getNickName(MyProfileActivity.this));
-        MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, Charset.forName("UTF-8"));
-        try
-        {
-            entity.addPart("file", new FileBody(new File(asyncFilePath)));
-            // add addPART, asyncFilePath : /storage/sdcard0/Pictures/tmp_1408977926598.jpg
-            Log.i("MULTIPART-ENTITY", "add addPART, asyncFilePath : " + asyncFilePath);
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
-        ProfileMultipartRequest req = new ProfileMultipartRequest(Request.Method.POST, URL, entity, errListener);
-        vQueue.add(req);
-        Log.i("MULTIPART-ENTITY", "add queue");
-
-        vQueue.start();
-    }
-
-    Response.ErrorListener errListener = new Response.ErrorListener() {
-        @Override
-        public void onErrorResponse(VolleyError arg0) {
-// TODO Auto-generated method stub
-            Log.d("errrrrrooooor", arg0.toString());
-        }
-    };
 
     /* copy the file from srcFile to destFile */
     public static boolean copyFile(File srcFile, File destFile) {

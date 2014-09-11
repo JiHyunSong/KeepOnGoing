@@ -46,8 +46,6 @@ import java.util.Map;
 
 public class ScoreViewActivity extends Activity {
     private static String LOG_TAG = "ScoreViewActivity";
-    private RequestQueue vQueue;
-    private int status_code;
     private String[] FriendNicks;
     private Intent intent;
     private HashMap<String, ArrayList<FriendScore>> mFriendsScore;
@@ -58,8 +56,6 @@ public class ScoreViewActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_score_view);
-        vQueue = MyVolley.getRequestQueue(ScoreViewActivity.this);
-
 
         intent = getIntent();
         FriendNicks = intent.getStringArrayExtra("Friends");
@@ -515,136 +511,6 @@ public class ScoreViewActivity extends Activity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        //TODO : check POST/GET METHOD and get_URL
-//        String get_url = KogPreference.REST_URL +
-//                "Timeset";
-////                "?rid=" + KogPreference.getRid(StudyRoomActivity.this) +
-////                "&fromdate=" + getThisMonday() +
-////                "&todate=" + getRealDate();
-//
-//        JSONObject sendBody = new JSONObject();
-//        try {
-//            sendBody.put("rid", KogPreference.getRid(ScoreViewActivity.this));
-//            sendBody.put("fromdate", getPrevMonday());
-//            sendBody.put("todate", getRealDate());
-//            Log.i(LOG_TAG, "sendbody : " + sendBody.toString());
-//        } catch (JSONException e) {
-//            Log.e(LOG_TAG, "getFriendsScoreRequest error : " + e.toString());
-//        }
-//
-//        Log.i(LOG_TAG, "URL : " + get_url);
-//
-//        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), sendBody,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        Log.i(LOG_TAG, "get JSONObject");
-//                        Log.i(LOG_TAG, response.toString());
-//
-//                        try {
-//                            int status_code = response.getInt("status");
-//                            if (status_code == 200) {
-//                                JSONArray rMessage;
-//                                rMessage = response.getJSONArray("message");
-//
-//                                Log.i(LOG_TAG, "1 rMessage : " + rMessage.toString());
-//                                ArrayList<FriendScore> temp = new ArrayList<FriendScore>();
-//
-//                                //////// real action ////////
-//                                JSONObject rObj;
-//                                for (int i = 0; i < rMessage.length(); i++) {
-//                                    rObj = rMessage.getJSONObject(i);
-////                                    Log.i(LOG_TAG, "2 rObj : " + rObj.toString());
-//
-//                                    if (maxIndex < Integer.parseInt(rObj.getString("index"))) {
-//                                        maxIndex = Integer.parseInt(rObj.getString("index"));
-//                                    }
-////                                    Log.i(LOG_TAG, "3 maxIndex : " + maxIndex);
-//
-//                                    FriendScore fs = new FriendScore(
-//                                            rObj.getString("score"),
-//                                            rObj.getString("index"),
-//                                            rObj.getString("accomplishedtime"),
-//                                            rObj.getString("date"),
-//                                            rObj.getString("targettime"),
-//                                            URLDecoder.decode(rObj.getString("nickname"), "UTF-8")
-//                                    );
-//                                    temp.add(fs);
-////                                    Log.i(LOG_TAG, "temp : " + temp.toString());
-//////                                    mFriendsScore.put(rObj.getString("nickname"), temp);
-////                                    Log.i(LOG_TAG, "put temp ");
-////                                    }
-////                                    else{
-////                                        FriendScore fs = new FriendScore(
-////                                                rObj.getString("score"),
-////                                                rObj.getString("index"),
-////                                                rObj.getString("accomplishedtime"),
-////                                                rObj.getString("date"),
-////                                                rObj.getString("targettime"),
-////                                                rObj.getString("nickname")
-////                                        );
-////                                        mFriendsScore.get(rObj.getString("nickname")).set(Integer.parseInt(rObj.getString("index")), fs);
-////                                    }
-//                                }
-//                                Log.i(LOG_TAG, "temp filled");
-////                                Log.i(LOG_TAG, "FriendNicks.length : " + FriendNicks.length);
-//                                for (int i = 0; i < FriendNicks.length; i++) {
-//                                    ArrayList<FriendScore> tempFs = new ArrayList<FriendScore>();
-//                                    tempFs.clear();
-//                                    for (int j = 0; j < temp.size(); j++) {
-//                                        if (temp.get(j).getNickname().equals(FriendNicks[i])) {
-//                                            tempFs.add(Integer.parseInt(temp.get(j).getIndex()), temp.get(j));
-////                                            Log.i(LOG_TAG, "add TempFS : " + temp.get(j));
-//                                        }
-//                                    }
-//                                    mFriendsScore.put(FriendNicks[i], tempFs);
-////                                    Log.i(LOG_TAG, "put mFriendsScore : " + FriendNicks[i]);
-//
-//                                }
-//
-//                                maxIndex++;// if index 0 ~ 11, maxIndex will be 12
-//
-//                                Log.i(LOG_TAG, "check log ");
-////                                if(KogPreference.DEBUG_MODE)
-////                                {
-////                                    Iterator<String> iterator = mFriendsScore.keySet().iterator();
-////                                    while(iterator.hasNext())
-////                                    {
-////                                        String Key = (String) iterator.next();
-////                                        Log.i(LOG_TAG, "KEY : " + Key + " VALUE : " +mFriendsScore.get(Key));
-////                                        for(int i=0; i<maxIndex; i++)
-////                                            Log.i(LOG_TAG, "KEY : " + Key + " VALUE : " +mFriendsScore.get(Key).get(i));
-////
-////
-////                                    }
-////                                }
-//
-//                                setView();
-//
-//                            } else {
-//                                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-//                                if (KogPreference.DEBUG_MODE) {
-//                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-//                                }
-//                            }
-//                        } catch (Exception e) {
-//                            Log.e(LOG_TAG, "getFriendsScoreRequest error :" + e.toString());
-//                        }
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-//                Log.i(LOG_TAG, "Response Error");
-//                if (KogPreference.DEBUG_MODE) {
-//                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
-//                }
-//
-//            }
-//        }
-//        );
-//        vQueue.add(jsObjRequest);
-//        vQueue.start();
     }
 
 

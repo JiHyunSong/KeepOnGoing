@@ -41,10 +41,8 @@ public class RegisterActivity extends BaseActivity {
 
     private static String LOG_TAG = "Profile";
 //    private String rMessage;
-    private RequestQueue vQueue;
     private EditText nickName, password1, password2, phoneNum;
     private Button btnRegister;
-    private int status_code;
     private Intent intent;
     private String phoneNo;
     private String rNickName;
@@ -93,8 +91,6 @@ public class RegisterActivity extends BaseActivity {
 
         phoneNum.setText(phoneNo);
         phoneNum.setFocusable(false);
-//        vQueue = Volley.newRequestQueue(this);
-        vQueue = MyVolley.getRequestQueue(RegisterActivity.this);
 
         // TODO : register GCM
 
