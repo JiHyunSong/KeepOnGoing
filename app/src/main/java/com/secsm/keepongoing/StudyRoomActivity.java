@@ -1052,31 +1052,88 @@ public class StudyRoomActivity extends BaseActivity {
 
         asyncFilePath = filePath;
         init();
-        VolleyUploadImage();
-
+//        VolleyUploadImage();
+        ImageUpload(filePath);
     }
 
     String asyncFilePath;
     boolean imageUploadFlag = false;
 
-    void VolleyUploadImage() {
-        Charset c = Charset.forName("utf-8");
-        String URL = KogPreference.UPLOAD_CHAT_IMAGE_URL + "?rid=" + KogPreference.getRid(StudyRoomActivity.this) + "&nickname=" + Encrypt.encodeIfNeed(KogPreference.getNickName(StudyRoomActivity.this));
-        MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, Charset.forName("UTF-8"));
+
+
+    Handler ImageUploadHandler = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+                Bundle b = msg.getData();
+                JSONObject result = new JSONObject(b.getString("JSONData"));
+                int statusCode = Integer.parseInt(result.getString("status"));
+                if (statusCode == 200) {
+                    /////////////////////////////
+                    String uploadedChatImgName = result.getString("message");
+                    Log.i(LOG_TAG, "chat image rMessage : " + uploadedChatImgName);
+                    sendMsgToSvr(uploadedChatImgName, KogPreference.MESSAGE_TYPE_IMAGE);
+                    /////////////////////////////
+                }
+            }catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    void ImageUpload(String filePath){
         try {
-            entity.addPart("file", new FileBody(new File(asyncFilePath)));
-            // add addPART, asyncFilePath : /storage/sdcard0/Pictures/tmp_1408977926598.jpg
-            Log.i("MULTIPART-ENTITY", "add addPART, asyncFilePath : " + asyncFilePath);
-        } catch (Exception e) {
+            baseHandler.sendEmptyMessage(-1);
+            HttpRequestBase requestAuthRegister = HttpAPIs.uploadImage(
+                    KogPreference.UPLOAD_CHAT_IMAGE_URL,
+                    KogPreference.getRid(StudyRoomActivity.this),
+                    KogPreference.getNickName(StudyRoomActivity.this),
+                    filePath);
+            HttpAPIs.background(requestAuthRegister, new CallbackResponse() {
+                public void success(HttpResponse response) {
+                    baseHandler.sendEmptyMessage(1);
+                    JSONObject result = HttpAPIs.getHttpResponseToJSON(response);
+                    Log.e(LOG_TAG, "응답: " + result.toString());
+                    if(result != null) {
+                        Message msg = ImageUploadHandler.obtainMessage();
+                        Bundle b = new Bundle();
+                        b.putString("JSONData", result.toString());
+                        msg.setData(b);
+                        ImageUploadHandler.sendMessage(msg);
+                    }
+                }
+
+                public void error(Exception e) {
+                    baseHandler.sendEmptyMessage(1);
+                    Log.i(LOG_TAG, "Response Error: " +  e.toString());
+                    e.printStackTrace();
+                }
+            });
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
-
-        ChatImageMultipartRequest req = new ChatImageMultipartRequest(Request.Method.POST, URL, entity, errListener);
+    }
+//    void VolleyUploadImage() {
+//        Charset c = Charset.forName("utf-8");
+//        String URL = KogPreference.UPLOAD_CHAT_IMAGE_URL + "?rid=" + KogPreference.getRid(StudyRoomActivity.this) + "&nickname=" + Encrypt.encodeIfNeed(KogPreference.getNickName(StudyRoomActivity.this));
+//        MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, Charset.forName("UTF-8"));
+//        try {
+//            entity.addPart("file", new FileBody(new File(asyncFilePath)));
+//            // add addPART, asyncFilePath : /storage/sdcard0/Pictures/tmp_1408977926598.jpg
+//            Log.i("MULTIPART-ENTITY", "add addPART, asyncFilePath : " + asyncFilePath);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        ChatImageMultipartRequest req = new ChatImageMultipartRequest(Request.Method.POST, URL, entity, errListener);
 //        vQueue.add(req);
 //        Log.i("MULTIPART-ENTITY", "add queue");
 //
 //        vQueue.start();
-    }
+//    }
 
 
     private class ChatImageMultipartRequest extends MultipartRequest {
