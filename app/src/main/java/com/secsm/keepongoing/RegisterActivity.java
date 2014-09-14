@@ -195,7 +195,7 @@ public class RegisterActivity extends BaseActivity {
                     // real action
                     achieveTimePutRequest(nickName.getText().toString(),"10:00:00","00:00:00", getRealDate());
                 } else if (statusCode == 1002) {
-                    Toast.makeText(getBaseContext(), "다른 아이디를 사용해주세요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), "이미 등록된 번호입니다.\n다른 아이디를 사용해주세요.", Toast.LENGTH_SHORT).show();
                 } else if (statusCode == 1003){
                     Toast.makeText(getBaseContext(), "이미 가입된 번호입니다.\n중복가입 하실 수 없습니다.", Toast.LENGTH_SHORT).show();
                 } else if (statusCode == 9001) {

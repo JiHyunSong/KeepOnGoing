@@ -77,7 +77,7 @@ public class AuthNextActivity extends BaseActivity {
                 if (Integer.toString(certiNo).equals(txtInputNo.getText().toString())) {
                     AuthConfirm(phoneNo, certiNo);
                 } else {
-                    Toast.makeText(getBaseContext(), "인증에 실패했습니다.\n다시 요청해 주세요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), "인증번호가 틀렸습니다.\n다시 입력해 주세요.", Toast.LENGTH_SHORT).show();
                     Log.e(LOG_TAG, Integer.toString(certiNo));
 
                 }
@@ -86,9 +86,6 @@ public class AuthNextActivity extends BaseActivity {
 
         btnGoBack.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-//                sendSMS(phoneNo);
-//                Toast.makeText(getBaseContext(), "재전송 했습니다.", Toast.LENGTH_SHORT).show();
-                Toast.makeText(getBaseContext(), "되돌아 갑니다.", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(AuthNextActivity.this, AuthActivity.class);
                 intent.putExtra("phoneNo", phoneNo);
                 startActivity(intent);
@@ -155,16 +152,13 @@ public class AuthNextActivity extends BaseActivity {
                     Log.i(LOG_TAG, "receive 200 OK");
                     sendSMS(phoneNo);
 
-                } else if (statusCode == 1001) {
+                } else if (statusCode == 1002) {
                     Toast.makeText(getBaseContext(), "이미 가입된 번호입니다.\n중복가입 하실 수 없습니다.", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(AuthNextActivity.this, LoginActivity.class);
                     startActivity(intent);
                     AuthNextActivity.this.finish();
                 } else {
-
-                    if (KogPreference.DEBUG_MODE) {
-                        Toast.makeText(getBaseContext(), LOG_TAG + result.getString("message"), Toast.LENGTH_SHORT).show();
-                    }
+                    Toast.makeText(getBaseContext(), "잘못된 요청입니다", Toast.LENGTH_SHORT).show();
                 }
             }catch (JSONException e)
             {
