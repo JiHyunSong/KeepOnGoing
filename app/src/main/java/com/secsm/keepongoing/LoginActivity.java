@@ -157,9 +157,15 @@ public class LoginActivity extends BaseActivity {
                     //rMessage = result.getString("message");
                     GoNextPage(mNicknameView.getText().toString(), mPasswordView.getText().toString());
                 }
+                else if (statusCode == 1000) {
+                    Toast.makeText(getBaseContext(), "입력란을 채워 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                }
                 else if (statusCode == 1001) {
+                    Toast.makeText(getBaseContext(), "아이디 또는 패스워드가 잘못되었습니다.", Toast.LENGTH_SHORT).show();
+                }
+                else if (statusCode == 1002) {
                     GoNextPage(mNicknameView.getText().toString(), mPasswordView.getText().toString());
-                    Toast.makeText(getBaseContext(), "다른기기에서 로그아웃 됩니다", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), "중복로그인으로 인해\n다른기기에서 로그아웃 됩니다", Toast.LENGTH_SHORT).show();
                 }
                 else if (statusCode == 9001) {
                     Toast.makeText(getBaseContext(), "아이디와 패스워드를 확인해주세요", Toast.LENGTH_SHORT).show();
