@@ -171,6 +171,16 @@ public class LoginActivity extends BaseActivity {
             }catch (JSONException e)
             {
                 e.printStackTrace();
+                errorHandler.sendEmptyMessage(1);
+            }
+        }
+    };
+
+    Handler errorHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            if(msg.what == 1){
+                Toast.makeText(getBaseContext(), "연결이 원활하지 않습니다.\n잠시후에 시도해주세요.", Toast.LENGTH_SHORT).show();
             }
         }
     };
@@ -202,17 +212,15 @@ public class LoginActivity extends BaseActivity {
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
+                        errorHandler.sendEmptyMessage(1);
                     }
                 }
 
                 public void error(Exception e) {
                     loginHandler.sendEmptyMessage(1);
+                    errorHandler.sendEmptyMessage(1);
                     Log.i(LOG_TAG, "Response Error: " +  e.toString());
                     e.printStackTrace();
-                    Toast.makeText(LoginActivity.this, "연결이 원활하지 않습니다.\n잠시후에 시도해주세요.", Toast.LENGTH_SHORT).show();
-                    if (KogPreference.DEBUG_MODE) {
-                      //  Toast.makeText(LoginActivity.this, LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
-                    }
                 }
             });
 

@@ -130,6 +130,14 @@ public class AuthNextActivity extends BaseActivity {
             }
         }
     };
+    Handler errorHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            if(msg.what == 1){
+                Toast.makeText(getBaseContext(), "연결이 원활하지 않습니다.\n잠시후에 시도해주세요.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
 
     /** AuthNumRegister
      * statusCode == 200 => send SMS to phone num
@@ -187,12 +195,10 @@ public class AuthNextActivity extends BaseActivity {
 
                 public void error(Exception e) {
                     baseHandler.sendEmptyMessage(1);
+                    errorHandler.sendEmptyMessage(1);
                     Log.i(LOG_TAG, "Response Error: " +  e.toString());
                     e.printStackTrace();
                     //Toast.makeText(LoginActivity.this, "연결이 원활하지 않습니다.\n잠시후에 시도해주세요.", Toast.LENGTH_SHORT).show();
-                    if (KogPreference.DEBUG_MODE) {
-                        //  Toast.makeText(LoginActivity.this, LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
-                    }
                 }
             });
 
@@ -214,13 +220,14 @@ public class AuthNextActivity extends BaseActivity {
                     Log.i(LOG_TAG, "receive 200 OK");
                     GoNextPage();
                 } else {
-                    Toast.makeText(getBaseContext(), "인증에 실패했습니다.\n다시 요청해 주세요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), "인증번호가 틀렸습니다.\n다시 입력해 주세요.", Toast.LENGTH_SHORT).show();
                     if (KogPreference.DEBUG_MODE) {
                         Toast.makeText(getBaseContext(), LOG_TAG + result.getString("message"), Toast.LENGTH_SHORT).show();
                     }
                 }
             }catch (JSONException e)
             {
+                errorHandler.sendEmptyMessage(1);
                 e.printStackTrace();
             }
         }
@@ -249,16 +256,14 @@ public class AuthNextActivity extends BaseActivity {
 
                 public void error(Exception e) {
                     baseHandler.sendEmptyMessage(1);
+                    errorHandler.sendEmptyMessage(1);
                     Log.i(LOG_TAG, "Response Error: " +  e.toString());
                     e.printStackTrace();
-                    //Toast.makeText(LoginActivity.this, "연결이 원활하지 않습니다.\n잠시후에 시도해주세요.", Toast.LENGTH_SHORT).show();
-                    if (KogPreference.DEBUG_MODE) {
-                        //  Toast.makeText(LoginActivity.this, LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
-                    }
                 }
             });
 
         } catch (IOException e) {
+            errorHandler.sendEmptyMessage(1);
             e.printStackTrace();
         }
     }

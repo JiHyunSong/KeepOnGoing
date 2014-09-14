@@ -93,6 +93,17 @@ public class AddFriendActivity extends BaseActivity {
         }
     };
 
+    Handler errorHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+
+            if(msg.what == 1){
+                Toast.makeText(getBaseContext(), "연결이 원활하지 않습니다.\n잠시후에 시도해주세요.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
+
+
     /** getMyInfoRequest
      * statusCode == 200 => get My info, Update UI
      */
@@ -144,6 +155,7 @@ public class AddFriendActivity extends BaseActivity {
 
                 public void error(Exception e) {
                     baseHandler.sendEmptyMessage(1);
+                    errorHandler.sendEmptyMessage(1);
                     Log.i(LOG_TAG, "Response Error: " +  e.toString());
                     e.printStackTrace();
                 }

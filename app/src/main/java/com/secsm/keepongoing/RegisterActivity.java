@@ -167,6 +167,15 @@ public class RegisterActivity extends BaseActivity {
         }
     };
 
+    Handler errorHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            if(msg.what == 1){
+                Toast.makeText(getBaseContext(), "연결이 원활하지 않습니다.\n잠시후에 시도해주세요.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
+
     /**
      * AuthNumRegister
      * statusCode == 200 => send SMS to phone num
@@ -187,6 +196,8 @@ public class RegisterActivity extends BaseActivity {
                     achieveTimePutRequest(nickName.getText().toString(),"10:00:00","00:00:00", getRealDate());
                 } else if (statusCode == 1002) {
                     Toast.makeText(getBaseContext(), "다른 아이디를 사용해주세요.", Toast.LENGTH_SHORT).show();
+                } else if (statusCode == 1003){
+                    Toast.makeText(getBaseContext(), "이미 가입된 번호입니다.\n중복가입 하실 수 없습니다.", Toast.LENGTH_SHORT).show();
                 } else if (statusCode == 9001) {
                     Toast.makeText(getBaseContext(), "회원가입이 불가능합니다.", Toast.LENGTH_SHORT).show();
                 } else {
@@ -194,6 +205,7 @@ public class RegisterActivity extends BaseActivity {
                     Log.e(LOG_TAG, "통신 장애 : " + result.getString("message"));
                 }
             } catch (JSONException e) {
+                errorHandler.sendEmptyMessage(1);
                 e.printStackTrace();
             }
         }
@@ -225,12 +237,10 @@ public class RegisterActivity extends BaseActivity {
 
                 public void error(Exception e) {
                     baseHandler.sendEmptyMessage(1);
+                    errorHandler.sendEmptyMessage(1);
                     Log.i(LOG_TAG, "Response Error: " + e.toString());
                     e.printStackTrace();
-                    //Toast.makeText(LoginActivity.this, "연결이 원활하지 않습니다.\n잠시후에 시도해주세요.", Toast.LENGTH_SHORT).show();
-                    if (KogPreference.DEBUG_MODE) {
-                        //  Toast.makeText(LoginActivity.this, LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
-                    }
+                    errorHandler.sendEmptyMessage(1);
                 }
             });
 
@@ -270,6 +280,7 @@ public class RegisterActivity extends BaseActivity {
                     Log.e(LOG_TAG, "통신 장애 : " + result.getString("message"));
                 }
             } catch (JSONException e) {
+                errorHandler.sendEmptyMessage(1);
                 e.printStackTrace();
             }
         }
@@ -300,10 +311,8 @@ public class RegisterActivity extends BaseActivity {
 
                 public void error(Exception e) {
                     Log.i(LOG_TAG, "Response Error");
-                    Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
-                    if (KogPreference.DEBUG_MODE) {
-                        Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
-                    }
+                    baseHandler.sendEmptyMessage(1);
+                    errorHandler.sendEmptyMessage(1);
                 }
             });
 

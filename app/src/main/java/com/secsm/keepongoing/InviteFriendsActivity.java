@@ -237,6 +237,15 @@ public class InviteFriendsActivity extends BaseActivity {
         }
     };
 
+    Handler errorHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            if(msg.what == 1){
+                Toast.makeText(getBaseContext(), "연결이 원활하지 않습니다.\n잠시후에 시도해주세요.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
+
 
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
@@ -299,6 +308,7 @@ public class InviteFriendsActivity extends BaseActivity {
             }catch (JSONException e)
             {
                 e.printStackTrace();
+                errorHandler.sendEmptyMessage(1);
             }
         }
     };
@@ -326,10 +336,13 @@ public class InviteFriendsActivity extends BaseActivity {
                 public void error(Exception e) {
                     Log.e(LOG_TAG, "에러");
                     e.printStackTrace();
+                    errorHandler.sendEmptyMessage(1);
+
                 }
             });
         } catch (IOException e) {
             e.printStackTrace();
+            errorHandler.sendEmptyMessage(1);
         }
     }
 
@@ -363,6 +376,7 @@ public class InviteFriendsActivity extends BaseActivity {
                 }
             }catch (JSONException e)
             {
+                errorHandler.sendEmptyMessage(1);
                 e.printStackTrace();
             }
         }
@@ -402,14 +416,12 @@ public class InviteFriendsActivity extends BaseActivity {
                     baseHandler.sendEmptyMessage(1);
                     Log.i(LOG_TAG, "Response Error: " + e.toString());
                     e.printStackTrace();
-                    //Toast.makeText(LoginActivity.this, "연결이 원활하지 않습니다.\n잠시후에 시도해주세요.", Toast.LENGTH_SHORT).show();
-                    if (KogPreference.DEBUG_MODE) {
-                        //  Toast.makeText(LoginActivity.this, LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
-                    }
+                    errorHandler.sendEmptyMessage(1);
                 }
             });
 
         } catch (IOException e) {
+            errorHandler.sendEmptyMessage(1);
             e.printStackTrace();
         }
     }
@@ -444,6 +456,7 @@ public class InviteFriendsActivity extends BaseActivity {
             }catch (JSONException e)
             {
                 e.printStackTrace();
+                errorHandler.sendEmptyMessage(1);
             }
         }
     };
@@ -485,11 +498,13 @@ public class InviteFriendsActivity extends BaseActivity {
                 public void error(Exception e) {
                     baseHandler.sendEmptyMessage(1);
                     Log.i(LOG_TAG, "Response Error: " +  e.toString());
+                    errorHandler.sendEmptyMessage(1);
                     e.printStackTrace();
                 }
             });
 
         } catch (IOException e) {
+            errorHandler.sendEmptyMessage(1);
             e.printStackTrace();
         }
     }
@@ -516,7 +531,7 @@ public class InviteFriendsActivity extends BaseActivity {
                 }
             }catch (JSONException e)
             {
-                e.printStackTrace();
+                errorHandler.sendEmptyMessage(1);
             }
         }
     };
@@ -542,12 +557,14 @@ public class InviteFriendsActivity extends BaseActivity {
 
                 public void error(Exception e) {
                     baseHandler.sendEmptyMessage(1);
+                    errorHandler.sendEmptyMessage(1);
                     Log.i(LOG_TAG, "Response Error: " +  e.toString());
                     e.printStackTrace();
                 }
             });
 
         } catch (IOException e) {
+            errorHandler.sendEmptyMessage(1);
             e.printStackTrace();
         }
     }

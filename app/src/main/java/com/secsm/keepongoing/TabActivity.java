@@ -368,7 +368,7 @@ public class TabActivity extends BaseActivity {
 
                 public void error(Exception e) {
                     Log.i(LOG_TAG, "Response Error");
-                    Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
+                    errorHandler.sendEmptyMessage(1);
                     e.printStackTrace();
                 }
             });
@@ -448,6 +448,7 @@ public class TabActivity extends BaseActivity {
                 public void error(Exception e) {
                     Log.i(LOG_TAG, "Response Error");
                     e.printStackTrace();
+                    errorHandler.sendEmptyMessage(1);
 //                    Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
 //                    if (KogPreference.DEBUG_MODE) {
 //                        Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
@@ -952,7 +953,10 @@ public class TabActivity extends BaseActivity {
                 @Override
                 public void error(Exception e) {
                     Log.e(LOG_TAG, "에러");
+                    errorHandler.sendEmptyMessage(1);
+                    e.printStackTrace();
                 }
+
             });
         } catch (IOException e) {
             e.printStackTrace();
@@ -1031,6 +1035,7 @@ public class TabActivity extends BaseActivity {
                 @Override
                 public void error(Exception e) {
                     e.printStackTrace();
+                    errorHandler.sendEmptyMessage(1);
                 }
             });
         } catch (IOException e) {
@@ -1087,10 +1092,12 @@ public class TabActivity extends BaseActivity {
                     public void error(Exception e) {
                         outRoomRequestHandler.sendEmptyMessage(-1);
                         baseHandler.sendEmptyMessage(1);
+                        errorHandler.sendEmptyMessage(1);
                     }
                 });
             } catch (IOException e) {
                 e.printStackTrace();
+                errorHandler.sendEmptyMessage(1);
             }
     }
 
@@ -1141,6 +1148,7 @@ public class TabActivity extends BaseActivity {
 
                 public void error(Exception e) {
                     baseHandler.sendEmptyMessage(1);
+                    errorHandler.sendEmptyMessage(1);
                     Log.i(LOG_TAG, "Response Error: " + e.toString());
                     e.printStackTrace();
                 }
@@ -1168,6 +1176,15 @@ public class TabActivity extends BaseActivity {
             }
             else if(msg.what == -1){
                 setAllDisable();
+            }
+        }
+    };
+
+    Handler errorHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            if(msg.what == 1){
+                Toast.makeText(getBaseContext(), "연결이 원활하지 않습니다.\n잠시후에 시도해주세요.", Toast.LENGTH_SHORT).show();
             }
         }
     };

@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -298,6 +300,14 @@ public class GcmIntentService extends IntentService {
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
     }
 
+    Handler errorHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            if(msg.what == 1){
+                Toast.makeText(getBaseContext(), "연결이 원활하지 않습니다.\n잠시후에 시도해주세요.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
 
     private ArrayList<RoomNaming> mRooms;
     private RoomNaming thisRoom;
@@ -349,25 +359,25 @@ public class GcmIntentService extends IntentService {
 
                         } else {
                             Log.e(LOG_TAG, "통신 에러 : " + obj.getString("message"));
-
-//                                Toast.makeText(getBaseContext(), "통신 에러 : \n스터디 방 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-//                            if (KogPreference.DEBUG_MODE) {
-//                                Toast.makeText(getBaseContext(), LOG_TAG + obj.getString("message"), Toast.LENGTH_SHORT).show();
-//                            }
+                            errorHandler.sendEmptyMessage(1);
                         }
                     } catch (JSONException e) {
+                        errorHandler.sendEmptyMessage(1);
                         e.printStackTrace();
                     } catch (UnsupportedEncodingException e) {
+                        errorHandler.sendEmptyMessage(1);
                         e.printStackTrace();
                     }
                 }
 
                 @Override
                 public void error(Exception e) {
+                    errorHandler.sendEmptyMessage(1);
                     e.printStackTrace();
                 }
             });
         } catch (IOException e) {
+            errorHandler.sendEmptyMessage(1);
             e.printStackTrace();
         }
     }
