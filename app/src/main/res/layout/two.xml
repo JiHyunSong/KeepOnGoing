@@ -9,7 +9,7 @@
         android:id="@+id/tab_friends_layout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:visibility="invisible">
+        android:visibility="visible">
 
         <ListView
             android:id="@+id/friend_list"

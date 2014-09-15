@@ -177,7 +177,7 @@ public class TabActivity  extends Activity implements View.OnClickListener {
         }
         roomList.setOnItemClickListener(itemClickListener);
         roomList.setOnItemLongClickListener(itemLongClickListener);
-//        getStudyRoomsRequest();
+        getStudyRoomsRequest();
 
     }
 
@@ -198,7 +198,7 @@ public class TabActivity  extends Activity implements View.OnClickListener {
             friendList.setAdapter(mockFriendArrayAdapter);
         }
         friendList.setOnItemClickListener(itemClickListener);
-//        getFriendsRequest();
+        getFriendsRequest();
     }
 
     /**

@@ -22,7 +22,7 @@ import java.util.Set;
 public final class KogPreference {
     private static String LOG_TAG = "Preference LOG";
     public static Boolean DEBUG_MODE = true;
-    public static Boolean NO_AUTH = true;
+    public static Boolean NO_AUTH = false;
     public static Boolean NO_SOCKET = false;
     private static final String PREF_NAME = "KeepOnGoingPreference";
     private static String LOGIN_TAG = "LOGIN";
