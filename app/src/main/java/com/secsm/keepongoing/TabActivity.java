@@ -1572,12 +1572,12 @@ public class TabActivity  extends Activity implements View.OnClickListener {
                 view = mLayoutInflater.inflate(R.layout.one, null);
                 //todo 첫번쨰 메뉴
                 initAlarm(view);
-                if(actionBarFirstBtn != null && actionBarSecondBtn != null) {
+       /*         if(actionBarFirstBtn != null && actionBarSecondBtn != null) {
                     setInvisibleActionBar();
                     actionBarSecondBtn.setIcon(R.drawable.ic_action_new);
                     actionBarSecondBtn.setVisible(true);
                     actionBarSecondBtn.setOnMenuItemClickListener(ab_stopwatchTab_settings_listener);
-                }
+                }*/
             }
             //@ view pager 2nd menu
             else if(index == 1) {
@@ -1586,12 +1586,12 @@ public class TabActivity  extends Activity implements View.OnClickListener {
                 view = mLayoutInflater.inflate(R.layout.two, null);
                 initFriendsTab(view);
 
-                if(actionBarFirstBtn != null && actionBarSecondBtn != null) {
+              /*  if(actionBarFirstBtn != null && actionBarSecondBtn != null) {
                     setInvisibleActionBar();
                     actionBarSecondBtn.setIcon(R.drawable.ic_action_add_person);
                     actionBarSecondBtn.setVisible(true);
                     actionBarSecondBtn.setOnMenuItemClickListener(ab_friends_add_listener);
-                }
+                }*/
 
             //@ view pager 3rd menu
             }  else if(index ==2){
@@ -1599,12 +1599,12 @@ public class TabActivity  extends Activity implements View.OnClickListener {
 //                Log.i(LOG_TAG, "view Pager Index : 2 " + mPager.getCurrentItem());
                 view = mLayoutInflater.inflate(R.layout.three, null);
                 initRoomsTab(view);
-                if(actionBarFirstBtn != null && actionBarSecondBtn != null) {
+          /*      if(actionBarFirstBtn != null && actionBarSecondBtn != null) {
                     setInvisibleActionBar();
                     actionBarSecondBtn.setIcon(R.drawable.ic_action_new);
                     actionBarSecondBtn.setVisible(true);
                     actionBarSecondBtn.setOnMenuItemClickListener(ab_rooms_add_listener);
-                }
+                }*/
             }
             //@ view pager @4th menu
             else if(index == 3){
@@ -1612,9 +1612,9 @@ public class TabActivity  extends Activity implements View.OnClickListener {
 //                Log.i(LOG_TAG, "view Pager Index : 3 " + mPager.getCurrentItem());
                 view = mLayoutInflater.inflate(R.layout.four, null);
                 initSettingsTab(view);
-                if(actionBarFirstBtn != null && actionBarSecondBtn != null) {
+         /*       if(actionBarFirstBtn != null && actionBarSecondBtn != null) {
                     setInvisibleActionBar();
-                }
+                }*/
             }
             ((ViewPager)pager).addView(view, 0);
             return view;
