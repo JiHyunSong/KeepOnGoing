@@ -120,6 +120,12 @@ public class AddFriendActivity extends BaseActivity {
                     // real action
 
                     Toast.makeText(getBaseContext(), "친구로 등록되었습니다.", Toast.LENGTH_SHORT).show();
+                } else if (statusCode == 1000) {
+                    Toast.makeText(getBaseContext(), "친구 추가할 아이디를 확인해주세요.", Toast.LENGTH_SHORT).show();
+                } else if (statusCode == 1001) {
+                    Toast.makeText(getBaseContext(), "친구 추가할 아이디를 확인해주세요.", Toast.LENGTH_SHORT).show();
+                } else if (statusCode == 1002) {
+                    Toast.makeText(getBaseContext(), "이미 친구로 등록되어 있습니다.", Toast.LENGTH_SHORT).show();
                 } else if (statusCode == 9001) {
                     Toast.makeText(getBaseContext(), "친구 추가할 아이디를 확인해주세요.", Toast.LENGTH_SHORT).show();
                 } else {
