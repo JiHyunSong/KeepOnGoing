@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -160,9 +161,24 @@ public class TabActivity  extends Activity implements View.OnClickListener {
      */
     public void initRoomsTab(View view){
         roomList = (ListView) view.findViewById(R.id.room_list);
+
+        if (KogPreference.DEBUG_MODE && KogPreference.NO_AUTH) {
+            Log.i(LOG_TAG, "add mock list room items");
+
+            mRooms = new ArrayList<RoomNaming>();
+            for (int i = 0; i < 3; i++) {
+                mRooms.add(new RoomNaming("subjectroom", "2" + i, "meet 6days", "KOG STUDY", "2", null, null, null, null, null));
+            }
+
+            RoomsArrayAdapters roomsArrayAdapter;
+            roomsArrayAdapter = new RoomsArrayAdapters(TabActivity.this, R.layout.room_list_item, mRooms);
+            roomList.setAdapter(roomsArrayAdapter);
+
+        }
         roomList.setOnItemClickListener(itemClickListener);
         roomList.setOnItemLongClickListener(itemLongClickListener);
-        getStudyRoomsRequest();
+//        getStudyRoomsRequest();
+
     }
 
     /**
@@ -170,8 +186,19 @@ public class TabActivity  extends Activity implements View.OnClickListener {
      */
     public void initFriendsTab(View view){
         friendList = (ListView) view.findViewById(R.id.friend_list);
+        if (KogPreference.DEBUG_MODE && KogPreference.NO_AUTH) {
+            Log.i(LOG_TAG, "add mock list friend items");
+            mFriends = new ArrayList<FriendNameAndIcon>();
+            for (int i = 0; i < 3; i++) {
+                mFriends.add(new FriendNameAndIcon("default.png", "nickname" + i, null));
+            }
+
+            FriendsArrayAdapters mockFriendArrayAdapter;
+            mockFriendArrayAdapter = new FriendsArrayAdapters(TabActivity.this, R.layout.friend_list_item, mFriends);
+            friendList.setAdapter(mockFriendArrayAdapter);
+        }
         friendList.setOnItemClickListener(itemClickListener);
-        getFriendsRequest();
+//        getFriendsRequest();
     }
 
     /**
@@ -333,26 +360,7 @@ public class TabActivity  extends Activity implements View.OnClickListener {
 
         });
 
-        if (KogPreference.DEBUG_MODE && KogPreference.NO_AUTH) {
-            mFriends = new ArrayList<FriendNameAndIcon>();
-            for (int i = 0; i < 3; i++) {
-                mFriends.add(new FriendNameAndIcon("default.png", "nickname" + i, null));
-            }
 
-            FriendsArrayAdapters mockFriendArrayAdapter;
-            mockFriendArrayAdapter = new FriendsArrayAdapters(TabActivity.this, R.layout.friend_list_item, mFriends);
-            friendList.setAdapter(mockFriendArrayAdapter);
-
-            mRooms = new ArrayList<RoomNaming>();
-            for (int i = 0; i < 3; i++) {
-                mRooms.add(new RoomNaming("subjectroom", "2" + i, "meet 6days", "KOG STUDY", "2", null, null, null, null, null));
-            }
-
-            RoomsArrayAdapters roomsArrayAdapter;
-            roomsArrayAdapter = new RoomsArrayAdapters(TabActivity.this, R.layout.room_list_item, mRooms);
-            roomList.setAdapter(roomsArrayAdapter);
-
-        }
 
     }
 
@@ -1476,14 +1484,21 @@ public class TabActivity  extends Activity implements View.OnClickListener {
         }
 
         @Override
-        public Object instantiateItem(View pager, int index) {
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
+//            return super.getItemPosition(object);
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup pager, int index) {
             View view = null;
             viewtemp=pager;
             //@ view pager 1st menu
 
+            Log.i(LOG_TAG, "instantiateItem, mPager.getCurrentItem : " + mPager.getCurrentItem());
             // TODO : to minsu, plz check index. It doesn't work make sense.
             if(index == 0){
-                Log.i(LOG_TAG, "view Pager Index : 0 ");
+                Log.i(LOG_TAG, "view Pager Index : 0 " + mPager.getCurrentItem());
                 view = mLayoutInflater.inflate(R.layout.one, null);
                 //todo 첫번쨰 메뉴
                 initAlarm(view);
@@ -1497,7 +1512,7 @@ public class TabActivity  extends Activity implements View.OnClickListener {
             //@ view pager 2nd menu
             else if(index == 1) {
                 //todo 두번쨰 메뉴
-                Log.i(LOG_TAG, "view Pager Index : 1 ");
+                Log.i(LOG_TAG, "view Pager Index : 1 " + mPager.getCurrentItem());
                 view = mLayoutInflater.inflate(R.layout.two, null);
                 initFriendsTab(view);
 
@@ -1519,7 +1534,7 @@ public class TabActivity  extends Activity implements View.OnClickListener {
             //@ view pager 3rd menu
             }  else if(index ==2){
                 //todo 세번쨰 메뉴
-                Log.i(LOG_TAG, "view Pager Index : 2 ");
+                Log.i(LOG_TAG, "view Pager Index : 2 " + mPager.getCurrentItem());
                 view = mLayoutInflater.inflate(R.layout.three, null);
                 initRoomsTab(view);
                 if(actionBarFirstBtn != null && actionBarSecondBtn != null) {
@@ -1530,9 +1545,9 @@ public class TabActivity  extends Activity implements View.OnClickListener {
                 }
             }
             //@ view pager @4th menu
-            else{
+            else if(index == 3){
                 //todo 세번쨰 메뉴
-                Log.i(LOG_TAG, "view Pager Index : 3 ");
+                Log.i(LOG_TAG, "view Pager Index : 3 " + mPager.getCurrentItem());
                 view = mLayoutInflater.inflate(R.layout.four, null);
                 initSettingsTab(view);
                 if(actionBarFirstBtn != null && actionBarSecondBtn != null) {
