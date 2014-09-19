@@ -24,6 +24,7 @@ import com.android.volley.toolbox.Volley;
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.com.lanace.connecter.CallbackResponse;
 import com.com.lanace.connecter.HttpAPIs;
+import com.secsm.keepongoing.DB.DBHelper;
 import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
@@ -123,6 +124,10 @@ public class LoginActivity extends BaseActivity {
             String savedNick = KogPreference.getNickName(LoginActivity.this);
             mNicknameView.setText(savedNick);
         }
+
+        DBHelper helper = new DBHelper(getBaseContext());
+        helper.initImageList();
+        helper.close();
     }
 
     /** 다음화면으로 */

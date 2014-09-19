@@ -44,6 +44,7 @@ import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -55,12 +56,22 @@ public class HttpAPIs {
     private static final String LOG_TAG = "HttpAPIs";
     private static Context mContext;
     private static final String TABLE_IMAGE = "Image_table";
-    public static void getImage(Context context, String fileurl, String key, Handler handler)
+
+    public static List<String> imageList;
+
+    public static void getImage(Context context, String fileurl, int resize_width, int resize_height, String key, Handler handler)
     {
         mContext = context;
         Log.w(LOG_TAG, "request getImage with key : " + key + "fileurl ; " + fileurl);
-        Thread requestDownloadThread = new Thread(new downloadImageThread(fileurl, key, handler));
-        requestDownloadThread.start();
+
+        if(imageList.contains(key))
+        {
+
+        }else {
+            imageList.add(key);
+            Thread requestDownloadThread = new Thread(new downloadImageThread(fileurl, resize_width, resize_height, key, handler));
+            requestDownloadThread.start();
+        }
     }
 
     public static void background(final HttpRequestBase request, final CallbackResponse callback) throws IOException {
@@ -551,12 +562,10 @@ public class HttpAPIs {
 
         public void run()
         {
-            Bitmap imgBitmap = null;
-            Bitmap imgResizedBitmap = null;
             Log.w(LOG_TAG, "getImage before try, fileurl : " + fileurl);
             try {
                 DBHelper helper = new DBHelper(mContext);
-                helper.insertImage(imgName, getImage2Server(fileurl));
+                helper.insertImage(imgName, getImage2Server(fileurl, resize_width, resize_height));
 
                 Log.w(LOG_TAG, "imageMap Put : " + imgName);
 
@@ -574,9 +583,10 @@ public class HttpAPIs {
     };
 
     /** 서버에서 해당 URL에 있는 이미지를 가져옴 */
-    private static Bitmap getImage2Server(String URI)
+    private static Bitmap getImage2Server(String URI, int resized_width, int resized_height)
     {
         Bitmap imgBitmap = null;
+        Bitmap imgResizedBitmap = null;
         try
         {
             Log.i(LOG_TAG, "getImage2Server w/ " + URI);
@@ -587,13 +597,14 @@ public class HttpAPIs {
             BufferedInputStream bis = new BufferedInputStream(conn.getInputStream(), nSize);
             imgBitmap = BitmapFactory.decodeStream(bis);
             bis.close();
+            imgResizedBitmap = Bitmap.createScaledBitmap(imgBitmap, resized_width, resized_height, true);
             Log.i(LOG_TAG, "getImage2Server close");
         }
         catch(Exception e)
         {
             e.printStackTrace();
         }
-        return imgBitmap;
+        return imgResizedBitmap;
     }
 
 

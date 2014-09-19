@@ -13,7 +13,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import com.com.lanace.connecter.HttpAPIs;
+
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 
 //DB 컨트롤(관리) 하는 객체
 public class DBHelper extends SQLiteOpenHelper {
@@ -71,8 +74,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         // Image_table create
         db.execSQL("CREATE TABLE " + TABLE_IMAGE + " (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "name VARCHAR(100)," +
+                "name VARCHAR(100) PRIMARY KEY," +
                 "data BLOB," +
                 "time DATETIME DEFAULT CURRENT_TIMESTAMP" +
                 ");");
@@ -122,7 +124,7 @@ public class DBHelper extends SQLiteOpenHelper {
             if(cursor.getCount() > 0)
             {
                 Log.i(LOG_TAG, "cursor count : " + cursor.getCount());
-                if(cursor.moveToNext())
+                if(cursor.moveToFirst())
                 {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(cursor.getBlob(1), 0, cursor.getBlob(1).length);
                     db.close();
@@ -170,6 +172,39 @@ public class DBHelper extends SQLiteOpenHelper {
         {
             e.printStackTrace();
         }
+    }
+
+    public void initImageList()
+    {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT name FROM " + TABLE_IMAGE+ ";";
+        Cursor cursor = db.rawQuery(query, null);
+
+        HttpAPIs.imageList = new ArrayList<String>();
+
+        Log.i(LOG_TAG, "query : " + query + " in getImage");
+        try {
+            if(cursor.getCount() > 0)
+            {
+                Log.i(LOG_TAG, "cursor count : " + cursor.getCount());
+                while(cursor.moveToNext())
+                {
+                    Log.i(LOG_TAG, "add initImageList : " + cursor.getString(0));
+                    if(!HttpAPIs.imageList.contains(cursor.getString(0)))
+                    {
+                        HttpAPIs.imageList.add(cursor.getString(0));
+                    }
+                }
+            }
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        db.close();
+        cursor.close();
     }
 
 }

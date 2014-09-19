@@ -298,8 +298,8 @@ public class StudyRoomActivity extends BaseActivity {
         translateLeftAnim.setAnimationListener(animListener);
         translateRightAnim.setAnimationListener(animListener);
 
-        mFriendsFristToAdd = new FriendNameAndIcon("friend_btn_mypp_plus_press.png","친구 초대하기", "null", "null");
-        mFriendsLastToShowScoreDetail = new FriendNameAndIcon("talk_ico_menu_vote.png","스코어 상세보기", "null", "null");
+        mFriendsFristToAdd = new FriendNameAndIcon(getBaseContext(), refreshAdaptorHandler, "friend_btn_mypp_plus_press.png","친구 초대하기", "null", "null");
+        mFriendsLastToShowScoreDetail = new FriendNameAndIcon(getBaseContext(), refreshAdaptorHandler, "talk_ico_menu_vote.png","스코어 상세보기", "null", "null");
 
 //        init();
         /* at First, holding the focus */
@@ -873,19 +873,29 @@ public class StudyRoomActivity extends BaseActivity {
         String Name;
         time = getRealTime();
         if (_senderNickname.equals(KogPreference.getNickName(StudyRoomActivity.this))) {
-            m = new Msg(StudyRoomActivity.this, "나", _text, time, "true", _messageType, _profileImageName);
+            m = new Msg(StudyRoomActivity.this, "나", _text, time, "true", _messageType, _profileImageName, refreshAdaptorHandler);
             insertIntoMsgInSQLite("나", _text, time, "true", _messageType);
             messageHistoryMAdaptor.add(m);
         } else if ("".equals(_text)) {
 
         } else {
-            m = new Msg(StudyRoomActivity.this, _senderNickname, _text, time, "false", _messageType, _profileImageName);
+            m = new Msg(StudyRoomActivity.this, _senderNickname, _text, time, "false", _messageType, _profileImageName, refreshAdaptorHandler);
             Log.i("MSG", "Name : " + _senderNickname + "Text : " + _text + "Time : " + time);
             insertIntoMsgInSQLite(_senderNickname, _text, time, "false", _messageType);
             messageHistoryMAdaptor.add(m);
         }
-
     }
+
+    Handler refreshAdaptorHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+            if(msg.what == 1){
+                messageHistoryMAdaptor.refresh();
+            }
+        }
+    };
 
     /* getting the profile image from the server  */
 	/* aURL is perfect URL like : http://203.252.195.122/files/tmp_1348736125550.jpg */
@@ -1903,7 +1913,8 @@ public class StudyRoomActivity extends BaseActivity {
                             cursor.getString(2),
                             cursor.getString(3),
                             cursor.getString(4),
-                            getProfileImageName(_senderID)
+                            getProfileImageName(_senderID),
+                            refreshAdaptorHandler
                     );
                     messageHistoryMAdaptor.add(m);
                 }
@@ -2261,6 +2272,8 @@ public class StudyRoomActivity extends BaseActivity {
                             if (!"null".equals(rObj.getString("nickname"))) {
                                 Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" + URLDecoder.decode(rObj.getString("nickname"), "UTF-8") + "|" + rObj.getString("targetTime") + "|" + rObj.getString("isMaster"));
                                 mFriends.add(new FriendNameAndIcon(
+                                        getBaseContext(),
+                                        refreshAdaptorHandler,
                                         URLDecoder.decode(rObj.getString("image"), "UTF-8"),
                                         URLDecoder.decode(rObj.getString("nickname"), "UTF-8"),
                                         URLDecoder.decode(rObj.getString("targetTime"), "UTF-8"),
@@ -2280,6 +2293,8 @@ public class StudyRoomActivity extends BaseActivity {
                             if (!"null".equals(rObj.getString("nickname"))) {
                                 Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" +  URLDecoder.decode(rObj.getString("nickname"), "UTF-8") + "|" + rObj.getString("targetTime") + "|" + rObj.getString("isMaster"));
                                 mFriends.add(new FriendNameAndIcon(
+                                        getBaseContext(),
+                                        refreshAdaptorHandler,
                                         URLDecoder.decode(rObj.getString("image"), "UTF-8"),
                                         URLDecoder.decode(rObj.getString("nickname"), "UTF-8"),
                                         URLDecoder.decode(rObj.getString("targetTime"), "UTF-8"),

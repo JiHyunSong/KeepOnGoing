@@ -72,6 +72,7 @@ public class TabActivity extends BaseActivity {
     private String rMessage;
 
     final static int TAB_DELAY = 10;
+    FriendsArrayAdapters mockFriendArrayAdapter;
 
     public static final int ROOMNAME_REQUEST_CODE = 1;
     public static final int FRIENDNAME_REQUEST_CODE = 2;
@@ -301,7 +302,7 @@ public class TabActivity extends BaseActivity {
             mFriends = new ArrayList<FriendNameAndIcon>();
             for(int i=0; i < 3; i++)
             {
-                mFriends.add(new FriendNameAndIcon( "default.png", "nickname" + i , null));
+                mFriends.add(new FriendNameAndIcon(getBaseContext(), refreshAdaptorHandler, "default.png", "nickname" + i , null));
             }
 
             FriendsArrayAdapters mockFriendArrayAdapter;
@@ -904,6 +905,8 @@ public class TabActivity extends BaseActivity {
 
 
                             mFriends.add(new FriendNameAndIcon(
+                                    getBaseContext(),
+                                    refreshAdaptorHandler,
 //                                                URLDecoder.decode(rObj.getString("type"), "UTF-8"),
                                     URLDecoder.decode(rObj.getString("image"), "UTF-8"),
                                     URLDecoder.decode(rObj.getString("nickname"), "UTF-8"),
@@ -911,7 +914,6 @@ public class TabActivity extends BaseActivity {
                         }
                     }
 
-                    FriendsArrayAdapters mockFriendArrayAdapter;
                     mockFriendArrayAdapter = new FriendsArrayAdapters(TabActivity.this, R.layout.friend_list_item, mFriends);
                     friendList.setAdapter(mockFriendArrayAdapter);
 
@@ -927,6 +929,17 @@ public class TabActivity extends BaseActivity {
                 e.printStackTrace();
             }
 
+        }
+    };
+
+    Handler refreshAdaptorHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+            if(msg.what == 1){
+                mockFriendArrayAdapter.refresh();
+            }
         }
     };
     /** 친구목록 가져오기 */

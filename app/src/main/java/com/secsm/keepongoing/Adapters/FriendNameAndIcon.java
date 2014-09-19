@@ -1,8 +1,16 @@
 package com.secsm.keepongoing.Adapters;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
+import android.view.LayoutInflater;
 
+import com.com.lanace.connecter.HttpAPIs;
+import com.secsm.keepongoing.DB.DBHelper;
 import com.secsm.keepongoing.R;
+import com.secsm.keepongoing.Shared.KogPreference;
 
 public class FriendNameAndIcon {
     private int icon;
@@ -12,9 +20,15 @@ public class FriendNameAndIcon {
     private String accomplishedTime;
     private String isMaster;
     private String score;
+    private Context mContext;
+    private Bitmap profile_image;
+    private Handler refreshHandler;
+    private DBHelper helper;
+    private static String LOG_TAG = "FriendNameAndIcon class";
 
-
-    public FriendNameAndIcon(String profile_path, String name, String _targetTime, String isMaster, String _accomplishedTime, String _score) {
+    public FriendNameAndIcon(Context context, Handler refreshHandler, String profile_path, String name, String _targetTime, String isMaster, String _accomplishedTime, String _score) {
+        mContext = context;
+        this.refreshHandler = refreshHandler;
         this.profile_path = profile_path;
         // TODO : profile change
         this.icon = R.drawable.profile_default;
@@ -46,9 +60,19 @@ public class FriendNameAndIcon {
             this.accomplishedTime = "00:00";
         }
         this.score = _score;
+        helper = new DBHelper(mContext);
+        if(helper.isImageExist(this.profile_path))
+        {
+            this.profile_image = helper.getImage(this.profile_path);
+        }else {
+            downloadProfileImage(this.profile_path);
+        }
+        helper.close();
     }
 
-    public FriendNameAndIcon(String profile_path, String name, String _targetTime, String isMaster, String _accomplishedTime) {
+    public FriendNameAndIcon(Context context, Handler refreshHandler, String profile_path, String name, String _targetTime, String isMaster, String _accomplishedTime) {
+        mContext = context;
+        this.refreshHandler = refreshHandler;
         this.profile_path = profile_path;
         // TODO : profile change
         this.icon = R.drawable.profile_default;
@@ -76,9 +100,19 @@ public class FriendNameAndIcon {
         {
             this.accomplishedTime = "00:00";
         }
+        helper = new DBHelper(mContext);
+        if(helper.isImageExist(this.profile_path))
+        {
+            this.profile_image = helper.getImage(this.profile_path);
+        }else {
+            downloadProfileImage(this.profile_path);
+        }
+        helper.close();
     }
 
-    public FriendNameAndIcon(String profile_path, String name, String targetTime, String isMaster) {
+    public FriendNameAndIcon(Context context, Handler refreshHandler, String profile_path, String name, String targetTime, String isMaster) {
+        mContext = context;
+        this.refreshHandler = refreshHandler;
         this.profile_path = profile_path;
         // TODO : profile change
         this.icon = R.drawable.profile_default;
@@ -95,9 +129,19 @@ public class FriendNameAndIcon {
         }
         this.isMaster = isMaster;
         this.score = null;
+        helper = new DBHelper(mContext);
+        if(helper.isImageExist(this.profile_path))
+        {
+            this.profile_image = helper.getImage(this.profile_path);
+        }else {
+            downloadProfileImage(this.profile_path);
+        }
+        helper.close();
     }
 
-    public FriendNameAndIcon(String profile_path, String name, String targetTime) {
+    public FriendNameAndIcon(Context context, Handler refreshHandler, String profile_path, String name, String targetTime) {
+        mContext = context;
+        this.refreshHandler = refreshHandler;
         this.profile_path = profile_path;
         // TODO : profile change
         this.icon = R.drawable.profile_default;
@@ -111,7 +155,47 @@ public class FriendNameAndIcon {
         }
         this.isMaster = "false";
         this.score = null;
+
+        helper = new DBHelper(mContext);
+        if(helper.isImageExist(this.profile_path))
+        {
+            Log.i(LOG_TAG, "image exist, name : " + this.name + " path : " + profile_path);
+            this.profile_image = helper.getImage(this.profile_path);
+        }else {
+            downloadProfileImage(this.profile_path);
+        }
+        helper.close();
+
     }
+
+
+    private void downloadProfileImage(String ImgName)
+    {
+        String ImgURL = KogPreference.DOWNLOAD_PROFILE_URL + ImgName;
+//        int width = imgView.getWidth();
+//        imgView.setMaxHeight(width);
+
+        HttpAPIs.getImage(mContext, ImgURL, 150, 150, ImgName, ProfileImageSetHandler);
+    }
+
+
+
+    Handler ProfileImageSetHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+                Log.i(LOG_TAG, "ProfileImageSetHandler2 : " + msg.getData().getString("imgName"));
+                profile_image = msg.getData().getParcelable("image");
+                refreshHandler.sendEmptyMessage(1);
+            }catch (Exception e)
+            {
+                e.printStackTrace();
+
+            }
+        }
+    };
+
+
 
     public String getAccomplishedTime() {
         return accomplishedTime;
@@ -167,5 +251,9 @@ public class FriendNameAndIcon {
 
     public void setTargetTime(String targetTime) {
         this.targetTime = targetTime;
+    }
+
+    public Bitmap getProfile_image() {
+        return profile_image;
     }
 }

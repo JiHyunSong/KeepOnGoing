@@ -109,14 +109,7 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
                         Log.i("filename", "id : " + m.getId() + " | me : " + fileName);
                         if (fileName != null) {
                             if (fileName.matches(".*jpg.*") || fileName.matches(".*png.*")) {
-
-                                if(helper.isImageExist(fileName))
-                                {
-                                    viewHolder.iv.setImageBitmap(helper.getImage(fileName));
-                                }else {
-                                    downloadProfileImage(fileName, viewHolder.iv);
-                                }
-
+                                viewHolder.iv.setImageBitmap(m.getProfile_image());
                             } else {
                                 viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
                             }
@@ -145,12 +138,7 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
 
                                 viewHolder.iv.setImageResource(R.drawable.profile_default);
 
-                                if(helper.isImageExist(fileName))
-                                {
-                                    viewHolder.iv.setImageBitmap(helper.getImage(fileName));
-                                }else {
-                                    downloadProfileImage(fileName, viewHolder.iv);
-                                }
+                                viewHolder.iv.setImageBitmap(m.getProfile_image());
 
                             } else {
                                 viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
@@ -185,13 +173,7 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
 
                         viewHolder.p_iv.setImageResource(R.drawable.no_image);
 
-                        String chatFileName = m.getText();
-                        if(helper.isImageExist(chatFileName))
-                        {
-                            viewHolder.iv.setImageBitmap(helper.getImage(chatFileName));
-                        }else {
-                            downloadChatImage(chatFileName, viewHolder.p_iv);
-                        }
+                        viewHolder.p_iv.setImageBitmap(m.getText_image());
 
 
                         viewHolder.time.setText(m.getName());
@@ -200,12 +182,9 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
                         if (fileName != null) {
                             if (fileName.matches(".*jpg.*")) {
                                 viewHolder.iv.setImageResource(R.drawable.profile_default);
-                                if(helper.isImageExist(fileName))
-                                {
-                                    viewHolder.iv.setImageBitmap(helper.getImage(fileName));
-                                }else {
-                                    downloadProfileImage(fileName, viewHolder.iv);
-                                }
+
+                                viewHolder.iv.setImageBitmap(m.getProfile_image());
+
                             } else {
                                 viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
                             }
@@ -217,14 +196,7 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
                         viewHolder.tt.setText(m.getName());
 
                         viewHolder.p_iv.setImageResource(R.drawable.no_image);
-                        String chatFileName = m.getText();
-                        if(helper.isImageExist(chatFileName))
-                        {
-                            viewHolder.iv.setImageBitmap(helper.getImage(chatFileName));
-                        }else {
-                            downloadChatImage(chatFileName, viewHolder.p_iv);
-                        }
-
+                        viewHolder.p_iv.setImageBitmap(m.getText_image());
 
                         viewHolder.time.setText(m.getTime());
 
@@ -232,12 +204,7 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
                         if (fileName != null) {
                             if (fileName.matches(".*jpg.*")) {
                                 viewHolder.iv.setImageResource(R.drawable.profile_default);
-                                if(helper.isImageExist(fileName))
-                                {
-                                    viewHolder.iv.setImageBitmap(helper.getImage(fileName));
-                                }else {
-                                    downloadProfileImage(fileName, viewHolder.iv);
-                                }
+                                viewHolder.iv.setImageBitmap(m.getProfile_image());
                             } else {
                                 viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
                             }
@@ -278,68 +245,68 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
         public ImageView p_iv = null;
     }
 
-    private void downloadChatImage(String ImgName, ImageView imgView)
-    {
-        String ImgURL = KogPreference.DOWNLOAD_CHAT_IMAGE_URL + KogPreference.getRid(mContext) + "/" + ImgName;
-
-        android.view.ViewGroup.LayoutParams params = imgView.getLayoutParams();
-        params.width = RelativeLayout.LayoutParams.MATCH_PARENT;
-        int width = imgView.getWidth();
-        Log.i(LOG_TAG, "ChatImage width (imgView.getWidth()): " + width);
-        Log.i(LOG_TAG, "ChatImage width (params.width): " + params.width);
-        params.height = width;
-
-        HttpAPIs.getImage(mContext, ImgURL, ImgName, ChatImageSetHandler);
-    }
-
-    private void downloadProfileImage(String ImgName, ImageView imgView)
-    {
-        String ImgURL = KogPreference.DOWNLOAD_PROFILE_URL + ImgName;
-        int width = imgView.getWidth();
-        imgView.setMaxHeight(width);
-
-        HttpAPIs.getImage(mContext, ImgURL, ImgName, ProfileImageSetHandler);
-    }
-
-
-
-    Handler ProfileImageSetHandler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            try {
-//                Bundle b = msg.getData();
-//                JSONObject result = new JSONObject(b.getString("JSONData"));
-//                ImageView getView = (ImageView) result.get("imageView");
-//                Bitmap imgFile = (Bitmap) result.get("imageBitmap");
-//                String imgName = result.getString("imgName");
-//                getView.setImageBitmap(imgFile);
-                Log.i(LOG_TAG, "ProfileImageSetHandler2 : " + msg.getData().getString("imgName"));
-                DBHelper helper1 = new DBHelper(mContext);
-                viewHolder.iv.setImageBitmap(helper1.getImage(msg.getData().getString("imgName")));
-                helper1.close();
-            }catch (Exception e)
-            {
-                e.printStackTrace();
-
-            }
-        }
-    };
-
-    Handler ChatImageSetHandler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            try {
-                Log.i(LOG_TAG, "ChatImageSetHandler");
-                DBHelper helper1 = new DBHelper(mContext);
-                viewHolder.p_iv.setImageBitmap(helper1.getImage(msg.getData().getString("imgName")));
-                helper1.close();
-
-            }catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
-    };
+//    private void downloadChatImage(String ImgName, ImageView imgView)
+//    {
+//        String ImgURL = KogPreference.DOWNLOAD_CHAT_IMAGE_URL + KogPreference.getRid(mContext) + "/" + ImgName;
+//
+//        android.view.ViewGroup.LayoutParams params = imgView.getLayoutParams();
+//        params.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+//        int width = imgView.getWidth();
+//        Log.i(LOG_TAG, "ChatImage width (imgView.getWidth()): " + width);
+//        Log.i(LOG_TAG, "ChatImage width (params.width): " + params.width);
+//        params.height = width;
+//
+//        HttpAPIs.getImage(mContext, ImgURL, ImgName, ChatImageSetHandler);
+//    }
+//
+//    private void downloadProfileImage(String ImgName, ImageView imgView)
+//    {
+//        String ImgURL = KogPreference.DOWNLOAD_PROFILE_URL + ImgName;
+//        int width = imgView.getWidth();
+//        imgView.setMaxHeight(width);
+//
+//        HttpAPIs.getImage(mContext, ImgURL, ImgName, ProfileImageSetHandler);
+//    }
+//
+//
+//
+//    Handler ProfileImageSetHandler = new Handler(){
+//        @Override
+//        public void handleMessage(Message msg) {
+//            try {
+////                Bundle b = msg.getData();
+////                JSONObject result = new JSONObject(b.getString("JSONData"));
+////                ImageView getView = (ImageView) result.get("imageView");
+////                Bitmap imgFile = (Bitmap) result.get("imageBitmap");
+////                String imgName = result.getString("imgName");
+////                getView.setImageBitmap(imgFile);
+//                Log.i(LOG_TAG, "ProfileImageSetHandler2 : " + msg.getData().getString("imgName"));
+//                DBHelper helper1 = new DBHelper(mContext);
+//                viewHolder.iv.setImageBitmap(helper1.getImage(msg.getData().getString("imgName")));
+//                helper1.close();
+//            }catch (Exception e)
+//            {
+//                e.printStackTrace();
+//
+//            }
+//        }
+//    };
+//
+//    Handler ChatImageSetHandler = new Handler(){
+//        @Override
+//        public void handleMessage(Message msg) {
+//            try {
+//                Log.i(LOG_TAG, "ChatImageSetHandler");
+//                DBHelper helper1 = new DBHelper(mContext);
+//                viewHolder.p_iv.setImageBitmap(helper1.getImage(msg.getData().getString("imgName")));
+//                helper1.close();
+//
+//            }catch (Exception e)
+//            {
+//                e.printStackTrace();
+//            }
+//        }
+//    };
 
     void getChatImageFromURL(String ImgURL, ImageView imgView) {
         ImgURL = KogPreference.DOWNLOAD_CHAT_IMAGE_URL + KogPreference.getRid(mContext) + "/" + ImgURL;

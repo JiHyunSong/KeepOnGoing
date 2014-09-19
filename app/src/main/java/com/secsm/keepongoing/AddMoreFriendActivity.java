@@ -277,7 +277,7 @@ public class AddMoreFriendActivity extends BaseActivity {
                         rObj = rMessage.getJSONObject(i);
                         if (!"null".equals(rObj.getString("nickname")) && !isInRoom(URLDecoder.decode(rObj.getString("nickname"), "UTF-8"))) {
                             Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" + rObj.getString("nickname") + "|" + rObj.getString("targetTime"));
-                            mFriends.add(new FriendNameAndIcon(rObj.getString("image"),
+                            mFriends.add(new FriendNameAndIcon(getBaseContext(), refreshAdaptorHandler, rObj.getString("image"),
                                     URLDecoder.decode(rObj.getString("nickname"), "UTF-8"),
                                     rObj.getString("targetTime")));
 
@@ -297,6 +297,18 @@ public class AddMoreFriendActivity extends BaseActivity {
                 e.printStackTrace();
             }catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
+            }
+        }
+    };
+
+    Handler refreshAdaptorHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+            if(msg.what == 1){
+                friendsArrayAdapters.refresh();
+                selected_friendsArrayAdapters.refresh();
             }
         }
     };

@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,6 +82,7 @@ public class FriendsArrayAdapters extends BaseAdapter {
             } else {
                 // reuse
                 viewHolder = (ViewHolder) v.getTag();
+                viewHolder.icon.setImageBitmap(friendArrayList.get(position).getProfile_image());
 
             }
 
@@ -90,14 +92,15 @@ public class FriendsArrayAdapters extends BaseAdapter {
 //            viewHolder.icon.setImageResource(R.drawable.profile_default);
 
             viewHolder.icon.setImageResource(R.drawable.profile_default);
+            viewHolder.icon.setImageBitmap(friendArrayList.get(position).getProfile_image());
 
-            String fileName = friendArrayList.get(position).getProfile_path();
-            if(helper.isImageExist(fileName))
-            {
-                viewHolder.icon.setImageBitmap(helper.getImage(fileName));
-            }else {
-                downloadProfileImage(fileName, viewHolder.icon);
-            }
+//            String fileName = friendArrayList.get(position).getProfile_path();
+//            if(helper.isImageExist(fileName))
+//            {
+//                viewHolder.icon.setImageBitmap(helper.getImage(fileName));
+//            }else {
+//                downloadProfileImage(fileName, viewHolder.icon);
+//            }
 
 //            getProfileFromURL(friendArrayList.get(position).getProfile_path(), viewHolder.icon);
 
@@ -169,20 +172,25 @@ public class FriendsArrayAdapters extends BaseAdapter {
 //        mContext = null;
     }
 
-    private void downloadProfileImage(String ImgName, ImageView imgView)
+//    private void downloadProfileImage(String ImgName, ImageView imgView)
+//    {
+//        String ImgURL = KogPreference.DOWNLOAD_PROFILE_URL + ImgName;
+//        int width = imgView.getWidth();
+//        imgView.setMaxHeight(width);
+//
+////        if (!HttpAPIs.imageMap.containsKey(ImgName))
+////        {
+//////            imageMap.put(ImgName, HttpAPIs.getImage(ImgURL, width, width, imgView, ImgName, ImageSetHandler));
+////            HttpAPIs.getImage(ImgURL, width, width, imgView, ImgName, ImageSetHandler);
+////        }
+//        HttpAPIs.getImage(mContext, ImgURL, ImgName, ProfileImageSetHandler);
+//    }
+
+    public void refresh()
     {
-        String ImgURL = KogPreference.DOWNLOAD_PROFILE_URL + ImgName;
-        int width = imgView.getWidth();
-        imgView.setMaxHeight(width);
-
-//        if (!HttpAPIs.imageMap.containsKey(ImgName))
-//        {
-////            imageMap.put(ImgName, HttpAPIs.getImage(ImgURL, width, width, imgView, ImgName, ImageSetHandler));
-//            HttpAPIs.getImage(ImgURL, width, width, imgView, ImgName, ImageSetHandler);
-//        }
-        HttpAPIs.getImage(mContext, ImgURL, ImgName, ProfileImageSetHandler);
+        Log.i(LOG_TAG, "adaptor refresh in FriendsArrayAdaptor");
+        this.notifyDataSetChanged();
     }
-
 
 //    Handler ImageSetHandler = new Handler(){
 //        @Override
