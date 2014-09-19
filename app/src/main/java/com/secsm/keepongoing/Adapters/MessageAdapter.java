@@ -1,7 +1,11 @@
 package com.secsm.keepongoing.Adapters;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,19 +17,27 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
+import com.com.lanace.connecter.HttpAPIs;
+import com.secsm.keepongoing.DB.DBHelper;
 import com.secsm.keepongoing.R;
 import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MyVolley;
 
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /* my customized adapter for listview */
 public class MessageAdapter extends ArrayAdapter<Msg> {
     private static String serverFilePath = "http://203.252.195.122/files/";
     private static String LOG_TAG = "MESSAGE ADAPTER";
+    private static final String TABLE_IMAGE = "Image_table";
     private ViewHolder viewHolder = null;
     private ArrayList<Msg> items;
-    Context mContext;
+    private Context mContext;
+    private DBHelper helper;
 
     public MessageAdapter(Context context, int textViewResourceId, ArrayList<Msg> items) {
         super(context, textViewResourceId, items);
@@ -36,6 +48,7 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;
+        helper = new DBHelper(mContext);
         if (v == null) {
             MyVolley.init(mContext);
 
@@ -47,9 +60,6 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
 
             viewHolder.tt = (TextView) v.findViewById(R.id.msg_topText);
             viewHolder.wv = (WebView) v.findViewById(R.id.msg_bottomTextWebView);
-//            android:layout_width="match_parent"
-//            android:layout_height="wrap_content"
-//            viewHolder.wv.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
             viewHolder.time = (TextView) v.findViewById(R.id.msg_time);
             viewHolder.iv = (ImageView) v.findViewById(R.id.msg_person_photo);
             viewHolder.wv_rl = (RelativeLayout.LayoutParams) viewHolder.wv.getLayoutParams();
@@ -86,9 +96,6 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
                         String htmlFormText = m.getText();
                         String htmlForm2 = "</body></html>";
 
-                        //                    for(int i = 0 ; i < emoArr.length; i++){
-                        //                        htmlFormText = htmlFormText.replaceAll(repEmoArr[i], htmlEmoArr[i]);
-                        //                    }
                         viewHolder.wv.loadUrl("about:blank");
                         viewHolder.wv.invalidate();
                         // TODO : check scrolling
@@ -97,25 +104,19 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
 
                         viewHolder.time.setText(m.getName());
 
-                        // TODO : profile image path download from server
-                        //                    String fileName = imgFromServ(myID);
                         String fileName = m.getFileName();
 
                         Log.i("filename", "id : " + m.getId() + " | me : " + fileName);
                         if (fileName != null) {
                             if (fileName.matches(".*jpg.*") || fileName.matches(".*png.*")) {
-                                getProfileFromURL(m.getFileName(), viewHolder.iv);
 
-//                                String mecodedURL = serverFilePath + fileName;
-//                                Log.d("imageView", "file Name : " + fileName);
-//                                try {
-//                                    URL mURL = new URL(mecodedURL);
-//                                    // TODO : profile image path download from server
-//                                    //                                Bitmap bm = getRemoteImage(mURL);
-//                                    //                                iv.setImageBitmap(bm);
-//                                } catch (Exception e) {
-//                                    Log.e("photo", e.toString());
-//                                }
+                                if(helper.isImageExist(fileName))
+                                {
+                                    viewHolder.iv.setImageBitmap(helper.getImage(fileName));
+                                }else {
+                                    downloadProfileImage(fileName, viewHolder.iv);
+                                }
+
                             } else {
                                 viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
                             }
@@ -131,35 +132,26 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
                         String htmlFormText = m.getText();
                         String htmlForm2 = "</body></html>";
 
-                        //                    for(int i = 0 ; i < emoArr.length; i++){
-                        //                        htmlFormText = htmlFormText.replaceAll(repEmoArr[i], htmlEmoArr[i]);
-                        //                    }
-                        //                    wv.loadDataWithBaseURL("file:///android_asset/", htmlForm1 + htmlFormText + htmlForm2 , "text/html", "utf-8", "file:///android_assest/");
                         viewHolder.wv.loadUrl("about:blank");
                         viewHolder.wv.invalidate();
                         viewHolder.wv.loadDataWithBaseURL("file:///android_asset/", htmlForm1 + htmlFormText + htmlForm2, "text/html", "utf-8", "file:///android_assest/");
 
                         viewHolder.time.setText(m.getTime());
 
-                        //        				String fileName = m.getFileName();
-                        // TODO : profile image path download from server
-                        //                    String fileName = imgFromServ(myID);
                         String fileName = m.getFileName();
                         Log.i("filename", "id : " + m.getId() + " | friend : " + fileName);
                         if (fileName != null) {
                             if (fileName.matches(".*jpg.*") || fileName.matches(".*png.*")) {
-                                getProfileFromURL(m.getFileName(), viewHolder.iv);
 
-//                                String mecodedURL = serverFilePath + fileName;
-//                                Log.d("imageView", "file Name : " + fileName);
-//                                try {
-//                                    URL mURL = new URL(mecodedURL);
-//                                    // TODO : profile image path download from server
-//                                    //                                Bitmap bm = getRemoteImage(mURL);
-//                                    //                                iv.setImageBitmap(bm);
-//                                } catch (Exception e) {
-//                                    Log.e("photo", e.toString());
-//                                }
+                                viewHolder.iv.setImageResource(R.drawable.profile_default);
+
+                                if(helper.isImageExist(fileName))
+                                {
+                                    viewHolder.iv.setImageBitmap(helper.getImage(fileName));
+                                }else {
+                                    downloadProfileImage(fileName, viewHolder.iv);
+                                }
+
                             } else {
                                 viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
                             }
@@ -184,9 +176,6 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
                         String htmlFormText = "";
                         String htmlForm2 = "</body></html>";
 
-                        //                    for(int i = 0 ; i < emoArr.length; i++){
-                        //                        htmlFormText = htmlFormText.replaceAll(repEmoArr[i], htmlEmoArr[i]);
-                        //                    }
                         viewHolder.wv.loadUrl("about:blank");
                         viewHolder.wv.invalidate();
                         // TODO : check scrolling
@@ -194,32 +183,29 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
                         viewHolder.wv.loadDataWithBaseURL("file:///android_asset/", htmlForm1 + htmlFormText + htmlForm2, "text/html", "utf-8", "file:///android_assest/");
 
 
-                        // set p_iv
-                        getChatImageFromURL(m.getText(), viewHolder.p_iv);
+                        viewHolder.p_iv.setImageResource(R.drawable.no_image);
+
+                        String chatFileName = m.getText();
+                        if(helper.isImageExist(chatFileName))
+                        {
+                            viewHolder.iv.setImageBitmap(helper.getImage(chatFileName));
+                        }else {
+                            downloadChatImage(chatFileName, viewHolder.p_iv);
+                        }
 
 
                         viewHolder.time.setText(m.getName());
 
-                        // TODO : profile image path download from server
-                        //                    String fileName = imgFromServ(myID);
                         String fileName = m.getFileName();
-
-//                        Log.i("filename", "id : " + m.getId() + " | me : " + fileName);
                         if (fileName != null) {
                             if (fileName.matches(".*jpg.*")) {
-                                getProfileFromURL(m.getFileName(), viewHolder.iv);
-
-//                                String mecodedURL = serverFilePath + fileName;
-//                                Log.d("imageView", "file Name : " + fileName);
-//                                try {
-//                                    URL mURL = new URL(mecodedURL);
-//
-//                                    // TODO : profile image path download from server
-//                                    //                                Bitmap bm = getRemoteImage(mURL);
-//                                    //                                iv.setImageBitmap(bm);
-//                                } catch (Exception e) {
-//                                    Log.e("photo", e.toString());
-//                                }
+                                viewHolder.iv.setImageResource(R.drawable.profile_default);
+                                if(helper.isImageExist(fileName))
+                                {
+                                    viewHolder.iv.setImageBitmap(helper.getImage(fileName));
+                                }else {
+                                    downloadProfileImage(fileName, viewHolder.iv);
+                                }
                             } else {
                                 viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
                             }
@@ -230,30 +216,28 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
                     } else {
                         viewHolder.tt.setText(m.getName());
 
-                        // set p_iv
-                        getChatImageFromURL(m.getText(), viewHolder.p_iv);
+                        viewHolder.p_iv.setImageResource(R.drawable.no_image);
+                        String chatFileName = m.getText();
+                        if(helper.isImageExist(chatFileName))
+                        {
+                            viewHolder.iv.setImageBitmap(helper.getImage(chatFileName));
+                        }else {
+                            downloadChatImage(chatFileName, viewHolder.p_iv);
+                        }
 
 
                         viewHolder.time.setText(m.getTime());
 
-                        //        				String fileName = m.getFileName();
-                        // TODO : profile image path download from server
-                        //                    String fileName = imgFromServ(myID);
                         String fileName = m.getFileName();
-//                        Log.i("filename", "id : " + m.getId() + " | friend : " + fileName);
                         if (fileName != null) {
                             if (fileName.matches(".*jpg.*")) {
-                                getProfileFromURL(m.getFileName(), viewHolder.iv);
-//                                String mecodedURL = serverFilePath + fileName;
-//                                Log.d("imageView", "file Name : " + fileName);
-//                                try {
-//                                    URL mURL = new URL(mecodedURL);
-//                                    // TODO : profile image path download from server
-//                                    //                                Bitmap bm = getRemoteImage(mURL);
-//                                    //                                iv.setImageBitmap(bm);
-//                                } catch (Exception e) {
-//                                    Log.e("photo", e.toString());
-//                                }
+                                viewHolder.iv.setImageResource(R.drawable.profile_default);
+                                if(helper.isImageExist(fileName))
+                                {
+                                    viewHolder.iv.setImageBitmap(helper.getImage(fileName));
+                                }else {
+                                    downloadProfileImage(fileName, viewHolder.iv);
+                                }
                             } else {
                                 viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
                             }
@@ -271,19 +255,16 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
             {
 
             }
+            helper.close();
             viewHolder.wv_rl.addRule(RelativeLayout.RIGHT_OF, R.id.msg_person_photo);
             viewHolder.wv_rl.width = RelativeLayout.LayoutParams.MATCH_PARENT;
             viewHolder.wv_rl.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
-
-
-//            viewHolder.wv.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-
-//            ViewGroup.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-//            viewHolder.wv.setLayoutParams(lp);
-//            viewHolder.wv.postInvalidate();
-//            v.postInvalidate();
         }
         return v;
+    }
+
+    public void refresh(){
+        this.notifyDataSetChanged();
     }
 
     class ViewHolder {
@@ -297,6 +278,68 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
         public ImageView p_iv = null;
     }
 
+    private void downloadChatImage(String ImgName, ImageView imgView)
+    {
+        String ImgURL = KogPreference.DOWNLOAD_CHAT_IMAGE_URL + KogPreference.getRid(mContext) + "/" + ImgName;
+
+        android.view.ViewGroup.LayoutParams params = imgView.getLayoutParams();
+        params.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+        int width = imgView.getWidth();
+        Log.i(LOG_TAG, "ChatImage width (imgView.getWidth()): " + width);
+        Log.i(LOG_TAG, "ChatImage width (params.width): " + params.width);
+        params.height = width;
+
+        HttpAPIs.getImage(mContext, ImgURL, ImgName, ChatImageSetHandler);
+    }
+
+    private void downloadProfileImage(String ImgName, ImageView imgView)
+    {
+        String ImgURL = KogPreference.DOWNLOAD_PROFILE_URL + ImgName;
+        int width = imgView.getWidth();
+        imgView.setMaxHeight(width);
+
+        HttpAPIs.getImage(mContext, ImgURL, ImgName, ProfileImageSetHandler);
+    }
+
+
+
+    Handler ProfileImageSetHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+//                Bundle b = msg.getData();
+//                JSONObject result = new JSONObject(b.getString("JSONData"));
+//                ImageView getView = (ImageView) result.get("imageView");
+//                Bitmap imgFile = (Bitmap) result.get("imageBitmap");
+//                String imgName = result.getString("imgName");
+//                getView.setImageBitmap(imgFile);
+                Log.i(LOG_TAG, "ProfileImageSetHandler2 : " + msg.getData().getString("imgName"));
+                DBHelper helper1 = new DBHelper(mContext);
+                viewHolder.iv.setImageBitmap(helper1.getImage(msg.getData().getString("imgName")));
+                helper1.close();
+            }catch (Exception e)
+            {
+                e.printStackTrace();
+
+            }
+        }
+    };
+
+    Handler ChatImageSetHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+                Log.i(LOG_TAG, "ChatImageSetHandler");
+                DBHelper helper1 = new DBHelper(mContext);
+                viewHolder.p_iv.setImageBitmap(helper1.getImage(msg.getData().getString("imgName")));
+                helper1.close();
+
+            }catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    };
 
     void getChatImageFromURL(String ImgURL, ImageView imgView) {
         ImgURL = KogPreference.DOWNLOAD_CHAT_IMAGE_URL + KogPreference.getRid(mContext) + "/" + ImgURL;
@@ -330,6 +373,7 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
                         R.drawable.profile_default)
         );
     }
+
 
 }
 

@@ -1,10 +1,20 @@
 package com.com.lanace.connecter;
 
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.secsm.keepongoing.DB.DBHelper;
 import com.secsm.keepongoing.Shared.KogPreference;
 
 import org.apache.http.HttpResponse;
@@ -21,14 +31,21 @@ import org.apache.http.entity.mime.content.FileBody;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Lanace on 2014-09-02.
@@ -36,6 +53,15 @@ import java.sql.Timestamp;
 public class HttpAPIs {
 
     private static final String LOG_TAG = "HttpAPIs";
+    private static Context mContext;
+    private static final String TABLE_IMAGE = "Image_table";
+    public static void getImage(Context context, String fileurl, String key, Handler handler)
+    {
+        mContext = context;
+        Log.w(LOG_TAG, "request getImage with key : " + key + "fileurl ; " + fileurl);
+        Thread requestDownloadThread = new Thread(new downloadImageThread(fileurl, key, handler));
+        requestDownloadThread.start();
+    }
 
     public static void background(final HttpRequestBase request, final CallbackResponse callback) throws IOException {
         new Thread(new Runnable() {
@@ -481,7 +507,7 @@ public class HttpAPIs {
     public static HttpRequestBase uploadImage(String URL, String rid, String nickname, String filePath) throws IOException{
         HttpPost httpPost = new HttpPost(URL + "?rid="+rid + "&nickname=" + nickname);
 
-        Log.i(LOG_TAG, "URL : "+URL + "?rid="+rid + "&nickname=" + nickname);
+        Log.i(LOG_TAG, "URL : " + URL + "?rid=" + rid + "&nickname=" + nickname);
 
         MultipartEntity multipartEntity = new MultipartEntity();
         multipartEntity.addPart("file", new FileBody(new File(filePath)));
@@ -489,6 +515,85 @@ public class HttpAPIs {
         httpPost.setEntity(multipartEntity);
 
         return httpPost;
+    }
+
+    public static class downloadImageThread implements Runnable{
+        //        private final BlockingQueue queue;
+        private String fileurl = null;
+        private int resize_width;
+        private int resize_height;
+        private String imgName = null;
+        private Handler handler = null;
+        private Context context = null;
+
+        public downloadImageThread(BlockingQueue q, String fileurl, int resize_width, int resize_height, String imgName, Handler handler) {
+//            this.queue = q;
+            this.fileurl = fileurl;
+            this.resize_width = resize_width;
+            this.resize_height = resize_height;
+            this.imgName = imgName;
+            this.handler = handler;
+        }
+
+        public downloadImageThread(String fileurl, int resize_width, int resize_height, String imgName, Handler handler) {
+            this.fileurl = fileurl;
+            this.resize_width = resize_width;
+            this.resize_height = resize_height;
+            this.imgName = imgName;
+            this.handler = handler;
+        }
+
+        public downloadImageThread(String fileurl, String imgName, Handler handler) {
+            this.fileurl = fileurl;
+            this.imgName = imgName;
+            this.handler = handler;
+        }
+
+        public void run()
+        {
+            Bitmap imgBitmap = null;
+            Bitmap imgResizedBitmap = null;
+            Log.w(LOG_TAG, "getImage before try, fileurl : " + fileurl);
+            try {
+                DBHelper helper = new DBHelper(mContext);
+                helper.insertImage(imgName, getImage2Server(fileurl));
+
+                Log.w(LOG_TAG, "imageMap Put : " + imgName);
+
+                Message msg = handler.obtainMessage();
+                Bundle b = new Bundle();
+
+                b.putString("imgName", imgName);
+                msg.setData(b);
+                handler.sendMessage(msg);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    /** 서버에서 해당 URL에 있는 이미지를 가져옴 */
+    private static Bitmap getImage2Server(String URI)
+    {
+        Bitmap imgBitmap = null;
+        try
+        {
+            Log.i(LOG_TAG, "getImage2Server w/ " + URI);
+            URL url = new URL(URI);
+            URLConnection conn = url.openConnection();
+            conn.connect();
+            int nSize = conn.getContentLength();
+            BufferedInputStream bis = new BufferedInputStream(conn.getInputStream(), nSize);
+            imgBitmap = BitmapFactory.decodeStream(bis);
+            bis.close();
+            Log.i(LOG_TAG, "getImage2Server close");
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return imgBitmap;
     }
 
 
@@ -626,4 +731,5 @@ public class HttpAPIs {
     public static class LogoutDataSet{
         public String nickname;
     }
+
 }

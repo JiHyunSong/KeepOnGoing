@@ -4,12 +4,23 @@ package com.secsm.keepongoing.DB;
  * Created by JinS on 2014. 8. 10..
  */
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
+
+import java.io.ByteArrayOutputStream;
 
 //DB 컨트롤(관리) 하는 객체
 public class DBHelper extends SQLiteOpenHelper {
+
+    private static final String LOG_TAG = "DBHelper";
+    // Contacts table name
+    private static final String TABLE_IMAGE = "Image_table";
 
     public DBHelper(Context context) {
         super(context, "KogDB.db", null, 1);
@@ -57,7 +68,14 @@ public class DBHelper extends SQLiteOpenHelper {
                 "messageType varchar(20)" +
                 ");";
         db.execSQL(qCreate_Chat_l);
-        db.execSQL("CREATE TABLE image_profile (id INTEGER PRIMARY KEY AUTOINCREMENT, path VARCHAR(500));");
+
+        // Image_table create
+        db.execSQL("CREATE TABLE " + TABLE_IMAGE + " (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "name VARCHAR(100)," +
+                "data BLOB," +
+                "time DATETIME DEFAULT CURRENT_TIMESTAMP" +
+                ");");
     }
 
     @Override
@@ -69,8 +87,89 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS LifeRoom_l;");
         db.execSQL("DROP TABLE IF EXISTS SubjectRoom_l;");
         db.execSQL("DROP TABLE IF EXISTS Chat;");
-        db.execSQL("DROP TABLE IF EXISTS image_profile;");
+        db.execSQL("DROP TABLE IF EXISTS Image_table;");
         onCreate(db);
+    }
+
+    public boolean isImageExist(String key){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT name FROM " + TABLE_IMAGE+ " WHERE name='"+key+"';", null);
+
+        try {
+            if (cursor.getCount() > 0) {
+                return true;
+            }
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        db.close();
+        cursor.close();
+        return false;
+    }
+
+    public Bitmap getImage(String key){
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT name, data FROM " + TABLE_IMAGE+ " WHERE name='"+key+"';";
+        Cursor cursor = db.rawQuery(query, null);
+
+        Log.i(LOG_TAG, "query : " + query + " in getImage");
+        try {
+            if(cursor.getCount() > 0)
+            {
+                Log.i(LOG_TAG, "cursor count : " + cursor.getCount());
+                if(cursor.moveToNext())
+                {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(cursor.getBlob(1), 0, cursor.getBlob(1).length);
+                    db.close();
+                    cursor.close();
+                    return bitmap;
+                }
+            }
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        Log.i(LOG_TAG, "return null in getImage");
+        db.close();
+        cursor.close();
+        return null;
+    }
+
+    public void insertImage(String name, Bitmap bitmapData)
+    {
+        try {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmapData.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] data = stream.toByteArray();
+
+            SQLiteDatabase db = this.getReadableDatabase();
+//            String query = "INSERT INTO " + TABLE_IMAGE +
+//                    "(name, data) " +
+//                    "VALUES " +
+//                    "(" +
+//                    "'" + name + "'," +
+//                    data +
+//                    ");";
+//
+//            db.execSQL(query);
+//            db.close();
+            ContentValues value = new ContentValues();
+            value.put("name", name);
+            value.put("data", data);
+
+            db.insert(TABLE_IMAGE, null, value);
+
+            Log.i(LOG_TAG, "insertImage + " + name + " done ");
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
 }

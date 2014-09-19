@@ -2,6 +2,10 @@ package com.secsm.keepongoing.Adapters;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +14,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
+import com.com.lanace.connecter.HttpAPIs;
+import com.secsm.keepongoing.DB.DBHelper;
 import com.secsm.keepongoing.R;
 import com.secsm.keepongoing.Shared.KogPreference;
 import com.secsm.keepongoing.Shared.MyVolley;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 
 /**
@@ -24,14 +33,15 @@ public class FriendsArrayAdapters extends BaseAdapter {
 
     private static String LOG_TAG = "FriendsArrayAdapter";
     private ViewHolder viewHolder = null;
-    Context context;
+    Context mContext;
     ArrayList<FriendNameAndIcon> friendArrayList;
     private ArrayList<FriendNameAndIcon> arraylist;
     LayoutInflater inflater;
     int layout;
+    DBHelper helper;
 
     public FriendsArrayAdapters(Context context, int layout, ArrayList<FriendNameAndIcon> friendList) {
-        this.context = context;
+        this.mContext = context;
         friendArrayList = friendList;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.layout = layout;
@@ -54,9 +64,10 @@ public class FriendsArrayAdapters extends BaseAdapter {
 
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;
+        helper = new DBHelper(mContext);
         if (friendArrayList != null) {
             if (v == null) {
-                MyVolley.init(context);
+                MyVolley.init(mContext);
 
                 v = inflater.inflate(layout, parent, false);
                 viewHolder = new ViewHolder();
@@ -76,8 +87,19 @@ public class FriendsArrayAdapters extends BaseAdapter {
 
 //        viewHolder.icon.setImageBitmap();
 //                                getProfileFromURL(m.getFileName(), viewHolder.iv);
+//            viewHolder.icon.setImageResource(R.drawable.profile_default);
+
             viewHolder.icon.setImageResource(R.drawable.profile_default);
-            getProfileFromURL(friendArrayList.get(position).getProfile_path(), viewHolder.icon);
+
+            String fileName = friendArrayList.get(position).getProfile_path();
+            if(helper.isImageExist(fileName))
+            {
+                viewHolder.icon.setImageBitmap(helper.getImage(fileName));
+            }else {
+                downloadProfileImage(fileName, viewHolder.icon);
+            }
+
+//            getProfileFromURL(friendArrayList.get(position).getProfile_path(), viewHolder.icon);
 
 //        viewHolder.icon.setImageResource(friendArrayList.get(position).icon);
 
@@ -106,6 +128,7 @@ public class FriendsArrayAdapters extends BaseAdapter {
                 }
             }
         }
+        helper.close();
         return v;
     }
 
@@ -145,6 +168,62 @@ public class FriendsArrayAdapters extends BaseAdapter {
 //        viewHolder = null;
 //        mContext = null;
     }
+
+    private void downloadProfileImage(String ImgName, ImageView imgView)
+    {
+        String ImgURL = KogPreference.DOWNLOAD_PROFILE_URL + ImgName;
+        int width = imgView.getWidth();
+        imgView.setMaxHeight(width);
+
+//        if (!HttpAPIs.imageMap.containsKey(ImgName))
+//        {
+////            imageMap.put(ImgName, HttpAPIs.getImage(ImgURL, width, width, imgView, ImgName, ImageSetHandler));
+//            HttpAPIs.getImage(ImgURL, width, width, imgView, ImgName, ImageSetHandler);
+//        }
+        HttpAPIs.getImage(mContext, ImgURL, ImgName, ProfileImageSetHandler);
+    }
+
+
+//    Handler ImageSetHandler = new Handler(){
+//        @Override
+//        public void handleMessage(Message msg) {
+//            try {
+//                Bundle b = msg.getData();
+//                JSONObject result = new JSONObject(b.getString("JSONData"));
+//                ImageView getView = (ImageView) result.get("imageView");
+//                Bitmap imgFile = (Bitmap) result.get("imageBitmap");
+//                String imgName = result.getString("imgName");
+//                getView.setImageBitmap(imgFile);
+//                HttpAPIs.imageMap.put(imgName, imgFile);
+//            }catch (Exception e)
+//            {
+//                e.printStackTrace();
+//            }
+//        }
+//    };
+
+
+    Handler ProfileImageSetHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+//                Bundle b = msg.getData();
+//                JSONObject result = new JSONObject(b.getString("JSONData"));
+//                ImageView getView = (ImageView) result.get("imageView");
+//                Bitmap imgFile = (Bitmap) result.get("imageBitmap");
+//                String imgName = result.getString("imgName");
+//                getView.setImageBitmap(imgFile);
+
+                DBHelper helper1 = new DBHelper(mContext);
+                viewHolder.icon.setImageBitmap(helper1.getImage(msg.getData().getString("imgName")));
+                helper1.close();
+            }catch (Exception e)
+            {
+                e.printStackTrace();
+
+            }
+        }
+    };
 
     void getProfileFromURL(String ImgURL, ImageView imgView) {
         ImgURL = KogPreference.DOWNLOAD_PROFILE_URL + ImgURL;
