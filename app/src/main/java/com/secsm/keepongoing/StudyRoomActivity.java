@@ -2057,8 +2057,7 @@ public class StudyRoomActivity extends BaseActivity {
                 e.printStackTrace();
 
                 if (KogPreference.DEBUG_MODE) {
-                    Log.i(LOG_TAG, "소켓 에러!\n" + e.toString());
-                    Toast.makeText(getBaseContext(), "소켓에러!\n" + e.toString(), Toast.LENGTH_SHORT).show();
+                    Log.e(LOG_TAG, "소켓 에러!\n" + e.toString());
                 }
             }
 
@@ -2083,9 +2082,6 @@ public class StudyRoomActivity extends BaseActivity {
                 Log.i(LOG_TAG, "client sent msg. now flushed");
             } catch (Exception e) {
                 Log.i(LOG_TAG, "client send message??????? " + e.toString());
-                if (KogPreference.DEBUG_MODE) {
-                    Toast.makeText(getBaseContext(), "Json Exception!\n" + e.toString(), Toast.LENGTH_SHORT).show();
-                }
             }
         }
 
@@ -2101,9 +2097,6 @@ public class StudyRoomActivity extends BaseActivity {
                 client = null;
             } catch (Exception e) {
                 Log.i(LOG_TAG, "소켓 에러!\n" + e.toString());
-                if (KogPreference.DEBUG_MODE) {
-                    Toast.makeText(getBaseContext(), "소켓에러!\n" + e.toString(), Toast.LENGTH_SHORT).show();
-                }
             }
         }
     }

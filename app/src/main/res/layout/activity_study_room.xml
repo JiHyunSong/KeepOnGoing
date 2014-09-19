@@ -104,6 +104,7 @@
         android:layout_above="@id/study_room_black_line2"
         android:orientation="horizontal"
         android:visibility="visible">
+        <requestFocus/>
 
         <Button
             android:id="@+id/study_room_additional"
@@ -120,7 +121,6 @@
             android:layout_weight="100"
             android:bufferType="spannable"
             android:gravity="top" >
-            <requestFocus/>
         </EditText>
 
         <Button
