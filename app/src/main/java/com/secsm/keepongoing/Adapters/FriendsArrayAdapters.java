@@ -86,7 +86,6 @@ public class FriendsArrayAdapters extends BaseAdapter {
 
             }
 
-
 //        viewHolder.icon.setImageBitmap();
 //                                getProfileFromURL(m.getFileName(), viewHolder.iv);
 //            viewHolder.icon.setImageResource(R.drawable.profile_default);

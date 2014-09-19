@@ -562,16 +562,18 @@ public class HttpAPIs {
 
         public void run()
         {
+            Bitmap image = null;
             Log.w(LOG_TAG, "getImage before try, fileurl : " + fileurl);
             try {
                 DBHelper helper = new DBHelper(mContext);
-                helper.insertImage(imgName, getImage2Server(fileurl, resize_width, resize_height));
+                helper.insertImage(imgName, (image = getImage2Server(fileurl, resize_width, resize_height)));
 
                 Log.w(LOG_TAG, "imageMap Put : " + imgName);
 
                 Message msg = handler.obtainMessage();
                 Bundle b = new Bundle();
 
+                b.putParcelable("image", image);
                 b.putString("imgName", imgName);
                 msg.setData(b);
                 handler.sendMessage(msg);
