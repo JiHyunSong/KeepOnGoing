@@ -1,6 +1,7 @@
 package com.secsm.keepongoing;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +36,8 @@ import com.com.lanace.connecter.CallbackResponse;
 import com.com.lanace.connecter.HttpAPIs;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.secsm.keepongoing.Alarm.Contact;
+import com.secsm.keepongoing.DB.DBHelper;
 import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
@@ -76,15 +80,21 @@ public class MyProfileActivity extends BaseActivity {
     private TextView my_profile_my_nickname;
     private TextView my_profile_my_target_time;
     private TextView my_profile_phone_num;
+    private RelativeLayout my_profile_ll1;
 
     String my_nickname;
     String my_target_time;
     String my_profile;
+
+    DBHelper helper;
+    Context mContext;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_profile);
 
+        mContext = getBaseContext();
+        my_profile_ll1 = (RelativeLayout) findViewById(R.id.my_profile_ll1);
         my_profile_image_crop_btn = (Button) findViewById(R.id.my_profile_image_crop_btn);
         my_profile_image_iv = (ImageView)findViewById(R.id.my_profile_image_iv);
         my_profile_my_nickname = (TextView)findViewById(R.id.my_profile_my_nickname);
@@ -134,9 +144,56 @@ public class MyProfileActivity extends BaseActivity {
         }
 
         my_profile_my_target_time.setText(my_target_time);
-        getImageFromURL(my_profile, my_profile_image_iv);
+//        getImageFromURL(my_profile, my_profile_image_iv);
+
+        helper = new DBHelper(mContext);
+        if(helper.isImageExist(this.my_profile))
+        {
+            Log.i(LOG_TAG, "image exist, path : " + this.my_profile);
+            this.my_profile_image_iv.setImageBitmap(helper.getImage(this.my_profile));
+        }else {
+            downloadProfileImage(this.my_profile);
+        }
+        helper.close();
+
     }
 
+    private void downloadProfileImage(String ImgName)
+    {
+        String ImgURL = KogPreference.DOWNLOAD_PROFILE_URL + ImgName;
+//        int width = imgView.getWidth();
+//        imgView.setMaxHeight(width);
+
+//        my_profile_image_iv.setImageResource(R.drawable.profile_default);
+//        my_profile_image_iv.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.profile_default));
+        HttpAPIs.getImage(mContext, ImgURL, 150, 150, ImgName, ProfileImageSetHandler);
+    }
+
+
+
+    Handler ProfileImageSetHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+                Log.i(LOG_TAG, "ProfileImageSetHandler2 : " + msg.getData().getString("imgName"));
+//                Bitmap image = msg.getData().getParcelable("image");
+//                Log.i(LOG_TAG, "ProfileImageSetHandler2 : " + image.toString());
+                helper = new DBHelper(getBaseContext());
+
+                my_profile_image_iv.setImageBitmap(helper.getImage(msg.getData().getString("imgName")));
+                my_profile_image_iv.postInvalidate();
+                helper.close();
+
+                refreshActivity();
+                Log.i(LOG_TAG, "setImage Bitmap done");
+//                my_profile_image_iv.;
+            }catch (Exception e)
+            {
+                e.printStackTrace();
+
+            }
+        }
+    };
     ///////////////////
     // upload image  //
     ///////////////////

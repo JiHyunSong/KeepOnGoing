@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -595,7 +596,7 @@ public class TabActivity extends BaseActivity {
         public void onItemClick(AdapterView<?> adapterView, View arg1, int position, long arg3) {
             if (adapterView.getId() == R.id.friend_list) {
                 Log.i(LOG_TAG, "tab2, friends Clicked");
-                mDialog = createInflaterDialog(mFriends.get(position).getProfile_path(), mFriends.get(position).getName(), mFriends.get(position).getTargetTime());
+                mDialog = createInflaterDialog(mFriends.get(position).getProfile_image(), mFriends.get(position).getName(), mFriends.get(position).getTargetTime());
                 mDialog.show();
             } else if (adapterView.getId() == R.id.room_list) {
                 Intent intent = new Intent(TabActivity.this, StudyRoomActivity.class);
@@ -657,15 +658,17 @@ public class TabActivity extends BaseActivity {
     private TextView info_txtFriendNickname = null;
     private TextView info_txtTargetTime = null;
 
-    private AlertDialog createInflaterDialog(String profileUrl, String name, String targetTime) {
+    private AlertDialog createInflaterDialog(Bitmap profile_img, String name, String targetTime) {
         final View innerView = getLayoutInflater().inflate(R.layout.friend_info_dialog, null);
         AlertDialog.Builder ab = new AlertDialog.Builder(this);
         info_iconFriend = (ImageView) innerView.findViewById(R.id.info_iconFriend);
         info_txtFriendNickname = (TextView) innerView.findViewById(R.id.info_txtFriendNickname);
         info_txtTargetTime = (TextView) innerView.findViewById(R.id.info_txtTargetTime);
 
-        getImageFromURL(profileUrl, info_iconFriend);
+//        getImageFromURL(profileUrl, info_iconFriend);
 
+
+        info_iconFriend.setImageBitmap(profile_img);
         info_txtFriendNickname.setText(name);
         info_txtTargetTime.setText(targetTime);
         ab.setTitle("친구정보");
