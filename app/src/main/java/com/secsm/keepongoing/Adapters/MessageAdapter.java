@@ -69,6 +69,7 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
 
             viewHolder.p_iv = (ImageView) v.findViewById(R.id.msg_bottomTextImageView);
 
+
             // set invisible
             viewHolder.wv.setVisibility(View.GONE);
             viewHolder.p_iv.setVisibility(View.GONE);
@@ -79,6 +80,13 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
             viewHolder = (ViewHolder) v.getTag();
 
         }
+
+        android.view.ViewGroup.LayoutParams params = viewHolder.p_iv.getLayoutParams();
+        params.width = RelativeLayout.LayoutParams.MATCH_PARENT;;
+        int width = (viewHolder.p_iv.getWidth() > 350 ? viewHolder.p_iv.getWidth() : 350);
+        Log.i(LOG_TAG, "textImage width : " + width);
+        params.height = width;
+        viewHolder.p_iv.setLayoutParams(params);
 
         Msg m = items.get(position);
         if (m != null) {
@@ -196,6 +204,8 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
                         viewHolder.tt.setText(m.getName());
 
                         viewHolder.p_iv.setImageResource(R.drawable.no_image);
+
+
                         viewHolder.p_iv.setImageBitmap(m.getText_image());
 
                         viewHolder.time.setText(m.getTime());
