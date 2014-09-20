@@ -14,12 +14,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.com.lanace.connecter.CallbackResponse;
 import com.com.lanace.connecter.HttpAPIs;
 import com.desarrollodroide.libraryfragmenttransactionextended.FragmentTransactionExtended;
@@ -102,33 +96,6 @@ public class quiz_set_result extends Activity implements AdapterView.OnItemSelec
     //        mFirstFragment.setSubject("1");
         }
     }
-
-
-/*
-
-    public void backTransition(View view) {
-        Button button = (Button) findViewById(R.id.button2);
-        if (getFragmentManager().getBackStackEntryCount()==0) {
-            Fragment secondFragment = new SlidingListFragmentRight();
-            ((SlidingListFragmentRight) secondFragment).setIndex(--index);
-            ((SlidingListFragmentRight) secondFragment).setSubject("1");
-            FragmentManager fm = getFragmentManager();
-            FragmentTransaction fragmentTransaction = fm.beginTransaction();
-            FragmentTransactionExtended fragmentTransactionExtended = new FragmentTransactionExtended(this, fragmentTransaction, mFirstFragment, secondFragment, R.id.fragment_place);
-            fragmentTransactionExtended.addTransition(optionSelected);
-            fragmentTransactionExtended.commit();
-        }else{
-            getFragmentManager().popBackStack();
-            mFirstFragment.setIndex(--index);
-            mFirstFragment.setSubject("1");
-        }
-
-    }
-*/
-
-
-
-
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {

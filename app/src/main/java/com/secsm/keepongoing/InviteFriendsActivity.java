@@ -16,20 +16,13 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.beardedhen.androidbootstrap.BootstrapEditText;
 import com.com.lanace.connecter.CallbackResponse;
 import com.com.lanace.connecter.HttpAPIs;
 import com.secsm.keepongoing.Adapters.FriendNameAndIcon;
 import com.secsm.keepongoing.Adapters.FriendsArrayAdapters;
 import com.secsm.keepongoing.Shared.BaseActivity;
-import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
-import com.secsm.keepongoing.Shared.MyVolley;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -246,32 +239,6 @@ public class InviteFriendsActivity extends BaseActivity {
         }
     };
 
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.invite_friends, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
-
-    public String getRealDate() {
-        long time = System.currentTimeMillis();
-        Timestamp currentTimestamp = new Timestamp(time);
-        return currentTimestamp.toString().substring(0, 10);
-    }
-
     Handler getFriendsRequestHandler = new Handler(){
 
         @Override
@@ -395,12 +362,6 @@ public class InviteFriendsActivity extends BaseActivity {
 
     // room create
     private void createLifeRoomRequest() {
-//    String type, rule, max_holiday_count, start_time, duration_time, showup_time, meet_days;
-//        String _roomname = roomname.trim().replace(" ", "%20");
-//        _roomname = _roomname.trim().replace("\n", "%0D%0A");
-//
-//        String _rule = rule.trim().replace(" ", "%20");
-//        _rule = _rule.trim().replace("\n", "%0D%0A");
         try {
             baseHandler.sendEmptyMessage(-1);
             HttpRequestBase createLifeRoomRequest = HttpAPIs.createLifeRoomPost(
@@ -472,14 +433,6 @@ public class InviteFriendsActivity extends BaseActivity {
         }
     };
     private void createSubjectRoomRequest() {
-//                "?nickname=" + KogPreference.getNickName(InviteFriendsActivity.this)+
-//                "&type=" + type +
-//                "&rule=" + _rule +
-//                "&roomname=" + _roomname +
-//                "&start_time=" + start_time +
-//                "&duration_time=" + duration_time +
-//                "&showup_time=" + showup_time +
-//                "&meet_days=" + meet_days;
         try {
             baseHandler.sendEmptyMessage(-1);
             HttpRequestBase requestAuthRegister = HttpAPIs.createSubjectRoomPost(

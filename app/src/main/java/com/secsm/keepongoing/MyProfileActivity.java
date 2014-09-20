@@ -14,8 +14,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -23,32 +21,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.NetworkResponse;
-import com.android.volley.ParseError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.com.lanace.connecter.CallbackResponse;
 import com.com.lanace.connecter.HttpAPIs;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-import com.secsm.keepongoing.Alarm.Contact;
 import com.secsm.keepongoing.DB.DBHelper;
 import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
-import com.secsm.keepongoing.Shared.MultipartRequest;
-import com.secsm.keepongoing.Shared.MyVolley;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.FileBody;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,12 +40,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.sql.Timestamp;
-import java.util.Map;
 
 public class MyProfileActivity extends BaseActivity {
     private AlertDialog mDialog;
@@ -194,28 +171,6 @@ public class MyProfileActivity extends BaseActivity {
             }
         }
     };
-    ///////////////////
-    // upload image  //
-    ///////////////////
-//    private FileInputStream mFileInputStream = null;
-//    private URL connectUrl = null;
-//    String lineEnd = "\r\n";
-//    String twoHyphens = "--";
-//    String boundary = "*****";
-
-    void getImageFromURL(String img_name, ImageView imgView) {
-
-        String ImgURL = KogPreference.DOWNLOAD_PROFILE_URL+img_name;
-
-
-        // TODO R.drawable.error_image
-        ImageLoader imageLoader = MyVolley.getImageLoader();
-        imageLoader.get(ImgURL,
-                ImageLoader.getImageListener(imgView,
-                        R.drawable.no_image,
-                        R.drawable.no_image)
-        );
-    }
 
     void getImage()
     {
@@ -612,65 +567,6 @@ public class MyProfileActivity extends BaseActivity {
             errorHandler.sendEmptyMessage(1);
             e.printStackTrace();
         }
-
-//        //TODO : check POST/GET METHOD and get_URL
-//        String get_url = KogPreference.REST_URL +
-//                "User" +
-//                "?nickname=" + KogPreference.getNickName(MyProfileActivity.this) +
-//                "&date=" + getRealDate();
-//
-//        Log.i(LOG_TAG, "URL : " + get_url);
-//
-//        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, Encrypt.encodeIfNeed(get_url), null,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        Log.i(LOG_TAG, "get JSONObject getMyInfoRequest");
-//                        Log.i(LOG_TAG, response.toString());
-//
-//                        try {
-//
-//                            int status_code = response.getInt("status");
-//                            if (status_code == 200) {
-//                                /////////////////////////////
-//                                JSONArray rMessage = response.getJSONArray("message");
-//                                // URLDecoder.decode(rObj.getString("nickname"), "UTF-8")
-//                                if(URLDecoder.decode(rMessage.getJSONObject(0).getString("nickname"), "UTF-8") != null) {
-//                                    my_nickname = URLDecoder.decode(rMessage.getJSONObject(0).getString("nickname"), "UTF-8");
-//                                    my_target_time = rMessage.getJSONObject(0).getString("targetTime");
-//                                    my_profile = URLDecoder.decode(rMessage.getJSONObject(0).getString("image"), "UTF-8");
-//                                    Log.i(LOG_TAG, "getMyInfoRequest, nick " + my_nickname);
-//                                    Log.i(LOG_TAG, "getMyInfoRequest, my_profile " + my_profile);
-//                                    setAllEnable();
-//                                    setInit();
-//                                }
-//
-//                                /////////////////////////////
-//                            } else {
-//                                Toast.makeText(getBaseContext(), "통신 에러 : \n상태를 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-//                                if (KogPreference.DEBUG_MODE) {
-////                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-//                                }
-//                            }
-//                        } catch (Exception e) {
-//                            Log.e(LOG_TAG, "get User error : " + e.toString());
-//                            Toast.makeText(getBaseContext(), "통신 에러 : \n상태를 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-//                            MyProfileActivity.this.finish();
-//                        }
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Toast.makeText(getBaseContext(), "통신 에러 : \n상태를 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-//                Log.i(LOG_TAG, "Response Error");
-//                if (KogPreference.DEBUG_MODE) {
-//                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
-//                }
-//
-//            }
-//        }
-//        );
-//        vQueue.add(jsObjRequest);
     }
 
     /** getMyInfoRequest
@@ -736,123 +632,5 @@ public class MyProfileActivity extends BaseActivity {
             errorHandler.sendEmptyMessage(1);
             e.printStackTrace();
         }
-
-//        //TODO : check POST/GET METHOD and get_URL
-//        String get_url = KogPreference.REST_URL +
-//                "User"; // +
-////                "?nickname=" + KogPreference.getNickName(MyProfileActivity.this) +
-////                "&password=" + Encrypt.encodingMsg(KogPreference.getPassword(MyProfileActivity.this))+
-////                "&image=" + _image;
-//        JSONObject sendBody = new JSONObject();
-//
-//        try {
-//            sendBody.put("nickname", KogPreference.getNickName(MyProfileActivity.this));
-//            sendBody.put("password", Encrypt.encodingMsg(KogPreference.getPassword(MyProfileActivity.this)));
-//            sendBody.put("image", _image);
-//            Log.i(LOG_TAG, "sendbody : " + sendBody.toString());
-//        } catch (JSONException e) {
-//            Log.e(LOG_TAG, "UserLogin error : " + e.toString());
-//
-//        }
-//
-//        Log.i(LOG_TAG, "URL : " + get_url);
-//
-//        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.PUT, Encrypt.encodeIfNeed(get_url), sendBody,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        Log.i(LOG_TAG, "get JSONObject updateMyInfoReqeust");
-//                        Log.i(LOG_TAG, response.toString());
-//
-//                        try {
-//
-//                            int status_code = response.getInt("status");
-//                            if (status_code == 200) {
-//                                /////////////////////////////
-//
-//
-//                                Toast.makeText(getBaseContext(), "사진 업로드 완료!", Toast.LENGTH_SHORT).show();
-//
-//                                setAllDisable();
-//                                getMyInfoRequest();
-//
-//                                /////////////////////////////
-//                            } else {
-//                                Toast.makeText(getBaseContext(), "통신 에러 : \n상태를 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-//                                if (KogPreference.DEBUG_MODE) {
-////                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-//                                }
-//                            }
-//                        } catch (Exception e) {
-//                            Log.e(LOG_TAG, "get User error : " + e.toString());
-//                            Toast.makeText(getBaseContext(), "통신 에러 : \n상태를 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-//                            MyProfileActivity.this.finish();
-//                        }
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Toast.makeText(getBaseContext(), "통신 에러 : \n상태를 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-//                Log.i(LOG_TAG, "Response Error");
-//                if (KogPreference.DEBUG_MODE) {
-//                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
-//                }
-//
-//            }
-//        }
-//        );
-//        vQueue.add(jsObjRequest);
-    }
-
-
-    private class ProfileMultipartRequest extends MultipartRequest
-    {
-        private final Gson g_gson = new Gson();
-        public ProfileMultipartRequest(int method, String url, MultipartEntity params, Response.ErrorListener errorListener) {
-            super(method, url, params, errorListener);
-        }
-        @SuppressWarnings("rawtypes")
-        @Override
-        protected Response<Map> parseNetworkResponse(NetworkResponse response)
-        {
-            try
-            {
-                String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-                Log.i("ProfileMultipartRequest", "response.data : " + new String(response.data, "UTF-8"));
-                Log.i("ProfileMultipartRequest", "response.headers : " + response.headers);
-                try {
-                    JSONObject _response = new JSONObject(new String(response.data, "UTF-8"));
-                    int status_code = _response.getInt("status");
-                    Log.i(LOG_TAG, "profile status code : " + status_code);
-                    if (status_code == 200) {
-                        /////////////////////////////
-                        String uploadedProfileName = URLDecoder.decode(_response.getString("message"), "UTF-8");
-                        Log.i(LOG_TAG, "profile rMessage : " + uploadedProfileName);
-                        Log.i(LOG_TAG, "내 사진을 업로드 할거야!");
-
-                        updateMyInfoRequest(uploadedProfileName);
-
-                        setAllDisable();
-                        getMyInfoRequest();
-
-                        /////////////////////////////
-                    }
-                } catch (JSONException e) {
-
-                }
-
-
-                return Response.success(g_gson.fromJson(json, Map.class), HttpHeaderParser.parseCacheHeaders(response));
-            }
-            catch (UnsupportedEncodingException e)
-            {
-                return Response.error(new ParseError(e));
-            }
-            catch (JsonSyntaxException e)
-            {
-                return Response.error(new ParseError(e));
-            }
-        }
-
     }
 }

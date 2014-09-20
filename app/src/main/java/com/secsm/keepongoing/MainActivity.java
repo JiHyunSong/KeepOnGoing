@@ -13,20 +13,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.romainpiel.shimmer.Shimmer;
 import com.romainpiel.shimmer.ShimmerTextView;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
-import com.secsm.keepongoing.Shared.MyVolley;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -46,10 +37,7 @@ public class MainActivity extends Activity {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        KogPreference.setString(MainActivity.this, "phoneNo", getPhoneNumber());
         Encrypt.initKey();
-//        vQueue = Volley.newRequestQueue(this);
-        MyVolley.init(MainActivity.this);
 
         _gcm = GoogleCloudMessaging.getInstance(this);
         _regId = getRegistrationId();
@@ -163,12 +151,9 @@ public class MainActivity extends Activity {
         }.execute(null, null, null);
     }
 
-
     // registraion id를 preference에 저장한다.
     private void storeRegistrationId(String regId) {
         KogPreference.setRegId(MainActivity.this, regId);
         Log.i(LOG_TAG, "reg: " + regId);
     }
-
-
 }

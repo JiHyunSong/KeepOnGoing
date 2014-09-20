@@ -16,19 +16,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.com.lanace.connecter.CallbackResponse;
 import com.com.lanace.connecter.HttpAPIs;
 import com.secsm.keepongoing.Quiz.Quiz_data;
 import com.secsm.keepongoing.Quiz.listAdapter_Solve;
 import com.secsm.keepongoing.R;
-import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
-import com.secsm.keepongoing.Shared.MyVolley;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpRequestBase;

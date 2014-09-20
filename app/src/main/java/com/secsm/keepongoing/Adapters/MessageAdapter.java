@@ -1,11 +1,7 @@
 package com.secsm.keepongoing.Adapters;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,18 +12,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.ImageLoader;
-import com.com.lanace.connecter.HttpAPIs;
 import com.secsm.keepongoing.DB.DBHelper;
 import com.secsm.keepongoing.R;
 import com.secsm.keepongoing.Shared.KogPreference;
-import com.secsm.keepongoing.Shared.MyVolley;
-
-import org.json.JSONObject;
-
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /* my customized adapter for listview */
 public class MessageAdapter extends ArrayAdapter<Msg> {
@@ -50,8 +38,6 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
         View v = convertView;
         helper = new DBHelper(mContext);
         if (v == null) {
-            MyVolley.init(mContext);
-
             LayoutInflater vi = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = vi.inflate(R.layout.message_row, null);
 
@@ -254,104 +240,6 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
         public ImageView iv = null;
         public ImageView p_iv = null;
     }
-
-//    private void downloadChatImage(String ImgName, ImageView imgView)
-//    {
-//        String ImgURL = KogPreference.DOWNLOAD_CHAT_IMAGE_URL + KogPreference.getRid(mContext) + "/" + ImgName;
-//
-//        android.view.ViewGroup.LayoutParams params = imgView.getLayoutParams();
-//        params.width = RelativeLayout.LayoutParams.MATCH_PARENT;
-//        int width = imgView.getWidth();
-//        Log.i(LOG_TAG, "ChatImage width (imgView.getWidth()): " + width);
-//        Log.i(LOG_TAG, "ChatImage width (params.width): " + params.width);
-//        params.height = width;
-//
-//        HttpAPIs.getImage(mContext, ImgURL, ImgName, ChatImageSetHandler);
-//    }
-//
-//    private void downloadProfileImage(String ImgName, ImageView imgView)
-//    {
-//        String ImgURL = KogPreference.DOWNLOAD_PROFILE_URL + ImgName;
-//        int width = imgView.getWidth();
-//        imgView.setMaxHeight(width);
-//
-//        HttpAPIs.getImage(mContext, ImgURL, ImgName, ProfileImageSetHandler);
-//    }
-//
-//
-//
-//    Handler ProfileImageSetHandler = new Handler(){
-//        @Override
-//        public void handleMessage(Message msg) {
-//            try {
-////                Bundle b = msg.getData();
-////                JSONObject result = new JSONObject(b.getString("JSONData"));
-////                ImageView getView = (ImageView) result.get("imageView");
-////                Bitmap imgFile = (Bitmap) result.get("imageBitmap");
-////                String imgName = result.getString("imgName");
-////                getView.setImageBitmap(imgFile);
-//                Log.i(LOG_TAG, "ProfileImageSetHandler2 : " + msg.getData().getString("imgName"));
-//                DBHelper helper1 = new DBHelper(mContext);
-//                viewHolder.iv.setImageBitmap(helper1.getImage(msg.getData().getString("imgName")));
-//                helper1.close();
-//            }catch (Exception e)
-//            {
-//                e.printStackTrace();
-//
-//            }
-//        }
-//    };
-//
-//    Handler ChatImageSetHandler = new Handler(){
-//        @Override
-//        public void handleMessage(Message msg) {
-//            try {
-//                Log.i(LOG_TAG, "ChatImageSetHandler");
-//                DBHelper helper1 = new DBHelper(mContext);
-//                viewHolder.p_iv.setImageBitmap(helper1.getImage(msg.getData().getString("imgName")));
-//                helper1.close();
-//
-//            }catch (Exception e)
-//            {
-//                e.printStackTrace();
-//            }
-//        }
-//    };
-
-    void getChatImageFromURL(String ImgURL, ImageView imgView) {
-        ImgURL = KogPreference.DOWNLOAD_CHAT_IMAGE_URL + KogPreference.getRid(mContext) + "/" + ImgURL;
-        android.view.ViewGroup.LayoutParams params = imgView.getLayoutParams();
-        params.width = RelativeLayout.LayoutParams.MATCH_PARENT;;
-        int width = imgView.getWidth();
-        params.height = width;
-        imgView.setLayoutParams(params);
-        // S3 358
-//        Log.i(LOG_TAG, "img view width : " + width);
-         ImageLoader imageLoader = MyVolley.getImageLoader();
-        imageLoader.get(ImgURL,
-                ImageLoader.getImageListener(imgView,
-                        R.drawable.no_image,
-                        R.drawable.no_image)
-        );
-    }
-
-    void getProfileFromURL(String ImgURL, ImageView imgView) {
-        ImgURL = KogPreference.DOWNLOAD_PROFILE_URL + ImgURL;
-//        Log.i(LOG_TAG, "getProfileFromURL img URL : " + ImgURL);
-
-        int width = imgView.getWidth();
-        imgView.setMaxHeight(width);
-
-
-        ImageLoader imageLoader = MyVolley.getImageLoader();
-        imageLoader.get(ImgURL,
-                ImageLoader.getImageListener(imgView,
-                        R.drawable.profile_default,
-                        R.drawable.profile_default)
-        );
-    }
-
-
 }
 
 

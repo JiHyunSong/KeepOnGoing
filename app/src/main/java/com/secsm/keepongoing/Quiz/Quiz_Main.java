@@ -1,6 +1,5 @@
 package com.secsm.keepongoing.Quiz;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,20 +14,12 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.com.lanace.connecter.CallbackResponse;
 import com.com.lanace.connecter.HttpAPIs;
 import com.secsm.keepongoing.R;
 import com.secsm.keepongoing.Shared.BaseActivity;
-import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
-import com.secsm.keepongoing.Shared.MyVolley;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -295,130 +286,7 @@ public class Quiz_Main extends BaseActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-
-//        question = question.trim().replace(" ", "%20");
-//        solution = solution.trim().replace(" ", "%20");
-//        question = question.trim().replace("\n", "%0A");
-////        solution = solution.trim().replace("\n", "%0A");
-//        Log.i("minsu: ) ","minsu: whffu"+question);
-//
-//       final  String temp= solution;
-//        String get_url = KogPreference.REST_URL +
-//                "Room/Quiz";// +
-////                "?srid=" +KogPreference.getRid(Quiz_Main.this) +
-////                "&type=" + type +
-////                "&question=" + question +
-////                "&solution=" + solution +
-////                "&nickname=" + KogPreference.getNickName(Quiz_Main.this)+
-////                "&title="+ title+
-////                "&date="+ date;
-//
-//
-//        JSONObject sendBody = new JSONObject();
-//        try {
-//            sendBody.put("srid", KogPreference.getRid(Quiz_Main.this));
-//            sendBody.put("type", type);
-//            sendBody.put("question", question);
-//            sendBody.put("solution", solution);
-//            sendBody.put("nickname", KogPreference.getNickName(Quiz_Main.this));
-//            sendBody.put("title", title);
-//            sendBody.put("date", date);
-//        }
-//        catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-////        Log.i(LOG_TAG, "get_url : " + get_url);
-//    //    JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Encrypt.encodeIfNeed(get_url), null,
-//        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, KogPreference.REST_URL+"Room/Quiz", sendBody,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        Log.i(LOG_TAG, "get JSONObject");
-//                        Log.i(LOG_TAG, response.toString());
-//
-//                        try {
-//                            status_code = response.getInt("status");
-//                            if (status_code == 200) {
-//                               // rMessage = response.getString("message");
-//                                JSONArray rMessageget;
-//
-//                                rMessageget = response.getJSONArray("message");
-//                                JSONObject rObj;
-//                                rObj=rMessageget.getJSONObject(0);
-//                           //     Toast.makeText(getBaseContext(), LOG_TAG + URLDecoder.decode(rObj.getString("num").toString(), "UTF-8"), Toast.LENGTH_SHORT).show();
-//                         //       Log.e("minsu ):","minsu:) receive : "+ URLDecoder.decode(rObj.getString("num").toString(), "UTF-8"));
-//                            //   Log.e("minsu ):","minsue:) send solution : "+ temp);
-//                                KogPreference.setQuizNum(Quiz_Main.this,  URLDecoder.decode(rObj.getString("num").toString(), "UTF-8"));
-//                                Toast.makeText(getBaseContext(), "제출완료", Toast.LENGTH_SHORT).show();
-//                            } else if (status_code == 9001) {
-//                                Toast.makeText(getBaseContext(), "퀴즈 등록이 불가능합니다.", Toast.LENGTH_SHORT).show();
-//                            } else {
-//                                Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
-//                                if (KogPreference.DEBUG_MODE) {
-//                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-//                                }
-//                            }
-//                        } catch (Exception e) {
-//                        }
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Log.i(LOG_TAG, "Response Error : status_code : " +status_code);
-//                Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
-//                if (KogPreference.DEBUG_MODE) {
-//                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        }
-//        );
-//
-//        vQueue.add(jsObjRequest);
     }
-
-///*
-//            jsonObj.put("srid", KogPreference.getRid(Quiz_Main.this));
-//            jsonObj.put("type", type);
-//            jsonObj.put("question", question);
-//            jsonObj.put("solution", solution);
-//            jsonObj.put("nickname", KogPreference.getNickName(Quiz_Main.this));
-// */
-///*    void MultipartEntity(String question, String type, String solution)
-//    {
-//        Charset c = Charset.forName("utf-8");
-//        String URL = KogPreference.REST_URL+"Room/Quiz";
-//        MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, Charset.forName("UTF-8"));
-//        try
-//        {
-//            entity.addPart("srid", new StringBody(KogPreference.getRid(Quiz_Main.this)));
-//            entity.addPart("type", new StringBody(type));
-//            entity.addPart("question", new StringBody(question));
-//            entity.addPart("solution", new StringBody(solution));
-//            entity.addPart("nickname", new StringBody(KogPreference.getNickName(Quiz_Main.this)));
-//            Log.i("MULTIPART-ENTITY", "add addPART");
-//        } catch (Exception e)
-//        {
-//            e.printStackTrace();
-//        }
-//
-//        MultipartRequest req = new MultipartRequest(Request.Method.POST, URL, entity, errListener);
-//        vQueue.add(req);
-//        Log.i("MULTIPART-ENTITY", "add queue");
-//
-//        vQueue.start();
-//    }
-//
-//    Response.ErrorListener errListener = new Response.ErrorListener() {
-//        @Override
-//        public void onErrorResponse(VolleyError arg0) {
-//            Log.d("errrrrrooooor", arg0.toString());
-//        }
-//    };*/
-
-
 
     public String mulitiplecheck(ArrayList<Quiz_data> arrays,int position){
         String temp="";

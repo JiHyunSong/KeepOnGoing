@@ -28,12 +28,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.com.lanace.connecter.CallbackResponse;
 import com.com.lanace.connecter.HttpAPIs;
 import com.secsm.keepongoing.Adapters.FriendNameAndIcon;
@@ -49,7 +43,6 @@ import com.secsm.keepongoing.Quiz.Quiz_Set_Search;
 import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
-import com.secsm.keepongoing.Shared.MyVolley;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -64,8 +57,6 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -529,18 +520,6 @@ public class TabActivity extends BaseActivity {
             }
         }
     };
-
-    /** 이미지 다운로드 후 수정 */
-    public void getImageFromURL(String img_name, ImageView imgView) {
-
-        String ImgURL = KogPreference.DOWNLOAD_PROFILE_URL+img_name;
-        ImageLoader imageLoader = MyVolley.getImageLoader();
-        imageLoader.get(ImgURL,
-                ImageLoader.getImageListener(imgView,
-                        R.drawable.no_image,
-                        R.drawable.no_image)
-        );
-    }
 
     /** 리스트뷰 클릭시 이벤트 */
     ListView.OnItemLongClickListener itemLongClickListener = new ListView.OnItemLongClickListener() {
@@ -1238,5 +1217,4 @@ public class TabActivity extends BaseActivity {
         tabRooms.setEnabled(false);
         tabSettings.setEnabled(false);
     }
-
 }

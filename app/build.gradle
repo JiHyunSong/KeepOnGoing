@@ -48,7 +48,6 @@ dependencies {
     compile 'com.android.support:support-v4:20.+'
     compile 'com.android.support:appcompat-v7:20.+'
     compile 'com.google.android.gms:play-services:4.2.42'
-    compile 'com.mcxiaoke.volley:library:1.0.0'
     compile project(':libs:AndroidBootstrap')
     compile 'com.google.android.gms:play-services:+'
     compile 'eu.inmite.android.lib:android-styled-dialogs:1.2.0'

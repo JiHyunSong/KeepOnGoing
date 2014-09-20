@@ -1,32 +1,22 @@
 package com.secsm.keepongoing;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.com.lanace.connecter.CallbackResponse;
 import com.com.lanace.connecter.HttpAPIs;
 import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
-import com.secsm.keepongoing.Shared.MyVolley;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -34,7 +24,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.sql.Timestamp;
 
 public class RegisterActivity extends BaseActivity {
@@ -84,16 +73,8 @@ public class RegisterActivity extends BaseActivity {
         alertPwd = (TextView) findViewById(R.id.tvPwdAlert);
         alertNick = (TextView) findViewById(R.id.tvNickAlert);
 
-
-        nickName.setPrivateImeOptions("defaultInputmode=english;");
-        password1.setPrivateImeOptions("defaultInputmode=english;");
-        password2.setPrivateImeOptions("defaultInputmode=english;");
-
         phoneNum.setText(phoneNo);
         phoneNum.setFocusable(false);
-
-        // TODO : register GCM
-
 
         btnRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

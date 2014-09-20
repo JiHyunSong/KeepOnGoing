@@ -11,9 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
-import android.net.ConnectivityManager;
 import android.net.Uri;
-import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -27,7 +25,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -36,23 +33,12 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.android.volley.NetworkResponse;
-import com.android.volley.ParseError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.com.lanace.connecter.CallbackResponse;
 import com.com.lanace.connecter.HttpAPIs;
 import com.google.gson.Gson;
@@ -68,15 +54,10 @@ import com.secsm.keepongoing.Quiz.Solve_Main;
 import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
-import com.secsm.keepongoing.Shared.MultipartRequest;
-import com.secsm.keepongoing.Shared.MyVolley;
 import com.secsm.keepongoing.Shared.SocketListener;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.FileBody;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -894,32 +875,6 @@ public class StudyRoomActivity extends BaseActivity {
         }
     };
 
-    /* getting the profile image from the server  */
-	/* aURL is perfect URL like : http://203.252.195.122/files/tmp_1348736125550.jpg */
-    void getProfileImageFromURL(String img_name, ImageView imgView) {
-
-        String ImgURL = KogPreference.DOWNLOAD_PROFILE_URL + img_name;
-        // TODO R.drawable.error_image
-        ImageLoader imageLoader = MyVolley.getImageLoader();
-        imageLoader.get(ImgURL,
-                ImageLoader.getImageListener(imgView,
-                        R.drawable.no_image,
-                        R.drawable.no_image)
-        );
-    }
-
-    void getChatImageFromURL(String img_name, ImageView imgView) {
-
-        String ImgURL = KogPreference.DOWNLOAD_CHAT_IMAGE_URL + KogPreference.getRid(StudyRoomActivity.this) + "/" + img_name;
-        // TODO R.drawable.error_image
-        ImageLoader imageLoader = MyVolley.getImageLoader();
-        imageLoader.get(ImgURL,
-                ImageLoader.getImageListener(imgView,
-                        R.drawable.no_image,
-                        R.drawable.no_image)
-        );
-    }
-
 
     ///////////////////
     // upload image  //
@@ -1111,74 +1066,6 @@ public class StudyRoomActivity extends BaseActivity {
             e.printStackTrace();
         }
     }
-//    void VolleyUploadImage() {
-//        Charset c = Charset.forName("utf-8");
-//        String URL = KogPreference.UPLOAD_CHAT_IMAGE_URL + "?rid=" + KogPreference.getRid(StudyRoomActivity.this) + "&nickname=" + Encrypt.encodeIfNeed(KogPreference.getNickName(StudyRoomActivity.this));
-//        MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, Charset.forName("UTF-8"));
-//        try {
-//            entity.addPart("file", new FileBody(new File(asyncFilePath)));
-//            // add addPART, asyncFilePath : /storage/sdcard0/Pictures/tmp_1408977926598.jpg
-//            Log.i("MULTIPART-ENTITY", "add addPART, asyncFilePath : " + asyncFilePath);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        ChatImageMultipartRequest req = new ChatImageMultipartRequest(Request.Method.POST, URL, entity, errListener);
-//        vQueue.add(req);
-//        Log.i("MULTIPART-ENTITY", "add queue");
-//
-//        vQueue.start();
-//    }
-
-
-    private class ChatImageMultipartRequest extends MultipartRequest {
-        private final Gson g_gson = new Gson();
-
-        public ChatImageMultipartRequest(int method, String url, MultipartEntity params, Response.ErrorListener errorListener) {
-            super(method, url, params, errorListener);
-        }
-
-        @SuppressWarnings("rawtypes")
-        @Override
-        protected Response<Map> parseNetworkResponse(NetworkResponse response) {
-            try {
-                String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-                Log.i("ChatImageMultipartRequest", "response.data : " + new String(response.data, "UTF-8"));
-                Log.i("ChatImageMultipartRequest", "response.headers : " + response.headers);
-                try {
-                    JSONObject _response = new JSONObject(new String(response.data, "UTF-8"));
-                    int status_code = _response.getInt("status");
-                    Log.i(LOG_TAG, "profile status code : " + status_code);
-                    if (status_code == 200) {
-                        /////////////////////////////
-                        String uploadedChatImgName = _response.getString("message");
-                        Log.i(LOG_TAG, "chat image rMessage : " + uploadedChatImgName);
-                        sendMsgToSvr(uploadedChatImgName, KogPreference.MESSAGE_TYPE_IMAGE);
-                        /////////////////////////////
-                    }
-                } catch (JSONException e) {
-
-                }
-
-
-                return Response.success(g_gson.fromJson(json, Map.class), HttpHeaderParser.parseCacheHeaders(response));
-            } catch (UnsupportedEncodingException e) {
-                return Response.error(new ParseError(e));
-            } catch (JsonSyntaxException e) {
-                return Response.error(new ParseError(e));
-            }
-        }
-
-    }
-
-
-    Response.ErrorListener errListener = new Response.ErrorListener() {
-        @Override
-        public void onErrorResponse(VolleyError arg0) {
-// TODO Auto-generated method stub
-            Log.d("errrrrrooooor", arg0.toString());
-        }
-    };
 
     /* copy the file from srcFile to destFile */
     public static boolean copyFile(File srcFile, File destFile) {
@@ -2384,111 +2271,6 @@ public class StudyRoomActivity extends BaseActivity {
         }
     }
 
-//    private void getFriendsRequest() {
-//
-//        //TODO : check POST/GET METHOD and get_URL
-//        String get_url = KogPreference.REST_URL +
-//                "Room/User" +
-//                "?rid=" + KogPreference.getRid(StudyRoomActivity.this) +
-//                "&fromdate=" + getThisMonday() +
-//                "&todate=" + getRealDate();
-//
-//        Log.i(LOG_TAG, "URL : " + get_url);
-//
-//        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, Encrypt.encodeIfNeed(get_url), null,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        Log.i(LOG_TAG, "get JSONObject");
-//                        Log.i(LOG_TAG, response.toString());
-//
-//                        try {
-//                            int status_code = response.getInt("status");
-//                            if (status_code == 200) {
-//                                JSONArray rMessage;
-//                                rMessage = response.getJSONArray("message");
-//                                //////// real action ////////
-//                                mFriends = new ArrayList<FriendNameAndIcon>();
-//                                JSONObject rObj;
-//                                mFriends.add(mFriendsFristToAdd);
-//                                //{"message":[{"targetTime":null,"image":"http:\/\/210.118.74.195:8080\/KOG_Server_Rest\/upload\/UserImage\/default.png","nickname":"jonghean"}],"status":"200"}
-//
-//                                if(KogPreference.ROOM_TYPE_LIFE.equals(type)) {
-//
-//                                    Log.i(LOG_TAG, "friends length : " +rMessage.length());
-//                                    for (int i = 0; i < rMessage.length(); i++) {
-//                                        rObj = rMessage.getJSONObject(i);
-//                                        Log.i(LOG_TAG, "i : " + i );
-//                                        Log.i(LOG_TAG, "rObj.toString() : " + rObj.toString());
-//                                        if (!"null".equals(rObj.getString("nickname"))) {
-//                                            Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" + URLDecoder.decode(rObj.getString("nickname"), "UTF-8") + "|" + rObj.getString("targetTime") + "|" + rObj.getString("isMaster"));
-//                                            mFriends.add(new FriendNameAndIcon(
-//                                                    URLDecoder.decode(rObj.getString("image"), "UTF-8"),
-//                                                    URLDecoder.decode(rObj.getString("nickname"), "UTF-8"),
-//                                                    URLDecoder.decode(rObj.getString("targetTime"), "UTF-8"),
-//                                                    URLDecoder.decode(rObj.getString("isMaster"), "UTF-8"),
-//                                                    URLDecoder.decode(rObj.getString("accomplishedTime"), "UTF-8"),
-//                                                    URLDecoder.decode(rObj.getString("score"), "UTF-8")));
-//                                            Log.i(LOG_TAG, "add");
-//                                        }
-//                                    }
-//                                    Log.i(LOG_TAG, "in liferoom, add all");
-//                                    mFriends.add(mFriendsLastToShowScoreDetail);
-//                                    Log.i(LOG_TAG, "in liferoom, add tail");
-//                                }else
-//                                {
-//                                    for (int i = 0; i < rMessage.length(); i++) {
-//                                        rObj = rMessage.getJSONObject(i);
-//                                        if (!"null".equals(rObj.getString("nickname"))) {
-//                                            Log.i(LOG_TAG, "add Friends : " + rObj.getString("image") + "|" +  URLDecoder.decode(rObj.getString("nickname"), "UTF-8") + "|" + rObj.getString("targetTime") + "|" + rObj.getString("isMaster"));
-//                                            mFriends.add(new FriendNameAndIcon(
-//                                                    URLDecoder.decode(rObj.getString("image"), "UTF-8"),
-//                                                    URLDecoder.decode(rObj.getString("nickname"), "UTF-8"),
-//                                                    URLDecoder.decode(rObj.getString("targetTime"), "UTF-8"),
-//                                                    URLDecoder.decode(rObj.getString("isMaster"), "UTF-8"),
-//                                                    URLDecoder.decode(rObj.getString("accomplishedTime"), "UTF-8")));
-//                                        }
-//                                    }
-//                                    Log.i(LOG_TAG, "in studyroom, add all");
-//
-//                                }
-//                                Log.i(LOG_TAG, "set friends adapter");
-//                                /////////////////////////////
-//                                friendArrayAdapter = new FriendsArrayAdapters(StudyRoomActivity.this, R.layout.friend_list_item, mFriends);
-//                                friendList.setAdapter(friendArrayAdapter);
-//
-//                                loadText();
-//                                BACK_MODE = true;
-//                            } else {
-//                                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-//                                if (KogPreference.DEBUG_MODE) {
-//                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-//                                }
-//                            }
-//                            BACK_MODE = true;
-//                        } catch (Exception e) {
-//                            Log.e(LOG_TAG, "get friends error : " + e.toString());
-//                            BACK_MODE = true;
-//                        }
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-//                Log.i(LOG_TAG, "Response Error");
-//                if (KogPreference.DEBUG_MODE) {
-//                    BACK_MODE = true;
-//                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
-//                }
-//
-//            }
-//        }
-//        );
-//        vQueue.add(jsObjRequest);
-//        vQueue.start();
-//    }
-
-
     /** kickOffMemberRequestHandler
      * statusCode == 200 => kickoff member success
      */
@@ -2557,64 +2339,7 @@ public class StudyRoomActivity extends BaseActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        //TODO : check POST/GET METHOD and get_URL
-//        String get_url = KogPreference.REST_URL +
-//                "Room/User" +
-//                "?rid=" + KogPreference.getRid(StudyRoomActivity.this) +
-//                "&nickname=" + f_nickname;
-//
-//        Log.i(LOG_TAG, "URL : " + get_url);
-//
-//        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.DELETE, Encrypt.encodeIfNeed(get_url), null,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        Log.i(LOG_TAG, " kickOffMemberRequest get JSONObject");
-//                        Log.i(LOG_TAG, response.toString());
-//
-//                        try {
-//                            int status_code = response.getInt("status");
-//                            if (status_code == 200) {
-////                                JSONArray rMessage;
-////                                rMessage = response.getJSONArray("message");
-//                                //////// real action ////////
-//
-//                                Toast.makeText(getBaseContext(), f_nickname + "를 강퇴하였습니다.", Toast.LENGTH_SHORT).show();
-//                                setAllEnable();
-//
-//                                refreshActivity();
-//
-//                                //////// real action ////////
-//                            } else if (status_code == 1001) {
-//                                Toast.makeText(getBaseContext(), "권한이 없습니다! \n방장만 가능합니다!", Toast.LENGTH_SHORT).show();
-//                                setAllEnable();
-//                            } else {
-//                                Toast.makeText(getBaseContext(), "통신 에러", Toast.LENGTH_SHORT).show();
-//                                setAllEnable();
-//                                if (KogPreference.DEBUG_MODE) {
-//                                    Toast.makeText(getBaseContext(), LOG_TAG + response.getString("message"), Toast.LENGTH_SHORT).show();
-//                                }
-//                            }
-//                        } catch (Exception e) {
-//                            Toast.makeText(getBaseContext(), "통신 에러", Toast.LENGTH_SHORT).show();
-//                            setAllEnable();
-//                        }
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                setAllEnable();
-//                Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-//                Log.i(LOG_TAG, "Response Error");
-//                if (KogPreference.DEBUG_MODE) {
-//                    Toast.makeText(getBaseContext(), LOG_TAG + " - Response Error", Toast.LENGTH_SHORT).show();
-//                }
-//
-//            }
-//        }
-//        );
-//        vQueue.add(jsObjRequest);
-//        vQueue.start();
+
     }
 
     private void refreshActivity() {
