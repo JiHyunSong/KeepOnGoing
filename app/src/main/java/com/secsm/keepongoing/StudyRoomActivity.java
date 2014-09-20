@@ -411,7 +411,7 @@ public class StudyRoomActivity extends BaseActivity {
                         else {
                             if(previous_state!=SnowWiFiMonitor.NETWORK_STATE_CONNECTED) {
                                 previous_state = SnowWiFiMonitor.NETWORK_STATE_CONNECTED;
-                                disconnectConnection();
+                                disconnectConnection(disconnectConnectionHandler);
                                 finish();
                             }
                         }
@@ -421,14 +421,10 @@ public class StudyRoomActivity extends BaseActivity {
                         Log.i(LOG_TAG, "[WifiMonitor] NETWORK_STATE_CONNECTING");
                         if(previous_state==-5) {
                             previous_state = SnowWiFiMonitor.NETWORK_STATE_CONNECTING;
-                            //    disconnectConnection();
-                            // close();
-                            // finish();
                         }
                         else {
                             if(previous_state!=SnowWiFiMonitor.NETWORK_STATE_CONNECTING) {
                                 previous_state = SnowWiFiMonitor.NETWORK_STATE_CONNECTING;
-                                //      disconnectConnection();
                                 close();
                                 finish();
                             }
@@ -442,8 +438,7 @@ public class StudyRoomActivity extends BaseActivity {
                         else {
                             if(previous_state!=SnowWiFiMonitor.NETWORK_STATE_DISCONNECTED) {
                                 previous_state = SnowWiFiMonitor.NETWORK_STATE_DISCONNECTED;
-                                disconnectConnection();
-                                //close();
+                                disconnectConnection(disconnectConnectionHandler);
                                 finish();
                             }
                         }
@@ -453,14 +448,10 @@ public class StudyRoomActivity extends BaseActivity {
                         Log.i(LOG_TAG, "[WifiMonitor] NETWORK_STATE_DISCONNECTING");
                         if(previous_state==-5) {
                             previous_state = SnowWiFiMonitor.NETWORK_STATE_DISCONNECTING;
-                            //close();
-                            //finish();
-                            //disconnectConnection();
                         }
                         else {
                             if(previous_state!=SnowWiFiMonitor.NETWORK_STATE_DISCONNECTING) {
                                 previous_state = SnowWiFiMonitor.NETWORK_STATE_DISCONNECTING;
-                                //  disconnectConnection();
                                 close();
                                 finish();
                             }
@@ -474,7 +465,6 @@ public class StudyRoomActivity extends BaseActivity {
                         else {
                             if(previous_state!=SnowWiFiMonitor.NETWORK_STATE_SUSPENDED) {
                                 previous_state = SnowWiFiMonitor.NETWORK_STATE_SUSPENDED;
-                                //   disconnectConnection();
                             }
                         }
                         break;
@@ -486,7 +476,6 @@ public class StudyRoomActivity extends BaseActivity {
                         else {
                             if(previous_state!=SnowWiFiMonitor.NETWORK_STATE_UNKNOWN) {
                                 previous_state = SnowWiFiMonitor.NETWORK_STATE_UNKNOWN;
-                                //   disconnectConnection();
                             }
                         }
 
@@ -1757,13 +1746,12 @@ public class StudyRoomActivity extends BaseActivity {
 
     synchronized void init() {
 
+        Log.i(LOG_TAG, "synchronized init");
         if(!KogPreference.NO_SOCKET) {
             if (soc_writer == null) {
                 Log.i(LOG_TAG, "soc=null");
-                disconnectConnection();
+                disconnectConnection(socketConnectionHandler);
                 getFriendsRequest();
-                soc_writer = new SocketAsyncTask_Writer();
-                soc_writer.execute();
             }
         }else{
             getFriendsRequest();
@@ -1771,6 +1759,7 @@ public class StudyRoomActivity extends BaseActivity {
     }
 
     synchronized void close() {
+        Log.i(LOG_TAG, "synchronized close");
         if(!KogPreference.NO_SOCKET){
             if (soc_reader != null) {
                 soc_reader.cancel(true);
@@ -2152,7 +2141,6 @@ public class StudyRoomActivity extends BaseActivity {
                 }
                 else {
                     Log.i(LOG_TAG, "Disconnection failed");
-                    Toast.makeText(getBaseContext(), "?µì‹  ?ëŸ¬ : \n?œë²„?€???°ê²°??ëª¨í˜¸?©ë‹ˆ??", Toast.LENGTH_SHORT).show();
                     Log.e(LOG_TAG, "통신 에러 : " + result.getString("message"));
                 }
             }catch (JSONException e)
@@ -2163,8 +2151,34 @@ public class StudyRoomActivity extends BaseActivity {
         }
     };
 
-    private void disconnectConnection(){
+    Handler socketConnectionHandler = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+                Bundle b = msg.getData();
+                JSONObject result = new JSONObject(b.getString("JSONData"));
+                int statusCode = Integer.parseInt(result.getString("status"));
+                if (statusCode == 200) {
+                    Log.i(LOG_TAG, "Disconnection succeed");
+                    soc_writer = new SocketAsyncTask_Writer();
+                    soc_writer.execute();
+                }
+                else {
+                    Log.i(LOG_TAG, "Disconnection failed");
+                    Log.e(LOG_TAG, "통신 에러 : " + result.getString("message"));
+                }
+            }catch (JSONException e)
+            {
+                e.printStackTrace();
+                errorHandler.sendEmptyMessage(1);
+            }
+        }
+    };
+
+    private void disconnectConnection(final Handler connectionHandler){
         try {
+            Log.i(LOG_TAG, "disconnectConnection() in synchronized init");
             baseHandler.sendEmptyMessage(-1);
             HttpRequestBase requestAuthRegister = HttpAPIs.disconnectConnectionGet(Encrypt.encodeIfNeed(KogPreference.getNickName(StudyRoomActivity.this)));
             HttpAPIs.background(requestAuthRegister, new CallbackResponse() {
@@ -2173,11 +2187,11 @@ public class StudyRoomActivity extends BaseActivity {
                     JSONObject result = HttpAPIs.getHttpResponseToJSON(response);
                     Log.e(LOG_TAG, "응답: " + result.toString());
                     if(result != null) {
-                        Message msg = disconnectConnectionHandler.obtainMessage();
+                        Message msg = connectionHandler.obtainMessage();
                         Bundle b = new Bundle();
                         b.putString("JSONData", result.toString());
                         msg.setData(b);
-                        disconnectConnectionHandler.sendMessage(msg);
+                        connectionHandler.sendMessage(msg);
                     }
                 }
 

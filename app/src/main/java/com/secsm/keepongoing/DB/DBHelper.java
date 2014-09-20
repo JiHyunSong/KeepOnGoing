@@ -119,11 +119,11 @@ public class DBHelper extends SQLiteOpenHelper {
         String query = "SELECT name, data FROM " + TABLE_IMAGE+ " WHERE name='"+key+"';";
         Cursor cursor = db.rawQuery(query, null);
 
-        Log.i(LOG_TAG, "query : " + query + " in getImage");
+//        Log.i(LOG_TAG, "query : " + query + " in getImage");
         try {
             if(cursor.getCount() > 0)
             {
-                Log.i(LOG_TAG, "cursor count : " + cursor.getCount());
+//                Log.i(LOG_TAG, "cursor count : " + cursor.getCount());
                 if(cursor.moveToFirst())
                 {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(cursor.getBlob(1), 0, cursor.getBlob(1).length);
@@ -184,14 +184,14 @@ public class DBHelper extends SQLiteOpenHelper {
 
         HttpAPIs.imageList = new ArrayList<String>();
 
-        Log.i(LOG_TAG, "query : " + query + " in getImage");
+//        Log.i(LOG_TAG, "query : " + query + " in getImage");
         try {
             if(cursor.getCount() > 0)
             {
-                Log.i(LOG_TAG, "cursor count : " + cursor.getCount());
+//                Log.i(LOG_TAG, "cursor count : " + cursor.getCount());
                 while(cursor.moveToNext())
                 {
-                    Log.i(LOG_TAG, "add initImageList : " + cursor.getString(0));
+//                    Log.i(LOG_TAG, "add initImageList : " + cursor.getString(0));
                     if(!HttpAPIs.imageList.contains(cursor.getString(0)))
                     {
                         HttpAPIs.imageList.add(cursor.getString(0));
