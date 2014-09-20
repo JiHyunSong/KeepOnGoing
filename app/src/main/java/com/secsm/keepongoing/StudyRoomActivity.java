@@ -165,15 +165,23 @@ public class StudyRoomActivity extends BaseActivity {
     private RelativeLayout.LayoutParams study_room_additional_page_lp = null;
 
     private void setAllEnable() {
-//        study_room_progress.setVisibility(View.GONE);
-//        sendMsgBtn.setEnabled(true);
-//        additionalBtn.setEnabled(true);
-//        messageTxt.setEnabled(true);
+        study_room_progress.setVisibility(View.GONE);
+        sendMsgBtn.setEnabled(true);
+        additionalBtn.setEnabled(true);
+        messageTxt.setEnabled(true);
 //        messageList.setEnabled(true);
-//        actionBarFirstBtn.setEnabled(true);
-//        actionBarSecondBtn.setEnabled(true);
-//        actionBarThirdBtn.setEnabled(true);
-//        actionBarFourthBtn.setEnabled(true);
+        if (actionBarFirstBtn != null) {
+            actionBarFirstBtn.setEnabled(true);
+        }
+        if (actionBarSecondBtn != null) {
+            actionBarSecondBtn.setEnabled(true);
+        }
+        if (actionBarThirdBtn != null) {
+            actionBarThirdBtn.setEnabled(true);
+        }
+        if (actionBarFourthBtn != null) {
+            actionBarFourthBtn.setEnabled(true);
+        }
 //        actionBarFifthBtn.setEnabled(true);
 //        study_room_additional_page.setEnabled(true);
 //        study_room_additional_ll1_camera.setEnabled(true);
@@ -184,23 +192,23 @@ public class StudyRoomActivity extends BaseActivity {
     }
 
     private void setAllDisable() {
-//        study_room_progress.setVisibility(View.VISIBLE);
-//        sendMsgBtn.setEnabled(false);
-//        additionalBtn.setEnabled(false);
-//        messageTxt.setEnabled(false);
+        study_room_progress.setVisibility(View.VISIBLE);
+        sendMsgBtn.setEnabled(false);
+        additionalBtn.setEnabled(false);
+        messageTxt.setEnabled(false);
 //        messageList.setEnabled(false);
-//        if (actionBarFirstBtn != null) {
-//            actionBarFirstBtn.setEnabled(false);
-//        }
-//        if (actionBarSecondBtn != null) {
-//            actionBarSecondBtn.setEnabled(false);
-//        }
-//        if (actionBarThirdBtn != null) {
-//            actionBarThirdBtn.setEnabled(false);
-//        }
-//        if (actionBarFourthBtn != null) {
-//            actionBarFourthBtn.setEnabled(false);
-//        }
+        if (actionBarFirstBtn != null) {
+            actionBarFirstBtn.setEnabled(false);
+        }
+        if (actionBarSecondBtn != null) {
+            actionBarSecondBtn.setEnabled(false);
+        }
+        if (actionBarThirdBtn != null) {
+            actionBarThirdBtn.setEnabled(false);
+        }
+        if (actionBarFourthBtn != null) {
+            actionBarFourthBtn.setEnabled(false);
+        }
 //        if (actionBarFifthBtn != null) {
 //            actionBarFifthBtn.setEnabled(false);
 //        }

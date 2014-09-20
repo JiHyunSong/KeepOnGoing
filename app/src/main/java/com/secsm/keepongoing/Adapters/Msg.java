@@ -61,7 +61,7 @@ public class Msg {
         {
             if(helper.isImageExist(this.Text))
             {
-                this.profile_image = helper.getImage(this.Text);
+                this.text_image = helper.getImage(this.Text);
             }else {
                 downloadChatImage(this.Text);
             }
@@ -115,7 +115,7 @@ public class Msg {
         public void handleMessage(Message msg) {
             try {
                 Log.i(LOG_TAG, "ChatImageSetHandler");
-                profile_image = msg.getData().getParcelable("image");
+                text_image = msg.getData().getParcelable("image");
                 refreshHandler.sendEmptyMessage(1);
             }catch (Exception e)
             {
