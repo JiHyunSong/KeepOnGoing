@@ -11,7 +11,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
+import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -89,8 +91,9 @@ import java.util.Map;
 public class StudyRoomActivity extends BaseActivity {
 
 //    private String previous_ip=null;
+    private SnowWiFiMonitor m_SnowWifiMonitor = null;
     private int previous_state=-5;
-
+    LinearLayout all_in_chat;
     private Intent intent;
     private static String LOG_TAG = "StudyRoom Activity";
     private Button sendMsgBtn;
@@ -220,6 +223,7 @@ public class StudyRoomActivity extends BaseActivity {
         bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.NAVIGATION_MODE_STANDARD);
 
         study_room_progress = (ProgressBar) findViewById(R.id.study_room_progress);
+        all_in_chat=(LinearLayout)findViewById(R.id.all_in_chat);
 //        MyVolley.init(StudyRoomActivity.this);
 //        vQueue = MyVolley.getRequestQueue(StudyRoomActivity.this);
 
@@ -368,10 +372,10 @@ public class StudyRoomActivity extends BaseActivity {
             }
         });
 
-
+        Log.i(LOG_TAG, "additionalBtn onClick Listener set");
         additionalBtn.setOnClickListener(new View.OnClickListener() {
-
             public void onClick(View v) {
+                Log.i(LOG_TAG, "additionalBtn onClick with isAdditionalPageOpen : " + isAdditionalPageOpen);
                 if (!isAdditionalPageOpen) {
                     setVisibleAdditionalPage();
                     getWindow().setSoftInputMode(
@@ -403,6 +407,26 @@ public class StudyRoomActivity extends BaseActivity {
 
             }
         });
+
+
+        //@민수
+        all_in_chat=(LinearLayout)findViewById(R.id.all_in_chat);
+        all_in_chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //   Toast.makeText(getBaseContext(), "hi", Toast.LENGTH_SHORT).show();
+                closesliding();
+            }
+        });
+
+
+        m_SnowWifiMonitor = new SnowWiFiMonitor(this);
+        m_SnowWifiMonitor.setOnChangeNetworkStatusListener(SnowChangedListener);
+        registerReceiver(m_SnowWifiMonitor, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        registerReceiver(m_SnowWifiMonitor, new IntentFilter(WifiManager.NETWORK_STATE_CHANGED_ACTION));
+        registerReceiver(m_SnowWifiMonitor, new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION));
+
+
         SnowChangedListener = new SnowWiFiMonitor.OnChangeNetworkStatusListener()
         {
             @Override
@@ -511,6 +535,7 @@ public class StudyRoomActivity extends BaseActivity {
             }
         };
     }
+
 
 
 
@@ -1500,6 +1525,14 @@ public class StudyRoomActivity extends BaseActivity {
         super.onResume();
         init();
         Log.i(LOG_TAG, "onResume");
+        if (isAdditionalPageOpen) {
+            setInvisibleAddtionalPage();
+        }
+        if (isPageOpen) {
+            additionalBtn.setEnabled(true);
+            slidingPage01.startAnimation(translateLeftAnim);
+        }
+        additionalBtn.setEnabled(true);
 
 //        if(savedInstanceState != null)
 //        {
@@ -2214,5 +2247,24 @@ public class StudyRoomActivity extends BaseActivity {
         _intent.putExtra("type", type);
         _intent.putExtra("rule", rule);
         startActivity(_intent);
+    }
+    //@민수
+    public void closesliding(){
+        //  Toast.makeText(getBaseContext(), "hi", Toast.LENGTH_SHORT).show();
+        if(isPageOpen)
+        {
+
+            additionalBtn.setEnabled(true);
+            study_room_additional_ll1_camera.setEnabled(true);
+            study_room_additional_ll2_album.setEnabled(true);
+            study_room_additional_ll3_my_time.setEnabled(true);
+            showSoftKeyboard();
+            slidingPage01.startAnimation(translateLeftAnim);
+            Log.e(LOG_TAG, "left");
+            slidingPage01.setVisibility(View.VISIBLE);
+            //Todo keyboardfocusout
+
+            //  messageTxt.setFocusable(false);
+        }
     }
 }

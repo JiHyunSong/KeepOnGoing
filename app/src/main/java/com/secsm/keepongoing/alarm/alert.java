@@ -1,6 +1,5 @@
 package com.secsm.keepongoing.Alarm;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -31,7 +30,8 @@ public class alert extends BaseActivity {
     private static String LOG_TAG = "Alarm";
     private Ringtone r;
     private AlarmManager mManager;
-
+    Contact contact;
+    Date mCalendar;
     @Override
 
     protected void onCreate(final Bundle savedInstanceState) {
@@ -49,13 +49,22 @@ public class alert extends BaseActivity {
 
         mManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
+        DBContactHelper helper = new DBContactHelper(this);
+        contact = helper.getContact(1);
+        mCalendar = new Date();
+        mCalendar.setHours(contact.gethour());
+        mCalendar.setMinutes(contact.getminute());
+
+
+
 
         //ringtone();
         Button btnsnooze = (Button) findViewById(R.id.snooze);
         btnsnooze.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                Date mCalendar = new Date();
-                mManager.set(AlarmManager.RTC_WAKEUP, mCalendar.getTime() + 10 * 60 * 1000, pendingIntent());
+                Date mCalendar;
+                mCalendar = new Date();
+                mManager.set(AlarmManager.RTC_WAKEUP, mCalendar.getTime() + 1 * 60 * 1000, pendingIntent1());
                 Log.e("minsu) : AlertActivity : ", "" + mCalendar.toString());
                 Toast.makeText(alert.this, "10분뒤에 울립니다.", 2).show();
 
@@ -69,7 +78,7 @@ public class alert extends BaseActivity {
         Button btndismiss = (Button) findViewById(R.id.dismiss);
         btndismiss.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                Date mCalendar = new Date();
+
 
                 //@통신
      /*           Toast.makeText(alert.this,
@@ -77,7 +86,8 @@ public class alert extends BaseActivity {
 
 
 
-                mManager.set(AlarmManager.RTC_WAKEUP, mCalendar.getTime() + 24 * 60 * 60 * 1000, pendingIntent());
+                mManager.set(AlarmManager.RTC_WAKEUP, mCalendar.getTime() + 3 * 60 * 60 * 1000, pendingIntent());
+                //todo 프리퍼런스뢰 가져와서해야함
                 Log.e("minsu) : AlertActivity : ", "" + mCalendar.toString());
                 Toast.makeText(alert.this, "기상 완료", 2).show();
                 if(Preference.getBoolean(alert.this, "vibratemode"))
@@ -98,7 +108,11 @@ public class alert extends BaseActivity {
         PendingIntent pi = PendingIntent.getActivity(alert.this, 0, i, 0);
         return pi;
     }
-
+    private PendingIntent pendingIntent1() {
+        Intent i = new Intent(alert.this, alert.class);
+        PendingIntent pi = PendingIntent.getActivity(alert.this, 1, i, 0);
+        return pi;
+    }
     @Override
     protected void onPause() {
         super.onPause();

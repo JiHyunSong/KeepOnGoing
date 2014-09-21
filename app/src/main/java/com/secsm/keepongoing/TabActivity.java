@@ -46,6 +46,7 @@ import com.secsm.keepongoing.Alarm.Preference;
 import com.secsm.keepongoing.Alarm.alram_list;
 import com.secsm.keepongoing.DB.DBHelper;
 import com.secsm.keepongoing.Quiz.Quiz_Set_Search;
+import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.Encrypt;
 import com.secsm.keepongoing.Shared.KogPreference;
 
@@ -65,7 +66,7 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class TabActivity extends Activity implements View.OnClickListener {
+public class TabActivity extends BaseActivity implements View.OnClickListener {
 
     //@민수 viewpage 추가
 
