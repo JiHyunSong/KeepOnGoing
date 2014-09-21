@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/backgroud_image"
+    >
+
+
+
+    <RelativeLayout
+        android:id="@+id/tab_stopwatch_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/tab_name"
+        android:visibility="visible" >
+
+        <RelativeLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/currenttime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="날짜"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/currenttime2"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:text="메인시간"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="80dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/kkk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/linearLayout2"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="50dp"
+            android:background="#77ffffff"
+            android:gravity="center"
+            android:padding="5dp" >
+
+            <TextView
+                android:id="@+id/goal_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="목표시간"
+                android:textSize="30dp" />
+
+            <TextView
+                android:id="@+id/goal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/goal_time"
+                android:text="00:00:00"
+                android:textSize="30dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/kkk_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/kkk"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/linearLayout2"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="50dp"
+            android:layout_toRightOf="@id/kkk"
+            android:background="#77ffffff"
+            android:gravity="center"
+            android:padding="10dp" >
+
+            <TextView
+                android:id="@+id/achive_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="달성시간"
+                android:layout_marginLeft="5dp"
+                android:textSize="30dp" />
+            <ToggleButton
+                android:id="@+id/toggleButton2"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@id/achive_time"
+                android:background="@drawable/selector_tab_play_button"
+                android:textOff=""
+                android:layout_marginRight="10dp"
+                android:textOn=""/>
+
+            <TextView
+                android:layout_marginLeft="5dp"
+                android:id="@+id/tvMsg"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/achive_time"
+                android:text="00:00:00"
+                android:textSize="30dp" />
+            <Button
+                android:id="@+id/finish"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_below="@id/toggleButton2"
+
+                android:layout_alignParentRight="true"
+                android:text=""
+                android:background="@drawable/selector_tab_stop_button"
+                />
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/linearLayout"
+            android:layout_alignParentBottom="true"
+            android:layout_alignRight="@+id/linearLayout"
+            android:layout_marginBottom="55dp"
+            android:text="Alram"
+            android:textSize="35dp"
+            android:visibility="gone" />
+
+
+    </RelativeLayout>
+
+
+
+
+
+</LinearLayout>
