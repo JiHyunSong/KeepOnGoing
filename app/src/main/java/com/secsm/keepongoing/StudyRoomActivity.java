@@ -580,7 +580,7 @@ public class StudyRoomActivity extends BaseActivity {
         try {
             JSONObject jObj = new JSONObject();
             Log.i(LOG_TAG, "jObj.toString()");
-            jObj.put("nickname", Encrypt.encodeIfNeed(KogPreference.getNickName(StudyRoomActivity.this)));
+            jObj.put("nickname", KogPreference.getNickName(StudyRoomActivity.this));
             jObj.put("rid", KogPreference.getRid(StudyRoomActivity.this));
             Log.i(LOG_TAG, "jObj.toString() " + jObj.toString() + "\n");
             jObj.put("rid", KogPreference.getRid(StudyRoomActivity.this));
@@ -1780,7 +1780,7 @@ public class StudyRoomActivity extends BaseActivity {
     public void sendMsgToSvr(String msg, String messageType) {
         try {
             JSONObject jObj = new JSONObject();
-            jObj.put("nickname", Encrypt.encodeIfNeed(KogPreference.getNickName(StudyRoomActivity.this)));
+            jObj.put("nickname", KogPreference.getNickName(StudyRoomActivity.this));
             jObj.put("rid", KogPreference.getRid(StudyRoomActivity.this));
             jObj.put("message", msg);
             jObj.put("messageType", messageType);
@@ -1788,11 +1788,7 @@ public class StudyRoomActivity extends BaseActivity {
             soc_writer.sendMsgToSvr(jObj.toString());
         } catch (Exception e) {
             Toast.makeText(getBaseContext(), "메시지 전송 실패!", Toast.LENGTH_SHORT).show();
-
             Log.i(LOG_TAG, "Json Exception!\n" + e.toString());
-            if (KogPreference.DEBUG_MODE) {
-                Toast.makeText(getBaseContext(), "Json Exception!\n" + e.toString(), Toast.LENGTH_SHORT).show();
-            }
         }
     }
 
