@@ -32,6 +32,7 @@ public class AuthNextActivity extends BaseActivity {
     int certiNo;
     String phoneNo;
     static String LOG_TAG = "AuthNext Activity";
+    private KogBroadcastReceiver msgReceiver;
 
     void setAllEnable(){
         btnOk.setEnabled(true);
@@ -139,6 +140,8 @@ public class AuthNextActivity extends BaseActivity {
                 if (statusCode == 200) {
                     Log.i(LOG_TAG, "receive 200 OK");
                     sendSMS(phoneNo);
+                    msgReceiver = new KogBroadcastReceiver();
+                    msgReceiver.setHandler(receiveHandler);
 
                 } else if (statusCode == 1002) {
                     Toast.makeText(getBaseContext(), "이미 가입된 번호입니다.\n중복가입 하실 수 없습니다.", Toast.LENGTH_SHORT).show();
@@ -256,4 +259,19 @@ public class AuthNextActivity extends BaseActivity {
         Log.i(LOG_TAG, Integer.toString(randomNo));
         return randomNo;
     }
+
+    public Handler receiveHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+            try {
+                Bundle b = msg.getData();
+                txtInputNo.setText(b.getString("receiveNum"));
+            } catch (Exception e) {
+                errorHandler.sendEmptyMessage(1);
+                e.printStackTrace();
+            }
+        }
+    };
 }
