@@ -22,6 +22,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,6 +46,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.secsm.keepongoing.Adapters.FriendNameAndIcon;
 import com.secsm.keepongoing.Adapters.FriendsArrayAdapters;
+import com.secsm.keepongoing.Adapters.ListLockHelper;
 import com.secsm.keepongoing.Adapters.MessageAdapter;
 import com.secsm.keepongoing.Adapters.Msg;
 import com.secsm.keepongoing.Alarm.Preference;
@@ -110,6 +112,9 @@ public class StudyRoomActivity extends BaseActivity {
     private FriendNameAndIcon mFriendsLastToShowScoreDetail;
     private FriendsArrayAdapters friendArrayAdapter;
 
+
+    private ListLockHelper listLockHelper;
+    private static int loadSize = 10;
 //    private RequestQueue vQueue;
 
 //    private Socket client = null;
@@ -203,6 +208,9 @@ public class StudyRoomActivity extends BaseActivity {
 
 
     private ProgressBar study_room_progress;
+    private View messageHeader;
+    private Button messageHeaderButton;
+    private TextView messageHeaderNoMessageToLoad;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -247,7 +255,44 @@ public class StudyRoomActivity extends BaseActivity {
 
         messageHistoryMAdaptor = new MessageAdapter(StudyRoomActivity.this, R.layout.message_row, mTexts);
         messageList = (ListView) findViewById(R.id.study_room_message_list);
+
+
+        messageHeader = getLayoutInflater().inflate(R.layout.progress_layout, null, false);
+        messageHeaderButton = (Button) messageHeader.findViewById(R.id.listHeaderLoadMore);
+        messageHeaderNoMessageToLoad = (TextView) messageHeader.findViewById(R.id.listHeaderNoMessageToLoad);
+
+        messageList.addHeaderView(messageHeader);
+        messageHeader.setVisibility(View.GONE);
+        messageHeaderButton.setVisibility(View.GONE);
+        messageHeaderNoMessageToLoad.setVisibility(View.VISIBLE);
+
         messageList.setAdapter(messageHistoryMAdaptor);
+
+        messageHeaderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(LOG_TAG, "messageHeader");
+                loadPreviousText(messageHistoryMAdaptor.getCount(), loadSize);
+            }
+        });
+
+//        listLockHelper = new ListLockHelper(messageList);
+//
+//
+//        listLockHelper.setRequest(new ListLockHelper.Request() {
+//            @Override
+//            public void request() {
+//                messageHeader.setVisibility(View.GONE);
+//                Log.i(LOG_TAG, "listLockHelper reqeust in");
+//                Log.i(LOG_TAG, "messageHistoryMAdaptor.getCount()");
+//                loadPreviousText(messageHistoryMAdaptor.getCount(), loadSize);
+//                listLockHelper.setListLockOff();
+//                messageHeader.setVisibility(View.VISIBLE);
+//
+//            }
+//        });
+
+
 
         room_rule_tv = (TextView) findViewById(R.id.room_role_tv);
         room_rule_tv.setMovementMethod(new ScrollingMovementMethod());
@@ -1615,6 +1660,7 @@ public class StudyRoomActivity extends BaseActivity {
         mDBHelper.close();
     }
 
+
     /* load the message from the SQLite */
     public void loadText() {
 
@@ -1623,20 +1669,36 @@ public class StudyRoomActivity extends BaseActivity {
         messageHistoryMAdaptor.clear();
 
 
+
         try {
             SQLiteDatabase db;
             Cursor cursor = null;
             db = mDBHelper.getReadableDatabase();
             cursor = db.rawQuery("SELECT " +
                     "senderID, senderText, time, me, messageType " +
-                    "FROM Chat WHERE rid = '" + rID + "'", null);
+                    "FROM Chat WHERE rid = '" + rID + "' ORDER BY time DESC " +
+                    "LIMIT " + loadSize + " OFFSET " + 0 + ";", null);
 //            Log.i(LOG_TAG, "Load Text From db");
 //            Log.i(LOG_TAG, "curser.getCount() : " + cursor.getCount());
-            if (cursor.getCount() > 0) {
-                while (cursor.moveToNext()) {
-                    String _senderID = cursor.getString(0);
+            int count = cursor.getCount();
+            if (count > 0) {
+                cursor.moveToLast();
+                String _senderID = cursor.getString(0);
+    //                    Log.i("loadText", "sender ID : " + _senderID);
+                Msg m = new Msg(StudyRoomActivity.this,
+                            cursor.getString(0),
+                            cursor.getString(1),
+                            cursor.getString(2),
+                            cursor.getString(3),
+                            cursor.getString(4),
+                            getProfileImageName(_senderID),
+                            refreshAdaptorHandler
+                    );
+                messageHistoryMAdaptor.add(m);
+                while (cursor.moveToPrevious()) {
+                    _senderID = cursor.getString(0);
 //                    Log.i("loadText", "sender ID : " + _senderID);
-                    Msg m = new Msg(StudyRoomActivity.this,
+                        m = new Msg(StudyRoomActivity.this,
                             cursor.getString(0),
                             cursor.getString(1),
                             cursor.getString(2),
@@ -1647,6 +1709,23 @@ public class StudyRoomActivity extends BaseActivity {
                     );
                     messageHistoryMAdaptor.add(m);
                 }
+
+                if(count < loadSize)
+                {
+                    messageHeaderButton.setVisibility(View.GONE);
+                    messageHeaderNoMessageToLoad.setVisibility(View.VISIBLE);
+                    messageHeader.setVisibility(View.VISIBLE);
+                }else
+                {
+                    messageHeaderButton.setVisibility(View.VISIBLE);
+                    messageHeaderNoMessageToLoad.setVisibility(View.GONE);
+                    messageHeader.setVisibility(View.VISIBLE);
+                }
+            }else{
+                messageHeaderButton.setVisibility(View.GONE);
+                messageHeaderNoMessageToLoad.setVisibility(View.VISIBLE);
+                messageHeader.setVisibility(View.VISIBLE);
+
             }
             cursor.close();
             db.close();
@@ -1657,6 +1736,75 @@ public class StudyRoomActivity extends BaseActivity {
         }
     }
 
+    public void loadPreviousText(int from, int size) {
+
+        Log.i(LOG_TAG, "loadText");
+
+        try {
+            SQLiteDatabase db;
+            Cursor cursor = null;
+            db = mDBHelper.getReadableDatabase();
+            cursor = db.rawQuery("SELECT " +
+                    "senderID, senderText, time, me, messageType " +
+                    "FROM Chat WHERE rid = '" + rID + "' ORDER BY time DESC " +
+                    "LIMIT " + size + " OFFSET " + from + ";", null);
+//            Log.i(LOG_TAG, "Load Text From db");
+            Log.i(LOG_TAG, "curser.getCount() : " + cursor.getCount());
+            int count = cursor.getCount();
+            if (count > 0) {
+                cursor.moveToLast();
+                int i = 0;
+                String _senderID = cursor.getString(0);
+//                    Log.i("loadText", "sender ID : " + _senderID);
+                Msg m = new Msg(StudyRoomActivity.this,
+                        cursor.getString(0),
+                        cursor.getString(1),
+                        cursor.getString(2),
+                        cursor.getString(3),
+                        cursor.getString(4),
+                        getProfileImageName(_senderID),
+                        refreshAdaptorHandler
+                );
+                messageHistoryMAdaptor.insert(m, i++);
+                while (cursor.moveToPrevious()) {
+                    _senderID = cursor.getString(0);
+//                    Log.i("loadText", "sender ID : " + _senderID);
+                    m = new Msg(StudyRoomActivity.this,
+                            cursor.getString(0),
+                            cursor.getString(1),
+                            cursor.getString(2),
+                            cursor.getString(3),
+                            cursor.getString(4),
+                            getProfileImageName(_senderID),
+                            refreshAdaptorHandler
+                    );
+                    messageHistoryMAdaptor.insert(m, i++);
+                }
+                if(count < loadSize)
+                {
+                    messageHeaderButton.setVisibility(View.GONE);
+                    messageHeaderNoMessageToLoad.setVisibility(View.VISIBLE);
+                    messageHeader.setVisibility(View.VISIBLE);
+                }else
+                {
+                    messageHeaderButton.setVisibility(View.VISIBLE);
+                    messageHeaderNoMessageToLoad.setVisibility(View.GONE);
+                    messageHeader.setVisibility(View.VISIBLE);
+                }
+
+            }else{
+                messageHeaderButton.setVisibility(View.GONE);
+                messageHeaderNoMessageToLoad.setVisibility(View.VISIBLE);
+                messageHeader.setVisibility(View.VISIBLE);
+            }
+            cursor.close();
+            db.close();
+            mDBHelper.close();
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "" + e.toString());
+            e.printStackTrace();
+        }
+    }
 
     //////////////////////////////////////////////////
     // Listening the message from the server        //
