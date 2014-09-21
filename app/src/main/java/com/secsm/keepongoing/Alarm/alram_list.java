@@ -75,9 +75,7 @@ public class alram_list extends BaseFragmentActivity implements DatePickerDialog
                 tpd.setOnTimeSetListener(this);
             }
         }
-
-
-        settingListView();
+ settingListView();
     }
 
     public void date_pick(){
@@ -120,19 +118,6 @@ public class alram_list extends BaseFragmentActivity implements DatePickerDialog
                 helper.getContact(2).gethour(), helper.getContact(2).getminute());
 
         AlertDialog.Builder ab = new AlertDialog.Builder(this);
-
-//        Button b = (Button) findViewById(R.id.set);
-//        b.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                setTimer();
-//            }
-//        });
-//        b = (Button) findViewById(R.id.reset);
-//        b.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                resetTimer();
-//            }
-//        });
         mDate = (DatePicker) innerView.findViewById(R.id.date_picker);
         mDate.init(mCalendar.get(Calendar.YEAR), mCalendar.get(Calendar.MONTH), mCalendar.get(Calendar.DAY_OF_MONTH), onDateChanged);
         mTime = (TimePicker) innerView.findViewById(R.id.time_picker);
@@ -145,8 +130,8 @@ public class alram_list extends BaseFragmentActivity implements DatePickerDialog
 //        info_iconFriend = (ImageView) innerView.findViewById(R.id.info_iconFriend);
 //        info_txtFriendNickname = (TextView) innerView.findViewById(R.id.info_txtFriendNickname);
 //        info_txtTargetTime = (TextView) innerView.findViewById(R.id.info_txtTargetTime);
-
 //        info_iconFriend.setBackgroundResource(R.drawable.ic_action_add_group);
+
         ab.setTitle("목표시간 정하기");
         ab.setView(innerView);
 
@@ -157,7 +142,6 @@ public class alram_list extends BaseFragmentActivity implements DatePickerDialog
                 setDismiss(mDialog);
             }
         });
-
         ab.setNegativeButton("취소", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface arg0, int arg1) {

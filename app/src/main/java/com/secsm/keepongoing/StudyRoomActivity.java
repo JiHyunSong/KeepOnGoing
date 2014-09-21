@@ -27,7 +27,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -52,7 +51,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.com.lanace.connecter.CallbackResponse;
 import com.com.lanace.connecter.HttpAPIs;
 import com.google.gson.Gson;
@@ -109,7 +107,7 @@ public class StudyRoomActivity extends BaseActivity {
 
 //    private String previous_ip=null;
     private int previous_state=-5;
-
+    LinearLayout all_in_chat;
     private Intent intent;
     private static String LOG_TAG = "StudyRoom Activity";
     private Button sendMsgBtn;
@@ -225,6 +223,7 @@ public class StudyRoomActivity extends BaseActivity {
         bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.NAVIGATION_MODE_STANDARD);
 
         study_room_progress = (ProgressBar) findViewById(R.id.study_room_progress);
+        all_in_chat=(LinearLayout)findViewById(R.id.all_in_chat);
 //        MyVolley.init(StudyRoomActivity.this);
 //        vQueue = Volley.newRequestQueue(this);
         vQueue = MyVolley.getRequestQueue(StudyRoomActivity.this);
@@ -372,6 +371,17 @@ public class StudyRoomActivity extends BaseActivity {
 
             }
         });
+//@민수
+        all_in_chat=(LinearLayout)findViewById(R.id.all_in_chat);
+        all_in_chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                 //   Toast.makeText(getBaseContext(), "hi", Toast.LENGTH_SHORT).show();
+                closesliding();
+            }
+        });
+
+
         m_SnowWifiMonitor = new SnowWiFiMonitor(this);
         m_SnowWifiMonitor.setOnChangeNetworkStatusListener(SnowChangedListener);
         registerReceiver(m_SnowWifiMonitor, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
@@ -2596,5 +2606,24 @@ public class StudyRoomActivity extends BaseActivity {
         _intent.putExtra("type", type);
         _intent.putExtra("rule", rule);
         startActivity(_intent);
+    }
+    //@민수
+    public void closesliding(){
+        //  Toast.makeText(getBaseContext(), "hi", Toast.LENGTH_SHORT).show();
+        if(isPageOpen)
+        {
+
+            additionalBtn.setEnabled(true);
+            study_room_additional_ll1_camera.setEnabled(true);
+            study_room_additional_ll2_album.setEnabled(true);
+            study_room_additional_ll3_my_time.setEnabled(true);
+            showSoftKeyboard();
+            slidingPage01.startAnimation(translateLeftAnim);
+            Log.e(LOG_TAG, "left");
+            slidingPage01.setVisibility(View.VISIBLE);
+            //Todo keyboardfocusout
+
+            //  messageTxt.setFocusable(false);
+        }
     }
 }

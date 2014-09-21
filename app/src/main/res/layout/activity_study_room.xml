@@ -150,11 +150,24 @@
             android:cacheColorHint="#00000000"
             android:stackFromBottom="true"
             android:transcriptMode="normal" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.7"
+        android:id="@+id/all_in_chat"
+        android:orientation="horizontal"
+        android:visibility="visible">
 
+        </LinearLayout>
 
     <LinearLayout
         android:id="@+id/slidingPage01"
-        android:layout_width="270dp"
+        android:layout_weight="0.3"
+        android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:layout_gravity="right"
@@ -166,13 +179,14 @@
             android:id="@+id/room_tv1"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/study_room_notice"
+            android:text="공지사항 :"
             android:textColor="#ff000000" />
 
         <TextView
             android:id="@+id/room_role_tv"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/room_tv1"
             android:layout_margin="5dp"
             android:maxLines="5"
             android:scrollbars="vertical"
@@ -181,8 +195,10 @@
         <ListView
             android:id="@+id/roomFriendList"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" />
+            android:layout_height="fill_parent"
+            android:layout_below="@id/room_role_tv" />
     </LinearLayout>
+
 
 
     <ProgressBar
@@ -194,5 +210,5 @@
         android:layout_centerVertical="true"
         android:layout_marginBottom="8dp"
         android:visibility="gone" />
-
+    </LinearLayout>
 </RelativeLayout>

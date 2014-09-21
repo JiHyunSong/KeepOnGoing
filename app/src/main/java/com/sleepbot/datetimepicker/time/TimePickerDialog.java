@@ -166,6 +166,7 @@ public class TimePickerDialog extends DialogFragment implements RadialPickerLayo
     }
 
     public void setCloseOnSingleTapMinute(boolean closeOnSingleTapMinute) {
+
         mCloseOnSingleTapMinute = closeOnSingleTapMinute;
     }
 
@@ -325,6 +326,7 @@ public class TimePickerDialog extends DialogFragment implements RadialPickerLayo
             mCallback.onTimeSet(mTimePicker,
                     mTimePicker.getHours(), mTimePicker.getMinutes());
         }
+
         dismiss();
     }
 
@@ -362,18 +364,25 @@ public class TimePickerDialog extends DialogFragment implements RadialPickerLayo
      */
     @Override
     public void onValueSelected(int pickerIndex, int newValue, boolean autoAdvance) {
+
+
         if (pickerIndex == HOUR_INDEX) {
+            //@minsu
             setHour(newValue, false);
+
             String announcement = String.format("%d", newValue);
             if (mAllowAutoAdvance && autoAdvance) {
                 setCurrentItemShowing(MINUTE_INDEX, true, true, false);
                 announcement += ". " + mSelectMinutes;
             }
             Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
-        } else if (pickerIndex == MINUTE_INDEX) {
+        }
+        else if (pickerIndex == MINUTE_INDEX) {
+            Log.e(TAG, "time : minute pick");
             setMinute(newValue);
+
             if(mCloseOnSingleTapMinute) {
-                onDoneButtonClick();
+               // onDoneButtonClick();
             }
         } else if (pickerIndex == AMPM_INDEX) {
             updateAmPmDisplay(newValue);
@@ -507,6 +516,7 @@ public class TimePickerDialog extends DialogFragment implements RadialPickerLayo
                 || (!mIs24HourMode &&
                 (keyCode == getAmOrPmKeyCode(AM) || keyCode == getAmOrPmKeyCode(PM)))) {
             if (!mInKbMode) {
+
                 if (mTimePicker == null) {
                     // Something's wrong, because time picker should definitely not be null.
                     Log.e(TAG, "Unable to initiate keyboard mode, TimePicker was null.");
@@ -646,11 +656,13 @@ public class TimePickerDialog extends DialogFragment implements RadialPickerLayo
             setHour(hour, true);
             setMinute(minute);
             if (!mIs24HourMode) {
+
                 updateAmPmDisplay(hour < 12 ? AM : PM);
             }
             setCurrentItemShowing(mTimePicker.getCurrentItemShowing(), true, true, true);
             mDoneButton.setEnabled(true);
         } else {
+
             Boolean[] enteredZeros = {false, false};
             int[] values = getEnteredTime(enteredZeros);
             String hourFormat = enteredZeros[0] ? "%02d" : "%2d";
