@@ -14,7 +14,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="10dp"
-            android:textSize="35dp" />
+            android:textSize="20dp" />
 
 
         <CheckBox

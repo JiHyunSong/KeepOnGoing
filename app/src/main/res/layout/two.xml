@@ -9,11 +9,14 @@
         android:id="@+id/tab_friends_layout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:visibility="visible">
+        android:visibility="visible"
+        android:padding="10dp"
+        >
 
         <ListView
             android:id="@+id/friend_list"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" />
+            android:layout_height="fill_parent"
+            android:background="#77ffffff"/>
     </RelativeLayout>
 </LinearLayout>
