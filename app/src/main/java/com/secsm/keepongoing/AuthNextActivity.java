@@ -1,11 +1,15 @@
 package com.secsm.keepongoing;
 
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.telephony.SmsManager;
+import android.telephony.SmsMessage;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +27,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AuthNextActivity extends BaseActivity {
     Intent intent;
@@ -32,7 +38,9 @@ public class AuthNextActivity extends BaseActivity {
     int certiNo;
     String phoneNo;
     static String LOG_TAG = "AuthNext Activity";
-    private KogBroadcastReceiver msgReceiver;
+    private BroadcastReceiver msgReceiver;
+    private Pattern p = Pattern.compile("(\\d{4})");
+    private Matcher m;
 
     void setAllEnable(){
         btnOk.setEnabled(true);
@@ -59,6 +67,56 @@ public class AuthNextActivity extends BaseActivity {
         txtInputNo = (EditText) findViewById(R.id.txtInputNo);
 
         AuthNumRegister(phoneNo, certiNo);
+
+        msgReceiver = new BroadcastReceiver(){
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d(LOG_TAG, "BroadcastReceiver onReceive()");
+
+                if(intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED"))
+                {
+                    String sb = "";
+                    Bundle b = intent.getExtras();
+
+                    if(b != null){
+                        Object[] pdusObj = (Object[]) b.get("pdus");
+
+                        SmsMessage[] messages = new SmsMessage[pdusObj.length];
+                        for(int i=0; i<pdusObj.length; i++)
+                        {
+                            messages[i] = SmsMessage.createFromPdu((byte[]) pdusObj[i]);
+                        }
+
+
+                        for(SmsMessage currentMessage : messages)
+                        {
+
+                            m = p.matcher(currentMessage.getMessageBody());
+                            if(m.find()){
+                                Log.i(LOG_TAG, "match!");
+                                Log.i(LOG_TAG, "" + m.group(0));
+
+                                if(receiveHandler != null) {
+                                    Message msg = receiveHandler.obtainMessage();
+                                    Bundle sendMsg = new Bundle();
+                                    sendMsg.putString("receiveNum", m.group(0));
+                                    msg.setData(sendMsg);
+                                    receiveHandler.sendMessage(msg);
+                                }
+
+                            }
+                            sb = sb + "문자열 수신되었습니다.1\n";
+                            sb = sb + "[발신자전화번호].\n";
+                            sb = sb + currentMessage.getOriginatingAddress();
+                            sb = sb + "\n[수신메세지]\n";
+                            sb = sb + currentMessage.getMessageBody(); //   [KeepOnGoing]인증번호는 9449입니다.
+                        }
+
+//                        Log.i(LOG_TAG, sb);
+                    }
+                }
+            }
+        };
 
         btnOk.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -140,8 +198,6 @@ public class AuthNextActivity extends BaseActivity {
                 if (statusCode == 200) {
                     Log.i(LOG_TAG, "receive 200 OK");
                     sendSMS(phoneNo);
-                    msgReceiver = new KogBroadcastReceiver();
-                    msgReceiver.setHandler(receiveHandler);
 
                 } else if (statusCode == 1002) {
                     Toast.makeText(getBaseContext(), "이미 가입된 번호입니다.\n중복가입 하실 수 없습니다.", Toast.LENGTH_SHORT).show();
@@ -157,6 +213,18 @@ public class AuthNextActivity extends BaseActivity {
             }
         }
     };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(msgReceiver, new IntentFilter("android.provider.Telephony.SMS_RECEIVED"));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(msgReceiver);
+    }
 
     // register my phone number and random_generated_number
     private void AuthNumRegister(final String phone, final int random_num) {
