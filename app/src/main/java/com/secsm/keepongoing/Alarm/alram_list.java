@@ -266,7 +266,8 @@ public class alram_list extends BaseFragmentActivity implements DatePickerDialog
     private void settingListView() {
         DBContactHelper helper = new DBContactHelper(this);
         Contact contact;
-        String output = "기상시간\n";
+        String output="";
+        //String output = "기상시간\n";
         contact = helper.getContact(1);
         list = new ArrayList<AlramData>();
         if(afternoon(contact.gethour())) {
@@ -298,7 +299,7 @@ public class alram_list extends BaseFragmentActivity implements DatePickerDialog
 
 
         contact = helper.getContact(2);
-        output = "목표시간\n";
+        output ="";
         if (contact.gethour() < 10)
             output += "0" + contact.gethour();
         else

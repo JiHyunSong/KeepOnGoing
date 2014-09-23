@@ -78,6 +78,7 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
     private int achieve_Hours;
     private int achieve_Mins;
     private int achieve_Seconds;
+    private int s;
     private int  goal_hour;
     private int goal_minute;
 
@@ -92,8 +93,8 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
     private static final String LOG_TAG = "MainmenuActivity";
     private final int ADDROOM = 100;
     private final int MANAGEFRIENDS = 200;
-    private TextView ahcieve_time, _current_Day, _current_Time;
-    private TextView goal_time;
+    private TextView ahcieve_time, _current_Day, currenttime2_sec,_current_Time,ahcieve_time_sec;
+    private TextView goal_time,goal_sec;
     MenuInflater inflater;
     protected int i = 0, minute = 0, diff_hour, diff_min;
     boolean a = false;
@@ -240,6 +241,7 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
         // 맨처음 시작하는 경우
 
 
+
         a = Preference.getBoolean(TabActivity.this, "testValue");
         Log.i(LOG_TAG, "a : " + a);
         DBContactHelper helper = new DBContactHelper(this);
@@ -253,10 +255,13 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
 
 
         ahcieve_time = (TextView) view.findViewById(R.id.tvMsg);
+        ahcieve_time_sec=(TextView) view.findViewById(R.id.tvMsg_sec);
         goal_time = (TextView) view.findViewById(R.id.goal);
+        goal_sec= (TextView) view.findViewById(R.id.goal_sec);
         //ahcieve_time.setText("00:00:00");
         _current_Day = (TextView) view.findViewById(R.id.currenttime);
         _current_Time = (TextView) view.findViewById(R.id.currenttime2);
+        currenttime2_sec= (TextView) view.findViewById(R.id.currenttime2_sec);
 
 
 
@@ -270,9 +275,15 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
         Contact contact3 = helper.getContact(2);
         goal_time.setText(
                 (contact3.gethour() / 10 == 0 ? "0" + contact3.gethour() : contact3.gethour())
-                        + ":" + (contact3.getminute() / 10 == 0 ? "0" + contact3.getminute() : contact3.getminute()) + ":" + "00"
+                        + ":" + (contact3.getminute() / 10 == 0 ? "0" + contact3.getminute() : contact3.getminute())
         );
-        _current_Time.setText(goal_time.getText());
+        goal_hour=contact3.gethour();
+        goal_minute=contact3.getminute();
+
+
+
+
+       // _current_Time.setText(goal_time.getText());
         Preference.setString(TabActivity.this, "goal_time", goal_time.getText().toString());
 
 
@@ -290,9 +301,14 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
         //성취시간 초기화
         Date start = new Date();
         Preference.setLong(TabActivity.this, "start", start.getTime() - Preference.getLong(TabActivity.this, "diff"));
-        ahcieve_time.setText(timediff(TabActivity.this));
-        Preference.setString(TabActivity.this, "achieve_time", ahcieve_time.getText().toString());
 
+
+
+        ahcieve_time.setText(timediff(TabActivity.this));
+        ahcieve_time_sec.setText( "."   + (achieve_Seconds / 10 == 0 ? "0" + achieve_Seconds : achieve_Seconds));
+        Preference.setString(TabActivity.this, "achieve_time", ahcieve_time.getText().toString());
+        _current_Time.setText(minusgoalachieve());
+        currenttime2_sec.setText( "." + (s/ 10 == 0 ? "0" + s : s));
         play_pause.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View arg0) {
 
@@ -351,8 +367,10 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
                     if (Preference.getBoolean(TabActivity.this, "first_start") == true) {
                         achievetimeRegisterRequest(goal_time.getText().toString(), ahcieve_time.getText().toString(), Preference.getString(TabActivity.this, "start_date"));
                         Preference.putBoolean(TabActivity.this, "first_start", false);
-                        ahcieve_time.setText("00:00:00");
+                        ahcieve_time.setText("00:00");
+                        ahcieve_time_sec.setText(".00");
                         _current_Time.setText(goal_time.getText());
+                        currenttime2_sec.setText(".00");
                         Preference.setLong(TabActivity.this, "diff", 0);
                     }
 
@@ -760,9 +778,12 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
             ahcieve_time.setText("00:00:00");
         else
             ahcieve_time.setText(Preference.getString(TabActivity.this, "Resumetimer"));
+             Preference.getInt(TabActivity.this, "Resumetimer_sec");
 */
         //      Toast.makeText(getBaseContext(), "tiger", Toast.LENGTH_SHORT).show();
+
         if (resumehelp) {
+
             Log.i(LOG_TAG, "mPager.getCurrentItem() : " + mPager.getCurrentItem());
             Log.i(LOG_TAG, "pagerIndex " + pagerIndex);
             switch (mPager.getCurrentItem()) {
@@ -772,11 +793,28 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
                     goal_time = (TextView) viewtemp.findViewById(R.id.goal);
                     goal_time.setText(
                             (contact3.gethour() / 10 == 0 ? "0" + contact3.gethour() : contact3.gethour())
-                                    + ":" + (contact3.getminute() / 10 == 0 ? "0" + contact3.getminute() : contact3.getminute()) + ":" + "00"
+                                    + ":" + (contact3.getminute() / 10 == 0 ? "0" + contact3.getminute() : contact3.getminute())
                     );
                     goal_hour=contact3.gethour();
                     goal_minute=contact3.getminute();
 
+                    if (Preference.getString(TabActivity.this, "Resumetimer") == "") {
+                        ahcieve_time.setText("00:00");
+                        ahcieve_time_sec.setText(".00");
+                    }
+                    else{
+                        ahcieve_time.setText(Preference.getString(TabActivity.this, "Resumetimer"));
+                        achieve_Seconds=Preference.getInt(TabActivity.this, "Resumetimer_sec");
+                        ahcieve_time_sec.setText("." + (achieve_Seconds / 10 == 0 ? "0" + achieve_Seconds : achieve_Seconds));
+                        /*
+                        ahcieve_time.setText(timediff(TabActivity.this));
+                        ahcieve_time_sec.setText("." + (achieve_Seconds / 10 == 0 ? "0" + achieve_Seconds : achieve_Seconds));
+                        */
+                        _current_Time.setText(minusgoalachieve());
+                        currenttime2_sec.setText("." + (s / 10 == 0 ? "0" + s : s));
+                    }
+
+                    Preference.setString(TabActivity.this, "achieve_time", ahcieve_time.getText().toString());
 
 
                     final ToggleButton mtoggle = (ToggleButton) viewtemp.findViewById(R.id.toggleButton2);
@@ -912,7 +950,9 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
         @Override
         public void handleMessage(Message msg) {
             ahcieve_time.setText(timediff(TabActivity.this));
+            ahcieve_time_sec.setText( "."   + (achieve_Seconds / 10 == 0 ? "0" + achieve_Seconds : achieve_Seconds));
             _current_Time.setText(minusgoalachieve());
+            currenttime2_sec.setText( "." + (s/ 10 == 0 ? "0" + s : s));
             Preference.setString(TabActivity.this, "achieve_time", ahcieve_time.getText().toString());
         }
     };
@@ -930,10 +970,11 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
        long minus = goal.getTime() - achieve.getTime();
         int h = (int) (minus / (1000 * 60 * 60));
         int m = (int) (minus / (1000 * 60)) % 60;
-        int s = (int) (minus / 1000) % 60;
+        s = (int) (minus / 1000) % 60;
 String goalminusacheive =     (h / 10 == 0 ? "0" +h : h)
         + ":" + (m / 10 == 0 ? "0" + m: m)
-        + ":" + (s/ 10 == 0 ? "0" + s : s);
+        //+ ":" + (s/ 10 == 0 ? "0" + s : s);
+        ;
         return goalminusacheive;
 
 
@@ -975,9 +1016,12 @@ String goalminusacheive =     (h / 10 == 0 ? "0" +h : h)
 
             String diff =
                     (achieve_Hours / 10 == 0 ? "0" + achieve_Hours : achieve_Hours)
-                            + ":" + (achieve_Mins / 10 == 0 ? "0" + achieve_Mins : achieve_Mins) + ":" + (achieve_Seconds / 10 == 0 ? "0" + achieve_Seconds : achieve_Seconds); // updated value every1 second
+                            + ":" + (achieve_Mins / 10 == 0 ? "0" + achieve_Mins : achieve_Mins)
+                    //        + ":"   + (achieve_Seconds / 10 == 0 ? "0" + achieve_Seconds : achieve_Seconds)
+                    ; // updated value every1 second
 
             Preference.setString(TabActivity.this, "Resumetimer", diff);
+            Preference.setInt(TabActivity.this, "Resumetimer_sec", achieve_Seconds);
 
             return diff;
         } catch (Exception e) {
@@ -1415,6 +1459,7 @@ String goalminusacheive =     (h / 10 == 0 ? "0" +h : h)
         mPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
+                resumehelp = true;
                 if (position == 0) {
                     Log.i(LOG_TAG, "view Pager Index : 0 ");
                     pagerIndex = position;
@@ -1495,6 +1540,7 @@ String goalminusacheive =     (h / 10 == 0 ? "0" +h : h)
         public Object instantiateItem(ViewGroup pager, int index) {
             View view = null;
             viewtemp = pager;
+
             //@ view pager 1st menu
 
             Log.i(LOG_TAG, "instantiateItem, mPager.getCurrentItem : " + mPager.getCurrentItem());
@@ -1513,6 +1559,7 @@ String goalminusacheive =     (h / 10 == 0 ? "0" +h : h)
             }
             //@ view pager 2nd menu
             else if (index == 1) {
+
                 //todo 두번쨰 메뉴
 //                Log.i(LOG_TAG, "view Pager Index : 1 " + mPager.getCurrentItem());
                 view = mLayoutInflater.inflate(R.layout.two, null);
