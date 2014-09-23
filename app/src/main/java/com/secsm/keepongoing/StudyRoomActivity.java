@@ -91,7 +91,7 @@ import java.util.Map;
 public class StudyRoomActivity extends BaseActivity {
 
 //    private String previous_ip=null;
-    private SnowWiFiMonitor m_SnowWifiMonitor = null;
+//    private SnowWiFiMonitor m_SnowWifiMonitor = null;
     private int previous_state=-5;
     LinearLayout all_in_chat;
     private Intent intent;
@@ -418,15 +418,11 @@ public class StudyRoomActivity extends BaseActivity {
                 closesliding();
             }
         });
+    }
 
-
-        m_SnowWifiMonitor = new SnowWiFiMonitor(this);
-        m_SnowWifiMonitor.setOnChangeNetworkStatusListener(SnowChangedListener);
-        registerReceiver(m_SnowWifiMonitor, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-        registerReceiver(m_SnowWifiMonitor, new IntentFilter(WifiManager.NETWORK_STATE_CHANGED_ACTION));
-        registerReceiver(m_SnowWifiMonitor, new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION));
-
-
+    @Override
+    protected void registerWifiBroadcastReceiver() {
+//        super.registerWifiBroadcastReceiver();
         SnowChangedListener = new SnowWiFiMonitor.OnChangeNetworkStatusListener()
         {
             @Override
@@ -471,6 +467,7 @@ public class StudyRoomActivity extends BaseActivity {
                         Log.i(LOG_TAG, "[WifiMonitor] NETWORK_STATE_CONNECTING");
                         if(previous_state==-5) {
                             previous_state = SnowWiFiMonitor.NETWORK_STATE_CONNECTING;
+                            Log.i(LOG_TAG, "[WifiMonitor] NETWORK_STATE_CONNECTING");
                         }
                         else {
                             if(previous_state!=SnowWiFiMonitor.NETWORK_STATE_CONNECTING) {
@@ -534,11 +531,15 @@ public class StudyRoomActivity extends BaseActivity {
                 }
             }
         };
+
+        Log.i(LOG_TAG, "register m_SnowWifiMonitor");
+        m_SnowWifiMonitor = new SnowWiFiMonitor(this);
+        m_SnowWifiMonitor.setOnChangeNetworkStatusListener(SnowChangedListener);
+        registerReceiver(m_SnowWifiMonitor, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        registerReceiver(m_SnowWifiMonitor, new IntentFilter(WifiManager.NETWORK_STATE_CHANGED_ACTION));
+        registerReceiver(m_SnowWifiMonitor, new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION));
+        Log.i(LOG_TAG, "register m_SnowWifiMonitor done");
     }
-
-
-
-
 
     private void setInvisibleAddtionalPage() {
         study_room_additional_page.setVisibility(View.INVISIBLE);
@@ -1517,13 +1518,13 @@ public class StudyRoomActivity extends BaseActivity {
         Log.i(LOG_TAG, "onPause nickname : " + KogPreference.getNickName(StudyRoomActivity.this));
         Log.i(LOG_TAG, "onPause rid : " + KogPreference.getRid(StudyRoomActivity.this));
         Log.i(LOG_TAG, "onPause regid : " + KogPreference.getRegId(StudyRoomActivity.this));
-        unregisterReceiver(m_SnowWifiMonitor);
         close();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
         init();
         Log.i(LOG_TAG, "onResume");
         if (isAdditionalPageOpen) {

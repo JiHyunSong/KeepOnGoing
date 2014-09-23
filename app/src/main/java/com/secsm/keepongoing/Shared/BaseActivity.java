@@ -9,6 +9,7 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -18,7 +19,7 @@ import com.secsm.keepongoing.R;
 import com.secsm.keepongoing.SnowWiFiMonitor;
 
 public class BaseActivity extends Activity {
-    private SnowWiFiMonitor m_SnowWifiMonitor = null;
+    protected SnowWiFiMonitor m_SnowWifiMonitor = null;
     private static String LOG_TAG = "BaseActivity";
     private int previous_state=-5;
     protected SnowWiFiMonitor.OnChangeNetworkStatusListener SnowChangedListener;
@@ -26,8 +27,12 @@ public class BaseActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    protected void registerWifiBroadcastReceiver() {
         m_SnowWifiMonitor = new SnowWiFiMonitor(this);
         m_SnowWifiMonitor.setOnChangeNetworkStatusListener(SnowChangedListener);
+        Log.i(LOG_TAG, "register m_SnowWifiMonitor in baseActivity");
         registerReceiver(m_SnowWifiMonitor, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         registerReceiver(m_SnowWifiMonitor, new IntentFilter(WifiManager.NETWORK_STATE_CHANGED_ACTION));
         registerReceiver(m_SnowWifiMonitor, new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION));
@@ -135,12 +140,12 @@ public class BaseActivity extends Activity {
                 }
             }
         };
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        this.registerWifiBroadcastReceiver();
 
         ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo mobile = manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
@@ -155,10 +160,14 @@ public class BaseActivity extends Activity {
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(m_SnowWifiMonitor);
+    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(m_SnowWifiMonitor);
     }
 }
