@@ -31,6 +31,7 @@ public class RoomNaming {
         this.meet_days = meet_days;
         this.quiz_num = quiz_num;
     }
+
     public String getQuiz_num() {return quiz_num;}
     public String getRid() {
         return rid;

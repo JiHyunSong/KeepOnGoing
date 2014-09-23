@@ -18,7 +18,6 @@
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:background="@drawable/speach_bubble_ico"
             android:id="@+id/image"
             />
         <TextView

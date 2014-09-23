@@ -49,7 +49,7 @@ public class RoomsArrayAdapters extends BaseAdapter {
             convertView = inflater.inflate(layout, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.type = (TextView) convertView.findViewById(R.id.txtRoomType);
-
+            viewHolder.room_icon = (ImageView) convertView.findViewById(R.id.image);
             viewHolder.roomname = (TextView) convertView.findViewById(R.id.txtRoomName);
             viewHolder.start_time = (TextView) convertView.findViewById(R.id.txtRoomTime);
             convertView.setTag(viewHolder);
@@ -62,9 +62,11 @@ public class RoomsArrayAdapters extends BaseAdapter {
         viewHolder.roomname.setText(roomArrayList.get(position).roomname);
         if("liferoom".equals(roomArrayList.get(position).type))
         {
+            viewHolder.room_icon.setImageResource(R.drawable.speach_bubble_ico);
             viewHolder.type.setText("생활 스터디방");
             viewHolder.start_time.setText("");
         }else{
+            viewHolder.room_icon.setImageResource(R.drawable.subject_room_ico);
             viewHolder.type.setText("과목 스터디방");
             viewHolder.start_time.setText(roomArrayList.get(position).start_time);
         }
@@ -76,6 +78,7 @@ public class RoomsArrayAdapters extends BaseAdapter {
         public TextView type = null;
         public TextView roomname = null;
         public TextView start_time = null;
+        public ImageView room_icon = null;
 //        public String name = null;
     }
 
