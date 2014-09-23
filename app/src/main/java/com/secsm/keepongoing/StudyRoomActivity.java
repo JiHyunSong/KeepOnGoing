@@ -98,7 +98,7 @@ public class StudyRoomActivity extends BaseActivity {
     private EditText messageTxt;
     private String message;
     private DBHelper mDBHelper;
-    private int rID;
+    private String rID;
     //    private int myID;
     private ArrayList<Msg> mTexts = new ArrayList<Msg>();
     private ListView messageList;
@@ -141,6 +141,7 @@ public class StudyRoomActivity extends BaseActivity {
     SocketAsyncTask_Writer soc_writer = null;
     String type;
     String rule;
+    String num;
 
     int rootHeight = 0;
     int actionBarHeight = 0;
@@ -228,16 +229,27 @@ public class StudyRoomActivity extends BaseActivity {
 
         mDBHelper = new DBHelper(this);
         intent = getIntent();
-        rID = (int) intent.getIntExtra("roomID", -1);
+//        rID = (int) intent.getIntExtra("roomID", -1);
+        rID = (String) intent.getStringExtra("rid");
         type = (String) intent.getStringExtra("type");
         rule = (String) intent.getStringExtra("rule");
+        num = (String) intent.getStringExtra("num");
 
         Log.i(LOG_TAG, "onCreate nickname : " + KogPreference.getNickName(StudyRoomActivity.this));
         Log.i(LOG_TAG, "onCreate rid : " + KogPreference.getRid(StudyRoomActivity.this));
         Log.i(LOG_TAG, "onCreate regid : " + KogPreference.getRegId(StudyRoomActivity.this));
 
-        rID = Integer.parseInt(KogPreference.getRid(StudyRoomActivity.this));
-        if (rID == -1) {
+        if(!KogPreference.getRid(StudyRoomActivity.this).equals(rID))
+        {
+            KogPreference.setRid(StudyRoomActivity.this, rID);
+        }
+
+        if(!KogPreference.getQuizNum(StudyRoomActivity.this).equals(num))
+        {
+            KogPreference.setQuizNum(StudyRoomActivity.this, num);
+        }
+
+        if ("-1".equals(rID)) {
             // TODO : 잘못된 접근, 되돌아가기
         }
 
@@ -492,7 +504,7 @@ public class StudyRoomActivity extends BaseActivity {
                             if(previous_state!=SnowWiFiMonitor.NETWORK_STATE_CONNECTED) {
                                 previous_state = SnowWiFiMonitor.NETWORK_STATE_CONNECTED;
                                 disconnectConnection(disconnectConnectionHandler);
-                                finish();
+                                GoBack();
                             }
                         }
                         break;
@@ -506,8 +518,7 @@ public class StudyRoomActivity extends BaseActivity {
                         else {
                             if(previous_state!=SnowWiFiMonitor.NETWORK_STATE_CONNECTING) {
                                 previous_state = SnowWiFiMonitor.NETWORK_STATE_CONNECTING;
-                                close();
-                                finish();
+                                GoBack();
                             }
                         }
                         break;
@@ -520,7 +531,7 @@ public class StudyRoomActivity extends BaseActivity {
                             if(previous_state!=SnowWiFiMonitor.NETWORK_STATE_DISCONNECTED) {
                                 previous_state = SnowWiFiMonitor.NETWORK_STATE_DISCONNECTED;
                                 disconnectConnection(disconnectConnectionHandler);
-                                finish();
+                                GoBack();
                             }
                         }
                         break;
@@ -533,8 +544,7 @@ public class StudyRoomActivity extends BaseActivity {
                         else {
                             if(previous_state!=SnowWiFiMonitor.NETWORK_STATE_DISCONNECTING) {
                                 previous_state = SnowWiFiMonitor.NETWORK_STATE_DISCONNECTING;
-                                close();
-                                finish();
+                                GoBack();
                             }
                         }
                         break;
@@ -796,10 +806,15 @@ public class StudyRoomActivity extends BaseActivity {
         if (f_nick.equals("나"))
             f_nick = KogPreference.getNickName(StudyRoomActivity.this);
 
-        for (int i = 0; i < mFriends.size(); i++) {
-            if (f_nick.equals(mFriends.get(i).getName())) {
-                return mFriends.get(i).getProfile_path();
+        try {
+            for (int i = 0; i < mFriends.size(); i++) {
+                if (f_nick.equals(mFriends.get(i).getName())) {
+                    return mFriends.get(i).getProfile_path();
+                }
             }
+        }catch (NullPointerException e){
+            e.printStackTrace();
+            GoBack();
         }
         return "";
     }
@@ -1611,7 +1626,7 @@ public class StudyRoomActivity extends BaseActivity {
                 if (isAdditionalPageOpen) {
                     setInvisibleAddtionalPage();
                 } else if (!isAdditionalPageOpen && !isPageOpen) {
-                    StudyRoomActivity.this.finish();
+                    GoBack();
                 }
                 if (isPageOpen) {
                     additionalBtn.setEnabled(true);
@@ -1624,6 +1639,11 @@ public class StudyRoomActivity extends BaseActivity {
             }
         }
         return false;
+    }
+
+    private void GoBack() {
+        close();
+        StudyRoomActivity.this.finish();
     }
     //////////////////////////////////////////////////
     // DB                                           //
@@ -2160,7 +2180,8 @@ public class StudyRoomActivity extends BaseActivity {
                     loadText();
                     BACK_MODE = true;
                 } else {
-                    Toast.makeText(getBaseContext(), "통신 에러 : \n친구 목록을 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), "네트워크 연결이 불안정합니다.\n뒤로 돌아갑니다.", Toast.LENGTH_SHORT).show();
+                    GoBack();
                     Log.e(LOG_TAG, "통신 에러 : " + result.getString("message"));
 
                 }

@@ -284,7 +284,7 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
 
 
        // _current_Time.setText(goal_time.getText());
-        Preference.setString(TabActivity.this, "goal_time", goal_time.getText().toString());
+        Preference.setString(TabActivity.this, "goal_time", goal_time.getText().toString() + ":00");
 
 
         //@민수
@@ -306,7 +306,7 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
 
         ahcieve_time.setText(timediff(TabActivity.this));
         ahcieve_time_sec.setText( "."   + (achieve_Seconds / 10 == 0 ? "0" + achieve_Seconds : achieve_Seconds));
-        Preference.setString(TabActivity.this, "achieve_time", ahcieve_time.getText().toString());
+        Preference.setString(TabActivity.this, "achieve_time", ahcieve_time.getText().toString()+":"+ahcieve_time_sec.getText().toString().substring(1,3));
         _current_Time.setText(minusgoalachieve());
         currenttime2_sec.setText( "." + (s/ 10 == 0 ? "0" + s : s));
         play_pause.setOnClickListener(new Button.OnClickListener() {
@@ -365,7 +365,10 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
                 Preference.setLong(TabActivity.this, "diff", 0);
                 try {
                     if (Preference.getBoolean(TabActivity.this, "first_start") == true) {
-                        achievetimeRegisterRequest(goal_time.getText().toString(), ahcieve_time.getText().toString(), Preference.getString(TabActivity.this, "start_date"));
+
+                        achievetimeRegisterRequest(goal_time.getText().toString()+ ":00",
+                                ahcieve_time.getText().toString()+":"+ahcieve_time_sec.getText().toString().substring(1,3),
+                                Preference.getString(TabActivity.this, "start_date"));
                         Preference.putBoolean(TabActivity.this, "first_start", false);
                         ahcieve_time.setText("00:00");
                         ahcieve_time_sec.setText(".00");
@@ -681,6 +684,8 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
                 Intent intent = new Intent(TabActivity.this, StudyRoomActivity.class);
                 intent.putExtra("type", mRooms.get(position).getType());
                 intent.putExtra("rule", mRooms.get(position).getRule());
+                intent.putExtra("rid", mRooms.get(position).getRid());
+                intent.putExtra("num", mRooms.get(position).getQuiz_num());
                 KogPreference.setRid(TabActivity.this, mRooms.get(position).getRid());
                 KogPreference.setQuizNum(TabActivity.this, mRooms.get(position).getQuiz_num());
                 startActivity(intent);
@@ -825,7 +830,7 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
                         currenttime2_sec.setText("." + (s / 10 == 0 ? "0" + s : s));
                     }
 
-                    Preference.setString(TabActivity.this, "achieve_time", ahcieve_time.getText().toString());
+                    Preference.setString(TabActivity.this, "achieve_time", ahcieve_time.getText().toString()+":"+ahcieve_time_sec.getText().toString().substring(1,3));
 
 
                     final ToggleButton mtoggle = (ToggleButton) viewtemp.findViewById(R.id.toggleButton2);
@@ -976,7 +981,7 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
             ahcieve_time_sec.setText( "."   + (achieve_Seconds / 10 == 0 ? "0" + achieve_Seconds : achieve_Seconds));
             _current_Time.setText(minusgoalachieve());
             currenttime2_sec.setText( "." + (s/ 10 == 0 ? "0" + s : s));
-            Preference.setString(TabActivity.this, "achieve_time", ahcieve_time.getText().toString());
+            Preference.setString(TabActivity.this, "achieve_time", ahcieve_time.getText().toString()+":"+ahcieve_time_sec.getText().toString().substring(1,3));
         }
     };
     private String minusgoalachieve() {

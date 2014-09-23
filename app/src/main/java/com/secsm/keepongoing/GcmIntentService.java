@@ -225,8 +225,10 @@ public class GcmIntentService extends IntentService {
 //                _intent.putExtra("msg", msg);
                 _intent.putExtra("type", thisRoom.getType());
                 _intent.putExtra("rule", thisRoom.getRule());
-                KogPreference.setRid(context, rid);
-                KogPreference.setQuizNum(context, thisRoom.getQuiz_num());
+                _intent.putExtra("rid", thisRoom.getRid());
+                _intent.putExtra("num", thisRoom.getQuiz_num());
+//                KogPreference.setRid(context, rid);
+//                KogPreference.setQuizNum(context, thisRoom.getQuiz_num());
 
                 PendingIntent contentIntent = PendingIntent.getActivity(this, 0, _intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
