@@ -218,6 +218,9 @@ public class StudyRoomActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        GcmIntentService.setNewQuizHandler(newQuizHandler);
+
         setContentView(R.layout.activity_study_room);
         ActionBar bar = getActionBar();
         bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.NAVIGATION_MODE_STANDARD);
@@ -418,6 +421,34 @@ public class StudyRoomActivity extends BaseActivity {
                 closesliding();
             }
         });
+    }
+
+    Handler newQuizHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            try{
+                Bundle b = msg.getData();
+                if(KogPreference.getRid(getBaseContext()).equals(b.getString("rid"))){
+                    KogPreference.setQuizNum(getBaseContext(), b.getString("num"));
+                    notifyQuiz(true);
+                }
+            }catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+
+        }
+    };
+
+    private void notifyQuiz(boolean newQuiz){
+        if(newQuiz){
+            // 새로운 퀴즈 도착 -> 이미지 업데이트
+            // TODO : image update when notified QUIZ
+            Log.i(LOG_TAG, "new quiz received");
+        }else
+        {
+            // 원래대로 돌리기
+        }
     }
 
     @Override
@@ -1952,6 +1983,9 @@ public class StudyRoomActivity extends BaseActivity {
             }
         }
     };
+
+
+
 
     /** getMyInfoRequest
      * statusCode == 200 => get My info, Update UI

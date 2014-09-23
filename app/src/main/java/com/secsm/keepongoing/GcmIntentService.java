@@ -41,9 +41,14 @@ public class GcmIntentService extends IntentService {
     private static final int CHAT_MESSAGE_CHAT = 2;
     private static final int CHAT_MESSAGE_IMAGE = 3;
     private DBHelper mDBHelper;
+    private static Handler newQuizHandler;
 
     public GcmIntentService() {
         super("GcmIntentService");
+    }
+
+    public static void setNewQuizHandler(Handler newQuizHandler1) {
+        newQuizHandler = newQuizHandler1;
     }
 
     @Override
@@ -68,8 +73,6 @@ public class GcmIntentService extends IntentService {
                 sendNotification("Deleted messages on server: " + extras.toString());
                 // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
-                String msg = intent.getStringExtra("message");
-                int _messageType = -1;
                 String m_type = intent.getExtras().getString("title");
                 Log.i(LOG_TAG, "m_type : " + m_type);
 
@@ -77,6 +80,13 @@ public class GcmIntentService extends IntentService {
 
                 }
                 else if(m_type=="friend_invite"){
+
+                }
+                else if("new_quiz".equals(m_type)){
+                    if(newQuizHandler != null)
+                    {
+                        notifyNewQuiz(intent);
+                    }
                 }
                 else if(m_type.equals(KogPreference.MESSAGE_TYPE_TEXT)) {
                     Log.i(LOG_TAG, "GCM get text type message");
@@ -102,6 +112,26 @@ public class GcmIntentService extends IntentService {
         }
         // Release the wake lock provided by the WakefulBroadcastReceiver.
         GcmBroadcastReceiver.completeWakefulIntent(intent);
+    }
+
+    private void notifyNewQuiz(Intent intent) {
+        JSONObject intentMessage;
+
+        try {
+            intentMessage = new JSONObject(intent.getExtras().getString("message"));
+            Message msg = newQuizHandler.obtainMessage();
+            Bundle quizBundle = new Bundle();
+            quizBundle.putString("rid", intentMessage.getString("rid"));
+            quizBundle.putString("num", intentMessage.getString("num"));
+            msg.setData(quizBundle);
+            newQuizHandler.sendMessage(msg);
+
+        }catch (JSONException e)
+        {
+            e.printStackTrace();
+        }
+
+
     }
 
 
