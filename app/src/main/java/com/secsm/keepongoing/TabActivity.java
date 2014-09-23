@@ -147,10 +147,10 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
 //        layoutSettings = (RelativeLayout) findViewById(R.id.tab_settings_layout);
 
         // tab layouts
-//        llStopwatch = (LinearLayout) findViewById(R.id.tab_stopwatch_ll);
-//        llFriends = (LinearLayout) findViewById(R.id.tab_friends_ll);
-//        llRooms = (LinearLayout) findViewById(R.id.tab_rooms_ll);
-//        llSettings = (LinearLayout) findViewById(R.id.tab_settings_ll);
+        llStopwatch = (LinearLayout) findViewById(R.id.tab_stopwatch_ll);
+        llFriends = (LinearLayout) findViewById(R.id.tab_friends_ll);
+        llRooms = (LinearLayout) findViewById(R.id.tab_rooms_ll);
+        llSettings = (LinearLayout) findViewById(R.id.tab_settings_ll);
 
     }
 
@@ -529,6 +529,17 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
         tabSettings.setBackgroundResource(R.drawable.tab_option_icon);
     }
 
+    private void setInvisibleTabMenu(){
+        llStopwatch.setBackgroundColor(getResources().getColor(R.color.keep_on_going_np));
+        llFriends.setBackgroundColor(getResources().getColor(R.color.keep_on_going_np));
+        llRooms.setBackgroundColor(getResources().getColor(R.color.keep_on_going_np));
+        llSettings.setBackgroundColor(getResources().getColor(R.color.keep_on_going_np));
+        tabStopwatch.setBackgroundResource(R.drawable.tab_stopwatch_icon);
+        tabFriends.setBackgroundResource(R.drawable.tab_friends_icon);
+        tabRooms.setBackgroundResource(R.drawable.tab_chatroom_icon);
+        tabSettings.setBackgroundResource(R.drawable.tab_option_icon);
+    }
+
     /**
      * 탭 클릭시 이벤트
      */
@@ -793,6 +804,9 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
                         actionBarSecondBtn.setVisible(true);
                         actionBarSecondBtn.setOnMenuItemClickListener(ab_stopwatchTab_settings_listener);
                     }
+                    setInvisibleTabMenu();
+                    llStopwatch.setBackgroundColor(getResources().getColor(R.color.keep_on_going));
+                    tabStopwatch.setBackgroundResource(R.drawable.tab_stopwatch_icon_p);
                     break;
                 case 1:
                     if (actionBarFirstBtn != null && actionBarSecondBtn != null) {
@@ -802,6 +816,9 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
                         actionBarSecondBtn.setOnMenuItemClickListener(ab_friends_add_listener);
                     }
                     getFriendsRequest();
+                    setInvisibleTabMenu();
+                    llFriends.setBackgroundColor(getResources().getColor(R.color.keep_on_going));
+                    tabFriends.setBackgroundResource(R.drawable.tab_friends_icon_p);
                     break;
                 case 2:
                     if (actionBarFirstBtn != null && actionBarSecondBtn != null) {
@@ -811,11 +828,17 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
                         actionBarSecondBtn.setOnMenuItemClickListener(ab_rooms_add_listener);
                     }
                     getStudyRoomsRequest();
+                    setInvisibleTabMenu();
+                    llRooms.setBackgroundColor(getResources().getColor(R.color.keep_on_going));
+                    tabRooms.setBackgroundResource(R.drawable.tab_chatroom_icon_p);
                     break;
                 case 3:
                     if (actionBarFirstBtn != null && actionBarSecondBtn != null) {
                         setInvisibleActionBar();
                     }
+                    setInvisibleTabMenu();
+                    llSettings.setBackgroundColor(getResources().getColor(R.color.keep_on_going));
+                    tabSettings.setBackgroundResource(R.drawable.tab_option_icon_p);
                     break;
                 default:
                     break;
@@ -1390,6 +1413,10 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
                         actionBarSecondBtn.setVisible(true);
                         actionBarSecondBtn.setOnMenuItemClickListener(ab_stopwatchTab_settings_listener);
                     }
+                    setInvisibleTabMenu();
+                    llStopwatch.setBackgroundColor(getResources().getColor(R.color.keep_on_going));
+                    tabStopwatch.setBackgroundResource(R.drawable.tab_stopwatch_icon_p);
+
                 } else if (position == 1) {
                     Log.i(LOG_TAG, "view Pager Index : 1 ");
                     pagerIndex = position;
@@ -1399,6 +1426,10 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
                         actionBarSecondBtn.setVisible(true);
                         actionBarSecondBtn.setOnMenuItemClickListener(ab_friends_add_listener);
                     }
+                    setInvisibleTabMenu();
+                    llFriends.setBackgroundColor(getResources().getColor(R.color.keep_on_going));
+                    tabFriends.setBackgroundResource(R.drawable.tab_friends_icon_p);
+
                 } else if (position == 2) {
                     Log.i(LOG_TAG, "view Pager Index : 2 ");
                     pagerIndex = position;
@@ -1408,12 +1439,19 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
                         actionBarSecondBtn.setVisible(true);
                         actionBarSecondBtn.setOnMenuItemClickListener(ab_rooms_add_listener);
                     }
+                    setInvisibleTabMenu();
+                    llRooms.setBackgroundColor(getResources().getColor(R.color.keep_on_going));
+                    tabRooms.setBackgroundResource(R.drawable.tab_chatroom_icon_p);
+
                 } else if (position == 3) {
                     Log.i(LOG_TAG, "view Pager Index : 3 ");
                     pagerIndex = position;
                     if (actionBarFirstBtn != null && actionBarSecondBtn != null) {
                         setInvisibleActionBar();
                     }
+                    setInvisibleTabMenu();
+                    llSettings.setBackgroundColor(getResources().getColor(R.color.keep_on_going));
+                    tabSettings.setBackgroundResource(R.drawable.tab_option_icon_p);
                 }
             }
 

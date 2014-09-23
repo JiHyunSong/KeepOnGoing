@@ -1517,6 +1517,7 @@ public class StudyRoomActivity extends BaseActivity {
         Log.i(LOG_TAG, "onPause nickname : " + KogPreference.getNickName(StudyRoomActivity.this));
         Log.i(LOG_TAG, "onPause rid : " + KogPreference.getRid(StudyRoomActivity.this));
         Log.i(LOG_TAG, "onPause regid : " + KogPreference.getRegId(StudyRoomActivity.this));
+        unregisterReceiver(m_SnowWifiMonitor);
         close();
     }
 
