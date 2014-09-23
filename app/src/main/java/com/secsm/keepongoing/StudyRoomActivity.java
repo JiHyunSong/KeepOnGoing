@@ -430,7 +430,7 @@ public class StudyRoomActivity extends BaseActivity {
                 Bundle b = msg.getData();
                 if(KogPreference.getRid(getBaseContext()).equals(b.getString("rid"))){
                     KogPreference.setQuizNum(getBaseContext(), b.getString("num"));
-                    notifyQuiz(true);
+                    notifyQuiz.sendEmptyMessage(1);
                 }
             }catch (Exception e)
             {
@@ -440,16 +440,19 @@ public class StudyRoomActivity extends BaseActivity {
         }
     };
 
-    private void notifyQuiz(boolean newQuiz){
-        if(newQuiz){
-            // 새로운 퀴즈 도착 -> 이미지 업데이트
-            // TODO : image update when notified QUIZ
-            Log.i(LOG_TAG, "new quiz received");
-        }else
-        {
-            // 원래대로 돌리기
+    Handler notifyQuiz = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if(msg.what == 1){
+                if(actionBarSecondBtn != null)
+                   actionBarSecondBtn.setIcon(R.drawable.ic_action_read_new);
+            }else{
+                if(actionBarSecondBtn != null)
+                    actionBarSecondBtn.setIcon(R.drawable.ic_action_read);
+            }
         }
-    }
+    };
 
     @Override
     protected void registerWifiBroadcastReceiver() {
@@ -1474,6 +1477,7 @@ public class StudyRoomActivity extends BaseActivity {
         actionBarFirstBtn.setOnMenuItemClickListener(ab_friend_list_listener);
 
         actionBarSecondBtn = menu.findItem(R.id.actionBarSecondBtn);
+        actionBarSecondBtn.setIcon(R.drawable.ic_action_read);
         actionBarSecondBtn.setOnMenuItemClickListener(ab_solve_quiz_listener);
 
         actionBarThirdBtn = menu.findItem(R.id.actionBarThirdBtn);
