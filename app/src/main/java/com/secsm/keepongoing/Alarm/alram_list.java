@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -17,12 +19,22 @@ import android.widget.ListView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.com.lanace.connecter.CallbackResponse;
+import com.com.lanace.connecter.HttpAPIs;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.secsm.keepongoing.R;
 import com.secsm.keepongoing.Shared.BaseFragmentActivity;
+import com.secsm.keepongoing.Shared.KogPreference;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -34,6 +46,7 @@ public class alram_list extends BaseFragmentActivity implements DatePickerDialog
     private ListView listView;
     public static final String DATEPICKER_TAG = "datepicker";
     public static final String TIMEPICKER_TAG = "timepicker";
+    private static final String LOG_TAG = "alram_list";
     private DatePickerDialog datePickerDialog;
     private TimePickerDialog timePickerDialog;
 
@@ -139,7 +152,11 @@ public class alram_list extends BaseFragmentActivity implements DatePickerDialog
             @Override
             public void onClick(DialogInterface arg0, int arg1) {
                 setTimer();
-                setDismiss(mDialog);
+                achieveTimePutRequest(
+                        KogPreference.getNickName(alram_list.this),mCalendar.getTime().getHours()+":"+mCalendar.getTime().getMinutes()+":00",
+                        Preference.getString(alram_list.this, "achieve_time"),
+                        getRealDate());
+
             }
         });
         ab.setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -152,6 +169,98 @@ public class alram_list extends BaseFragmentActivity implements DatePickerDialog
 
         return ab.create();
     }
+
+    public String getRealDate() {
+        long time = System.currentTimeMillis();
+        Timestamp currentTimestamp = new Timestamp(time);
+        return currentTimestamp.toString().substring(0, 10);
+    }
+
+    Handler achieveTimePutRequestHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+                Bundle b = msg.getData();
+                JSONObject result = new JSONObject(b.getString("JSONData"));
+//                int statusCode = Integer.parseInt(result.getString("httpStatusCode"));
+                int statusCode = Integer.parseInt(result.getString("status"));
+                if (statusCode == 200) {
+                    String rMessage = result.getString("message");
+                    setDismiss(mDialog);
+                    refreshActivity();
+                    // real action
+//                                Toast.makeText(getBaseContext(), LOG_TAG +rMessage, Toast.LENGTH_SHORT).show();
+                } else if (statusCode == 9001) {
+                    Toast.makeText(getBaseContext(), "시간등록이 불가능합니다.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
+                    Log.e(LOG_TAG, "통신 장애 : " + result.getString("message"));
+                }
+            } catch (JSONException e) {
+                errorHandler.sendEmptyMessage(1);
+                e.printStackTrace();
+            }
+        }
+    };
+
+    //http://210.118.74.195:8080/KOG_Server_Rest/rest/Time?nickname=jins&target_time=10:00:00&accomplished_time=00:00:00&date=2014/8/25
+    private void achieveTimePutRequest(String _nickname, String target_time, String accomplished_time, String date) {
+        try {
+            HttpRequestBase requestTime = HttpAPIs.timePut(
+                    _nickname
+                    , target_time
+                    , accomplished_time
+                    , date);
+
+            HttpAPIs.background(requestTime, new CallbackResponse() {
+                public void success(HttpResponse response) {
+                    baseHandler.sendEmptyMessage(1);
+                    JSONObject result = HttpAPIs.getHttpResponseToJSON(response);
+                    Log.e(LOG_TAG, "achieveTimePutRequest 응답: " + result.toString());
+                    if(result != null) {
+                        Message msg = achieveTimePutRequestHandler.obtainMessage();
+                        Bundle b = new Bundle();
+                        b.putString("JSONData", result.toString());
+                        msg.setData(b);
+                        achieveTimePutRequestHandler.sendMessage(msg);
+                    }
+                }
+
+                public void error(Exception e) {
+                    Log.i(LOG_TAG, "Response Error");
+                    baseHandler.sendEmptyMessage(1);
+                    errorHandler.sendEmptyMessage(1);
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    Handler baseHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+
+            if (msg.what == 1) {
+                // TODO : implement setAllEnable()
+//                setAllEnable();
+            } else if (msg.what == -1) {
+                // TODO : implement setAllDisable()
+//                setAllDisable();
+            }
+        }
+    };
+
+    Handler errorHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            if(msg.what == 1){
+                Toast.makeText(getBaseContext(), "연결이 원활하지 않습니다.\n잠시후에 시도해주세요.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
+
 
     //일자 설정 클래스의 상태변화 리스너
     private DatePicker.OnDateChangedListener onDateChanged = new DatePicker.OnDateChangedListener() {
