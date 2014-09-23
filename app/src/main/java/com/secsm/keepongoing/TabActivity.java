@@ -1,7 +1,6 @@
 package com.secsm.keepongoing;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -76,6 +75,12 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
     private TextView tiger;
     private View viewtemp;
     private String rMessage;
+    private int achieve_Hours;
+    private int achieve_Mins;
+    private int achieve_Seconds;
+    private int  goal_hour;
+    private int goal_minute;
+
 
     final static int TAB_DELAY = 10;
     FriendsArrayAdapters mockFriendArrayAdapter;
@@ -254,6 +259,7 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
         _current_Time = (TextView) view.findViewById(R.id.currenttime2);
 
 
+
         TimerTask adTast2 = new TimerTask() {
             public void run() {
                 replace_current_time_Handler.sendEmptyMessage(0);
@@ -266,6 +272,7 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
                 (contact3.gethour() / 10 == 0 ? "0" + contact3.gethour() : contact3.gethour())
                         + ":" + (contact3.getminute() / 10 == 0 ? "0" + contact3.getminute() : contact3.getminute()) + ":" + "00"
         );
+        _current_Time.setText(goal_time.getText());
         Preference.setString(TabActivity.this, "goal_time", goal_time.getText().toString());
 
 
@@ -345,6 +352,7 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
                         achievetimeRegisterRequest(goal_time.getText().toString(), ahcieve_time.getText().toString(), Preference.getString(TabActivity.this, "start_date"));
                         Preference.putBoolean(TabActivity.this, "first_start", false);
                         ahcieve_time.setText("00:00:00");
+                        _current_Time.setText(goal_time.getText());
                         Preference.setLong(TabActivity.this, "diff", 0);
                     }
 
@@ -766,6 +774,9 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
                             (contact3.gethour() / 10 == 0 ? "0" + contact3.gethour() : contact3.gethour())
                                     + ":" + (contact3.getminute() / 10 == 0 ? "0" + contact3.getminute() : contact3.getminute()) + ":" + "00"
                     );
+                    goal_hour=contact3.gethour();
+                    goal_minute=contact3.getminute();
+
 
 
                     final ToggleButton mtoggle = (ToggleButton) viewtemp.findViewById(R.id.toggleButton2);
@@ -901,21 +912,44 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
         @Override
         public void handleMessage(Message msg) {
             ahcieve_time.setText(timediff(TabActivity.this));
+            _current_Time.setText(minusgoalachieve());
             Preference.setString(TabActivity.this, "achieve_time", ahcieve_time.getText().toString());
         }
     };
+    private String minusgoalachieve() {
+        Date goal=new Date();
+        Date achieve=new Date();
+        goal.setHours(goal_hour);
+        goal.setMinutes(goal_minute);
+        goal.setSeconds(0);
+        achieve.setHours(achieve_Hours);
+        achieve.setMinutes(achieve_Mins);
+        achieve.setSeconds(achieve_Seconds);
+        //@민수 todo
+        Log.e("minsu","minsu : "+goal.toString() +" - "+achieve.toString());
+       long minus = goal.getTime() - achieve.getTime();
+        int h = (int) (minus / (1000 * 60 * 60));
+        int m = (int) (minus / (1000 * 60)) % 60;
+        int s = (int) (minus / 1000) % 60;
+String goalminusacheive =     (h / 10 == 0 ? "0" +h : h)
+        + ":" + (m / 10 == 0 ? "0" + m: m)
+        + ":" + (s/ 10 == 0 ? "0" + s : s);
+        return goalminusacheive;
 
+
+    }
 
     Handler replace_current_time_Handler = new Handler() {
 
         public void handleMessage(Message msg) {
             Date today = new Date();
             _current_Day.setText((today.getYear() + 1900) + "/" + (today.getMonth() + 1) + "/" + today.getDate());
-            _current_Time.setText(
+          /*  _current_Time.setText(
                     (today.getHours() / 10 == 0 ? "0" + today.getHours() : today.getHours())
                             + ":" + (today.getMinutes() / 10 == 0 ? "0" + today.getMinutes() : today.getMinutes())
                             + ":" + (today.getSeconds() / 10 == 0 ? "0" + today.getSeconds() : today.getSeconds())
-            );
+            );*/
+            //todo 여기 지워야됨
         }
     };
 
@@ -934,14 +968,14 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
             //    Log.i(LOG_TAG, "today : "+ today.toString());
             mills = today.getTime() - Date1.getTime();
             Preference.setLong(TabActivity.this, "diff", mills);
-            int Hours = (int) (mills / (1000 * 60 * 60));
-            int Mins = (int) (mills / (1000 * 60)) % 60;
-            int Seconds = (int) (mills / 1000) % 60;
+             achieve_Hours = (int) (mills / (1000 * 60 * 60));
+             achieve_Mins = (int) (mills / (1000 * 60)) % 60;
+             achieve_Seconds = (int) (mills / 1000) % 60;
 
 
             String diff =
-                    (Hours / 10 == 0 ? "0" + Hours : Hours)
-                            + ":" + (Mins / 10 == 0 ? "0" + Mins : Mins) + ":" + (Seconds / 10 == 0 ? "0" + Seconds : Seconds); // updated value every1 second
+                    (achieve_Hours / 10 == 0 ? "0" + achieve_Hours : achieve_Hours)
+                            + ":" + (achieve_Mins / 10 == 0 ? "0" + achieve_Mins : achieve_Mins) + ":" + (achieve_Seconds / 10 == 0 ? "0" + achieve_Seconds : achieve_Seconds); // updated value every1 second
 
             Preference.setString(TabActivity.this, "Resumetimer", diff);
 

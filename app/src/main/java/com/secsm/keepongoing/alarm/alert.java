@@ -32,7 +32,6 @@ public class alert extends BaseActivity {
     private AlarmManager mManager;
     Contact contact;
     Date mCalendar;
-    DBContactHelper helper;
     @Override
 
     protected void onCreate(final Bundle savedInstanceState) {
@@ -49,7 +48,12 @@ public class alert extends BaseActivity {
         r.play();
 
         mManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-       helper = new DBContactHelper(this);
+
+        DBContactHelper helper = new DBContactHelper(this);
+        contact = helper.getContact(1);
+        mCalendar = new Date();
+        mCalendar.setHours(contact.gethour());
+        mCalendar.setMinutes(contact.getminute());
 
 
 
@@ -60,7 +64,7 @@ public class alert extends BaseActivity {
             public void onClick(View v) {
                 Date mCalendar;
                 mCalendar = new Date();
-                mManager.set(AlarmManager.RTC_WAKEUP, mCalendar.getTime() + 10 * 60 * 1000, pendingIntent());
+                mManager.set(AlarmManager.RTC_WAKEUP, mCalendar.getTime() + 1 * 60 * 1000, pendingIntent1());
                 Log.e("minsu) : AlertActivity : ", "" + mCalendar.toString());
                 Toast.makeText(alert.this, "10분뒤에 울립니다.", 2).show();
 
@@ -80,14 +84,9 @@ public class alert extends BaseActivity {
      /*           Toast.makeText(alert.this,
                         "@SERVER : \n"+ mCalendar.getTime(),2);*/
 
-                Date mCalendar;
-                mCalendar = new Date();
-                contact = helper.getContact(1);
-                mCalendar = new Date();
-                mCalendar.setHours(contact.gethour());
-                mCalendar.setMinutes(contact.getminute());
 
-                mManager.set(AlarmManager.RTC_WAKEUP, mCalendar.getTime() + 24 * 60 * 60 * 1000, pendingIntent());
+
+                mManager.set(AlarmManager.RTC_WAKEUP, mCalendar.getTime() + 3 * 60 * 60 * 1000, pendingIntent());
                 //todo 프리퍼런스뢰 가져와서해야함
                 Log.e("minsu) : AlertActivity : ", "" + mCalendar.toString());
                 Toast.makeText(alert.this, "기상 완료", 2).show();
