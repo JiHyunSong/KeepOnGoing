@@ -7,6 +7,7 @@ public class AlramData {
     public String name;
 
 
+
     public AlramData(String name) {
         this.name = name;
     }

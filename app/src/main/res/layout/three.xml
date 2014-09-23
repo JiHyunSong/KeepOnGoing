@@ -10,12 +10,15 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@id/tab_name"
+        android:padding="10dp"
         android:visibility="visible">
 
         <ListView
             android:id="@+id/room_list"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" />
+            android:layout_height="fill_parent"
+            android:background="#77ffffff"
+           />
 
 
     </RelativeLayout>

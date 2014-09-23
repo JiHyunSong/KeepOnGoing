@@ -2,10 +2,10 @@
 <merger version="2" >
 
     <dataSet config="main" >
-        <source path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/src/main/assets" />
+        <source path="C:\Users\kim\Desktop\git folder\keepongoing-minsuJob\libs\AndroidBootstrap\src\main\assets" />
     </dataSet>
     <dataSet config="debug" >
-        <source path="/Users/JinS/Dropbox/Android/KeepOnGoing/libs/AndroidBootstrap/src/debug/assets" />
+        <source path="C:\Users\kim\Desktop\git folder\keepongoing-minsuJob\libs\AndroidBootstrap\src\debug\assets" />
     </dataSet>
 
 </merger>

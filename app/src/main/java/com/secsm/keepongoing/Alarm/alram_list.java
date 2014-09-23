@@ -266,34 +266,59 @@ public class alram_list extends BaseFragmentActivity implements DatePickerDialog
     private void settingListView() {
         DBContactHelper helper = new DBContactHelper(this);
         Contact contact;
-        String output = "기상시간 : ";
+        String output="";
+        //String output = "기상시간\n";
         contact = helper.getContact(1);
         list = new ArrayList<AlramData>();
+        if(afternoon(contact.gethour())) {
         if (contact.gethour() < 10)
-            output += "0" + contact.gethour();
+            output += "0" + (contact.gethour()-12);
         else
-            output += contact.gethour();
+            output += (contact.gethour()-12);
+        }
+        else{
+
+                if (contact.gethour() < 10)
+                    output += "0" + (contact.gethour());
+                else
+                    output += (contact.gethour());
+
+        }
+
         if (contact.getminute() < 10)
-            output += ": 0" + contact.getminute();
+            output += " : 0" + contact.getminute();
         else
-            output += ": " + contact.getminute();
+            output += " : " + contact.getminute();
+        if(afternoon(contact.gethour())) {
+            output += " pm";
+        }
+        else output += " am";
+
+
         list.add(new AlramData(output));
 
 
         contact = helper.getContact(2);
-        output = "목표시간 : ";
+        output ="";
         if (contact.gethour() < 10)
             output += "0" + contact.gethour();
         else
             output += contact.gethour();
         if (contact.getminute() < 10)
-            output += ": 0" + contact.getminute();
+            output += " : 0" + contact.getminute();
         else
-            output += ": " + contact.getminute();
+            output += " : " + contact.getminute();
         list.add(new AlramData(output));
 
         listView = (ListView) findViewById(R.id.listView_test);
         listView.setAdapter(new AlramAdapter(this, list,this));
+    }
+
+    private boolean afternoon(int a){
+        if(a>=12)
+            return true;
+        else
+            return false;
     }
 
 

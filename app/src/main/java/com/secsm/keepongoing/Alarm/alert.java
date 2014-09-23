@@ -64,7 +64,7 @@ public class alert extends BaseActivity {
             public void onClick(View v) {
                 Date mCalendar;
                 mCalendar = new Date();
-                mManager.set(AlarmManager.RTC_WAKEUP, mCalendar.getTime() + 1 * 60 * 1000, pendingIntent1());
+                mManager.set(AlarmManager.RTC_WAKEUP, mCalendar.getTime() + 10 * 60 * 1000, pendingIntent());
                 Log.e("minsu) : AlertActivity : ", "" + mCalendar.toString());
                 Toast.makeText(alert.this, "10분뒤에 울립니다.", 2).show();
 
@@ -86,7 +86,8 @@ public class alert extends BaseActivity {
 
 
 
-                mManager.set(AlarmManager.RTC_WAKEUP, mCalendar.getTime() + 3 * 60 * 60 * 1000, pendingIntent());
+                mManager.set(AlarmManager.RTC_WAKEUP, mCalendar.getTime() + 24 * 60 * 1000, pendingIntent());
+              //  Log.e("minsu) : AlertActivity 기상완료 2분뒤에 울림 : ", "" + mCalendar.toString());
                 //todo 프리퍼런스뢰 가져와서해야함
                 Log.e("minsu) : AlertActivity : ", "" + mCalendar.toString());
                 Toast.makeText(alert.this, "기상 완료", 2).show();

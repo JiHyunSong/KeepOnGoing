@@ -72,7 +72,8 @@ public class AlramAdapter extends BaseAdapter {
             ImageView image = (ImageView)v.findViewById(R.id.vibratemode_ico);
             vibratemode.setChecked(Preference.getBoolean(v.getContext(), "vibratemode"));
             if (position == 0) {
-
+                viewHolder.child_textview2=(TextView) v.findViewById(R.id.child_textview2);
+                viewHolder.child_textview2.setText("기상시간");
 
                 vibratemode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
@@ -85,7 +86,8 @@ public class AlramAdapter extends BaseAdapter {
             }
 
             if (position == 1) {
-
+                viewHolder.child_textview2=(TextView) v.findViewById(R.id.child_textview2);
+                viewHolder.child_textview2.setText("목표시간");
                 vibratemode.setVisibility(v.GONE);
                 image.setVisibility(v.GONE);
 
@@ -97,6 +99,8 @@ public class AlramAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View v) {
                     if (position == 0) {
+
+
                         listener.time_pick();/*
                         Intent intent = new Intent(v.getContext(), Alarm_main.class);
                         intent.putExtra("position", position);
@@ -153,6 +157,7 @@ public class AlramAdapter extends BaseAdapter {
      */
     class ViewHolder {
         public TextView tv_title = null;
+        public TextView child_textview2 = null;
     }
 
     @Override

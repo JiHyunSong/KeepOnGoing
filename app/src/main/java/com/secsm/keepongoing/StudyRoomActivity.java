@@ -24,7 +24,6 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,10 +41,9 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.com.lanace.connecter.CallbackResponse;
 import com.com.lanace.connecter.HttpAPIs;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.secsm.keepongoing.Adapters.FriendNameAndIcon;
 import com.secsm.keepongoing.Adapters.FriendsArrayAdapters;
 import com.secsm.keepongoing.Adapters.ListLockHelper;
@@ -80,13 +78,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Map;
 
 public class StudyRoomActivity extends BaseActivity {
 
@@ -283,6 +279,19 @@ public class StudyRoomActivity extends BaseActivity {
             }
         });
 
+
+        //@민수
+        all_in_chat=(LinearLayout)findViewById(R.id.all_in_chat);
+        all_in_chat.setVisibility(View.GONE);
+        all_in_chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //   Toast.makeText(getBaseContext(), "hi", Toast.LENGTH_SHORT).show();
+                closesliding();
+            }
+        });
+
+
 //        listLockHelper = new ListLockHelper(messageList);
 //
 //
@@ -412,15 +421,6 @@ public class StudyRoomActivity extends BaseActivity {
         });
 
 
-        //@민수
-        all_in_chat=(LinearLayout)findViewById(R.id.all_in_chat);
-        all_in_chat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //   Toast.makeText(getBaseContext(), "hi", Toast.LENGTH_SHORT).show();
-                closesliding();
-            }
-        });
     }
 
     Handler newQuizHandler = new Handler(){
@@ -1199,9 +1199,13 @@ public class StudyRoomActivity extends BaseActivity {
          */
         public void onAnimationEnd(Animation animation) {
             if (isPageOpen) {
+                all_in_chat.setVisibility(View.GONE);
+          //      Toast.makeText(getBaseContext(), "GONE1", Toast.LENGTH_SHORT).show();
                 slidingPage01.setVisibility(View.INVISIBLE);
                 isPageOpen = false;
             } else {
+                all_in_chat.setVisibility(View.VISIBLE);
+         //       Toast.makeText(getBaseContext(), "VISIBLE1", Toast.LENGTH_SHORT).show();
                 slidingPage01.setVisibility(View.VISIBLE);
                 isPageOpen = true;
             }
@@ -1382,9 +1386,13 @@ public class StudyRoomActivity extends BaseActivity {
                 study_room_additional_ll3_my_time.setEnabled(true);
                 messageTxt.setEnabled(true);
                 messageTxt.requestFocus();
+//@민수
+
                 slidingPage01.startAnimation(translateLeftAnim);
+
                 Log.e(LOG_TAG, "left");
                 slidingPage01.setVisibility(View.VISIBLE);
+         //       all_in_chat.setVisibility(View.GONE);
                 showSoftKeyboard();
             } else {
 //                if(isAdditionalPageOpen) {
@@ -1398,6 +1406,8 @@ public class StudyRoomActivity extends BaseActivity {
 
 
                 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                //@민수
+                all_in_chat.setVisibility(View.VISIBLE);
                 slidingPage01.startAnimation(translateRightAnim);
                 hideSoftKeyboard(slidingPage01);
                 Log.e(LOG_TAG, "right");
@@ -2294,12 +2304,14 @@ public class StudyRoomActivity extends BaseActivity {
             study_room_additional_ll1_camera.setEnabled(true);
             study_room_additional_ll2_album.setEnabled(true);
             study_room_additional_ll3_my_time.setEnabled(true);
+            messageTxt.setEnabled(true);
+            messageTxt.requestFocus();
             showSoftKeyboard();
             slidingPage01.startAnimation(translateLeftAnim);
             Log.e(LOG_TAG, "left");
             slidingPage01.setVisibility(View.VISIBLE);
             //Todo keyboardfocusout
-
+          //  all_in_chat.setVisibility(View.GONE);
             //  messageTxt.setFocusable(false);
         }
     }
