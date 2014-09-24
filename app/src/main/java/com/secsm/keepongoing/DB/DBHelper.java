@@ -120,10 +120,12 @@ public class DBHelper extends SQLiteOpenHelper {
                     if (cursor.isNull(0) || cursor.getShort(0) == 0) {
                         db.close();
                         cursor.close();
+//                        Log.i(LOG_TAG, "isChatNew false in rid: "  + rid);
                         return false;
                     } else {
                         db.close();
                         cursor.close();
+//                        Log.i(LOG_TAG, "isChatNew true in rid: "  + rid);
                         return true;
                     }
 
@@ -143,20 +145,38 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public void UpdateChatNew(String rid, boolean isNew)
     {
+        Log.i(LOG_TAG, "UpdateChatNew : rid " + rid + " isNew " + isNew);
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT isNew FROM chat_new WHERE rid='"+rid+"';", null);
         int insertIsNew = (isNew ? 1 : 0 );
         try{
             if(cursor.getCount() > 0) {
                 // update row
-                db.execSQL("UPDATE chat_new SET isNew=" + insertIsNew + " WHERE rid='"+rid+"';");
+//                db.execSQL("UPDATE chat_new SET isNew=" + insertIsNew + " WHERE rid='"+rid+"';");
+
+//                Log.i(LOG_TAG, "UpdateChatNew : rid " + rid + " isNew " + insertIsNew);
+                ContentValues value = new ContentValues();
+                value.put("isNew", insertIsNew);
+                String where = "rid=?";
+                String[] wheresArgs = new String[] {String.valueOf(rid)};
+                db.update("chat_new", value, where, wheresArgs);
+//                Log.i(LOG_TAG, "UpdateChatNew : updateDone");
+
             }else
             {
+//                Log.i(LOG_TAG, "UpdateChatNew : rid " + rid + " isNew " + insertIsNew);
                 // insert row
-                db.execSQL("INSERT INTO chat_new (rid, isNew) VALUES (" +
-                        "'" + rid + "'," +
-                        "" + insertIsNew + "" +
-                        "); ㅂ");
+//                db.execSQL("INSERT INTO chat_new (rid, isNew) VALUES (" +
+//                        "'" + rid + "'," +
+//                        "" + insertIsNew + "" +
+//                        ");");
+
+                ContentValues value = new ContentValues();
+                value.put("rid", rid);
+                value.put("isNew", insertIsNew);
+                db.insert("chat_new", null, value);
+//                Log.i(LOG_TAG, "UpdateChatNew : insertDone");
+
             }
         }
         catch (Exception e)
@@ -180,8 +200,8 @@ public class DBHelper extends SQLiteOpenHelper {
             {
                 if(cursor.moveToFirst())
                 {
-                    Log.i(LOG_TAG, "isQuizNew cursor.isNull(0) : " + cursor.isNull(0));
-                    Log.i(LOG_TAG, "isQuizNew cursor.getShort(0) : " + cursor.getShort(0));
+//                    Log.i(LOG_TAG, "isQuizNew cursor.isNull(0) : " + cursor.isNull(0));
+//                    Log.i(LOG_TAG, "isQuizNew cursor.getShort(0) : " + cursor.getShort(0));
                     if (cursor.isNull(0) || cursor.getShort(0) == 0) {
                         db.close();
                         cursor.close();
@@ -189,7 +209,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     } else {
                         db.close();
                         cursor.close();
-                        Log.i(LOG_TAG, "isQuizNew true");
+//                        Log.i(LOG_TAG, "isQuizNew true");
                         return true;
                     }
 
@@ -237,21 +257,36 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public void UpdateQuizNew(String rid, String num, boolean isNew)
     {
+        Log.i(LOG_TAG, "UpdateQuizNew : rid " + rid + " num " + num + " isNew " + isNew);
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT isNew FROM quiz_new WHERE rid='"+rid+"';", null);
         int insertIsNew = (isNew ? 1 : 0 );
         try{
             if(cursor.getCount() > 0) {
                 // update row
-                db.execSQL("UPDATE quiz_new SET num='" +num +"',isNew=" + insertIsNew + " WHERE rid='"+rid+"';");
+//                db.execSQL("UPDATE quiz_new SET num='" +num +"',isNew=" + insertIsNew + " WHERE rid='"+rid+"';");
+
+                ContentValues value = new ContentValues();
+                value.put("num", num);
+                value.put("isNew", insertIsNew);
+                String where = "rid=?";
+                String[] wheresArgs = new String[] {String.valueOf(rid)};
+                db.update("quiz_new", value, where, wheresArgs);
             }else
             {
                 // insert row
-                db.execSQL("INSERT INTO quiz_new (rid, num, isNew) VALUES (" +
-                        "'" + rid + "'," +
-                        "'" + num + "'," +
-                        "" + insertIsNew + "" +
-                        ");");
+//                db.execSQL("INSERT INTO quiz_new (rid, num, isNew) VALUES (" +
+//                        "'" + rid + "'," +
+//                        "'" + num + "'," +
+//                        "" + insertIsNew + "" +
+//                        ");");
+
+                ContentValues value = new ContentValues();
+                value.put("rid", rid);
+                value.put("num", num);
+                value.put("isNew", insertIsNew);
+                db.insert("quiz_new", null, value);
+
             }
         }
         catch (Exception e)
@@ -343,6 +378,7 @@ public class DBHelper extends SQLiteOpenHelper {
             value.put("data", data);
 
             db.insert(TABLE_IMAGE, null, value);
+            db.close();
 
             Log.i(LOG_TAG, "insertImage + " + name + " done ");
         }catch (Exception e)

@@ -3,6 +3,7 @@ package com.secsm.keepongoing;
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -293,19 +294,29 @@ public class GcmIntentService extends IntentService {
         db = mDBHelper.getWritableDatabase();
         Log.i(LOG_TAG, "insert msg");
         Log.i("day", "nickname : " + _senderID);
-        String query = "INSERT INTO Chat " +
-                //"(room_id, senderID, senderText, year, month, day, time, me) " +
-                "(rid, senderID, senderText, time, me, messageType) " +
-                "VALUES (" +
-                "'" + roomID + "','"
-                + _senderID + "','"
-                + _senderText + "','"
-                + _time + "','"
-                + _me + "','"
-                + _messageType + "');";
-        // TODO : check _time
-        Log.i(LOG_TAG, "execSQL : " + query);
-        db.execSQL(query);
+//        String query = "INSERT INTO Chat " +
+//                //"(room_id, senderID, senderText, year, month, day, time, me) " +
+//                "(rid, senderID, senderText, time, me, messageType) " +
+//                "VALUES (" +
+//                "'" + roomID + "','"
+//                + _senderID + "','"
+//                + _senderText + "','"
+//                + _time + "','"
+//                + _me + "','"
+//                + _messageType + "');";
+//        // TODO : check _time
+//        Log.i(LOG_TAG, "execSQL : " + query);
+//        db.execSQL(query);
+
+        ContentValues value = new ContentValues();
+        value.put("rid", roomID);
+        value.put("senderID", _senderID);
+        value.put("senderText", _senderText);
+        value.put("time", _time);
+        value.put("me", _me);
+        value.put("messageType", _messageType);
+        db.insert("Chat", null, value);
+
 
         mDBHelper.UpdateChatNew(roomID, true);
 

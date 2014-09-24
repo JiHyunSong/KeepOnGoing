@@ -2,6 +2,7 @@ package com.secsm.keepongoing;
 
 import android.app.ActionBar;
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -1653,6 +1654,8 @@ public class StudyRoomActivity extends BaseActivity {
                 }
 //            Intent intent = new Intent(StudyRoomActivity.this, TabActivity.class);
 //            startActivity(intent);
+            }else{
+                close();
             }
         }
         return false;
@@ -1677,19 +1680,29 @@ public class StudyRoomActivity extends BaseActivity {
 //        String month = Integer.toString(c.get(Calendar.MONTH) + 1);
 //        String day = Integer.toString(c.get(Calendar.DATE));
         Log.i("day", "nickname : " + _senderID);
-        String query = "INSERT INTO Chat " +
-                //"(room_id, senderID, senderText, year, month, day, time, me) " +
-                "(rid, senderID, senderText, time, me, messageType) " +
-                "VALUES (" +
-                "'" + rID + "','"
-                + _senderID + "','"
-                + _senderText + "','"
-                + _time + "','"
-                + _me + "','"
-                + _messageType + "');";
-        // TODO : check _time
-        Log.i(LOG_TAG, "execSQL : " + query);
-        db.execSQL(query);
+//        String query = "INSERT INTO Chat " +
+//                //"(room_id, senderID, senderText, year, month, day, time, me) " +
+//                "(rid, senderID, senderText, time, me, messageType) " +
+//                "VALUES (" +
+//                "'" + rID + "','"
+//                + _senderID + "','"
+//                + _senderText + "','"
+//                + _time + "','"
+//                + _me + "','"
+//                + _messageType + "');";
+//        // TODO : check _time
+//        Log.i(LOG_TAG, "execSQL : " + query);
+//        db.execSQL(query);
+
+        ContentValues value = new ContentValues();
+        value.put("rid", rID);
+        value.put("senderID", _senderID);
+        value.put("senderText", _senderText);
+        value.put("time", _time);
+        value.put("me", _me);
+        value.put("messageType", _messageType);
+        db.insert("Chat", null, value);
+
         db.close();
         mDBHelper.close();
     }
