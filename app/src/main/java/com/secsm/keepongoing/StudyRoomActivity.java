@@ -458,11 +458,13 @@ public class StudyRoomActivity extends BaseActivity {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if(msg.what == 1){
-                if(actionBarSecondBtn != null)
-                   actionBarSecondBtn.setIcon(R.drawable.ic_action_read_new);
+                if(actionBarSecondBtn != null) {
+                    actionBarSecondBtn.setIcon(R.drawable.ic_action_read_new);
+                }
             }else{
-                if(actionBarSecondBtn != null)
+                if(actionBarSecondBtn != null) {
                     actionBarSecondBtn.setIcon(R.drawable.ic_action_read);
+                }
             }
         }
     };
@@ -1510,7 +1512,24 @@ public class StudyRoomActivity extends BaseActivity {
         actionBarFirstBtn.setOnMenuItemClickListener(ab_friend_list_listener);
 
         actionBarSecondBtn = menu.findItem(R.id.actionBarSecondBtn);
-        actionBarSecondBtn.setIcon(R.drawable.ic_action_read);
+
+
+        mDBHelper = new DBHelper(getBaseContext());
+        if(mDBHelper.isQuizNew(KogPreference.getRid(getBaseContext())))
+        {
+            Log.i(LOG_TAG, "isQuizNew notify 1");
+            notifyQuiz.sendEmptyMessage(1);
+        }else
+        {
+            Log.i(LOG_TAG, "isQuizNew notify -1");
+            notifyQuiz.sendEmptyMessage(-1);
+        }
+        mDBHelper.close();
+
+//        actionBarSecondBtn.setIcon(R.drawable.ic_action_read);
+
+
+
         actionBarSecondBtn.setOnMenuItemClickListener(ab_solve_quiz_listener);
 
         actionBarThirdBtn = menu.findItem(R.id.actionBarThirdBtn);
@@ -1554,13 +1573,15 @@ public class StudyRoomActivity extends BaseActivity {
                 disconnectConnection(socketConnectionHandler);
                 mDBHelper = new DBHelper(getBaseContext());
                 mDBHelper.UpdateChatNew(KogPreference.getRid(getBaseContext()), false);
-                if(mDBHelper.isQuizNew(KogPreference.getRid(getBaseContext())))
-                {
-                    notifyQuiz.sendEmptyMessage(1);
-                }else
-                {
-                    notifyQuiz.sendEmptyMessage(-1);
-                }
+//                if(mDBHelper.isQuizNew(KogPreference.getRid(getBaseContext())))
+//                {
+//                    Log.i(LOG_TAG, "isQuizNew notify 1");
+//                    notifyQuiz.sendEmptyMessage(1);
+//                }else
+//                {
+//                    Log.i(LOG_TAG, "isQuizNew notify -1");
+//                    notifyQuiz.sendEmptyMessage(-1);
+//                }
                 mDBHelper.close();
                 getFriendsRequest();
             }

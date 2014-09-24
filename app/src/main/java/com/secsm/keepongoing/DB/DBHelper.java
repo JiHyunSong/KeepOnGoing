@@ -205,11 +205,12 @@ public class DBHelper extends SQLiteOpenHelper {
                     if (cursor.isNull(0) || cursor.getShort(0) == 0) {
                         db.close();
                         cursor.close();
+                        Log.i(LOG_TAG, "isQuizNew false in rid : " + rid);
                         return false;
                     } else {
                         db.close();
                         cursor.close();
-//                        Log.i(LOG_TAG, "isQuizNew true");
+                        Log.i(LOG_TAG, "isQuizNew true in rid : " + rid);
                         return true;
                     }
 
