@@ -371,7 +371,7 @@ public class StudyRoomActivity extends BaseActivity {
         sendMsgBtn.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-                messageList.smoothScrollToPosition(messageList.getCount() - 1);
+//                messageList.smoothScrollToPosition(messageList.getCount() - 1);
                 sendMessage();
             }
         });
@@ -832,6 +832,8 @@ public class StudyRoomActivity extends BaseActivity {
             m = new Msg(StudyRoomActivity.this, "나", _text, time, "true", _messageType, _profileImageName, refreshAdaptorHandler);
             insertIntoMsgInSQLite("나", _text, time, "true", _messageType);
             messageHistoryMAdaptor.add(m);
+            messageList.smoothScrollToPosition(messageList.getCount() - 1);
+
         } else if ("".equals(_text)) {
 
         } else {
@@ -839,6 +841,8 @@ public class StudyRoomActivity extends BaseActivity {
             Log.i("MSG", "Name : " + _senderNickname + "Text : " + _text + "Time : " + time);
             insertIntoMsgInSQLite(_senderNickname, _text, time, "false", _messageType);
             messageHistoryMAdaptor.add(m);
+            messageList.smoothScrollToPosition(messageList.getCount() - 1);
+
         }
     }
 
