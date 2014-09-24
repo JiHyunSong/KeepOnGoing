@@ -35,3 +35,4 @@ libs/AndroidBootstrap/*
 .idea/
 .gradle/
 local.properties
+*/deploy/*
