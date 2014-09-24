@@ -1431,6 +1431,7 @@ String goalminusacheive =     (h / 10 == 0 ? "0" +h : h)
      * 리소스 활성화
      */
     private void setAllEnable() {
+        mPager.setEnabled(true);
         tab_progress.setVisibility(View.GONE);
         ahcieve_time.setEnabled(true);
         _current_Day.setEnabled(true);
@@ -1449,6 +1450,7 @@ String goalminusacheive =     (h / 10 == 0 ? "0" +h : h)
      * 리소스 비활성화
      */
     private void setAllDisable() {
+        mPager.setEnabled(false);
         tab_progress.setVisibility(View.VISIBLE);
         ahcieve_time.setEnabled(false);
         _current_Day.setEnabled(false);
@@ -1499,6 +1501,7 @@ String goalminusacheive =     (h / 10 == 0 ? "0" +h : h)
 //        mOne = (Button) findViewById(R.id.one);
 //        mTwo = (Button) findViewById(R.id.two);
 //        mThree = (Button) findViewById(R.id.three);
+
         tabStopwatch = (ImageButton) findViewById(R.id.imgBtn_tab_stopwatch);
         tabFriends = (ImageButton) findViewById(R.id.imgBtn_tab_friends);
         tabRooms = (ImageButton) findViewById(R.id.imgBtn_tab_rooms);
