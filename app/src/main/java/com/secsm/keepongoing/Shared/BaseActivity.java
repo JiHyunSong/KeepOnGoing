@@ -2,31 +2,45 @@ package com.secsm.keepongoing.Shared;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.secsm.keepongoing.LoginActivity;
-import com.secsm.keepongoing.R;
+import com.secsm.keepongoing.GcmIntentService;
 import com.secsm.keepongoing.SnowWiFiMonitor;
 
 public class BaseActivity extends Activity {
     protected SnowWiFiMonitor m_SnowWifiMonitor = null;
     private static String LOG_TAG = "BaseActivity";
     private int previous_state=-5;
+    protected Handler finishHandler;
     protected SnowWiFiMonitor.OnChangeNetworkStatusListener SnowChangedListener;
+    protected ActivityManager am = ActivityManager.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        am.addActivity(this);
+    }
+
+    protected void destroyedFinish(){
+        finishHandler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if(msg.what==0) {
+                    Toast.makeText(getBaseContext(), "중복 로그인으로 인해 애플리케이션을 종료합니다.", Toast.LENGTH_LONG).show();
+                    am.finishAllActivity();
+                }
+            }
+        };
+        GcmIntentService.setFinishHandler(finishHandler);
     }
 
     protected void registerWifiBroadcastReceiver() {
@@ -146,6 +160,7 @@ public class BaseActivity extends Activity {
     protected void onResume() {
         super.onResume();
         this.registerWifiBroadcastReceiver();
+        this.destroyedFinish();
 
         ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo mobile = manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
@@ -169,5 +184,6 @@ public class BaseActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        am.removeActivity(this);
     }
 }

@@ -714,6 +714,10 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
                         //TODO 이부분 왜 이런식으로 구현했는지 모르겠음, 그냥 로그아웃 하면 안되는거
                         if (arGeneral3.get(position).toString().equals("로그아웃")) {
                             logout();
+                        }else if(arGeneral3.get(position).toString().equals("로그인")){
+                            Intent _intent = new Intent(TabActivity.this, LoginActivity.class);
+                            startActivity(_intent);
+                            TabActivity.this.finish();
                         }
                         break;
                 }

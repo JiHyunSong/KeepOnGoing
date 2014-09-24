@@ -44,6 +44,7 @@ public class GcmIntentService extends IntentService {
     private Context mContext;
     private static Handler newQuizHandler;
     private static Handler newChatHandler;
+    private static Handler finishHandler;
 
     public GcmIntentService() {
         super("GcmIntentService");
@@ -55,6 +56,10 @@ public class GcmIntentService extends IntentService {
 
     public static void setNewChatHandler(Handler newChatHandler) {
         GcmIntentService.newChatHandler = newChatHandler;
+    }
+
+    public static void setFinishHandler(Handler fisinhHandler) {
+        GcmIntentService.finishHandler = fisinhHandler;
     }
 
     @Override
@@ -111,6 +116,8 @@ public class GcmIntentService extends IntentService {
 //                    KogPreference.setRegId(GcmIntentService.this, "");
                     KogPreference.setQuizNum(GcmIntentService.this, "");
                     KogPreference.setAutoLogin(GcmIntentService.this, false);
+
+                    finishHandler.sendEmptyMessage(0);
                 }
                 Log.i("GcmIntentService.java | onHandleIntent", "Received: " + extras.toString());
 
