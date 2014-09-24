@@ -772,7 +772,7 @@ public class StudyRoomActivity extends BaseActivity {
         String data = "";
         String msg = messageTxt.getText().toString();
 
-        if (msg != null && !msg.equals("")) {
+        if (msg != null && !msg.trim().equals("")) {
             message = msg;
             try {
                 Log.i(LOG_TAG, "sendMessage() , msg : " + msg);
@@ -782,6 +782,9 @@ public class StudyRoomActivity extends BaseActivity {
                 messageTxt.setText("");
             } catch (Exception ex) {
             }
+        }
+        if(msg.trim().equals("")){
+            messageTxt.setText("");
         }
     }
 
