@@ -2327,6 +2327,8 @@ public class StudyRoomActivity extends BaseActivity {
         _intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         _intent.putExtra("type", type);
         _intent.putExtra("rule", rule);
+        _intent.putExtra("rid", rID);
+        _intent.putExtra("num", num);
         startActivity(_intent);
     }
     //@민수
