@@ -41,14 +41,20 @@ public class GcmIntentService extends IntentService {
     private static final int CHAT_MESSAGE_CHAT = 2;
     private static final int CHAT_MESSAGE_IMAGE = 3;
     private DBHelper mDBHelper;
+    private Context mContext;
     private static Handler newQuizHandler;
+    private static Handler newChatHandler;
 
     public GcmIntentService() {
         super("GcmIntentService");
     }
 
     public static void setNewQuizHandler(Handler newQuizHandler1) {
-        newQuizHandler = newQuizHandler1;
+        GcmIntentService.newQuizHandler = newQuizHandler1;
+    }
+
+    public static void setNewChatHandler(Handler newChatHandler) {
+        GcmIntentService.newChatHandler = newChatHandler;
     }
 
     @Override
@@ -58,7 +64,7 @@ public class GcmIntentService extends IntentService {
         // The getMessageType() intent parameter must be the intent you received
         // in your BroadcastReceiver.
         String messageType = gcm.getMessageType(intent);
-        mDBHelper = new DBHelper(this);
+        mContext = this;
         if (!extras.isEmpty()) { // has effect of unparcelling Bundle
 
 //          * Filter messages based on message type. Since it is likely that GCM
@@ -116,18 +122,23 @@ public class GcmIntentService extends IntentService {
 
     private void notifyNewQuiz(Intent intent) {
         JSONObject intentMessage;
-
+        mDBHelper = new DBHelper(mContext);
         try {
             intentMessage = new JSONObject(intent.getExtras().getString("message"));
             Message msg = newQuizHandler.obtainMessage();
             Bundle quizBundle = new Bundle();
-            quizBundle.putString("rid", intentMessage.getString("rid"));
-            quizBundle.putString("num", intentMessage.getString("num"));
+            String rRid = intentMessage.getString("rid");
+            String rNum = intentMessage.getString("num");
+            quizBundle.putString("rid", rRid);
+            quizBundle.putString("num", rNum);
+            mDBHelper.UpdateQuizNew(rRid, rNum, true);
+            mDBHelper.close();
             msg.setData(quizBundle);
             newQuizHandler.sendMessage(msg);
 
-        }catch (JSONException e)
+        }catch (Exception e)
         {
+            mDBHelper.close();
             e.printStackTrace();
         }
 
@@ -204,6 +215,13 @@ public class GcmIntentService extends IntentService {
             messageType = intentMessage.getString("messageType");
 
 
+            mDBHelper = new DBHelper(mContext);
+            mDBHelper.UpdateChatNew(rid, true);
+            if(newChatHandler != null)
+            {
+                newChatHandler.sendEmptyMessage(Integer.parseInt(rid));
+            }
+            mDBHelper.close();
 
             thisRoom = findRoomById(rid);
 
@@ -264,6 +282,7 @@ public class GcmIntentService extends IntentService {
 
     private void insertIntoMsgInSQLite(String roomID, String _senderID, String _senderText, String _time, String _me, String _messageType) {
         SQLiteDatabase db;
+        mDBHelper = new DBHelper(mContext);
         db = mDBHelper.getWritableDatabase();
         Log.i(LOG_TAG, "insert msg");
         Log.i("day", "nickname : " + _senderID);
@@ -280,6 +299,9 @@ public class GcmIntentService extends IntentService {
         // TODO : check _time
         Log.i(LOG_TAG, "execSQL : " + query);
         db.execSQL(query);
+
+        mDBHelper.UpdateChatNew(roomID, true);
+
         db.close();
         mDBHelper.close();
     }
@@ -352,7 +374,6 @@ public class GcmIntentService extends IntentService {
                             //////// real action ////////
                             mRooms = new ArrayList<RoomNaming>();
                             JSONObject rObj;
-
                             //{"message":[{"targetTime":null,"image":"http:\/\/210.118.74.195:8080\/KOG_Server_Rest\/upload\/UserImage\/default.png","nickname":"jonghean"}],"status":"200"}
                             Log.i(LOG_TAG, "room size : " + rMessage.length());
                             for (int i = 0; i < rMessage.length(); i++) {
@@ -368,7 +389,8 @@ public class GcmIntentService extends IntentService {
                                             URLDecoder.decode(rObj.getString("durationTime"), "UTF-8"),
                                             URLDecoder.decode(rObj.getString("showupTime"), "UTF-8"),
                                             URLDecoder.decode(rObj.getString("meetDays"), "UTF-8"),
-                                            URLDecoder.decode(rObj.getString("num"), "UTF-8")
+                                            URLDecoder.decode(rObj.getString("num"), "UTF-8"),
+                                            false
                                     ));
                                     Log.i(LOG_TAG, "num" + URLDecoder.decode(rObj.getString("num"), "UTF-8"));
                                 }

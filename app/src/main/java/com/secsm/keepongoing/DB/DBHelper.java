@@ -26,7 +26,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String TABLE_IMAGE = "Image_table";
 
     public DBHelper(Context context) {
-        super(context, "KogDB.db", null, 1);
+        super(context, "KogDB.db", null, 2);
         /* (context,dbname,null,dbversion) */
 
     }
@@ -78,6 +78,18 @@ public class DBHelper extends SQLiteOpenHelper {
                 "data BLOB," +
                 "time DATETIME DEFAULT CURRENT_TIMESTAMP" +
                 ");");
+
+        String qCreate_Chat_New = "CREATE TABLE chat_new ("+
+                "rid varchar(10) PRIMARY KEY, " +
+                "isNew BOOLEAN default FALSE);";
+        db.execSQL(qCreate_Chat_New);
+
+        String qCreate_Quiz_New = "CREATE TABLE quiz_new ("+
+                "rid varchar(10) PRIMARY KEY, " +
+                "num varchar(10), " +
+                "isNew BOOLEAN default FALSE);";
+        db.execSQL(qCreate_Quiz_New);
+
     }
 
     @Override
@@ -90,7 +102,166 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS SubjectRoom_l;");
         db.execSQL("DROP TABLE IF EXISTS Chat;");
         db.execSQL("DROP TABLE IF EXISTS Image_table;");
+        db.execSQL("DROP TABLE IF EXISTS chat_new;");
+        db.execSQL("DROP TABLE IF EXISTS quiz_new;");
         onCreate(db);
+    }
+
+    public boolean isChatNew(String rid)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT isNew FROM chat_new WHERE rid='"+rid+"';", null);
+
+        try{
+            if(cursor.getCount() > 0)
+            {
+                if(cursor.moveToFirst())
+                {
+                    if (cursor.isNull(0) || cursor.getShort(0) == 0) {
+                        db.close();
+                        cursor.close();
+                        return false;
+                    } else {
+                        db.close();
+                        cursor.close();
+                        return true;
+                    }
+
+                }
+            }
+        }catch (Exception e)
+        {
+            db.close();
+            cursor.close();
+            e.printStackTrace();
+        }
+
+        db.close();
+        cursor.close();
+        return false;
+    }
+
+    public void UpdateChatNew(String rid, boolean isNew)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT isNew FROM chat_new WHERE rid='"+rid+"';", null);
+        int insertIsNew = (isNew ? 1 : 0 );
+        try{
+            if(cursor.getCount() > 0) {
+                // update row
+                db.execSQL("UPDATE chat_new SET isNew=" + insertIsNew + " WHERE rid='"+rid+"';");
+            }else
+            {
+                // insert row
+                db.execSQL("INSERT INTO chat_new (rid, isNew) VALUES (" +
+                        "'" + rid + "'," +
+                        "" + insertIsNew + "" +
+                        "); ㅂ");
+            }
+        }
+        catch (Exception e)
+        {
+            db.close();
+            cursor.close();
+            e.printStackTrace();
+        }
+        db.close();
+        cursor.close();
+    }
+
+    public boolean isQuizNew(String rid)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT isNew FROM quiz_new WHERE rid='"+rid+"';", null);
+
+        try{
+            if(cursor.getCount() > 0)
+            {
+                if(cursor.moveToFirst())
+                {
+                    Log.i(LOG_TAG, "isQuizNew cursor.isNull(0) : " + cursor.isNull(0));
+                    Log.i(LOG_TAG, "isQuizNew cursor.getShort(0) : " + cursor.getShort(0));
+                    if (cursor.isNull(0) || cursor.getShort(0) == 0) {
+                        db.close();
+                        cursor.close();
+                        return false;
+                    } else {
+                        db.close();
+                        cursor.close();
+                        Log.i(LOG_TAG, "isQuizNew true");
+                        return true;
+                    }
+
+                }
+            }
+        }catch (Exception e)
+        {
+            db.close();
+            cursor.close();
+            e.printStackTrace();
+        }
+
+        db.close();
+        cursor.close();
+        return false;
+    }
+
+    public String getQuizNew(String rid)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT num FROM quiz_new WHERE rid='"+rid+"';", null);
+
+        try{
+            if(cursor.getCount() > 0)
+            {
+                if(cursor.moveToFirst())
+                {
+                    db.close();
+                    cursor.close();
+                    return cursor.getString(0);
+                }
+            }
+        }catch (Exception e)
+        {
+            db.close();
+            cursor.close();
+            e.printStackTrace();
+        }
+
+        db.close();
+        cursor.close();
+        return null;
+    }
+
+    public void UpdateQuizNew(String rid, String num, boolean isNew)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT isNew FROM quiz_new WHERE rid='"+rid+"';", null);
+        int insertIsNew = (isNew ? 1 : 0 );
+        try{
+            if(cursor.getCount() > 0) {
+                // update row
+                db.execSQL("UPDATE quiz_new SET num='" +num +"',isNew=" + insertIsNew + " WHERE rid='"+rid+"';");
+            }else
+            {
+                // insert row
+                db.execSQL("INSERT INTO quiz_new (rid, num, isNew) VALUES (" +
+                        "'" + rid + "'," +
+                        "'" + num + "'," +
+                        "" + insertIsNew + "" +
+                        ");");
+            }
+        }
+        catch (Exception e)
+        {
+            db.close();
+            cursor.close();
+            e.printStackTrace();
+        }
+        db.close();
+        cursor.close();
     }
 
     public boolean isImageExist(String key){
@@ -100,10 +271,14 @@ public class DBHelper extends SQLiteOpenHelper {
 
         try {
             if (cursor.getCount() > 0) {
+                db.close();
+                cursor.close();
                 return true;
             }
         }catch (Exception e)
         {
+            db.close();
+            cursor.close();
             e.printStackTrace();
         }
 
@@ -134,6 +309,8 @@ public class DBHelper extends SQLiteOpenHelper {
             }
         }catch (Exception e)
         {
+            db.close();
+            cursor.close();
             e.printStackTrace();
         }
 
@@ -145,12 +322,12 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public void insertImage(String name, Bitmap bitmapData)
     {
+        SQLiteDatabase db = this.getReadableDatabase();
         try {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             bitmapData.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] data = stream.toByteArray();
 
-            SQLiteDatabase db = this.getReadableDatabase();
 //            String query = "INSERT INTO " + TABLE_IMAGE +
 //                    "(name, data) " +
 //                    "VALUES " +
@@ -170,6 +347,7 @@ public class DBHelper extends SQLiteOpenHelper {
             Log.i(LOG_TAG, "insertImage + " + name + " done ");
         }catch (Exception e)
         {
+            db.close();
             e.printStackTrace();
         }
     }
@@ -200,6 +378,8 @@ public class DBHelper extends SQLiteOpenHelper {
             }
         }catch (Exception e)
         {
+            db.close();
+            cursor.close();
             e.printStackTrace();
         }
 

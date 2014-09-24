@@ -102,6 +102,7 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
 
     private DBHelper mDBHelper;
     private ListView roomList, friendList, settingList;
+    RoomsArrayAdapters roomsArrayAdapter;
 
     private ImageButton tabStopwatch, tabFriends, tabRooms, tabSettings;
     private RelativeLayout layoutStopwatch, layoutFriends, layoutRooms, layoutSettings;
@@ -171,7 +172,7 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
 
             mRooms = new ArrayList<RoomNaming>();
             for (int i = 0; i < 3; i++) {
-                mRooms.add(new RoomNaming("subjectroom", "2" + i, "meet 6days", "KOG STUDY", "2", null, null, null, null, null));
+                mRooms.add(new RoomNaming("subjectroom", "2" + i, "meet 6days", "KOG STUDY", "2", null, null, null, null, null, true));
             }
 
             RoomsArrayAdapters roomsArrayAdapter;
@@ -797,7 +798,6 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
              Preference.getInt(TabActivity.this, "Resumetimer_sec");
 */
         //      Toast.makeText(getBaseContext(), "tiger", Toast.LENGTH_SHORT).show();
-
         if (resumehelp) {
 
             Log.i(LOG_TAG, "mPager.getCurrentItem() : " + mPager.getCurrentItem());
@@ -875,6 +875,7 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
                     tabFriends.setBackgroundResource(R.drawable.tab_friends_icon_p);
                     break;
                 case 2:
+                    GcmIntentService.setNewChatHandler(notifyNewChat);
                     if (actionBarFirstBtn != null && actionBarSecondBtn != null) {
                         setInvisibleActionBar();
                         actionBarSecondBtn.setIcon(R.drawable.ic_action_new);
@@ -1166,12 +1167,33 @@ String goalminusacheive =     (h / 10 == 0 ? "0" +h : h)
         }
     }
 
+    Handler notifyNewChat = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            try {
+                if(mRooms!=null) {
+                    for (int i = 0; i < mRooms.size(); i++) {
+                        if (mRooms.get(i).getRid().equals(""+msg.what)) {
+                            mRooms.get(i).setIsNew(true);
+                            Log.i(LOG_TAG, "notifyNewChat : " + msg.what);
+                            roomsArrayAdapter.refresh();
+                        }
+                    }
+                }
+            }catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    };
     Handler getStudyRoomsRequestHandler = new Handler() {
 
         @Override
         public void handleMessage(Message msg) {
             try {
                 Bundle b = msg.getData();
+                DBHelper mDBhelper = new DBHelper(getBaseContext());
                 JSONObject result = new JSONObject(b.getString("JSONData"));
                 int statusCode = Integer.parseInt(result.getString("status"));
                 if (statusCode == 200) {
@@ -1193,13 +1215,14 @@ String goalminusacheive =     (h / 10 == 0 ? "0" +h : h)
                                     URLDecoder.decode(rObj.getString("durationTime"), "UTF-8"),
                                     URLDecoder.decode(rObj.getString("showupTime"), "UTF-8"),
                                     URLDecoder.decode(rObj.getString("meetDays"), "UTF-8"),
-                                    URLDecoder.decode(rObj.getString("num"), "UTF-8")
+                                    URLDecoder.decode(rObj.getString("num"), "UTF-8"),
+                                    mDBhelper.isChatNew(rObj.getString("rid"))
                             ));
                             Log.i(LOG_TAG, "num" + URLDecoder.decode(rObj.getString("num"), "UTF-8"));
                         }
                     }
 
-                    RoomsArrayAdapters roomsArrayAdapter;
+                    mDBhelper.close();
                     roomsArrayAdapter = new RoomsArrayAdapters(TabActivity.this, R.layout.room_list_item, mRooms);
                     roomList.setAdapter(roomsArrayAdapter);
 
@@ -1516,6 +1539,7 @@ String goalminusacheive =     (h / 10 == 0 ? "0" +h : h)
 
                 } else if (position == 2) {
                     Log.i(LOG_TAG, "view Pager Index : 2 ");
+                    GcmIntentService.setNewChatHandler(notifyNewChat);
                     pagerIndex = position;
                     if (actionBarFirstBtn != null && actionBarSecondBtn != null) {
                         setInvisibleActionBar();

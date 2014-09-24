@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.com.lanace.connecter.CallbackResponse;
 import com.com.lanace.connecter.HttpAPIs;
+import com.secsm.keepongoing.DB.DBHelper;
 import com.secsm.keepongoing.R;
 import com.secsm.keepongoing.Shared.BaseActivity;
 import com.secsm.keepongoing.Shared.KogPreference;
@@ -182,6 +183,8 @@ return total;
 
     protected void onResume() {
         super.onResume();
+        DBHelper mDBhelper = new DBHelper(getBaseContext());
+        mDBhelper.UpdateQuizNew(KogPreference.getRid(getBaseContext()), KogPreference.getQuizNum(getBaseContext()), false);
         settingListView();
     }
 

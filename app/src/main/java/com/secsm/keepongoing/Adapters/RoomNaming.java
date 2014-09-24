@@ -14,8 +14,9 @@ public class RoomNaming {
     String showup_time;
     String meet_days;
     String quiz_num;
+    Boolean isNew;
 
-    public RoomNaming(String type, String rid, String rule, String roomname, String max_holiday_count, String start_time, String duration_time, String showup_time, String meet_days, String quiz_num) {
+    public RoomNaming(String type, String rid, String rule, String roomname, String max_holiday_count, String start_time, String duration_time, String showup_time, String meet_days, String quiz_num, boolean isNew) {
         this.type = type;
         this.rid = rid;
         this.rule = rule;
@@ -30,6 +31,7 @@ public class RoomNaming {
         this.showup_time = showup_time;
         this.meet_days = meet_days;
         this.quiz_num = quiz_num;
+        this.isNew = isNew;
     }
 
     public String getQuiz_num() {return quiz_num;}
@@ -48,6 +50,14 @@ public class RoomNaming {
     public String getShowup_time() {
 
         return showup_time;
+    }
+
+    public Boolean getIsNew() {
+        return isNew;
+    }
+
+    public void setIsNew(Boolean isNew) {
+        this.isNew = isNew;
     }
 
     public String getDuration_time() {

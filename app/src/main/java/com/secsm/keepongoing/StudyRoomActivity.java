@@ -1544,6 +1544,16 @@ public class StudyRoomActivity extends BaseActivity {
             if (soc_writer == null) {
                 Log.i(LOG_TAG, "soc=null");
                 disconnectConnection(socketConnectionHandler);
+                mDBHelper = new DBHelper(getBaseContext());
+                mDBHelper.UpdateChatNew(KogPreference.getRid(getBaseContext()), false);
+                if(mDBHelper.isQuizNew(KogPreference.getRid(getBaseContext())))
+                {
+                    notifyQuiz.sendEmptyMessage(1);
+                }else
+                {
+                    notifyQuiz.sendEmptyMessage(-1);
+                }
+                mDBHelper.close();
                 getFriendsRequest();
             }
         }else{
