@@ -1954,7 +1954,7 @@ public class StudyRoomActivity extends BaseActivity {
                 client = new Socket(KogPreference.CHAT_IP, KogPreference.CHAT_PORT);
                 bw = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
 
-                bw.write(getInitialMsg());
+                bw.write(Encrypt.encodeIfNeed(getInitialMsg()));
                 bw.newLine();
                 bw.flush();
             } catch (Exception e) {

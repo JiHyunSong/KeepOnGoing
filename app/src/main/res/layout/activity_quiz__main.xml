@@ -67,26 +67,25 @@
                 <RelativeLayout
                     android:id="@+id/quiz_rl"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    >
 
                     <LinearLayout
                         android:id="@+id/problemandsubject"
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content">
-
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
                         <TextView
                             android:id="@+id/ques"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="제목"
+                            android:text="과목"
                             android:textSize="20sp" />
 
                         <Spinner
                             android:id="@+id/spinner1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginRight="20dp"
                             android:entries="@array/subject"
                             android:prompt="@string/subject_prompt" />
 
@@ -94,18 +93,16 @@
                             android:id="@+id/subject"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginRight="20dp"
+                            android:layout_marginLeft="5dp"
                             android:layout_toLeftOf="@id/spinner1"
-                            android:text="과목"
+                            android:text="제목"
                             android:textSize="20sp" />
 
                         <EditText
                             android:id="@+id/question_title"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_toLeftOf="@id/subject"
-                            android:layout_toRightOf="@id/ques" />
-
+                            />
                     </LinearLayout>
 
                     <com.beardedhen.androidbootstrap.BootstrapEditText
