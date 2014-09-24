@@ -27,7 +27,7 @@
             <LinearLayout
                 android:id="@+id/buttongroup"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:layout_marginTop="10dp"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal">
@@ -37,6 +37,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="30dp"
+
                     android:text="객관식"
                     bootstrapbutton:bb_roundedCorners="true" />
 
@@ -68,17 +69,15 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content">
 
-                    <RelativeLayout
+                    <LinearLayout
                         android:id="@+id/problemandsubject"
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="bottom">
+                        android:layout_height="wrap_content">
 
                         <TextView
                             android:id="@+id/ques"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
                             android:text="제목"
                             android:textSize="20sp" />
 
@@ -86,7 +85,6 @@
                             android:id="@+id/spinner1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
                             android:layout_alignParentRight="true"
                             android:layout_marginRight="20dp"
                             android:entries="@array/subject"
@@ -96,7 +94,6 @@
                             android:id="@+id/subject"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
                             android:layout_marginRight="20dp"
                             android:layout_toLeftOf="@id/spinner1"
                             android:text="과목"
@@ -109,7 +106,7 @@
                             android:layout_toLeftOf="@id/subject"
                             android:layout_toRightOf="@id/ques" />
 
-                    </RelativeLayout>
+                    </LinearLayout>
 
                     <com.beardedhen.androidbootstrap.BootstrapEditText
                         android:id="@+id/txtOne"
@@ -119,8 +116,8 @@
                         android:layout_margin="10dp"
                         android:gravity="top|left"
                         android:hint="문제를 입력하세요."
-                        android:lines="10"
-                        android:maxLines="10"
+                        android:lines="9"
+                        android:maxLines="9"
                         android:scrollbars="vertical"
                         bootstrapbutton:be_roundedCorners="true"
                         bootstrapbutton:be_state="info" />

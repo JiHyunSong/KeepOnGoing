@@ -1,10 +1,5 @@
 package com.beardedhen.androidbootstrap;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
@@ -18,7 +13,10 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.beardedhen.androidbootstrap.R;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
  
 
 public class BootstrapButton extends FrameLayout {
@@ -131,8 +129,8 @@ public class BootstrapButton extends FrameLayout {
 		float fontSize = 14.0f;
 		float scale = getResources().getDisplayMetrics().density; //for padding
 		String size = "default";
-		int paddingA = (int) (10 *scale + 0.5f);
-		int paddingB = (int) (15 *scale + 0.5f);
+		int paddingA = (int) (5 *scale + 0.5f);
+		int paddingB = (int) (7.5 *scale + 0.5f);
 		
 
 		//attribute values

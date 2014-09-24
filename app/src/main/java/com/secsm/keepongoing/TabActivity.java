@@ -813,10 +813,14 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
                     );
                     goal_hour=contact3.gethour();
                     goal_minute=contact3.getminute();
+                    Log.e("errorcheck","erroercheck : "+goal_hour+goal_minute);
 
                     if (Preference.getString(TabActivity.this, "Resumetimer") == "") {
                         ahcieve_time.setText("00:00");
                         ahcieve_time_sec.setText(".00");
+                        achieve_Hours=0;
+                        achieve_Mins=0;
+                        achieve_Seconds=0;
                     }
                     else{
                         ahcieve_time.setText(Preference.getString(TabActivity.this, "Resumetimer"));
@@ -826,10 +830,9 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
                         ahcieve_time.setText(timediff(TabActivity.this));
                         ahcieve_time_sec.setText("." + (achieve_Seconds / 10 == 0 ? "0" + achieve_Seconds : achieve_Seconds));
                         */
-                        _current_Time.setText(minusgoalachieve());
-                        currenttime2_sec.setText("." + (s / 10 == 0 ? "0" + s : s));
                     }
-
+                    _current_Time.setText(minusgoalachieve());
+                    currenttime2_sec.setText("." + (s / 10 == 0 ? "0" + s : s));
                     Preference.setString(TabActivity.this, "achieve_time", ahcieve_time.getText().toString()+":"+ahcieve_time_sec.getText().toString().substring(1,3));
 
 
