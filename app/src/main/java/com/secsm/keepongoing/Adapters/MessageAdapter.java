@@ -45,10 +45,11 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
 
 
             viewHolder.tt = (TextView) v.findViewById(R.id.msg_topText);
-            viewHolder.wv = (WebView) v.findViewById(R.id.msg_bottomTextWebView);
+//            viewHolder.wv = (WebView) v.findViewById(R.id.msg_bottomTextWebView);
+            viewHolder.msgTv = (TextView) v.findViewById(R.id.msg_bottomTextTextView);
             viewHolder.time = (TextView) v.findViewById(R.id.msg_time);
             viewHolder.iv = (ImageView) v.findViewById(R.id.msg_person_photo);
-            viewHolder.wv_rl = (RelativeLayout.LayoutParams) viewHolder.wv.getLayoutParams();
+            viewHolder.wv_rl = (RelativeLayout.LayoutParams) viewHolder.msgTv.getLayoutParams();
             viewHolder.wv_rl.addRule(RelativeLayout.RIGHT_OF, R.id.msg_person_photo);
             viewHolder.wv_rl.width = RelativeLayout.LayoutParams.MATCH_PARENT;
             viewHolder.wv_rl.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
@@ -57,7 +58,7 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
 
 
             // set invisible
-            viewHolder.wv.setVisibility(View.GONE);
+            viewHolder.msgTv.setVisibility(View.GONE);
             viewHolder.p_iv.setVisibility(View.GONE);
 
             v.setTag(viewHolder);
@@ -77,25 +78,26 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
         Msg m = items.get(position);
         if (m != null) {
             if (m.getMessageType().equals(KogPreference.MESSAGE_TYPE_TEXT)) {
-                viewHolder.wv.setVisibility(View.GONE);
+                viewHolder.msgTv.setVisibility(View.GONE);
                 viewHolder.p_iv.setVisibility(View.GONE);
-                viewHolder.wv.setVisibility(View.VISIBLE);
+                viewHolder.msgTv.setVisibility(View.VISIBLE);
 
-                if (viewHolder.tt != null && viewHolder.wv != null && viewHolder.time != null && viewHolder.iv != null) {
+                if (viewHolder.tt != null && viewHolder.msgTv != null && viewHolder.time != null && viewHolder.iv != null) {
                     if ("나 : ".equals(m.getName())) {
                         viewHolder.tt.setText(m.getTime());
-                        viewHolder.wv.setBackgroundColor(0); // 투명처리
-                        String htmlForm1 = "<metahttp-equiv='Content-Type' content='text'/html; charset = utf-8 /> " +
-                                "<html>" + "<body text='#8d5e42'> ";
-                        String htmlFormText = m.getText();
-                        String htmlForm2 = "</body></html>";
+//                        viewHolder.wv.setBackgroundColor(0); // 투명처리
+//                        String htmlForm1 = "<metahttp-equiv='Content-Type' content='text'/html; charset = utf-8 /> " +
+//                                "<html>" + "<body text='#8d5e42'> ";
+//                        String htmlFormText = m.getText();
+//                        String htmlForm2 = "</body></html>";
 
-                        viewHolder.wv.loadUrl("about:blank");
-                        viewHolder.wv.invalidate();
-                        // TODO : check scrolling
+//                        viewHolder.wv.loadUrl("about:blank");
+//                        viewHolder.wv.invalidate();
+//                        // TODO : check scrolling
+//
+//                        viewHolder.wv.loadDataWithBaseURL("file:///android_asset/", htmlForm1 + htmlFormText + htmlForm2, "text/html", "utf-8", "file:///android_assest/");
 
-                        viewHolder.wv.loadDataWithBaseURL("file:///android_asset/", htmlForm1 + htmlFormText + htmlForm2, "text/html", "utf-8", "file:///android_assest/");
-
+                        viewHolder.msgTv.setText(m.getText());
                         viewHolder.time.setText(m.getName());
 
                         String fileName = m.getFileName();
@@ -113,15 +115,17 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
 
                     } else {
                         viewHolder.tt.setText(m.getName());
-                        viewHolder.wv.setBackgroundColor(0); // 투명처리
-                        String htmlForm1 = "<metahttp-equiv='Content-Type' content='text'/html; charset = utf-8 /> " +
-                                "<html>" + "<body> ";
-                        String htmlFormText = m.getText();
-                        String htmlForm2 = "</body></html>";
+//                        viewHolder.wv.setBackgroundColor(0); // 투명처리
+//                        String htmlForm1 = "<metahttp-equiv='Content-Type' content='text'/html; charset = utf-8 /> " +
+//                                "<html>" + "<body> ";
+//                        String htmlFormText = m.getText();
+//                        String htmlForm2 = "</body></html>";
+//
+//                        viewHolder.wv.loadUrl("about:blank");
+//                        viewHolder.wv.invalidate();
+//                        viewHolder.wv.loadDataWithBaseURL("file:///android_asset/", htmlForm1 + htmlFormText + htmlForm2, "text/html", "utf-8", "file:///android_assest/");
 
-                        viewHolder.wv.loadUrl("about:blank");
-                        viewHolder.wv.invalidate();
-                        viewHolder.wv.loadDataWithBaseURL("file:///android_asset/", htmlForm1 + htmlFormText + htmlForm2, "text/html", "utf-8", "file:///android_assest/");
+                        viewHolder.msgTv.setText(m.getText());
 
                         viewHolder.time.setText(m.getTime());
 
@@ -145,26 +149,28 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
                 }
             } else if (m.getMessageType().equals(KogPreference.MESSAGE_TYPE_IMAGE))
             {
-                viewHolder.wv.setVisibility(View.GONE);
+//                viewHolder.wv.setVisibility(View.GONE);
+                viewHolder.msgTv.setVisibility(View.GONE);
                 viewHolder.p_iv.setVisibility(View.GONE);
                 viewHolder.p_iv.setVisibility(View.VISIBLE);
 
                 if (viewHolder.tt != null && viewHolder.p_iv != null && viewHolder.time != null && viewHolder.iv != null) {
                     if ("나 : ".equals(m.getName())) {
                         viewHolder.tt.setText(m.getTime());
-                        viewHolder.wv.setBackgroundColor(0); // 투명처리
-                        String htmlForm1 = "<metahttp-equiv='Content-Type' content='text'/html; charset = utf-8 /> " +
-                                "<html>" + "<body>"; //+ "<body bgcolor='#ffc0cb'> ";
-                        String htmlFormText = "";
-                        String htmlForm2 = "</body></html>";
+//                        viewHolder.wv.setBackgroundColor(0); // 투명처리
+//                        String htmlForm1 = "<metahttp-equiv='Content-Type' content='text'/html; charset = utf-8 /> " +
+//                                "<html>" + "<body>"; //+ "<body bgcolor='#ffc0cb'> ";
+//                        String htmlFormText = "";
+//                        String htmlForm2 = "</body></html>";
+//
+//                        viewHolder.wv.loadUrl("about:blank");
+//                        viewHolder.wv.invalidate();
+//                        // TODO : check scrolling
+//
+//                        viewHolder.wv.loadDataWithBaseURL("file:///android_asset/", htmlForm1 + htmlFormText + htmlForm2, "text/html", "utf-8", "file:///android_assest/");
 
-                        viewHolder.wv.loadUrl("about:blank");
-                        viewHolder.wv.invalidate();
-                        // TODO : check scrolling
 
-                        viewHolder.wv.loadDataWithBaseURL("file:///android_asset/", htmlForm1 + htmlFormText + htmlForm2, "text/html", "utf-8", "file:///android_assest/");
-
-
+                        viewHolder.msgTv.setText("");
                         viewHolder.p_iv.setImageResource(R.drawable.no_image);
 
                         viewHolder.p_iv.setImageBitmap(m.getText_image());
@@ -234,7 +240,8 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
         public Bitmap friend_profile = null;
         public String friend_nickname = null;
         public TextView tt = null;
-        public WebView wv = null;
+//        public WebView wv = null;
+        public TextView msgTv = null;
         public RelativeLayout.LayoutParams wv_rl = null;
         public TextView time = null;
         public ImageView iv = null;

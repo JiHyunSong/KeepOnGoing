@@ -44,12 +44,6 @@ public class BaseActivity extends Activity {
     }
 
     protected void registerWifiBroadcastReceiver() {
-        m_SnowWifiMonitor = new SnowWiFiMonitor(this);
-        m_SnowWifiMonitor.setOnChangeNetworkStatusListener(SnowChangedListener);
-        Log.i(LOG_TAG, "register m_SnowWifiMonitor in baseActivity");
-        registerReceiver(m_SnowWifiMonitor, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-        registerReceiver(m_SnowWifiMonitor, new IntentFilter(WifiManager.NETWORK_STATE_CHANGED_ACTION));
-        registerReceiver(m_SnowWifiMonitor, new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION));
 
         SnowChangedListener = new SnowWiFiMonitor.OnChangeNetworkStatusListener()
         {
@@ -154,6 +148,13 @@ public class BaseActivity extends Activity {
                 }
             }
         };
+        m_SnowWifiMonitor = new SnowWiFiMonitor(this);
+        m_SnowWifiMonitor.setOnChangeNetworkStatusListener(SnowChangedListener);
+        Log.i(LOG_TAG, "register m_SnowWifiMonitor in baseActivity");
+        registerReceiver(m_SnowWifiMonitor, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        registerReceiver(m_SnowWifiMonitor, new IntentFilter(WifiManager.NETWORK_STATE_CHANGED_ACTION));
+        registerReceiver(m_SnowWifiMonitor, new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION));
+
     }
 
     @Override
@@ -178,6 +179,10 @@ public class BaseActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
+        unregisterWifiReceiver();
+    }
+
+    protected void unregisterWifiReceiver() {
         try {
             unregisterReceiver(m_SnowWifiMonitor);
         }catch (Exception e)

@@ -374,6 +374,7 @@ public class StudyRoomActivity extends BaseActivity {
 
             public void onClick(View v) {
 //                messageList.smoothScrollToPosition(messageList.getCount() - 1);
+                Log.i(LOG_TAG,"socketEnable : " + socketEnable);
                 if(socketEnable) {
                     sendMessage();
                 }
@@ -601,6 +602,12 @@ public class StudyRoomActivity extends BaseActivity {
         registerReceiver(m_SnowWifiMonitor, new IntentFilter(WifiManager.NETWORK_STATE_CHANGED_ACTION));
         registerReceiver(m_SnowWifiMonitor, new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION));
         Log.i(LOG_TAG, "register m_SnowWifiMonitor done");
+    }
+
+    @Override
+    protected void unregisterWifiReceiver() {
+//        super.unregisterWifiReceiver();
+        unregisterReceiver(m_SnowWifiMonitor);
     }
 
     private void setInvisibleAddtionalPage() {
@@ -1588,15 +1595,6 @@ public class StudyRoomActivity extends BaseActivity {
                 disconnectConnection(socketConnectionHandler);
                 mDBHelper = new DBHelper(getBaseContext());
                 mDBHelper.UpdateChatNew(KogPreference.getRid(getBaseContext()), false);
-//                if(mDBHelper.isQuizNew(KogPreference.getRid(getBaseContext())))
-//                {
-//                    Log.i(LOG_TAG, "isQuizNew notify 1");
-//                    notifyQuiz.sendEmptyMessage(1);
-//                }else
-//                {
-//                    Log.i(LOG_TAG, "isQuizNew notify -1");
-//                    notifyQuiz.sendEmptyMessage(-1);
-//                }
                 mDBHelper.close();
                 getFriendsRequest();
             }
@@ -1635,7 +1633,8 @@ public class StudyRoomActivity extends BaseActivity {
         close();
     }
 
-    boolean socketEnable;
+    static boolean socketEnable;
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -1911,6 +1910,16 @@ public class StudyRoomActivity extends BaseActivity {
         }
     };
 
+    Handler errorBackHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            if(msg.what==1)
+            {
+                Toast.makeText(getBaseContext(), "통신 장애로 인하여 돌아갑니다.", Toast.LENGTH_SHORT).show();
+                GoBack();
+            }
+        }
+    };
+
     public void sendMsgToSvr(String msg, String messageType) {
         try {
             JSONObject jObj = new JSONObject();
@@ -1969,7 +1978,7 @@ public class StudyRoomActivity extends BaseActivity {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-
+                errorBackHandler.sendEmptyMessage(1);
                 if (KogPreference.DEBUG_MODE) {
                     Log.i(LOG_TAG, "소켓 에러!\n" + e.toString());
 //                    Toast.makeText(getBaseContext(), "소켓에러!\n" + e.toString() , Toast.LENGTH_SHORT).show();
@@ -1986,10 +1995,8 @@ public class StudyRoomActivity extends BaseActivity {
                 br = null;
                 soc_writer.executeClose();
             } catch (Exception e) {
+                errorBackHandler.sendEmptyMessage(1);
                 Log.i(LOG_TAG, "소켓 에러!\n" + e.toString());
-                if (KogPreference.DEBUG_MODE) {
-                    Toast.makeText(getBaseContext(), "소켓에러!\n" + e.toString(), Toast.LENGTH_SHORT).show();
-                }
             }
         }
     }
@@ -2014,6 +2021,7 @@ public class StudyRoomActivity extends BaseActivity {
                 bw.flush();
             } catch (Exception e) {
                 e.printStackTrace();
+                errorBackHandler.sendEmptyMessage(1);
 
                 if (KogPreference.DEBUG_MODE) {
                     Log.e(LOG_TAG, "소켓 에러!\n" + e.toString());
@@ -2055,6 +2063,7 @@ public class StudyRoomActivity extends BaseActivity {
                 client.close();
                 client = null;
             } catch (Exception e) {
+                errorBackHandler.sendEmptyMessage(1);
                 Log.i(LOG_TAG, "소켓 에러!\n" + e.toString());
             }
         }
@@ -2129,6 +2138,7 @@ public class StudyRoomActivity extends BaseActivity {
                     soc_writer = new SocketAsyncTask_Writer();
                     soc_writer.execute();
                     socketEnable = true;
+                    Log.i(LOG_TAG, "socketEnable : " + socketEnable);
                 }
                 else {
                     Log.i(LOG_TAG, "Disconnection failed");

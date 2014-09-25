@@ -35,8 +35,8 @@
             android:scaleType="fitCenter"
             android:src="@drawable/profile_default" />
 
-        <WebView
-            android:id="@+id/msg_bottomTextWebView"
+        <TextView
+            android:id="@+id/msg_bottomTextTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"
