@@ -374,7 +374,9 @@ public class StudyRoomActivity extends BaseActivity {
 
             public void onClick(View v) {
 //                messageList.smoothScrollToPosition(messageList.getCount() - 1);
-                sendMessage();
+                if(socketEnable) {
+                    sendMessage();
+                }
             }
         });
 
@@ -1633,10 +1635,11 @@ public class StudyRoomActivity extends BaseActivity {
         close();
     }
 
+    boolean socketEnable;
     @Override
     protected void onResume() {
         super.onResume();
-
+        socketEnable = false;
         init();
         Log.i(LOG_TAG, "onResume");
         if (isAdditionalPageOpen) {
@@ -2125,6 +2128,7 @@ public class StudyRoomActivity extends BaseActivity {
                     Log.i(LOG_TAG, "Disconnection succeed");
                     soc_writer = new SocketAsyncTask_Writer();
                     soc_writer.execute();
+                    socketEnable = true;
                 }
                 else {
                     Log.i(LOG_TAG, "Disconnection failed");
