@@ -147,9 +147,14 @@ public class listAdapter extends BaseAdapter {
             viewHolder.essay.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (!hasFocus) {
-                        int position = (Integer) v.getTag();
-                        infoList.get(position).essay = ((EditText) v).getText().toString();
-                        Log.e("minsu)", "minsu) essay condition : " + "essay with position" + position + " set " + infoList.get(position).essay);
+                        try {
+                            int position = (Integer) v.getTag();
+                            infoList.get(position).essay = ((EditText) v).getText().toString();
+                            Log.e("minsu)", "minsu) essay condition : " + "essay with position" + position + " set " + infoList.get(position).essay);
+                        }catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
                     }
                 }
             });
