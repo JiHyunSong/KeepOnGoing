@@ -1991,10 +1991,9 @@ public class StudyRoomActivity extends BaseActivity {
         }
     }
 
-    BufferedWriter bw = null;
     class SocketAsyncTask_Writer extends AsyncTask<Void, Void, Void> {
 
-        //private BufferedWriter bw = null;
+        private BufferedWriter bw = null;
 
         @Override
         protected void onPreExecute() {
