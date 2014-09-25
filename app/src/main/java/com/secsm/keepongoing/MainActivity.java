@@ -107,6 +107,7 @@ public class MainActivity extends Activity {
     private String getRegistrationId() {
 //        String registrationId = PreferenceUtil.instance(getApplicationContext()).regId();
         String registrationId = KogPreference.getString(MainActivity.this, "GCMID");
+        Log.i("GCM", "registrationId : " + registrationId);
         if (TextUtils.isEmpty(registrationId)) {
             Log.i("MainActivity.java | getRegistrationId", "|Registration not found.|");
             return "";

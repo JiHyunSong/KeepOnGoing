@@ -98,6 +98,8 @@ public class HttpAPIs {
 
         String json = new Gson().toJson(dataSet);
 
+        Log.i(LOG_TAG, "LOGIN GCM : " + json.toString());
+
         httpPost.setHeader("Content-Type", "application/json");
         StringEntity entity = new StringEntity(json, "utf-8");
         httpPost.setEntity(entity);

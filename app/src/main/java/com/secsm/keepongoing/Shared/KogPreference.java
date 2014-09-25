@@ -261,6 +261,7 @@ public final class KogPreference {
 
     public static String getRegId(final Context context) {
         try {
+            Log.i(LOG_TAG, "GCM : " +getString(context, GCM_TAG));
             return getString(context, GCM_TAG);
         } catch (ClassCastException e) {
             Log.e(LOG_TAG, "get Registration ID fail, ClassCaseException : " + e.getStackTrace());

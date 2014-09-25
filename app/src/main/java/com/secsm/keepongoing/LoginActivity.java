@@ -154,7 +154,7 @@ public class LoginActivity extends BaseActivity {
                     GoNextPage(mNicknameView.getText().toString(), mPasswordView.getText().toString());
                 }
                 else if (statusCode == 1000) {
-                    Toast.makeText(getBaseContext(), "입력란을 채워 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), "다시 시도해주세요.", Toast.LENGTH_SHORT).show();
                 }
                 else if (statusCode == 1001) {
                     Toast.makeText(getBaseContext(), "아이디 또는 패스워드가 잘못되었습니다.", Toast.LENGTH_SHORT).show();
