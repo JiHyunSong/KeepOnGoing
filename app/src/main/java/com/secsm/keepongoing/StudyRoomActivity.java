@@ -1669,6 +1669,8 @@ public class StudyRoomActivity extends BaseActivity {
                 }
                 if (isPageOpen) {
                     additionalBtn.setEnabled(true);
+                    messageTxt.setEnabled(true);
+                    messageTxt.requestFocus();
 //                showSoftKeyboard();
                     slidingPage01.startAnimation(translateLeftAnim);
 //                slidingPage01.setVisibility(View.VISIBLE);
