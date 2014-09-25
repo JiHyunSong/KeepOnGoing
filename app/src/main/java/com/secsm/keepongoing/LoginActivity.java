@@ -61,7 +61,9 @@ public class LoginActivity extends BaseActivity {
         mPasswordView.setPrivateImeOptions("defaultInputmode=english;");
 
         login_auto_login_cb = (CheckBox) findViewById(R.id.login_auto_login_cb);
-
+        if (KogPreference.isAutoLogin(LoginActivity.this)) {
+            login_auto_login_cb.setChecked(true);
+        }
         loginProgressBar = (ProgressBar) findViewById(R.id.login_progress);
 
         // Sign In button
