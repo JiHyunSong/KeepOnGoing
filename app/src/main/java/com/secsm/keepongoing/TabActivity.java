@@ -154,10 +154,6 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
 //        layoutSettings = (RelativeLayout) findViewById(R.id.tab_settings_layout);
 
         // tab layouts
-        llStopwatch = (LinearLayout) findViewById(R.id.tab_stopwatch_ll);
-        llFriends = (LinearLayout) findViewById(R.id.tab_friends_ll);
-        llRooms = (LinearLayout) findViewById(R.id.tab_rooms_ll);
-        llSettings = (LinearLayout) findViewById(R.id.tab_settings_ll);
 
     }
 
@@ -1469,15 +1465,19 @@ String goalminusacheive =     (h / 10 == 0 ? "0" +h : h)
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.tab_stopwatch_ll:
             case R.id.imgBtn_tab_stopwatch:
                 setCurrentItem(0);
                 break;
+            case R.id.tab_friends_ll:
             case R.id.imgBtn_tab_friends:
                 setCurrentItem(1);
                 break;
+            case R.id.tab_rooms_ll:
             case R.id.imgBtn_tab_rooms:
                 setCurrentItem(2);
                 break;
+            case R.id.tab_settings_ll:
             case R.id.imgBtn_tab_settings:
                 setCurrentItem(3);
                 break;
@@ -1507,13 +1507,21 @@ String goalminusacheive =     (h / 10 == 0 ? "0" +h : h)
         tabRooms = (ImageButton) findViewById(R.id.imgBtn_tab_rooms);
         tabSettings = (ImageButton) findViewById(R.id.imgBtn_tab_settings);
 
+        llStopwatch = (LinearLayout) findViewById(R.id.tab_stopwatch_ll);
+        llFriends = (LinearLayout) findViewById(R.id.tab_friends_ll);
+        llRooms = (LinearLayout) findViewById(R.id.tab_rooms_ll);
+        llSettings = (LinearLayout) findViewById(R.id.tab_settings_ll);
+
+        llStopwatch.setOnClickListener(this);
+        llFriends.setOnClickListener(this);
+        llRooms.setOnClickListener(this);
+        llSettings.setOnClickListener(this);
+
         tabStopwatch.setOnClickListener(this);
         tabFriends.setOnClickListener(this);
         tabRooms.setOnClickListener(this);
         tabSettings.setOnClickListener(this);
-//        mOne.setOnClickListener(this);
-//        mTwo.setOnClickListener(this);
-//        mThree.setOnClickListener(this);
+
         mPager = (ViewPager) findViewById(R.id.viewpager);
         mPager.setAdapter(new ViewPagerAdapter(this));
 
