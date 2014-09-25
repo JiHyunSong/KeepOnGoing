@@ -178,7 +178,12 @@ public class BaseActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(m_SnowWifiMonitor);
+        try {
+            unregisterReceiver(m_SnowWifiMonitor);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @Override

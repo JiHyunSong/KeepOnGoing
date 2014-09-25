@@ -76,6 +76,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
 import java.net.Socket;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -484,7 +485,10 @@ public class StudyRoomActivity extends BaseActivity {
                         break;
 
                     case SnowWiFiMonitor.WIFI_STATE_DISABLING:
+                        disconnectConnection(disconnectConnectionHandler);
                         Log.i(LOG_TAG, "[WifiMonitor] WIFI_STATE_DISABLING");
+                        //disconnectConnection(disconnectConnectionHandler);
+                        GoBack();
                         break;
 
                     case SnowWiFiMonitor.WIFI_STATE_ENABLED:
@@ -496,7 +500,9 @@ public class StudyRoomActivity extends BaseActivity {
                         break;
 
                     case SnowWiFiMonitor.WIFI_STATE_UNKNOWN:
+                        disconnectConnection(disconnectConnectionHandler);
                         Log.i(LOG_TAG, "[WifiMonitor] WIFI_STATE_UNKNOWN");
+                        GoBack();
                         break;
 
                     case SnowWiFiMonitor.NETWORK_STATE_CONNECTED:
@@ -513,17 +519,20 @@ public class StudyRoomActivity extends BaseActivity {
                         break;
 
                     case SnowWiFiMonitor.NETWORK_STATE_CONNECTING:
-                        Log.i(LOG_TAG, "[WifiMonitor] NETWORK_STATE_CONNECTING");
+                        /*Log.i(LOG_TAG, "[WifiMonitor] NETWORK_STATE_CONNECTING");
                         if(previous_state==-5) {
                             previous_state = SnowWiFiMonitor.NETWORK_STATE_CONNECTING;
-                            Log.i(LOG_TAG, "[WifiMonitor] NETWORK_STATE_CONNECTING");
                         }
                         else {
                             if(previous_state!=SnowWiFiMonitor.NETWORK_STATE_CONNECTING) {
-                                previous_state = SnowWiFiMonitor.NETWORK_STATE_CONNECTING;
+                                disconnectConnection(disconnectConnectionHandler);
+                                Log.i(LOG_TAG, "[WifiMonitor] NETWORK_STATE_CONNECTING");
                                 GoBack();
                             }
-                        }
+                        }*/
+                        disconnectConnection(disconnectConnectionHandler);
+                        Log.i(LOG_TAG, "[WifiMonitor] NETWORK_STATE_CONNECTING");
+                        GoBack();
                         break;
 
                     case SnowWiFiMonitor.NETWORK_STATE_DISCONNECTED:
@@ -540,6 +549,7 @@ public class StudyRoomActivity extends BaseActivity {
                         break;
 
                     case SnowWiFiMonitor.NETWORK_STATE_DISCONNECTING:
+                        /*
                         Log.i(LOG_TAG, "[WifiMonitor] NETWORK_STATE_DISCONNECTING");
                         if(previous_state==-5) {
                             previous_state = SnowWiFiMonitor.NETWORK_STATE_DISCONNECTING;
@@ -549,7 +559,10 @@ public class StudyRoomActivity extends BaseActivity {
                                 previous_state = SnowWiFiMonitor.NETWORK_STATE_DISCONNECTING;
                                 GoBack();
                             }
-                        }
+                        }*/
+                        disconnectConnection(disconnectConnectionHandler);
+                        Log.i(LOG_TAG, "[WifiMonitor] NETWORK_STATE_CONNECTING");
+                        GoBack();
                         break;
 
                     case SnowWiFiMonitor.NETWORK_STATE_SUSPENDED:
@@ -1928,7 +1941,9 @@ public class StudyRoomActivity extends BaseActivity {
 
                 String read;
                 JSONObject rMsg;
+
                 while (true) {
+
                     if (isCancelled())
                         break;
 
@@ -1976,9 +1991,10 @@ public class StudyRoomActivity extends BaseActivity {
         }
     }
 
+    BufferedWriter bw = null;
     class SocketAsyncTask_Writer extends AsyncTask<Void, Void, Void> {
 
-        private BufferedWriter bw = null;
+        //private BufferedWriter bw = null;
 
         @Override
         protected void onPreExecute() {
@@ -2387,6 +2403,39 @@ public class StudyRoomActivity extends BaseActivity {
             //Todo keyboardfocusout
           //  all_in_chat.setVisibility(View.GONE);
             //  messageTxt.setFocusable(false);
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus)
+    {
+        try
+        {
+            if(!hasFocus)
+            {
+                Log.e(LOG_TAG, "onWindowFocusChanged--try");
+                onPause();
+            }
+            else
+            {
+                Log.e(LOG_TAG, "onWindowFocusChanged--tryelse");
+                if (soc_reader==null) {
+                    onResume();
+                }
+            }
+        }
+        catch(Exception ex)
+        {
+            if(!hasFocus)
+            {
+                try {
+                    Log.e(LOG_TAG, "onWindowFocusChanged--catch");
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                ex.printStackTrace();
+            }
         }
     }
 }
