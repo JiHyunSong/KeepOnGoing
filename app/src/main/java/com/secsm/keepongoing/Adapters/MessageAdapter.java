@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -44,22 +43,22 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
             viewHolder = new ViewHolder();
 
 
-            viewHolder.tt = (TextView) v.findViewById(R.id.msg_topText);
+            viewHolder.topLeftText = (TextView) v.findViewById(R.id.msg_topText);
 //            viewHolder.wv = (WebView) v.findViewById(R.id.msg_bottomTextWebView);
-            viewHolder.msgTv = (TextView) v.findViewById(R.id.msg_bottomTextTextView);
-            viewHolder.time = (TextView) v.findViewById(R.id.msg_time);
-            viewHolder.iv = (ImageView) v.findViewById(R.id.msg_person_photo);
-            viewHolder.wv_rl = (RelativeLayout.LayoutParams) viewHolder.msgTv.getLayoutParams();
+            viewHolder.messageText = (TextView) v.findViewById(R.id.msg_bottomTextTextView);
+            viewHolder.topRightText = (TextView) v.findViewById(R.id.msg_time);
+            viewHolder.profileImage = (ImageView) v.findViewById(R.id.msg_person_photo);
+            viewHolder.wv_rl = (RelativeLayout.LayoutParams) viewHolder.messageText.getLayoutParams();
             viewHolder.wv_rl.addRule(RelativeLayout.RIGHT_OF, R.id.msg_person_photo);
             viewHolder.wv_rl.width = RelativeLayout.LayoutParams.MATCH_PARENT;
             viewHolder.wv_rl.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
 
-            viewHolder.p_iv = (ImageView) v.findViewById(R.id.msg_bottomTextImageView);
+            viewHolder.messageImage = (ImageView) v.findViewById(R.id.msg_bottomTextImageView);
 
 
             // set invisible
-            viewHolder.msgTv.setVisibility(View.GONE);
-            viewHolder.p_iv.setVisibility(View.GONE);
+            viewHolder.messageText.setVisibility(View.GONE);
+            viewHolder.messageImage.setVisibility(View.GONE);
 
             v.setTag(viewHolder);
         } else {
@@ -68,23 +67,23 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
 
         }
 
-        android.view.ViewGroup.LayoutParams params = viewHolder.p_iv.getLayoutParams();
+        android.view.ViewGroup.LayoutParams params = viewHolder.messageImage.getLayoutParams();
         params.width = RelativeLayout.LayoutParams.MATCH_PARENT;;
-        int width = (viewHolder.p_iv.getWidth() > 350 ? viewHolder.p_iv.getWidth() : 350);
+        int width = (viewHolder.messageImage.getWidth() > 350 ? viewHolder.messageImage.getWidth() : 350);
         Log.i(LOG_TAG, "textImage width : " + width);
         params.height = width;
-        viewHolder.p_iv.setLayoutParams(params);
+        viewHolder.messageImage.setLayoutParams(params);
 
         Msg m = items.get(position);
         if (m != null) {
             if (m.getMessageType().equals(KogPreference.MESSAGE_TYPE_TEXT)) {
-                viewHolder.msgTv.setVisibility(View.GONE);
-                viewHolder.p_iv.setVisibility(View.GONE);
-                viewHolder.msgTv.setVisibility(View.VISIBLE);
+                viewHolder.messageText.setVisibility(View.GONE);
+                viewHolder.messageImage.setVisibility(View.GONE);
+                viewHolder.messageText.setVisibility(View.VISIBLE);
 
-                if (viewHolder.tt != null && viewHolder.msgTv != null && viewHolder.time != null && viewHolder.iv != null) {
+                if (viewHolder.topLeftText != null && viewHolder.messageText != null && viewHolder.topRightText != null && viewHolder.profileImage != null) {
                     if ("나 : ".equals(m.getName())) {
-                        viewHolder.tt.setText(m.getTime());
+                        viewHolder.topLeftText.setText(m.getTime());
 //                        viewHolder.wv.setBackgroundColor(0); // 투명처리
 //                        String htmlForm1 = "<metahttp-equiv='Content-Type' content='text'/html; charset = utf-8 /> " +
 //                                "<html>" + "<body text='#8d5e42'> ";
@@ -97,24 +96,24 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
 //
 //                        viewHolder.wv.loadDataWithBaseURL("file:///android_asset/", htmlForm1 + htmlFormText + htmlForm2, "text/html", "utf-8", "file:///android_assest/");
 
-                        viewHolder.msgTv.setText(m.getText());
-                        viewHolder.time.setText(m.getName());
+                        viewHolder.messageText.setText(m.getText());
+                        viewHolder.topRightText.setText(m.getName());
 
                         String fileName = m.getFileName();
 
                         Log.i("filename", "id : " + m.getId() + " | me : " + fileName);
                         if (fileName != null) {
                             if (fileName.matches(".*jpg.*") || fileName.matches(".*png.*")) {
-                                viewHolder.iv.setImageBitmap(m.getProfile_image());
+                                viewHolder.profileImage.setImageBitmap(m.getProfile_image());
                             } else {
-                                viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
+                                viewHolder.profileImage.setBackgroundResource(R.drawable.profile_default);
                             }
                         } else {
-                            viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
+                            viewHolder.profileImage.setBackgroundResource(R.drawable.profile_default);
                         }
 
                     } else {
-                        viewHolder.tt.setText(m.getName());
+                        viewHolder.topLeftText.setText(m.getName());
 //                        viewHolder.wv.setBackgroundColor(0); // 투명처리
 //                        String htmlForm1 = "<metahttp-equiv='Content-Type' content='text'/html; charset = utf-8 /> " +
 //                                "<html>" + "<body> ";
@@ -125,24 +124,24 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
 //                        viewHolder.wv.invalidate();
 //                        viewHolder.wv.loadDataWithBaseURL("file:///android_asset/", htmlForm1 + htmlFormText + htmlForm2, "text/html", "utf-8", "file:///android_assest/");
 
-                        viewHolder.msgTv.setText(m.getText());
+                        viewHolder.messageText.setText(m.getText());
 
-                        viewHolder.time.setText(m.getTime());
+                        viewHolder.topRightText.setText(m.getTime());
 
                         String fileName = m.getFileName();
                         Log.i("filename", "id : " + m.getId() + " | friend : " + fileName);
                         if (fileName != null) {
                             if (fileName.matches(".*jpg.*") || fileName.matches(".*png.*")) {
 
-                                viewHolder.iv.setImageResource(R.drawable.profile_default);
+                                viewHolder.profileImage.setImageResource(R.drawable.profile_default);
 
-                                viewHolder.iv.setImageBitmap(m.getProfile_image());
+                                viewHolder.profileImage.setImageBitmap(m.getProfile_image());
 
                             } else {
-                                viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
+                                viewHolder.profileImage.setBackgroundResource(R.drawable.profile_default);
                             }
                         } else {
-                            viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
+                            viewHolder.profileImage.setBackgroundResource(R.drawable.profile_default);
                         }
 
                     }
@@ -150,13 +149,13 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
             } else if (m.getMessageType().equals(KogPreference.MESSAGE_TYPE_IMAGE))
             {
 //                viewHolder.wv.setVisibility(View.GONE);
-                viewHolder.msgTv.setVisibility(View.GONE);
-                viewHolder.p_iv.setVisibility(View.GONE);
-                viewHolder.p_iv.setVisibility(View.VISIBLE);
+                viewHolder.messageText.setVisibility(View.GONE);
+                viewHolder.messageImage.setVisibility(View.GONE);
+                viewHolder.messageImage.setVisibility(View.VISIBLE);
 
-                if (viewHolder.tt != null && viewHolder.p_iv != null && viewHolder.time != null && viewHolder.iv != null) {
+                if (viewHolder.topLeftText != null && viewHolder.messageImage != null && viewHolder.topRightText != null && viewHolder.profileImage != null) {
                     if ("나 : ".equals(m.getName())) {
-                        viewHolder.tt.setText(m.getTime());
+                        viewHolder.topLeftText.setText(m.getTime());
 //                        viewHolder.wv.setBackgroundColor(0); // 투명처리
 //                        String htmlForm1 = "<metahttp-equiv='Content-Type' content='text'/html; charset = utf-8 /> " +
 //                                "<html>" + "<body>"; //+ "<body bgcolor='#ffc0cb'> ";
@@ -170,48 +169,48 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
 //                        viewHolder.wv.loadDataWithBaseURL("file:///android_asset/", htmlForm1 + htmlFormText + htmlForm2, "text/html", "utf-8", "file:///android_assest/");
 
 
-                        viewHolder.msgTv.setText("");
-                        viewHolder.p_iv.setImageResource(R.drawable.no_image);
+                        viewHolder.messageText.setText("");
+                        viewHolder.messageImage.setImageResource(R.drawable.no_image);
 
-                        viewHolder.p_iv.setImageBitmap(m.getText_image());
+                        viewHolder.messageImage.setImageBitmap(m.getText_image());
 
 
-                        viewHolder.time.setText(m.getName());
+                        viewHolder.topRightText.setText(m.getName());
 
                         String fileName = m.getFileName();
                         if (fileName != null) {
                             if (fileName.matches(".*jpg.*")) {
-                                viewHolder.iv.setImageResource(R.drawable.profile_default);
+                                viewHolder.profileImage.setImageResource(R.drawable.profile_default);
 
-                                viewHolder.iv.setImageBitmap(m.getProfile_image());
+                                viewHolder.profileImage.setImageBitmap(m.getProfile_image());
 
                             } else {
-                                viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
+                                viewHolder.profileImage.setBackgroundResource(R.drawable.profile_default);
                             }
                         } else {
-                            viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
+                            viewHolder.profileImage.setBackgroundResource(R.drawable.profile_default);
                         }
 
                     } else {
-                        viewHolder.tt.setText(m.getName());
+                        viewHolder.topLeftText.setText(m.getName());
 
-                        viewHolder.p_iv.setImageResource(R.drawable.no_image);
+                        viewHolder.messageImage.setImageResource(R.drawable.no_image);
 
 
-                        viewHolder.p_iv.setImageBitmap(m.getText_image());
+                        viewHolder.messageImage.setImageBitmap(m.getText_image());
 
-                        viewHolder.time.setText(m.getTime());
+                        viewHolder.topRightText.setText(m.getTime());
 
                         String fileName = m.getFileName();
                         if (fileName != null) {
                             if (fileName.matches(".*jpg.*")) {
-                                viewHolder.iv.setImageResource(R.drawable.profile_default);
-                                viewHolder.iv.setImageBitmap(m.getProfile_image());
+                                viewHolder.profileImage.setImageResource(R.drawable.profile_default);
+                                viewHolder.profileImage.setImageBitmap(m.getProfile_image());
                             } else {
-                                viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
+                                viewHolder.profileImage.setBackgroundResource(R.drawable.profile_default);
                             }
                         } else {
-                            viewHolder.iv.setBackgroundResource(R.drawable.profile_default);
+                            viewHolder.profileImage.setBackgroundResource(R.drawable.profile_default);
                         }
 
                     }
@@ -239,13 +238,13 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
     class ViewHolder {
         public Bitmap friend_profile = null;
         public String friend_nickname = null;
-        public TextView tt = null;
+        public TextView topLeftText = null;
 //        public WebView wv = null;
-        public TextView msgTv = null;
+        public TextView messageText = null;
         public RelativeLayout.LayoutParams wv_rl = null;
-        public TextView time = null;
-        public ImageView iv = null;
-        public ImageView p_iv = null;
+        public TextView topRightText = null;
+        public ImageView profileImage = null;
+        public ImageView messageImage = null;
     }
 }
 
