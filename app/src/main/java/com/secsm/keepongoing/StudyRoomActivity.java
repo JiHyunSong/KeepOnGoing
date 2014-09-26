@@ -76,9 +76,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Method;
 import java.net.Socket;
-import java.net.SocketException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.sql.Timestamp;
@@ -677,16 +675,14 @@ public class StudyRoomActivity extends BaseActivity {
                             String rMessage = result.getString("message");
                             // real action
                             // GoNextPage();
-                            Toast.makeText(getBaseContext(),"시간등록 완료"+temp_accomplished_time, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getBaseContext(), "시간등록 완료" + temp_accomplished_time, Toast.LENGTH_SHORT).show();
                         } else if (statusCode == 9001) {
 
                             Toast.makeText(getBaseContext(), "시간등록이 불가능합니다.", Toast.LENGTH_SHORT).show();
-                        }
-                        else if(statusCode ==1001) {
+                        } else if (statusCode == 1001) {
 //                            acheivetimeputRequest(temp_target_time, temp_accomplished_time, temp_date);
                             achievetimeputRequest(temp_target_time, temp_accomplished_time, temp_date);
-                        }
-                        else {
+                        } else {
                             Toast.makeText(getBaseContext(), "통신 장애", Toast.LENGTH_SHORT).show();
                             if (KogPreference.DEBUG_MODE) {
                                 Toast.makeText(getBaseContext(), LOG_TAG + result.getString("message"), Toast.LENGTH_SHORT).show();
@@ -1301,14 +1297,14 @@ public class StudyRoomActivity extends BaseActivity {
                 Log.i(LOG_TAG, "friends long Clicked");
                 if(KogPreference.ROOM_TYPE_LIFE.equals(type)) {
                     if (pos != 0 && pos != mFriends.size() - 1) {
-                        if (isMaster(KogPreference.getNickName(StudyRoomActivity.this))) {
+                        if (isMasterAndNotMe(KogPreference.getNickName(StudyRoomActivity.this))) {
                             mDialog = createInflaterDialog(mFriends.get(pos).getName());
                             mDialog.show();
                         }
                     }
                 }else{
                     if (pos != 0 && pos != mFriends.size()) {
-                        if (isMaster(KogPreference.getNickName(StudyRoomActivity.this))) {
+                        if (isMasterAndNotMe(KogPreference.getNickName(StudyRoomActivity.this))) {
                             mDialog = createInflaterDialog(mFriends.get(pos).getName());
                             mDialog.show();
                         }
@@ -1319,8 +1315,10 @@ public class StudyRoomActivity extends BaseActivity {
         }
     };
 
-    private Boolean isMaster(String f_nickname)
+    private Boolean isMasterAndNotMe(String f_nickname)
     {
+        if(f_nickname.equals(KogPreference.getNickName(getBaseContext())))
+            return false;
         for(int i=0; i<mFriends.size(); i++)
         {
             if(mFriends.get(i).getIsMaster() != null) {

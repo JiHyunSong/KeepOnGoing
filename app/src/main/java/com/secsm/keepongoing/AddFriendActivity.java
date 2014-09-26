@@ -66,6 +66,11 @@ public class AddFriendActivity extends BaseActivity {
     }
 
     private boolean isNicknameValid(String nickName) {
+        if(nickName.equals(KogPreference.getNickName(getBaseContext())))
+        {
+            Toast.makeText(getBaseContext(), "자기 자신은 초대할 수 없습니다.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
         return (nickName.length() >= 4) && (nickName.length() <= 10);
     }
 
