@@ -78,6 +78,7 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.sql.Timestamp;
@@ -88,7 +89,7 @@ import java.util.Date;
 
 public class StudyRoomActivity extends BaseActivity {
 
-//    private String previous_ip=null;
+    //    private String previous_ip=null;
 //    private SnowWiFiMonitor m_SnowWifiMonitor = null;
     private int previous_state=-5;
     LinearLayout all_in_chat;
@@ -374,10 +375,7 @@ public class StudyRoomActivity extends BaseActivity {
 
             public void onClick(View v) {
 //                messageList.smoothScrollToPosition(messageList.getCount() - 1);
-                Log.i(LOG_TAG,"socketEnable : " + socketEnable);
-                if(socketEnable) {
-                    sendMessage();
-                }
+                sendMessage();
             }
         });
 
@@ -488,9 +486,7 @@ public class StudyRoomActivity extends BaseActivity {
                         break;
 
                     case SnowWiFiMonitor.WIFI_STATE_DISABLING:
-                        disconnectConnection(disconnectConnectionHandler);
                         Log.i(LOG_TAG, "[WifiMonitor] WIFI_STATE_DISABLING");
-                        //disconnectConnection(disconnectConnectionHandler);
                         GoBack();
                         break;
 
@@ -522,18 +518,6 @@ public class StudyRoomActivity extends BaseActivity {
                         break;
 
                     case SnowWiFiMonitor.NETWORK_STATE_CONNECTING:
-                        /*Log.i(LOG_TAG, "[WifiMonitor] NETWORK_STATE_CONNECTING");
-                        if(previous_state==-5) {
-                            previous_state = SnowWiFiMonitor.NETWORK_STATE_CONNECTING;
-                        }
-                        else {
-                            if(previous_state!=SnowWiFiMonitor.NETWORK_STATE_CONNECTING) {
-                                disconnectConnection(disconnectConnectionHandler);
-                                Log.i(LOG_TAG, "[WifiMonitor] NETWORK_STATE_CONNECTING");
-                                GoBack();
-                            }
-                        }*/
-                        disconnectConnection(disconnectConnectionHandler);
                         Log.i(LOG_TAG, "[WifiMonitor] NETWORK_STATE_CONNECTING");
                         GoBack();
                         break;
@@ -545,26 +529,14 @@ public class StudyRoomActivity extends BaseActivity {
                         else {
                             if(previous_state!=SnowWiFiMonitor.NETWORK_STATE_DISCONNECTED) {
                                 previous_state = SnowWiFiMonitor.NETWORK_STATE_DISCONNECTED;
-                                disconnectConnection(disconnectConnectionHandler);
+                                //disconnectConnection(disconnectConnectionHandler);
                                 GoBack();
                             }
                         }
                         break;
 
                     case SnowWiFiMonitor.NETWORK_STATE_DISCONNECTING:
-                        /*
                         Log.i(LOG_TAG, "[WifiMonitor] NETWORK_STATE_DISCONNECTING");
-                        if(previous_state==-5) {
-                            previous_state = SnowWiFiMonitor.NETWORK_STATE_DISCONNECTING;
-                        }
-                        else {
-                            if(previous_state!=SnowWiFiMonitor.NETWORK_STATE_DISCONNECTING) {
-                                previous_state = SnowWiFiMonitor.NETWORK_STATE_DISCONNECTING;
-                                GoBack();
-                            }
-                        }*/
-                        disconnectConnection(disconnectConnectionHandler);
-                        Log.i(LOG_TAG, "[WifiMonitor] NETWORK_STATE_CONNECTING");
                         GoBack();
                         break;
 
@@ -602,12 +574,6 @@ public class StudyRoomActivity extends BaseActivity {
         registerReceiver(m_SnowWifiMonitor, new IntentFilter(WifiManager.NETWORK_STATE_CHANGED_ACTION));
         registerReceiver(m_SnowWifiMonitor, new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION));
         Log.i(LOG_TAG, "register m_SnowWifiMonitor done");
-    }
-
-    @Override
-    protected void unregisterWifiReceiver() {
-//        super.unregisterWifiReceiver();
-        unregisterReceiver(m_SnowWifiMonitor);
     }
 
     private void setInvisibleAddtionalPage() {
@@ -676,7 +642,7 @@ public class StudyRoomActivity extends BaseActivity {
         try {
             accomplishedTime = Preference.getString(StudyRoomActivity.this, "achieve_time");
             achievetimeRegisterRequest(target_time, accomplishedTime, Preference.getString(StudyRoomActivity.this, "start_date"));
-                sendMsgToSvr(msg1 + accomplishedTime + msg2, KogPreference.MESSAGE_TYPE_TEXT);
+            sendMsgToSvr(msg1 + accomplishedTime + msg2, KogPreference.MESSAGE_TYPE_TEXT);
 
         } catch (Exception ex) {
             Log.e(LOG_TAG, "sendAccomplishedTime error : " + ex.toString());
@@ -1247,12 +1213,12 @@ public class StudyRoomActivity extends BaseActivity {
         public void onAnimationEnd(Animation animation) {
             if (isPageOpen) {
                 all_in_chat.setVisibility(View.GONE);
-          //      Toast.makeText(getBaseContext(), "GONE1", Toast.LENGTH_SHORT).show();
+                //      Toast.makeText(getBaseContext(), "GONE1", Toast.LENGTH_SHORT).show();
                 slidingPage01.setVisibility(View.INVISIBLE);
                 isPageOpen = false;
             } else {
                 all_in_chat.setVisibility(View.VISIBLE);
-         //       Toast.makeText(getBaseContext(), "VISIBLE1", Toast.LENGTH_SHORT).show();
+                //       Toast.makeText(getBaseContext(), "VISIBLE1", Toast.LENGTH_SHORT).show();
                 slidingPage01.setVisibility(View.VISIBLE);
                 isPageOpen = true;
             }
@@ -1439,7 +1405,7 @@ public class StudyRoomActivity extends BaseActivity {
 
                 Log.e(LOG_TAG, "left");
                 slidingPage01.setVisibility(View.VISIBLE);
-         //       all_in_chat.setVisibility(View.GONE);
+                //       all_in_chat.setVisibility(View.GONE);
                 showSoftKeyboard();
             } else {
 //                if(isAdditionalPageOpen) {
@@ -1586,6 +1552,8 @@ public class StudyRoomActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    static boolean socketEnable;
+
     synchronized void init() {
 
         Log.i(LOG_TAG, "synchronized init");
@@ -1633,12 +1601,10 @@ public class StudyRoomActivity extends BaseActivity {
         close();
     }
 
-    static boolean socketEnable;
-
     @Override
     protected void onResume() {
         super.onResume();
-        socketEnable = false;
+
         init();
         Log.i(LOG_TAG, "onResume");
         if (isAdditionalPageOpen) {
@@ -1698,7 +1664,20 @@ public class StudyRoomActivity extends BaseActivity {
     }
 
     private void GoBack() {
-        close();
+        Log.i(LOG_TAG, "private void GoBack()");
+        //close();
+        try {
+            soc_writer.sendMsgToSvr("exit");
+            Log.i(LOG_TAG,"Boolean.toString(soc_reader.cancel(true) : " +  Boolean.toString(soc_reader.cancel(true)));
+            soc_reader = null;
+            Log.i(LOG_TAG, "Boolean.toString(soc_writer.cancel(true) : " + Boolean.toString(soc_reader.cancel(true)));
+            soc_reader = null;
+        }
+        catch (Exception e)
+        {
+            Log.i(LOG_TAG, e.getMessage() + " Exception in private void GoBack()");
+            disconnectConnection(disconnectConnectionHandler);
+        }
         StudyRoomActivity.this.finish();
     }
     //////////////////////////////////////////////////
@@ -1767,21 +1746,21 @@ public class StudyRoomActivity extends BaseActivity {
             if (count > 0) {
                 cursor.moveToLast();
                 String _senderID = cursor.getString(0);
-    //                    Log.i("loadText", "sender ID : " + _senderID);
+                //                    Log.i("loadText", "sender ID : " + _senderID);
                 Msg m = new Msg(StudyRoomActivity.this,
-                            cursor.getString(0),
-                            cursor.getString(1),
-                            cursor.getString(2),
-                            cursor.getString(3),
-                            cursor.getString(4),
-                            getProfileImageName(_senderID),
-                            refreshAdaptorHandler
-                    );
+                        cursor.getString(0),
+                        cursor.getString(1),
+                        cursor.getString(2),
+                        cursor.getString(3),
+                        cursor.getString(4),
+                        getProfileImageName(_senderID),
+                        refreshAdaptorHandler
+                );
                 messageHistoryMAdaptor.add(m);
                 while (cursor.moveToPrevious()) {
                     _senderID = cursor.getString(0);
 //                    Log.i("loadText", "sender ID : " + _senderID);
-                        m = new Msg(StudyRoomActivity.this,
+                    m = new Msg(StudyRoomActivity.this,
                             cursor.getString(0),
                             cursor.getString(1),
                             cursor.getString(2),
@@ -2001,9 +1980,10 @@ public class StudyRoomActivity extends BaseActivity {
         }
     }
 
+    BufferedWriter bw = null;
     class SocketAsyncTask_Writer extends AsyncTask<Void, Void, Void> {
 
-        private BufferedWriter bw = null;
+        //private BufferedWriter bw = null;
 
         @Override
         protected void onPreExecute() {
@@ -2022,7 +2002,6 @@ public class StudyRoomActivity extends BaseActivity {
             } catch (Exception e) {
                 e.printStackTrace();
                 errorBackHandler.sendEmptyMessage(1);
-
                 if (KogPreference.DEBUG_MODE) {
                     Log.e(LOG_TAG, "소켓 에러!\n" + e.toString());
                 }
@@ -2137,8 +2116,6 @@ public class StudyRoomActivity extends BaseActivity {
                     Log.i(LOG_TAG, "Disconnection succeed");
                     soc_writer = new SocketAsyncTask_Writer();
                     soc_writer.execute();
-                    socketEnable = true;
-                    Log.i(LOG_TAG, "socketEnable : " + socketEnable);
                 }
                 else {
                     Log.i(LOG_TAG, "Disconnection failed");
@@ -2284,34 +2261,34 @@ public class StudyRoomActivity extends BaseActivity {
 
             HttpAPIs.getFriendsInRoomGet(
                     KogPreference.getRid(StudyRoomActivity.this), getThisMonday(), getRealDate(), new CallbackResponse() {
-                @Override
-                public void success(HttpResponse httpResponse) {
-                    baseHandler.sendEmptyMessage(1);
-                    JSONObject obj = HttpAPIs.getHttpResponseToJSON(httpResponse);
-                    if(obj != null){
-                        try {
-                            Message msg = getFriendsRequestHandler.obtainMessage();
-                            Bundle b = new Bundle();
-                            b.putString("JSONData", obj.toString());
-                            msg.setData(b);
-                            getFriendsRequestHandler.sendMessage(msg);
+                        @Override
+                        public void success(HttpResponse httpResponse) {
+                            baseHandler.sendEmptyMessage(1);
+                            JSONObject obj = HttpAPIs.getHttpResponseToJSON(httpResponse);
+                            if(obj != null){
+                                try {
+                                    Message msg = getFriendsRequestHandler.obtainMessage();
+                                    Bundle b = new Bundle();
+                                    b.putString("JSONData", obj.toString());
+                                    msg.setData(b);
+                                    getFriendsRequestHandler.sendMessage(msg);
 
-                            BACK_MODE = true;
-                        } catch (Exception e) {
-                            Log.e(LOG_TAG, "get friends error : " + e.toString());
-                            BACK_MODE = true;
-                                                }
-                    }
-                }
+                                    BACK_MODE = true;
+                                } catch (Exception e) {
+                                    Log.e(LOG_TAG, "get friends error : " + e.toString());
+                                    BACK_MODE = true;
+                                }
+                            }
+                        }
 
-                @Override
-                public void error(Exception e) {
-                    baseHandler.sendEmptyMessage(1);
-                    errorHandler.sendEmptyMessage(1);
-                    Log.e(LOG_TAG, "에러");
-                    e.printStackTrace();
-                }
-            });
+                        @Override
+                        public void error(Exception e) {
+                            baseHandler.sendEmptyMessage(1);
+                            errorHandler.sendEmptyMessage(1);
+                            Log.e(LOG_TAG, "에러");
+                            e.printStackTrace();
+                        }
+                    });
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -2408,17 +2385,18 @@ public class StudyRoomActivity extends BaseActivity {
             study_room_additional_ll2_album.setEnabled(true);
             study_room_additional_ll3_my_time.setEnabled(true);
             messageTxt.setEnabled(true);
+            messageTxt.setFocusable(true);
             messageTxt.requestFocus();
             showSoftKeyboard();
             slidingPage01.startAnimation(translateLeftAnim);
             Log.e(LOG_TAG, "left");
             slidingPage01.setVisibility(View.VISIBLE);
             //Todo keyboardfocusout
-          //  all_in_chat.setVisibility(View.GONE);
+            //  all_in_chat.setVisibility(View.GONE);
             //  messageTxt.setFocusable(false);
         }
     }
-
+/*
     @Override
     public void onWindowFocusChanged(boolean hasFocus)
     {
@@ -2450,5 +2428,5 @@ public class StudyRoomActivity extends BaseActivity {
                 ex.printStackTrace();
             }
         }
-    }
+    }*/
 }
