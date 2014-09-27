@@ -1294,7 +1294,7 @@ public class StudyRoomActivity extends BaseActivity {
         public boolean onItemLongClick(AdapterView<?> adapterView, View v, int pos, long arg3) {
 
             if (adapterView.getId() == R.id.roomFriendList) {
-                Log.i(LOG_TAG, "friends long Clicked");
+                Log.i(LOG_TAG, "friends long Clicked pos " + pos + " type " + type);
                 if(KogPreference.ROOM_TYPE_LIFE.equals(type)) {
                     if (pos != 0 && pos != mFriends.size() - 1) {
                         if (isMasterAndNotMe(KogPreference.getNickName(StudyRoomActivity.this))) {
@@ -1303,6 +1303,9 @@ public class StudyRoomActivity extends BaseActivity {
                         }
                     }
                 }else{
+                    Log.i(LOG_TAG, "not KogPreference.ROOM_TYPE_LIFE (" + KogPreference.ROOM_TYPE_LIFE + ")");
+                    Log.i(LOG_TAG, "mFriends.get(pos).getName() : " + mFriends.get(pos).getName());
+                    Log.i(LOG_TAG, "isMasterAndNotMe : " + isMasterAndNotMe(KogPreference.getNickName(StudyRoomActivity.this)));
                     if (pos != 0 && pos != mFriends.size()) {
                         if (isMasterAndNotMe(KogPreference.getNickName(StudyRoomActivity.this))) {
                             mDialog = createInflaterDialog(mFriends.get(pos).getName());
@@ -1317,11 +1320,17 @@ public class StudyRoomActivity extends BaseActivity {
 
     private Boolean isMasterAndNotMe(String f_nickname)
     {
-        if(f_nickname.equals(KogPreference.getNickName(getBaseContext())))
-            return false;
+        Log.i(LOG_TAG, "1 isMasterAndNotMe in with f_nickname : " + f_nickname);
+
+        Log.i(LOG_TAG, "1 isMasterAndNotMe in with KogPreference.getNickName(getBaseContext()) : " + KogPreference.getNickName(getBaseContext()));
+        Log.i(LOG_TAG, "1 f_nickname.equals(KogPreference.getNickName(getBaseContext())) : " + f_nickname.equals(KogPreference.getNickName(getBaseContext())));
+        Log.i(LOG_TAG, "1 mFriends.size() " + mFriends.size());
         for(int i=0; i<mFriends.size(); i++)
         {
+            Log.i(LOG_TAG, "1 mFriends.get(i).getIsMaster() : " + mFriends.get(i).getIsMaster());
             if(mFriends.get(i).getIsMaster() != null) {
+                Log.i(LOG_TAG, "1 mFriends.get(i).getIsMaster().equals(\"true\") : " + mFriends.get(i).getIsMaster().equals("true"));
+                Log.i(LOG_TAG, "1 f_nickname.equals(mFriends.get(i).getName()) : " + f_nickname.equals(mFriends.get(i).getName()) );
                 if (mFriends.get(i).getIsMaster().equals("true")) {
                     if (f_nickname.equals(mFriends.get(i).getName())) {
                         return true;
