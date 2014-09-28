@@ -69,15 +69,16 @@ public class MessageAdapter extends ArrayAdapter<Msg> {
 
         }
 
-        android.view.ViewGroup.LayoutParams params = viewHolder.messageImage.getLayoutParams();
-        params.width = RelativeLayout.LayoutParams.MATCH_PARENT;;
-        int width = (viewHolder.messageImage.getWidth() > 350 ? viewHolder.messageImage.getWidth() : 350);
-        Log.i(LOG_TAG, "textImage width : " + width);
-        params.height = width;
-        viewHolder.messageImage.setLayoutParams(params);
-
+        int image_width;
         Msg m = items.get(position);
         if (m != null) {
+            android.view.ViewGroup.LayoutParams params = viewHolder.messageImage.getLayoutParams();
+            params.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+            image_width = (viewHolder.messageImage.getWidth() > 500 ? viewHolder.messageImage.getWidth() : 500);
+            params.height = image_width;
+            viewHolder.messageImage.setLayoutParams(params);
+
+
             if (m.getMessageType().equals(KogPreference.MESSAGE_TYPE_TEXT)) {
                 viewHolder.messageText.setVisibility(View.GONE);
                 viewHolder.messageImage.setVisibility(View.GONE);

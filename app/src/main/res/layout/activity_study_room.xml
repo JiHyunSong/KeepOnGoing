@@ -144,7 +144,7 @@
     <ListView
         android:id="@+id/study_room_message_list"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_above="@id/study_room_black_line"
         android:layout_margin="5dp"
         android:cacheColorHint="#00000000"
