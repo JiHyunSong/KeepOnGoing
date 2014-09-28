@@ -16,6 +16,7 @@ import android.util.Log;
 import com.com.lanace.connecter.HttpAPIs;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.ArrayList;
 
 //DB 컨트롤(관리) 하는 객체
@@ -26,7 +27,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String TABLE_IMAGE = "Image_table";
 
     public DBHelper(Context context) {
-        super(context, "KogDB.db", null, 2);
+        super(context, "KogDB.db", null, 3);
         /* (context,dbname,null,dbversion) */
 
     }
@@ -75,7 +76,7 @@ public class DBHelper extends SQLiteOpenHelper {
         // Image_table create
         db.execSQL("CREATE TABLE " + TABLE_IMAGE + " (" +
                 "name VARCHAR(100) PRIMARY KEY," +
-                "data BLOB," +
+                "path VARCHAR(100)," +
                 "time DATETIME DEFAULT CURRENT_TIMESTAMP" +
                 ");");
 
@@ -327,7 +328,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String query = "SELECT name, data FROM " + TABLE_IMAGE+ " WHERE name='"+key+"';";
+        String query = "SELECT name, path FROM " + TABLE_IMAGE+ " WHERE name='"+key+"';";
         Cursor cursor = db.rawQuery(query, null);
 
 //        Log.i(LOG_TAG, "query : " + query + " in getImage");
@@ -337,9 +338,10 @@ public class DBHelper extends SQLiteOpenHelper {
 //                Log.i(LOG_TAG, "cursor count : " + cursor.getCount());
                 if(cursor.moveToFirst())
                 {
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(cursor.getBlob(1), 0, cursor.getBlob(1).length);
-                    db.close();
+                    Bitmap bitmap = SafeDecodeBitmapFile(cursor.getString(1));
+//                    Bitmap bitmap = BitmapFactory.decodeByteArray(cursor.getBlob(1), 0, cursor.getBlob(1).length);
                     cursor.close();
+                    db.close();
                     return bitmap;
                 }
             }
@@ -356,27 +358,69 @@ public class DBHelper extends SQLiteOpenHelper {
         return null;
     }
 
-    public void insertImage(String name, Bitmap bitmapData)
+    // File 에서 이미지를 불러올 때 안전하게 불러오기 위해서 만든 함수
+    // bitmap size exceeds VM budget 오류 방지용
+    private Bitmap SafeDecodeBitmapFile(String strFilePath)
+    {
+        File file = new File(strFilePath);
+        if (file.exists() == false)
+        {
+            return null;
+        }
+
+        // 가로, 세로 최대 크기 (이보다 큰 이미지가 들어올 경우 크기를 줄인다.)
+        final int IMAGE_MAX_SIZE    = 1500;
+        BitmapFactory.Options bfo   = new BitmapFactory.Options();
+        bfo.inJustDecodeBounds      = true;
+
+        BitmapFactory.decodeFile(strFilePath, bfo);
+
+        if(bfo.outHeight * bfo.outWidth >= IMAGE_MAX_SIZE * IMAGE_MAX_SIZE)
+        {
+            bfo.inSampleSize = (int)Math.pow(2, (int)Math.round(Math.log(IMAGE_MAX_SIZE
+                    / (double) Math.max(bfo.outHeight, bfo.outWidth)) / Math.log(0.5)));
+        }
+        bfo.inJustDecodeBounds = false;
+        bfo.inPurgeable = true;
+        bfo.inDither = true;
+
+        final Bitmap bitmap = BitmapFactory.decodeFile(strFilePath, bfo);
+
+        return bitmap;
+    }
+
+
+//    public void insertImage(String name, Bitmap bitmapData)
+//    {
+//        SQLiteDatabase db = this.getReadableDatabase();
+//        try {
+//            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//            bitmapData.compress(Bitmap.CompressFormat.PNG, 100, stream);
+//            byte[] data = stream.toByteArray();
+//
+//            ContentValues value = new ContentValues();
+//            value.put("name", name);
+//            value.put("data", data);
+//
+//            db.insert(TABLE_IMAGE, null, value);
+//            db.close();
+//
+//            Log.i(LOG_TAG, "insertImage + " + name + " done ");
+//        }catch (Exception e)
+//        {
+//            db.close();
+//            e.printStackTrace();
+//        }
+//    }
+
+    public void insertImage(String name, String filePath)
     {
         SQLiteDatabase db = this.getReadableDatabase();
         try {
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmapData.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            byte[] data = stream.toByteArray();
 
-//            String query = "INSERT INTO " + TABLE_IMAGE +
-//                    "(name, data) " +
-//                    "VALUES " +
-//                    "(" +
-//                    "'" + name + "'," +
-//                    data +
-//                    ");";
-//
-//            db.execSQL(query);
-//            db.close();
             ContentValues value = new ContentValues();
             value.put("name", name);
-            value.put("data", data);
+            value.put("path", filePath);
 
             db.insert(TABLE_IMAGE, null, value);
             db.close();
@@ -388,6 +432,7 @@ public class DBHelper extends SQLiteOpenHelper {
             e.printStackTrace();
         }
     }
+
 
     public void initImageList()
     {

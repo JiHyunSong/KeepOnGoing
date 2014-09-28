@@ -834,6 +834,7 @@ public class StudyRoomActivity extends BaseActivity {
             messageList.smoothScrollToPosition(messageList.getCount() - 1);
 
         }
+        refreshAdaptorHandler.sendEmptyMessage(1);
     }
 
     Handler refreshAdaptorHandler = new Handler(){

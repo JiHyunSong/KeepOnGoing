@@ -35,6 +35,8 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -56,12 +58,15 @@ public class HttpAPIs {
     private static final String LOG_TAG = "HttpAPIs";
     private static Context mContext;
     private static final String TABLE_IMAGE = "Image_table";
+    private static File default_file_dir;
 
     public static List<String> imageList;
 
     public static void getImage(Context context, String fileurl, int resize_width, int resize_height, String key, Handler handler)
     {
         mContext = context;
+        default_file_dir = context.getFilesDir();
+
         Log.w(LOG_TAG, "request getImage with key : " + key + "fileurl ; " + fileurl);
 
         if(imageList.contains(key))
@@ -568,10 +573,13 @@ public class HttpAPIs {
             Log.w(LOG_TAG, "getImage before try, fileurl : " + fileurl);
             try {
                 DBHelper helper = new DBHelper(mContext);
-                helper.insertImage(imgName, (image = getImage2Server(fileurl, resize_width, resize_height)));
-
+                String imagePath = getImage2Server(imgName, fileurl, resize_width, resize_height);
+                helper.insertImage(imgName, imagePath);
+                helper.close();
                 Log.w(LOG_TAG, "imageMap Put : " + imgName);
 
+
+                image = SafeDecodeBitmapFile(imagePath);
                 Message msg = handler.obtainMessage();
                 Bundle b = new Bundle();
 
@@ -586,8 +594,63 @@ public class HttpAPIs {
         }
     };
 
+    // File 에서 이미지를 불러올 때 안전하게 불러오기 위해서 만든 함수
+    // bitmap size exceeds VM budget 오류 방지용
+    private static Bitmap SafeDecodeBitmapFile(String strFilePath)
+    {
+        File file = new File(strFilePath);
+        if (file.exists() == false)
+        {
+            return null;
+        }
+
+        // 가로, 세로 최대 크기 (이보다 큰 이미지가 들어올 경우 크기를 줄인다.)
+        final int IMAGE_MAX_SIZE    = 1500;
+        BitmapFactory.Options bfo   = new BitmapFactory.Options();
+        bfo.inJustDecodeBounds      = true;
+
+        BitmapFactory.decodeFile(strFilePath, bfo);
+
+        if(bfo.outHeight * bfo.outWidth >= IMAGE_MAX_SIZE * IMAGE_MAX_SIZE)
+        {
+            bfo.inSampleSize = (int)Math.pow(2, (int)Math.round(Math.log(IMAGE_MAX_SIZE
+                    / (double) Math.max(bfo.outHeight, bfo.outWidth)) / Math.log(0.5)));
+        }
+        bfo.inJustDecodeBounds = false;
+        bfo.inPurgeable = true;
+        bfo.inDither = true;
+
+        final Bitmap bitmap = BitmapFactory.decodeFile(strFilePath, bfo);
+
+        return bitmap;
+    }
+
     /** 서버에서 해당 URL에 있는 이미지를 가져옴 */
-    private static Bitmap getImage2Server(String URI, int resized_width, int resized_height)
+//    private static Bitmap getImage2Server(String URI, int resized_width, int resized_height)
+//    {
+//        Bitmap imgBitmap = null;
+//        Bitmap imgResizedBitmap = null;
+//        try
+//        {
+//            Log.i(LOG_TAG, "getImage2Server w/ " + URI);
+//            URL url = new URL(URI);
+//            URLConnection conn = url.openConnection();
+//            conn.connect();
+//            int nSize = conn.getContentLength();
+//            BufferedInputStream bis = new BufferedInputStream(conn.getInputStream(), nSize);
+//            imgBitmap = BitmapFactory.decodeStream(bis);
+//            bis.close();
+//            imgResizedBitmap = Bitmap.createScaledBitmap(imgBitmap, resized_width, resized_height, true);
+//            Log.i(LOG_TAG, "getImage2Server close");
+//        }
+//        catch(Exception e)
+//        {
+//            e.printStackTrace();
+//        }
+//        return imgResizedBitmap;
+//    }
+
+    private static String getImage2Server(String fileName, String URI, int resized_width, int resized_height)
     {
         Bitmap imgBitmap = null;
         Bitmap imgResizedBitmap = null;
@@ -603,12 +666,28 @@ public class HttpAPIs {
             bis.close();
             imgResizedBitmap = Bitmap.createScaledBitmap(imgBitmap, resized_width, resized_height, true);
             Log.i(LOG_TAG, "getImage2Server close");
+
+            FileOutputStream openFileOutput = null;
+            openFileOutput = new FileOutputStream(new File( default_file_dir + fileName));
+
+
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            imgResizedBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] data = stream.toByteArray();
+
+
+            openFileOutput.write(data);
+            openFileOutput.flush();
+            openFileOutput.close();
+
+            return default_file_dir + fileName;
+
         }
         catch(Exception e)
         {
             e.printStackTrace();
         }
-        return imgResizedBitmap;
+        return default_file_dir + fileName;
     }
 
 
