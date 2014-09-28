@@ -1016,7 +1016,7 @@ public class StudyRoomActivity extends BaseActivity {
                     filePath);
             HttpAPIs.background(requestAuthRegister, new CallbackResponse() {
                 public void success(HttpResponse response) {
-                    baseHandler.sendEmptyMessage(1);
+//                    baseHandler.sendEmptyMessage(1);
                     JSONObject result = HttpAPIs.getHttpResponseToJSON(response);
                     Log.e(LOG_TAG, "응답: " + result.toString());
                     if(result != null) {
@@ -1572,6 +1572,9 @@ public class StudyRoomActivity extends BaseActivity {
             if (soc_writer == null) {
                 Log.i(LOG_TAG, "soc=null");
                 disconnectConnection(socketConnectionHandler);
+//                soc_writer = new SocketAsyncTask_Writer();
+//                soc_writer.execute();
+//                baseHandler.sendEmptyMessage(2);
                 mDBHelper = new DBHelper(getBaseContext());
                 mDBHelper.UpdateChatNew(KogPreference.getRid(getBaseContext()), false);
                 mDBHelper.close();
@@ -2064,15 +2067,26 @@ public class StudyRoomActivity extends BaseActivity {
     // REST API                       //
     ////////////////////////////////////
     /** base Handler for Enable/Disable all UI components */
+    static boolean isRestOK;
+    static boolean isSocketOK;
+
     Handler baseHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
+            Log.i(LOG_TAG, "baseHandelr msg,what : " + msg.what);
 
             if(msg.what == 1){
-                setAllEnable();
+                isRestOK = true;
+            }else if(msg.what == 2){
+                isSocketOK = true;
             }
             else if(msg.what == -1){
                 setAllDisable();
+            }
+
+            if(isRestOK && isSocketOK)
+            {
+                setAllEnable();
             }
         }
     };
@@ -2102,6 +2116,7 @@ public class StudyRoomActivity extends BaseActivity {
                 int statusCode = Integer.parseInt(result.getString("status"));
                 if (statusCode == 200) {
                     Log.i(LOG_TAG, "Disconnection succeed");
+                    baseHandler.sendEmptyMessage(1);
                 }
                 else {
                     Log.i(LOG_TAG, "Disconnection failed");
@@ -2110,6 +2125,7 @@ public class StudyRoomActivity extends BaseActivity {
             }catch (JSONException e)
             {
                 e.printStackTrace();
+                baseHandler.sendEmptyMessage(1);
                 errorHandler.sendEmptyMessage(1);
             }
         }
@@ -2127,6 +2143,7 @@ public class StudyRoomActivity extends BaseActivity {
                     Log.i(LOG_TAG, "Disconnection succeed");
                     soc_writer = new SocketAsyncTask_Writer();
                     soc_writer.execute();
+                    baseHandler.sendEmptyMessage(2);
                 }
                 else {
                     Log.i(LOG_TAG, "Disconnection failed");
@@ -2147,7 +2164,7 @@ public class StudyRoomActivity extends BaseActivity {
             HttpRequestBase requestAuthRegister = HttpAPIs.disconnectConnectionGet(Encrypt.encodeIfNeed(KogPreference.getNickName(StudyRoomActivity.this)));
             HttpAPIs.background(requestAuthRegister, new CallbackResponse() {
                 public void success(HttpResponse response) {
-                    baseHandler.sendEmptyMessage(1);
+//                    baseHandler.sendEmptyMessage(1);
                     JSONObject result = HttpAPIs.getHttpResponseToJSON(response);
                     Log.e(LOG_TAG, "응답: " + result.toString());
                     if(result != null) {
@@ -2245,6 +2262,7 @@ public class StudyRoomActivity extends BaseActivity {
                     friendArrayAdapter = new FriendsArrayAdapters(StudyRoomActivity.this, R.layout.friend_list_item, mFriends);
                     friendList.setAdapter(friendArrayAdapter);
 
+                    baseHandler.sendEmptyMessage(1);
                     loadText();
                     BACK_MODE = true;
                 } else {
@@ -2274,7 +2292,7 @@ public class StudyRoomActivity extends BaseActivity {
                     KogPreference.getRid(StudyRoomActivity.this), getThisMonday(), getRealDate(), new CallbackResponse() {
                         @Override
                         public void success(HttpResponse httpResponse) {
-                            baseHandler.sendEmptyMessage(1);
+//                            baseHandler.sendEmptyMessage(1);
                             JSONObject obj = HttpAPIs.getHttpResponseToJSON(httpResponse);
                             if(obj != null){
                                 try {
@@ -2323,7 +2341,7 @@ public class StudyRoomActivity extends BaseActivity {
 
                     Toast.makeText(getBaseContext(), "강퇴시켰습니다.", Toast.LENGTH_SHORT).show();
                     setAllEnable();
-
+                    baseHandler.sendEmptyMessage(1);
                     refreshActivity();
 
                     //////// real action ////////
@@ -2350,7 +2368,7 @@ public class StudyRoomActivity extends BaseActivity {
                     KogPreference.getRid(StudyRoomActivity.this),f_nickname);
             HttpAPIs.background(requestAuthRegister, new CallbackResponse() {
                 public void success(HttpResponse response) {
-                    baseHandler.sendEmptyMessage(1);
+//                    baseHandler.sendEmptyMessage(1);
                     JSONObject result = HttpAPIs.getHttpResponseToJSON(response);
                     Log.e(LOG_TAG, "응답: " + result.toString());
                     if(result != null) {

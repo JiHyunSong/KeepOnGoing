@@ -1221,7 +1221,6 @@ String goalminusacheive =     (h / 10 == 0 ? "0" +h : h)
                                     URLDecoder.decode(rObj.getString("num"), "UTF-8"),
                                     mDBhelper.isChatNew(rObj.getString("rid"))
                             ));
-                            Log.i(LOG_TAG, "num" + URLDecoder.decode(rObj.getString("num"), "UTF-8"));
                         }
                     }
 
@@ -1352,7 +1351,7 @@ String goalminusacheive =     (h / 10 == 0 ? "0" +h : h)
 
                     //////// real action ////////
                 } else {
-                    Toast.makeText(getBaseContext(), "통신 에러", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), "다시 시도해주세요", Toast.LENGTH_SHORT).show();
                     Log.e(LOG_TAG, "통신 에러 : " + result.getString("message"));
                 }
             } catch (JSONException e) {
