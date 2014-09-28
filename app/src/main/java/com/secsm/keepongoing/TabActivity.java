@@ -625,6 +625,7 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
 
         public boolean onItemLongClick(AdapterView<?> adapterView, View v,
                                        int pos, long arg3) {
+            longClicked = true;
             if (adapterView.getId() == R.id.friend_list) {
 
             } else if (adapterView.getId() == R.id.room_list) {
@@ -654,6 +655,7 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
             public void onClick(DialogInterface arg0, int arg1) {
                 setAllDisable();
                 outRoomRequest(room_id);
+                longClicked = false;
             }
         });
 
@@ -661,6 +663,8 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void onClick(DialogInterface arg0, int arg1) {
                 setDismiss(mDialog);
+                longClicked = false;
+
             }
         });
 
@@ -670,52 +674,55 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
     /**
      * 더보기 탭 리스트 클릭 리스너
      */
+    boolean longClicked = false;
     ListView.OnItemClickListener itemClickListener = new ListView.OnItemClickListener() {
 
         public void onItemClick(AdapterView<?> adapterView, View arg1, int position, long arg3) {
-            if (adapterView.getId() == R.id.friend_list) {
-                Log.i(LOG_TAG, "tab2, friends Clicked");
-                mDialog = createInflaterDialog(mFriends.get(position).getProfile_image(), mFriends.get(position).getName(), mFriends.get(position).getTargetTime());
-                mDialog.show();
-            } else if (adapterView.getId() == R.id.room_list) {
-                Intent intent = new Intent(TabActivity.this, StudyRoomActivity.class);
-                intent.putExtra("type", mRooms.get(position).getType());
-                intent.putExtra("rule", mRooms.get(position).getRule());
-                intent.putExtra("rid", mRooms.get(position).getRid());
-                intent.putExtra("num", mRooms.get(position).getQuiz_num());
-                KogPreference.setRid(TabActivity.this, mRooms.get(position).getRid());
-                KogPreference.setQuizNum(TabActivity.this, mRooms.get(position).getQuiz_num());
-                startActivity(intent);
-            } else if (adapterView.getId() == R.id.setting_list) {
-                switch (position) {
-                    case 0: // 내 프로필
-                        Intent intent_my_profile = new Intent(TabActivity.this, MyProfileActivity.class);
-                        startActivity(intent_my_profile);
+            if(!longClicked){
+                if (adapterView.getId() == R.id.friend_list) {
+                    Log.i(LOG_TAG, "tab2, friends Clicked");
+                    mDialog = createInflaterDialog(mFriends.get(position).getProfile_image(), mFriends.get(position).getName(), mFriends.get(position).getTargetTime());
+                    mDialog.show();
+                } else if (adapterView.getId() == R.id.room_list) {
+                    Intent intent = new Intent(TabActivity.this, StudyRoomActivity.class);
+                    intent.putExtra("type", mRooms.get(position).getType());
+                    intent.putExtra("rule", mRooms.get(position).getRule());
+                    intent.putExtra("rid", mRooms.get(position).getRid());
+                    intent.putExtra("num", mRooms.get(position).getQuiz_num());
+                    KogPreference.setRid(TabActivity.this, mRooms.get(position).getRid());
+                    KogPreference.setQuizNum(TabActivity.this, mRooms.get(position).getQuiz_num());
+                    startActivity(intent);
+                } else if (adapterView.getId() == R.id.setting_list) {
+                    switch (position) {
+                        case 0: // 내 프로필
+                            Intent intent_my_profile = new Intent(TabActivity.this, MyProfileActivity.class);
+                            startActivity(intent_my_profile);
 
-                        break;
-                    case 1: // 알람 / 목표시간 설정
-                        Intent intent_alarm = new Intent(TabActivity.this, alram_list.class);
-                        startActivity(intent_alarm);
-//                        Intent intent_alarm = new Intent(TabActivity.this, NoticeActivity.class);
-//                        startActivity(intent_notice);
-                        break;
+                            break;
+                        case 1: // 알람 / 목표시간 설정
+                            Intent intent_alarm = new Intent(TabActivity.this, alram_list.class);
+                            startActivity(intent_alarm);
+    //                        Intent intent_alarm = new Intent(TabActivity.this, NoticeActivity.class);
+    //                        startActivity(intent_notice);
+                            break;
 
-                    case 2: // 퀴즈 모음
-                        Intent intent = new Intent(TabActivity.this, Quiz_Set_Search.class);
-                        startActivity(intent);
-                        //@민수 ㅋㅋ
-                        break;
+                        case 2: // 퀴즈 모음
+                            Intent intent = new Intent(TabActivity.this, Quiz_Set_Search.class);
+                            startActivity(intent);
+                            //@민수 ㅋㅋ
+                            break;
 
-                    case 3:
-                        //TODO 이부분 왜 이런식으로 구현했는지 모르겠음, 그냥 로그아웃 하면 안되는거
-                        if (arGeneral3.get(position).toString().equals("로그아웃")) {
-                            logout();
-                        }else if(arGeneral3.get(position).toString().equals("로그인")){
-                            Intent _intent = new Intent(TabActivity.this, LoginActivity.class);
-                            startActivity(_intent);
-                            TabActivity.this.finish();
-                        }
-                        break;
+                        case 3:
+                            //TODO 이부분 왜 이런식으로 구현했는지 모르겠음, 그냥 로그아웃 하면 안되는거
+                            if (arGeneral3.get(position).toString().equals("로그아웃")) {
+                                logout();
+                            }else if(arGeneral3.get(position).toString().equals("로그인")){
+                                Intent _intent = new Intent(TabActivity.this, LoginActivity.class);
+                                startActivity(_intent);
+                                TabActivity.this.finish();
+                            }
+                            break;
+                    }
                 }
             }
         }
@@ -769,12 +776,6 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
             }
         });
 
-        ab.setNegativeButton("취소", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface arg0, int arg1) {
-                setDismiss(mDialog);
-            }
-        });
 
         return ab.create();
     }
