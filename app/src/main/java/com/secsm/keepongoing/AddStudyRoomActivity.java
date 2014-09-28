@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -134,7 +135,9 @@ public class AddStudyRoomActivity extends BaseActivity {
         add_study_room_subject_sun_tg = (ToggleButton) findViewById(R.id.add_study_room_subject_sun_tg);
         add_study_room_subject_tp = (TimePicker) findViewById(R.id.add_study_room_subject_tp);
         add_study_room_subject_duration_time_et = (BootstrapEditText) findViewById(R.id.add_study_room_subject_duration_time_et);
+        add_study_room_subject_duration_time_et.setFilters(new InputFilter[]{KogPreference.filterNum});
         add_study_room_subject_show_up_time_et = (BootstrapEditText) findViewById(R.id.add_study_room_subject_show_up_time_et);
+        add_study_room_subject_show_up_time_et.setFilters(new InputFilter[]{KogPreference.filterNum});
 
         add_study_room_invite_friend_btn_with_life_info = (Button) findViewById(R.id.add_study_room_invite_friend_btn_with_life_info);
         add_study_room_invite_friend_btn_with_study_info = (Button) findViewById(R.id.add_study_room_invite_friend_btn_with_study_info);

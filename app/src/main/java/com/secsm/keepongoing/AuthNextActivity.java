@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -65,6 +66,7 @@ public class AuthNextActivity extends BaseActivity {
         btnOk = (Button) findViewById(R.id.btnOk);
         btnGoBack = (Button) findViewById(R.id.btnGoBackToAuth);
         txtInputNo = (EditText) findViewById(R.id.txtInputNo);
+        txtInputNo.setFilters(new InputFilter[]{KogPreference.filterNum});
 
         AuthNumRegister(phoneNo, certiNo);
 

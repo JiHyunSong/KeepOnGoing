@@ -8,6 +8,8 @@ package com.secsm.keepongoing.Shared;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.util.Log;
 
 import com.secsm.keepongoing.Adapters.InviteRoom;
@@ -18,6 +20,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public final class KogPreference {
     private static String LOG_TAG = "Preference LOG";
@@ -377,4 +380,37 @@ public final class KogPreference {
         }
         return items;
     }
+
+    // 영문 + 숫자 + 한글
+    public static InputFilter filterAlphaNumKor = new InputFilter() {
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+            Pattern ps = Pattern.compile("^[a-zA-Z0-9ㄱ-ㅣ가-힣]*$");
+            if (!ps.matcher(source).matches()) {
+                return "";
+            }
+            return null;
+        }
+    };
+
+    // 숫자
+    public static InputFilter filterNum = new InputFilter() {
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+            Pattern ps = Pattern.compile("^[0-9]*$");
+            if (!ps.matcher(source).matches()) {
+                return "";
+            }
+            return null;
+        }
+    };
+
+    // 한글
+    public static InputFilter filterKor = new InputFilter() {
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+            Pattern ps = Pattern.compile("^[ㄱ-ㅣ가-힣]*$");
+            if (!ps.matcher(source).matches()) {
+                return "";
+            }
+            return null;
+        }
+    };
 }

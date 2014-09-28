@@ -3,6 +3,7 @@ package com.secsm.keepongoing;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -41,6 +42,7 @@ public class AddFriendActivity extends BaseActivity {
         add_friend_add_btn = (BootstrapButton) findViewById(R.id.add_friend_add_btn);
         add_friend_go_back_btn = (BootstrapButton) findViewById(R.id.add_friend_go_back_btn);
         add_friend_name_et = (EditText) findViewById(R.id.add_friend_name_et);
+        add_friend_name_et.setFilters(new InputFilter[]{KogPreference.filterAlphaNumKor});
 
         add_friend_name_et.setPrivateImeOptions("defaultInputmode=english;");
 

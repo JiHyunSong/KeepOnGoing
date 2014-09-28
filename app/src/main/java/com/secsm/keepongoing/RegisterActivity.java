@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -72,6 +73,10 @@ public class RegisterActivity extends BaseActivity {
         phoneNum = (EditText) findViewById(R.id.txtPhoneNum);
         alertPwd = (TextView) findViewById(R.id.tvPwdAlert);
         alertNick = (TextView) findViewById(R.id.tvNickAlert);
+
+        nickName.setFilters(new InputFilter[]{KogPreference.filterAlphaNumKor});
+        password1.setFilters(new InputFilter[]{KogPreference.filterAlphaNumKor});
+        password2.setFilters(new InputFilter[]{KogPreference.filterAlphaNumKor});
 
         phoneNum.setText(phoneNo);
         phoneNum.setFocusable(false);

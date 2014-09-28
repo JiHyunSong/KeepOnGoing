@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -56,6 +57,9 @@ public class LoginActivity extends BaseActivity {
     private void init() {
         mNicknameView = (EditText) findViewById(R.id.nickname);
         mPasswordView = (EditText) findViewById(R.id.password);
+
+        mNicknameView.setFilters(new InputFilter[]{KogPreference.filterAlphaNumKor});
+        mPasswordView.setFilters(new InputFilter[]{KogPreference.filterAlphaNumKor});
 
         mNicknameView.setPrivateImeOptions("defaultInputmode=english;");
         mPasswordView.setPrivateImeOptions("defaultInputmode=english;");
