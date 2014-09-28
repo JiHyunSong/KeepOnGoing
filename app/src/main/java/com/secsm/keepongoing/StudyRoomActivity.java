@@ -1005,7 +1005,7 @@ public class StudyRoomActivity extends BaseActivity {
         }
     };
 
-    void ImageUpload(String filePath){
+    void ImageUpload(final String filePath){
         try {
             baseHandler.sendEmptyMessage(-1);
             HttpRequestBase requestAuthRegister = HttpAPIs.uploadImage(
@@ -1024,6 +1024,9 @@ public class StudyRoomActivity extends BaseActivity {
                         b.putString("JSONData", result.toString());
                         msg.setData(b);
                         ImageUploadHandler.sendMessage(msg);
+
+                        File file = new File(filePath);
+                        file.delete();
                     }
                 }
 
