@@ -838,7 +838,7 @@ public class StudyRoomActivity extends BaseActivity {
             e.printStackTrace();
             GoBack();
         }
-        return "";
+        return "profile_default.png";
     }
 
 
