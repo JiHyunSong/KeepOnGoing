@@ -39,6 +39,7 @@ public final class KogPreference {
     public static String UPLOAD_CHAT_IMAGE_URL = "http://210.118.74.195:8080/KOG_Server_Rest/rest/ChatImage";
     public static String DOWNLOAD_CHAT_IMAGE_URL = "http://210.118.74.195:8080/KOG_Server_Rest/upload/ChatImage/";
     public static String MESSAGE_TYPE_TEXT = "text";
+    public static String MESSAGE_TYPE_KICK = "kick";
     public static String MESSAGE_TYPE_IMAGE = "image";
     public static String MESSAGE_TYPE_DUMMY = "dummy";
     public static String MESSAGE_TYPE_QUIZ = "quiz";

@@ -46,6 +46,7 @@ public class GcmIntentService extends IntentService {
     private static Handler newQuizHandler;
     private static Handler newChatHandler;
     private static Handler finishHandler;
+    private static Handler kickHandler;
 
     public GcmIntentService() {
         super("GcmIntentService");
@@ -61,6 +62,10 @@ public class GcmIntentService extends IntentService {
 
     public static void setFinishHandler(Handler fisinhHandler) {
         GcmIntentService.finishHandler = fisinhHandler;
+    }
+
+    public static void setKickHandler(Handler kickHandler) {
+        GcmIntentService.kickHandler = kickHandler;
     }
 
     @Override
@@ -99,6 +104,9 @@ public class GcmIntentService extends IntentService {
                     {
                         notifyNewQuiz(intent);
                     }
+                }else if (m_type.equals(KogPreference.MESSAGE_TYPE_KICK)){
+                    Log.i(LOG_TAG, "GCM get kick type message");
+                    notifyKickOff(intent);
                 }
                 else if(m_type.equals(KogPreference.MESSAGE_TYPE_TEXT)) {
                     Log.i(LOG_TAG, "GCM get text type message");
@@ -128,22 +136,43 @@ public class GcmIntentService extends IntentService {
         GcmBroadcastReceiver.completeWakefulIntent(intent);
     }
 
+    private void notifyKickOff(Intent intent){
+        JSONObject intentMessage;
+        try {
+            if(kickHandler != null) {
+                intentMessage = new JSONObject(intent.getExtras().getString("message"));
+                Message msg = kickHandler.obtainMessage();
+                Bundle quizBundle = new Bundle();
+                String rRid = intentMessage.getString("rid");
+                String rNickname = intentMessage.getString("nickname");
+                quizBundle.putString("rid", rRid);
+                quizBundle.putString("nickname", rNickname);
+                msg.setData(quizBundle);
+                kickHandler.sendMessage(msg);
+            }
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     private void notifyNewQuiz(Intent intent) {
         JSONObject intentMessage;
         mDBHelper = new DBHelper(mContext);
         try {
-            intentMessage = new JSONObject(intent.getExtras().getString("message"));
-            Message msg = newQuizHandler.obtainMessage();
-            Bundle quizBundle = new Bundle();
-            String rRid = intentMessage.getString("rid");
-            String rNum = intentMessage.getString("num");
-            quizBundle.putString("rid", rRid);
-            quizBundle.putString("num", rNum);
-            mDBHelper.UpdateQuizNew(rRid, rNum, true);
-            mDBHelper.close();
-            msg.setData(quizBundle);
-            newQuizHandler.sendMessage(msg);
-
+            if(newQuizHandler != null){
+                intentMessage = new JSONObject(intent.getExtras().getString("message"));
+                Message msg = newQuizHandler.obtainMessage();
+                Bundle quizBundle = new Bundle();
+                String rRid = intentMessage.getString("rid");
+                String rNum = intentMessage.getString("num");
+                quizBundle.putString("rid", rRid);
+                quizBundle.putString("num", rNum);
+                mDBHelper.UpdateQuizNew(rRid, rNum, true);
+                mDBHelper.close();
+                msg.setData(quizBundle);
+                newQuizHandler.sendMessage(msg);
+            }
         }catch (Exception e)
         {
             mDBHelper.close();

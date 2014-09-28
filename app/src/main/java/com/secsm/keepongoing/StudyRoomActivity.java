@@ -218,6 +218,7 @@ public class StudyRoomActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         GcmIntentService.setNewQuizHandler(newQuizHandler);
+        GcmIntentService.setKickHandler(kickHandler);
 
         setContentView(R.layout.activity_study_room);
         ActionBar bar = getActionBar();
@@ -452,6 +453,37 @@ public class StudyRoomActivity extends BaseActivity {
 
         }
     };
+
+    Handler kickHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+            try {
+                Bundle b = msg.getData();
+                if (KogPreference.getRid(getBaseContext()).equals(b.getString("rid"))) {
+                    if (KogPreference.getNickName(getBaseContext()).equals(b.getString("nickname"))) {
+                        Toast.makeText(getBaseContext(), "강퇴되었습니다.", Toast.LENGTH_SHORT).show();
+                        GoBack();
+                    } else {
+
+                        for(int i=0; i<mFriends.size(); i++)
+                        {
+                            if(mFriends.get(i).getName().equals(b.getString("nickname"))){
+                                mFriends.remove(i);
+                                refreshAdaptorHandler.sendEmptyMessage(2);
+                                Toast.makeText(getBaseContext(), b.getString("nickname") + "님이 강퇴되었습니다.", Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                        }
+                    }
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    };
+
 
     Handler notifyQuiz = new Handler(){
         @Override
@@ -837,6 +869,8 @@ public class StudyRoomActivity extends BaseActivity {
         refreshAdaptorHandler.sendEmptyMessage(1);
     }
 
+    // message 1 : refresh message history adapter
+    // message 2 : refresh friends adapter
     Handler refreshAdaptorHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -844,6 +878,8 @@ public class StudyRoomActivity extends BaseActivity {
 
             if(msg.what == 1){
                 messageHistoryMAdaptor.refresh();
+            }else if(msg.what == 2){
+                friendArrayAdapter.refresh();
             }
         }
     };
