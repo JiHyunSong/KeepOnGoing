@@ -110,12 +110,13 @@ public class LoginActivity extends BaseActivity {
 
         //}
 
-        if (KogPreference.isAutoLogin(LoginActivity.this)) {
-            mNicknameView.setText(KogPreference.getNickName(LoginActivity.this));
-            mPasswordView.setText(KogPreference.getPassword(LoginActivity.this));
-            setAllDisable();
-            UserLogin(KogPreference.getNickName(LoginActivity.this), KogPreference.getPassword(LoginActivity.this));
-        } else {
+//        if (KogPreference.isAutoLogin(LoginActivity.this)) {
+//            mNicknameView.setText(KogPreference.getNickName(LoginActivity.this));
+//            mPasswordView.setText(KogPreference.getPassword(LoginActivity.this));
+//            setAllDisable();
+//            UserLogin(KogPreference.getNickName(LoginActivity.this), KogPreference.getPassword(LoginActivity.this));
+//        } else
+        {
             String savedNick = KogPreference.getNickName(LoginActivity.this);
             mNicknameView.setText(savedNick);
         }
