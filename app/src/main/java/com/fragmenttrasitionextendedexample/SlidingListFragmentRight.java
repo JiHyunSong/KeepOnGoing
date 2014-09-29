@@ -5,16 +5,20 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.com.lanace.connecter.CallbackResponse;
 import com.com.lanace.connecter.HttpAPIs;
@@ -44,10 +48,11 @@ public class SlidingListFragmentRight extends Fragment implements MyInterface {
     private ListView listView;
     private View view;
     ArrayList<Quiz_data> list;
-    private Button btnSubmit;
+    private ToggleButton btnSubmit;
     private String answer;
     private String rMessageput;
     private String date;
+    private ScrollView sv1;
     TextView title_view,question_view,subject_view,date_view;
 
     @Override
@@ -80,13 +85,24 @@ public class SlidingListFragmentRight extends Fragment implements MyInterface {
 
         title_view = (TextView)getView().findViewById(R.id.question_title_content);
         title_view.setText(titlez);
+
+        sv1 = (ScrollView)getView().findViewById(R.id.scroll_problemandsubject_solve);
         subject_view = (TextView)getView().findViewById(R.id.solve_subject_solve);
         subject_view.setText(subject);
         question_view = (TextView)getView().findViewById(R.id.textview_solve);
         question_view.setText(question);
+        question_view.setMovementMethod(new ScrollingMovementMethod());
         date_view = (TextView)getView().findViewById(R.id.date_view);
         date_view.setText("출제일 : "+date);
-
+        question_view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // TODO Auto-generated method stub
+                sv1.requestDisallowInterceptTouchEvent(true);
+                //스크롤뷰가 텍스트뷰의 터치이벤트를 가져가지 못하게 함
+                return false;
+            }
+        });
         Button back = (Button) getView().findViewById(R.id.back);
         back.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
@@ -168,8 +184,8 @@ public class SlidingListFragmentRight extends Fragment implements MyInterface {
             if(ansnum[i].split("\\$")!=null&&listnum[i].split("\\$")!=null) {
                 listtype = listnum[i].split("\\$");
                 anstype = ansnum[i].split("\\$");
+                list.get(i).answer=listtype[2].toString();
                 if (listtype[1].toString().equals("multi")) {
-
                     if (listtype[2].toString().equals(anstype[2].toString())) {
                         list.get(i).correct=1;
                         total++;
@@ -207,8 +223,13 @@ public class SlidingListFragmentRight extends Fragment implements MyInterface {
 
         return total;
     }
-
-
+    private void answerclear(){
+        for(int i=0;i<list.size();i++)
+        {
+            list.get(i).correct=-3;
+        }
+        settingListView();
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -225,6 +246,7 @@ public class SlidingListFragmentRight extends Fragment implements MyInterface {
 
 
     private void settingListView() {
+
         mAdapter.refresh();
     }
 
@@ -235,34 +257,62 @@ public class SlidingListFragmentRight extends Fragment implements MyInterface {
 
 
     public void addListenerOnButton() {
-        btnSubmit = (Button) view.findViewById(R.id.btnSubmit_solve);
+
+        btnSubmit = (ToggleButton) view.findViewById(R.id.btnSubmit_solve);
+        btnSubmit.setText("제출");
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listView.clearFocus();
-                //@민수 제출
-                int total=checkanswer(solution,request_check(list).toString());
-                TextView solve_main_tv=(TextView)view.findViewById(R.id.solve_main_tv);
-                solve_main_tv.setText("점수 : +"+ total);
+                if(btnSubmit.isChecked()) {
+                    btnSubmit.setText("다시 풀기");
+                    listView.clearFocus();
+                    //@민수 제출
+                    int total = checkanswer(solution, request_check(list).toString());
+                    TextView solve_main_tv = (TextView) view.findViewById(R.id.solve_main_tv);
+                    solve_main_tv.setText("점수 : +" + total);
 
-                answerRegisterRequest(subject,request_check(list).toString());
+                    answerRegisterRequest(subject, request_check(list).toString());
+                }
+                else {
+                    btnSubmit.setText("제출");
+                    listView.clearFocus();
+                    answerclear();
+                    TextView solve_main_tv = (TextView) view.findViewById(R.id.solve_main_tv);
+                    solve_main_tv.setText("점수 : ");
+                    //  answerRegisterRequest(subject.getText().toString(), request_check(list).toString());
+
+                }
             }
 
         });
     }
 
+
+
     public String mulitiplecheck(ArrayList<Quiz_data> arrays,int position){
         String temp="";
         if(arrays.get(position).chk1)
             temp+= "1";
-        if(arrays.get(position).chk2)
-            temp+= "2";
-        if(arrays.get(position).chk3)
-            temp+= "3";
-        if(arrays.get(position).chk4)
-            temp+= "4";
-        if(arrays.get(position).chk5)
-            temp+= "5";
+        if(arrays.get(position).chk2) {
+            if(!temp.equals(""))
+                temp+=",";
+            temp += "2";
+        }
+        if(arrays.get(position).chk3) {
+            if(!temp.equals(""))
+                temp+=",";
+            temp += "3";
+        }
+        if(arrays.get(position).chk4) {
+            if(!temp.equals(""))
+                temp+=",";
+            temp += "4";
+        }
+        if(arrays.get(position).chk5) {
+            if(!temp.equals(""))
+                temp+=",";
+            temp += "5";
+        }
         if(temp=="")
             return "error";
         return temp;

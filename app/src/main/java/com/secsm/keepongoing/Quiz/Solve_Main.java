@@ -1,19 +1,21 @@
 package com.secsm.keepongoing.Quiz;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.com.lanace.connecter.CallbackResponse;
 import com.com.lanace.connecter.HttpAPIs;
@@ -38,7 +40,7 @@ public class Solve_Main extends BaseActivity {
     private ListView listView;
     public String LOG_TAG = "Solve MAIN";
     listAdapter_Solve mAdapter = null;
-    private Button btnSubmit;
+    private ToggleButton btnSubmit;
     private String rMessageput;
     private String question;
     private String questiontype;
@@ -50,15 +52,17 @@ public class Solve_Main extends BaseActivity {
     TextView subject,textview,question_title_content,date_view;
     String[] arr = null;
     ArrayList<Quiz_data> list;
-
+    private ScrollView sv1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_solve__main);
         list = new ArrayList<Quiz_data>();
 
+        sv1 = (ScrollView)findViewById(R.id.scroll_problemandsubject_solve);
         subject =  (TextView) findViewById(R.id. solve_subject_solve);
         textview = (TextView) findViewById(R.id.textview_solve);
+        textview.setMovementMethod(new ScrollingMovementMethod());
         question_title_content = (TextView) findViewById(R.id.question_title_content);
         date_view=(TextView) findViewById(R.id.date_view);
 
@@ -95,6 +99,15 @@ public class Solve_Main extends BaseActivity {
 
 
     }
+
+
+    private void answerclear(){
+        for(int i=0;i<list.size();i++)
+        {
+            list.get(i).correct=-3;
+        }
+        settingListView();
+    }
     public int checkanswer(String solution,String answer){
         int total=0;
         String[] listnum = solution.split("\\|");
@@ -107,8 +120,8 @@ public class Solve_Main extends BaseActivity {
             if(ansnum[i].split("\\$")!=null&&listnum[i].split("\\$")!=null) {
                 listtype = listnum[i].split("\\$");
                 anstype = ansnum[i].split("\\$");
+                list.get(i).answer=listtype[2].toString();
                 if (listtype[1].toString().equals("multi")) {
-
                     if (listtype[2].toString().equals(anstype[2].toString())) {
                         list.get(i).correct=1;
                                 total++;
@@ -149,11 +162,20 @@ return total;
 
 
 
-
     public void settingTextView() {
+
 
         subject.setText(questiontype);
         textview.setText(question);
+        textview.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // TODO Auto-generated method stub
+                sv1.requestDisallowInterceptTouchEvent(true);
+                //스크롤뷰가 텍스트뷰의 터치이벤트를 가져가지 못하게 함
+                return false;
+            }
+        });
         question_title_content.setText(title);
         date_view.setText(date);
 
@@ -203,20 +225,30 @@ return total;
 
     public void addListenerOnButton() {
 
-        btnSubmit = (Button) findViewById(R.id.btnSubmit_solve);
+        btnSubmit = (ToggleButton) findViewById(R.id.btnSubmit_solve);
+        btnSubmit.setText("제출");
         btnSubmit.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                listView.clearFocus();
-                //@민수 제출
+                if(btnSubmit.isChecked()) {
+                    btnSubmit.setText("다시 풀기");
+                    listView.clearFocus();
+                    //@민수 제출
+                    int total = checkanswer(solution, request_check(list).toString());
+                    TextView solve_main_tv = (TextView) findViewById(R.id.solve_main_tv);
+                    solve_main_tv.setText("점수 : +" + total);
 
+                    answerRegisterRequest(subject.getText().toString(), request_check(list).toString());
+                }
+                else {
+                    btnSubmit.setText("제출");
+                    listView.clearFocus();
+                    answerclear();
+                    TextView solve_main_tv = (TextView) findViewById(R.id.solve_main_tv);
+                    solve_main_tv.setText("점수 : ");
+                  //  answerRegisterRequest(subject.getText().toString(), request_check(list).toString());
 
-
-                int total=checkanswer(solution,request_check(list).toString());
-                TextView solve_main_tv=(TextView)findViewById(R.id.solve_main_tv);
-                solve_main_tv.setText("점수 : +"+ total);
-
-                answerRegisterRequest(subject.getText().toString(), request_check(list).toString());
+                }
             }
 
         });
@@ -226,14 +258,26 @@ return total;
         String temp="";
         if(arrays.get(position).chk1)
             temp+= "1";
-        if(arrays.get(position).chk2)
-            temp+= "2";
-        if(arrays.get(position).chk3)
-            temp+= "3";
-        if(arrays.get(position).chk4)
-            temp+= "4";
-        if(arrays.get(position).chk5)
-            temp+= "5";
+        if(arrays.get(position).chk2) {
+            if(!temp.equals(""))
+                temp+=",";
+            temp += "2";
+        }
+        if(arrays.get(position).chk3) {
+            if(!temp.equals(""))
+                temp+=",";
+            temp += "3";
+        }
+        if(arrays.get(position).chk4) {
+            if(!temp.equals(""))
+                temp+=",";
+            temp += "4";
+        }
+        if(arrays.get(position).chk5) {
+            if(!temp.equals(""))
+                temp+=",";
+            temp += "5";
+        }
         if(temp=="")
             return "error";
         return temp;

@@ -72,6 +72,10 @@ public class Quiz_Result_Adapter extends BaseAdapter {
             } else {
                 viewHolder = (ViewHolder) v.getTag();
             }
+
+            viewHolder.tv_title.setText(infoList.get(position).name);
+            viewHolder.date.setText(infoList.get(position).date);
+            viewHolder.subject.setText(infoList.get(position).subject);
             return v;
 
         }

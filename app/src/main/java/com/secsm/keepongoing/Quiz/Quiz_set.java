@@ -51,7 +51,8 @@ public class Quiz_set extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_solve__main);
+        setContentView(R.layout.quiz_set_search);
+        Log.e("minsu:)","quiz_set_search");
         list = new ArrayList<Quiz_data>();
 
         subject =  (TextView) findViewById(R.id. solve_subject_solve);

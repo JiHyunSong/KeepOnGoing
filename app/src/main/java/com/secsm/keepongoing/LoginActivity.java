@@ -276,7 +276,7 @@ public class LoginActivity extends BaseActivity {
         mPasswordView.setEnabled(true);
         mSignInButton.setEnabled(true);
         mSignUpButton.setEnabled(true);
-        easterEggButton.setEnabled(true);
+   //     easterEggButton.setEnabled(true);
         loginProgressBar.setVisibility(View.GONE);
     }
 
@@ -287,7 +287,7 @@ public class LoginActivity extends BaseActivity {
         mPasswordView.setEnabled(false);
         mSignInButton.setEnabled(false);
         mSignUpButton.setEnabled(false);
-        easterEggButton.setEnabled(false);
+  //      easterEggButton.setEnabled(false);
         loginProgressBar.setVisibility(View.VISIBLE);
     }
 }

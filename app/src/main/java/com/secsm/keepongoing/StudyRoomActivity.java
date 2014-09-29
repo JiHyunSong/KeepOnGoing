@@ -100,6 +100,7 @@ public class StudyRoomActivity extends BaseActivity {
     private String message;
     private DBHelper mDBHelper;
     private String rID;
+    private boolean a,b;
     //    private int myID;
     private ArrayList<Msg> mTexts = new ArrayList<Msg>();
     private ListView messageList;
@@ -111,7 +112,7 @@ public class StudyRoomActivity extends BaseActivity {
     private FriendNameAndIcon mFriendsFristToAdd;
     private FriendNameAndIcon mFriendsLastToShowScoreDetail;
     private FriendsArrayAdapters friendArrayAdapter;
-
+private int originalheight=1557;
 
     private ListLockHelper listLockHelper;
     private static int loadSize = 10;
@@ -150,7 +151,6 @@ public class StudyRoomActivity extends BaseActivity {
     private RelativeLayout.LayoutParams study_room_fl1_lp = null;
     private RelativeLayout.LayoutParams study_room_below_layout_lp = null;
     private RelativeLayout.LayoutParams study_room_additional_page_lp = null;
-
     private void setAllEnable() {
         study_room_progress.setVisibility(View.GONE);
         sendMsgBtn.setEnabled(true);
@@ -334,7 +334,6 @@ public class StudyRoomActivity extends BaseActivity {
         // 슬라이딩으로 보여질 레이아웃 객체 참조
         slidingPage01 = (LinearLayout) findViewById(R.id.slidingPage01);
         study_room_additional_page = (LinearLayout) findViewById(R.id.study_room_additional_page);
-
         study_room_additional_ll1_camera = (LinearLayout) findViewById(R.id.study_room_additional_ll1_camera);
         study_room_additional_ll2_album = (LinearLayout) findViewById(R.id.study_room_additional_ll2_album);
         study_room_additional_ll3_my_time = (LinearLayout) findViewById(R.id.study_room_additional_ll3_my_time);
@@ -399,18 +398,44 @@ public class StudyRoomActivity extends BaseActivity {
         });
 
         Log.i(LOG_TAG, "additionalBtn onClick Listener set");
+      //minsu todo
         additionalBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Log.i(LOG_TAG, "additionalBtn onClick with isAdditionalPageOpen : " + isAdditionalPageOpen);
-                if (!isAdditionalPageOpen) {
-                    setVisibleAdditionalPage();
-                    getWindow().setSoftInputMode(
-                            WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+                Log.i(LOG_TAG, "minsu : additionalBtn onClick with Height : " + slidingPage01.getHeight()+"original : " +originalheight);
+
+                if(originalheight<slidingPage01.getHeight())
+                    originalheight=slidingPage01.getHeight();
+                  if (originalheight == slidingPage01.getHeight()) {
+
+                      if (!isAdditionalPageOpen) {
+                          Log.i(LOG_TAG, "minsu yes" );
+                          setVisibleAdditionalPage();
+                          /*getWindow().setSoftInputMode(
+                                  WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);*/
 //                getImage();
+                      } else {
+
+                          Log.i(LOG_TAG, "minsu no" );
+                          setInvisibleAddtionalPage();
+                     /*     getWindow().setSoftInputMode(
+                                  WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);*/
+                      }
                 } else {
-                    setInvisibleAddtionalPage();
-                    getWindow().setSoftInputMode(
-                            WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+
+
+                    if (!isAdditionalPageOpen) {
+                        Log.i(LOG_TAG, "minsu 1" );
+                        setVisibleAdditionalPage();
+                        getWindow().setSoftInputMode(
+                                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+//                getImage();
+                    } else {
+                        Log.i(LOG_TAG, "minsu 2" );
+                        setInvisibleAddtionalPage();
+                        getWindow().setSoftInputMode(
+                                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                    }
                 }
             }
 
@@ -434,6 +459,8 @@ public class StudyRoomActivity extends BaseActivity {
             }
         });
 
+
+        originalheight=slidingPage01.getHeight();
 
     }
 
@@ -615,8 +642,10 @@ public class StudyRoomActivity extends BaseActivity {
 
     private void setVisibleAdditionalPage() {
         hideSoftKeyboard(study_room_additional_page);
-        study_room_additional_page.setVisibility(View.VISIBLE);
         study_room_additional_page_lp.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+        study_room_additional_page.setVisibility(View.VISIBLE);
+        activityRootView.invalidate();
+        Log.e("minsu : )"," study_room_additional_page_lp.height"+study_room_additional_page_lp.height);
         isAdditionalPageOpen = true;
     }
 
@@ -1684,7 +1713,6 @@ public class StudyRoomActivity extends BaseActivity {
         Log.d("info>> ", "unregisterReceiver()...");
     }
 
-
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_ENTER) {
 //            close();
@@ -1692,14 +1720,18 @@ public class StudyRoomActivity extends BaseActivity {
             sendMessage();
 
         } else if (keyCode == KeyEvent.KEYCODE_BACK) {
+
             if(BACK_MODE) {
                 if (isAdditionalPageOpen) {
+
                     setInvisibleAddtionalPage();
                 } else if (!isAdditionalPageOpen && !isPageOpen) {
                     GoBack();
                 }
                 if (isPageOpen) {
                     additionalBtn.setEnabled(true);
+                    messageTxt.setEnabled(true);
+                    messageTxt.requestFocus();
 //                showSoftKeyboard();
                     slidingPage01.startAnimation(translateLeftAnim);
 //                slidingPage01.setVisibility(View.VISIBLE);
