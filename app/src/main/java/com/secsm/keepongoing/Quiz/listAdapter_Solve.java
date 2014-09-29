@@ -86,7 +86,7 @@ public class listAdapter_Solve extends BaseAdapter {
                 }
             });
             viewHolder.check1 = (CheckBox) v.findViewById(R.id.check1);
-            viewHolder.question_number=(TextView) v.findViewById((R.id.question_number));
+            viewHolder.question_number = (TextView) v.findViewById((R.id.question_number));
 
             viewHolder.check1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -198,7 +198,7 @@ public class listAdapter_Solve extends BaseAdapter {
         viewHolder.Falsebtn.setTag(position);
         viewHolder.Truebtn.setTag(position);
 
-        viewHolder.question_number.setText((position+1)+". ");
+        viewHolder.question_number.setText((position + 1) + ". ");
         viewHolder.check1.setChecked(infoList.get(position).chk1);
         viewHolder.check2.setChecked(infoList.get(position).chk2);
         viewHolder.check3.setChecked(infoList.get(position).chk3);
@@ -221,6 +221,8 @@ public class listAdapter_Solve extends BaseAdapter {
 
             RelativeLayout tflayout = (RelativeLayout) v.findViewById((R.id.tflayout));
             tflayout.setVisibility(View.GONE);
+            RelativeLayout answer = (RelativeLayout) v.findViewById((R.id.answer));
+            answer.setVisibility(View.GONE);
         } else if (infoList.get(position).name == "tf") {
 
             EditText essay = (EditText) v.findViewById(R.id.essay);
@@ -229,7 +231,8 @@ public class listAdapter_Solve extends BaseAdapter {
             multiplechoice.setVisibility(View.GONE);
             RelativeLayout tflayout = (RelativeLayout) v.findViewById((R.id.tflayout));
             tflayout.setVisibility(View.VISIBLE);
-
+            RelativeLayout answer = (RelativeLayout) v.findViewById((R.id.answer));
+            answer.setVisibility(View.GONE);
 
         } else {
             EditText essay = (EditText) v.findViewById(R.id.essay);
@@ -238,6 +241,8 @@ public class listAdapter_Solve extends BaseAdapter {
             multiplechoice.setVisibility(View.VISIBLE);
             RelativeLayout tflayout = (RelativeLayout) v.findViewById((R.id.tflayout));
             tflayout.setVisibility(View.GONE);
+            RelativeLayout answer = (RelativeLayout) v.findViewById((R.id.answer));
+            answer.setVisibility(View.GONE);
         }
 /*        Log.e("minsu)", "minsu) check clear : " + "at postion"+position+
                 infoList.get(position).chk1+
@@ -247,13 +252,30 @@ public class listAdapter_Solve extends BaseAdapter {
                 infoList.get(position).chk5
         );*/
 //채점 색
+//@minsu new
 
-        if((infoList.get(position).correct)==1)
-            v.setBackgroundColor(0xFF75FFAF);
-        else if((infoList.get(position).correct)==-1)
-            v.setBackgroundColor(0xFFf94a57);
-        else if((infoList.get(position).correct)==0)
-            v.setBackgroundColor(0x00000000);
+
+        TextView check_answer = (TextView) v.findViewById(R.id.check_answer);
+        check_answer.setText(infoList.get(position).answer);
+
+        if ((infoList.get(position).correct) != -3) {
+            EditText essay = (EditText) v.findViewById(R.id.essay);
+            essay.setVisibility(View.GONE);
+            LinearLayout multiplechoice = (LinearLayout) v.findViewById(R.id.multiple);
+            multiplechoice.setVisibility(View.GONE);
+            RelativeLayout tflayout = (RelativeLayout) v.findViewById((R.id.tflayout));
+            tflayout.setVisibility(View.GONE);
+            RelativeLayout answer = (RelativeLayout) v.findViewById((R.id.answer));
+            answer.setVisibility(View.VISIBLE);
+
+            if ((infoList.get(position).correct) == 1) {
+                v.setBackgroundColor(0x7075FFAF);
+            } else if ((infoList.get(position).correct) == -1)
+                v.setBackgroundColor(0x70f94a57);
+            else if ((infoList.get(position).correct) == 0) {
+                v.setBackgroundColor(0x00000000);
+            }
+        }
 
         return v;
     }

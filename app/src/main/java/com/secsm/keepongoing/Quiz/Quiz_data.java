@@ -15,7 +15,8 @@ public class Quiz_data {
     public boolean truebtn = false;
     public boolean falsebtn = false;
     public boolean isChecked = false;
-    public int correct = 0;
+    public int correct = -3;
+    public String answer = "";
 
     public Quiz_data(String name) {
         this.name = name;

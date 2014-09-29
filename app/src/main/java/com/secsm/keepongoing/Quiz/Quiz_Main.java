@@ -292,14 +292,26 @@ public class Quiz_Main extends BaseActivity {
         String temp="";
         if(arrays.get(position).chk1)
             temp+= "1";
-        if(arrays.get(position).chk2)
-            temp+= "2";
-        if(arrays.get(position).chk3)
-            temp+= "3";
-        if(arrays.get(position).chk4)
-            temp+= "4";
-        if(arrays.get(position).chk5)
-            temp+= "5";
+        if(arrays.get(position).chk2) {
+            if(!temp.equals(""))
+                temp+=",";
+            temp += "2";
+        }
+        if(arrays.get(position).chk3) {
+            if(!temp.equals(""))
+                temp+=",";
+            temp += "3";
+        }
+        if(arrays.get(position).chk4) {
+            if(!temp.equals(""))
+                temp+=",";
+            temp += "4";
+        }
+        if(arrays.get(position).chk5) {
+            if(!temp.equals(""))
+                temp+=",";
+            temp += "5";
+        }
         if(temp=="")
             return "error";
         return temp;

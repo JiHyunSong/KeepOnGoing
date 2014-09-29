@@ -70,7 +70,6 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
     //@민수 viewpage 추가
 
     private boolean resumehelp = false;
-    private boolean firsttogglebollean = false;
     private ViewPager mPager;
     private TextView tiger;
     private View viewtemp;
@@ -290,19 +289,40 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
 
         //@민수
         // 타이머 시작 버튼
+
         final ToggleButton play_pause = (ToggleButton) view.findViewById(R.id.toggleButton2);
         //시작버튼 초기화
+        Log.e("minsu : ","get toggle"+Preference.getBoolean(TabActivity.this, "toggle"));
 
-        if (firsttogglebollean == false) {
-            firsttogglebollean = true;
-        } else if (Preference.getBoolean(TabActivity.this, "toggle")) {
+      //    Date start = new Date();
+         // Preference.setLong(TabActivity.this, "start", start.getTime() - Preference.getLong(TabActivity.this, "diff"));
+
+        if(Preference.getBoolean(TabActivity.this, "firsttogglebollean"))
+            Preference.putBoolean(TabActivity.this, "firsttogglebollean",true);
+        else if (Preference.getBoolean(TabActivity.this, "toggle")) {
             play_pause.setChecked(true);
             play_pause.setBackgroundResource(R.drawable.selector_tab_pause_button);
+            Preference.putBoolean(TabActivity.this, "toggle", true);
+            Log.e("minsu : ","set toggle"+Preference.getBoolean(TabActivity.this, "toggle"));
+            play_pause.setBackgroundResource(R.drawable.selector_tab_pause_button);
+            if (timer == null) {
+
+            //    Date start = new Date();
+
+         //       Preference.setLong(TabActivity.this, "start", start.getTime() - Preference.getLong(TabActivity.this, "diff"));
+                TimerTask adTast = new TimerTask() {
+                    public void run() {
+                        mHandler.sendEmptyMessage(0);
+                    }
+                };
+                timer = new Timer();
+                timer.schedule(adTast, 0, 1000); // 0초후 첫실행, 20초마다 계속실행
+                Log.i(LOG_TAG, "타이머 시작");
+            }
+
+
         }
         //성취시간 초기화
-        Date start = new Date();
-        Preference.setLong(TabActivity.this, "start", start.getTime() - Preference.getLong(TabActivity.this, "diff"));
-
 
 
         ahcieve_time.setText(timediff(TabActivity.this));
@@ -316,7 +336,7 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
                 if (play_pause.isChecked()) {
 
                     Preference.putBoolean(TabActivity.this, "toggle", true);
-
+                    Log.e("minsu : ","set toggle"+Preference.getBoolean(TabActivity.this, "toggle"));
                     play_pause.setBackgroundResource(R.drawable.selector_tab_pause_button);
                     if (timer == null) {
 
@@ -340,6 +360,7 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
                 } else {
                     play_pause.setBackgroundResource(R.drawable.selector_tab_play_button);
                     Preference.putBoolean(TabActivity.this, "toggle", false);
+                    Log.e("minsu : ","set toggle"+Preference.getBoolean(TabActivity.this, "toggle"));
                     if (timer != null) {
                         timer.cancel();
                         Log.i(LOG_TAG, "타이머 스탑");
@@ -859,6 +880,15 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
                         }
                     }
 
+
+
+
+
+
+
+
+
+
                     if (actionBarFirstBtn != null && actionBarSecondBtn != null) {
                         setInvisibleActionBar();
                         actionBarSecondBtn.setIcon(R.drawable.ic_action_new);
@@ -987,8 +1017,9 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
         public void handleMessage(Message msg) {
             ahcieve_time.setText(timediff(TabActivity.this));
             ahcieve_time_sec.setText( "."   + (achieve_Seconds / 10 == 0 ? "0" + achieve_Seconds : achieve_Seconds));
-            _current_Time.setText(minusgoalachieve());
-            currenttime2_sec.setText( "." + (s/ 10 == 0 ? "0" + s : s));
+
+                _current_Time.setText(minusgoalachieve());
+                currenttime2_sec.setText("." + (s / 10 == 0 ? "0" + s : s));
             Preference.setString(TabActivity.this, "achieve_time", ahcieve_time.getText().toString()+":"+ahcieve_time_sec.getText().toString().substring(1,3));
         }
     };
@@ -1002,11 +1033,18 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
         achieve.setMinutes(achieve_Mins);
         achieve.setSeconds(achieve_Seconds);
         //@민수 todo
-        Log.e("minsu","minsu : "+goal.toString() +" - "+achieve.toString());
+     //   Log.e("minsu","minsu : "+goal.toString() +" - "+achieve.toString());
        long minus = goal.getTime() - achieve.getTime();
-        int h = (int) (minus / (1000 * 60 * 60));
-        int m = (int) (minus / (1000 * 60)) % 60;
-        s = (int) (minus / 1000) % 60;
+        int h;
+        int m;
+        if(minus<0) {
+      h=m=s=0;
+        }
+        else {
+            h = (int) (minus / (1000 * 60 * 60));
+            m = (int) (minus / (1000 * 60)) % 60;
+            s = (int) (minus / 1000) % 60;
+        }
 String goalminusacheive =     (h / 10 == 0 ? "0" +h : h)
         + ":" + (m / 10 == 0 ? "0" + m: m)
         //+ ":" + (s/ 10 == 0 ? "0" + s : s);

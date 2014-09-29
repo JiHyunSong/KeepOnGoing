@@ -71,6 +71,7 @@ public class SlidingListFragmentLeft extends Fragment implements MyInterface{
         this.position=position;
         ((quiz_set_result)getActivity()).addTransition(getView(),list.get(position).name,list.get(position).subject,
                 list.get(position).question,list.get(position).solution,list.get(position).date);
+
     }
 
     public void animate(){

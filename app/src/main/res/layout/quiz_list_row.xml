@@ -27,10 +27,29 @@
             android:hint="답안을 입력하세요"
             android:lines="1"
             android:maxLines="1"
-            android:scrollbars="vertical"
             android:visibility="invisible"
             android:layout_toRightOf="@id/question_number"/>
-
+        <RelativeLayout
+            android:id="@+id/answer"
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_vertical"
+            android:visibility="invisible"
+            android:layout_toRightOf="@id/question_number"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="정답 : "
+                android:id="@+id/ans"/>
+            <TextView
+                android:id="@+id/check_answer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/ans"
+                android:text=""/>
+            </RelativeLayout>
 
 
         <RelativeLayout
