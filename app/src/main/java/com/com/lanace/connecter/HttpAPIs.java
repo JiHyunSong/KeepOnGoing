@@ -69,13 +69,33 @@ public class HttpAPIs {
 
         Log.w(LOG_TAG, "request getImage with key : " + key + "fileurl ; " + fileurl);
 
-        if(imageList.contains(key))
-        {
+        try {
+            if (key != null) {
+                if (imageList.contains(key)) {
 
-        }else {
-            imageList.add(key);
-            Thread requestDownloadThread = new Thread(new downloadImageThread(fileurl, resize_width, resize_height, key, handler));
-            requestDownloadThread.start();
+                } else {
+                    imageList.add(key);
+                    Thread requestDownloadThread = new Thread(new downloadImageThread(fileurl, resize_width, resize_height, key, handler));
+                    requestDownloadThread.start();
+                }
+            } else {
+                if (imageList.contains("profile_default.png")) {
+                    DBHelper helper = new DBHelper(mContext);
+                    Message msg = handler.obtainMessage();
+                    Bundle b = new Bundle();
+                    b.putParcelable("image", helper.getImage("profile_default.png"));
+                    b.putString("imgName", "profile_default.png");
+                    msg.setData(b);
+                    handler.sendMessage(msg);
+                    helper.close();
+                } else {
+                    imageList.add("profile_default.png");
+                    Thread requestDownloadThread = new Thread(new downloadImageThread(fileurl, resize_width, resize_height, "profile_default.png", handler));
+                    requestDownloadThread.start();
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 

@@ -1030,16 +1030,11 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
         achieve.setMinutes(achieve_Mins);
         achieve.setSeconds(achieve_Seconds);
         //@민수 todo
-<<<<<<< HEAD
-//        Log.e("minsu","minsu : "+goal.toString() +" - "+achieve.toString());
-=======
-     //   Log.e("minsu","minsu : "+goal.toString() +" - "+achieve.toString());
->>>>>>> 5e1a1958eb80ae57bada38c1ab20204ab9347358
-       long minus = goal.getTime() - achieve.getTime();
+        long minus = goal.getTime() - achieve.getTime();
         int h;
         int m;
         if(minus<0) {
-      h=m=s=0;
+            h=m=s=0;
         }
         else {
             h = (int) (minus / (1000 * 60 * 60));
