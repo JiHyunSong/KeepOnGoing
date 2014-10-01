@@ -2410,7 +2410,20 @@ private int originalheight=1557;
                     Toast.makeText(getBaseContext(), "강퇴시켰습니다.", Toast.LENGTH_SHORT).show();
                     setAllEnable();
                     baseHandler.sendEmptyMessage(1);
-                    refreshActivity();
+
+                    for(int i=0; i<mFriends.size(); i++)
+                    {
+                        if(mFriends.get(i).getName().equals(b.getString("KickName"))){
+                            mFriends.remove(i);
+                            refreshAdaptorHandler.sendEmptyMessage(2);
+                            break;
+                        }
+                    }
+
+//                    refreshActivity();
+                    refreshAdaptorHandler.sendEmptyMessage(1);
+                    refreshAdaptorHandler.sendEmptyMessage(2);
+
 
                     //////// real action ////////
                 } else if (statusCode == 1001) {
@@ -2443,6 +2456,7 @@ private int originalheight=1557;
                         Message msg = kickOffMemberRequestHandler.obtainMessage();
                         Bundle b = new Bundle();
                         b.putString("JSONData", result.toString());
+                        b.putString("KickName", f_nickname);
                         msg.setData(b);
                         kickOffMemberRequestHandler.sendMessage(msg);
                     }
@@ -2462,15 +2476,15 @@ private int originalheight=1557;
 
     }
 
-    private void refreshActivity() {
-        Intent _intent = new Intent(this, StudyRoomActivity.class);
-        _intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        _intent.putExtra("type", type);
-        _intent.putExtra("rule", rule);
-        _intent.putExtra("rid", rID);
-        _intent.putExtra("num", num);
-        startActivity(_intent);
-    }
+//    private void refreshActivity() {
+//        Intent _intent = new Intent(this, StudyRoomActivity.class);
+//        _intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        _intent.putExtra("type", type);
+//        _intent.putExtra("rule", rule);
+//        _intent.putExtra("rid", rID);
+//        _intent.putExtra("num", num);
+//        startActivity(_intent);
+//    }
     //@민수
     public void closesliding(){
         //  Toast.makeText(getBaseContext(), "hi", Toast.LENGTH_SHORT).show();
