@@ -133,7 +133,9 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
 
         //@민수 viewpage 추가
         initLayout();
-
+        if(KogPreference.isLogin(getBaseContext())) {
+            disconnectConnection(disconnectConnectionHandler);
+        }
     }
 
     /**
@@ -808,6 +810,56 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
     private void setDismiss(Dialog dialog) {
         if (dialog != null && dialog.isShowing())
             dialog.dismiss();
+    }
+
+    Handler disconnectConnectionHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+                Bundle b = msg.getData();
+                JSONObject result = new JSONObject(b.getString("JSONData"));
+                int statusCode = Integer.parseInt(result.getString("status"));
+                if (statusCode == 200) {
+                    Log.i(LOG_TAG, "Disconnection succeed");
+                }
+                else {
+                    Log.i(LOG_TAG, "Disconnection failed");
+                    Log.e(LOG_TAG, "통신 에러 : " + result.getString("message"));
+                }
+            }catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    private void disconnectConnection(final Handler connectionHandler){
+        try {
+            Log.i(LOG_TAG, "disconnectConnection() in synchronized init");
+            HttpRequestBase requestAuthRegister = HttpAPIs.disconnectConnectionGet(Encrypt.encodeIfNeed(KogPreference.getNickName(getBaseContext())));
+            HttpAPIs.background(requestAuthRegister, new CallbackResponse() {
+                public void success(HttpResponse response) {
+//                    baseHandler.sendEmptyMessage(1);
+                    JSONObject result = HttpAPIs.getHttpResponseToJSON(response);
+                    Log.e(LOG_TAG, "응답: " + result.toString());
+                    if(result != null) {
+                        Message msg = connectionHandler.obtainMessage();
+                        Bundle b = new Bundle();
+                        b.putString("JSONData", result.toString());
+                        msg.setData(b);
+                        connectionHandler.sendMessage(msg);
+                    }
+                }
+
+                public void error(Exception e) {
+                    errorHandler.sendEmptyMessage(1);
+                    Log.i(LOG_TAG, "Response Error: " +  e.toString());
+                    e.printStackTrace();
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
