@@ -294,6 +294,14 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
 
       //    Date start = new Date();
          // Preference.setLong(TabActivity.this, "start", start.getTime() - Preference.getLong(TabActivity.this, "diff"));
+        if(Preference.getBoolean(TabActivity.this, "firsttogglebollean")){
+            ahcieve_time.setText("00:00");
+            ahcieve_time_sec.setText(".00");
+        }
+        else{
+            ahcieve_time.setText(timediff(TabActivity.this));
+            ahcieve_time_sec.setText( "."   + (achieve_Seconds / 10 == 0 ? "0" + achieve_Seconds : achieve_Seconds));
+        }
 
         if(Preference.getBoolean(TabActivity.this, "firsttogglebollean"))
             Preference.putBoolean(TabActivity.this, "firsttogglebollean",true);
@@ -321,14 +329,6 @@ public class TabActivity extends BaseActivity implements View.OnClickListener {
 
         }
         //성취시간 초기화
-        if(Preference.getBoolean(TabActivity.this, "firsttogglebollean")){
-            ahcieve_time.setText("00:00");
-            ahcieve_time_sec.setText(".00");
-        }
-        else{
-            ahcieve_time.setText(timediff(TabActivity.this));
-            ahcieve_time_sec.setText( "."   + (achieve_Seconds / 10 == 0 ? "0" + achieve_Seconds : achieve_Seconds));
-        }
         Preference.setString(TabActivity.this, "achieve_time", ahcieve_time.getText().toString()+":"+ahcieve_time_sec.getText().toString().substring(1,3));
         _current_Time.setText(minusgoalachieve());
         currenttime2_sec.setText( "." + (s/ 10 == 0 ? "0" + s : s));
